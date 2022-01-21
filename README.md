@@ -89,6 +89,20 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 
 </details>
 
+## 🤖 Configuration and Starting
+
+<details>
+  <summary>Click to expand</summary>
+
+   1. Check `🎶 Music Requirements` that you started lavalink / use a valid public lavalink station
+   2. Fill in all required data in `./botconfig/config.json` **NOTE:** *If you're on replit.com, it is exposed to everyone!(use .env instead)*
+   3. Fill in all required data in the `.json` Files in `./social_log/` (`./social_log/streamconfig.json` & `./social_log/twitter.json`), if you want the SOCIAL LOGS to work! (the key `authToken` in streamconfig is not needed to be filled in!)
+   4. You can adjust some settings in the other `./botconfig/*.json` Files, **BUT PLEASE __KEEP__ MY CREDITS & ADS!** This is the only way on how my hard work is "revenued"
+   5. Now start the bot by typing opening a cmd in that folder and type: `node index.js` or `npm start`
+     * If you don't want to keep the terminal open or if you're on linux, check out [pm2 (and my tutorial)](https://github.com/Tomato6966/Debian-Cheat-Sheet-Setup/wiki/4-pm2-tutorial) and type: `pm2 start --name Bot_Name index.js`
+  
+</details>
+
 
 ## SUPPORT ME AND MILRATO DEVELOPMENT
 
