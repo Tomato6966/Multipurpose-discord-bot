@@ -11,7 +11,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 
 # Installation Guide 🔥
 
-## Hosting Requirements
+## ✅ Hosting Requirements
 
 <details>
   <summary>Click to expand</summary>
@@ -24,7 +24,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 
 </details>
 
-## Bot Requirements
+## 🤖 Bot Requirements
 
 <details>
   <summary>Click to expand</summary>
@@ -35,7 +35,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
   
 </details>
 
-## Music Requirements
+## 🎶 Music Requirements
 
 <details>
   <summary>Click to expand</summary>
