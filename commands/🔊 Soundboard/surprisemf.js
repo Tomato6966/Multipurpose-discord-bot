@@ -21,7 +21,7 @@ module.exports = {
 		if(!channel.permissionsFor(message.guild.me).has("SPEAK")){return message.reply({embeds: [new MessageEmbed().setTitle(":x: I'm missing the Permission to speak in your Voice Channel").setColor(es.wrongcolor).setFooter(client.getFooter(es))]});}
 		if(channel.userLimit != 0 && channel.full){return message.reply({embeds: [new MessageEmbed().setTitle(":x: Your Voice Channel is full!").setColor(es.wrongcolor).setFooter(client.getFooter(es))]});}
 		if (botchannel) {return message.reply({embeds: [new MessageEmbed().setTitle(`<:no:833101993668771842> I am already connected in: \`${botchannel.name}\``).setFooter(client.getFooter(es))]});}
-		const e = message.react('🎙️').catch(e => console.log(String(e).grey))
+		const e = await message.react('🎙️').catch(e => console.log(String(e).grey))
 		let VoiceConnection = joinVoiceChannel({channelId: channel.id,guildId: channel.guild.id,adapterCreator: channel.guild.voiceAdapterCreator}); 
 		let file = path.join(__dirname + `/audio/${CmdName}.mp3`);
 		if(!file || !fs.existsSync(file)) {
