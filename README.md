@@ -95,7 +95,9 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 
 <details>
   <summary>Click to expand</summary>
-
+ 
+ > *First i recommend using the .json Files, but if u want to have your API KEYS "hidden" aka more secure, you can also use `.env`, i created a `example.env` File which u should rename to `.env` and place in the keys etc. instead of in the config.json*
+ 
    1. Check `🎶 Music Requirements` that you started lavalink / use a valid public lavalink station
    2. Fill in all required data in `./botconfig/config.json` **NOTE:** *If you're on replit.com, it is exposed to everyone!(use .env instead)*
    3. Fill in all required data in the `.json` Files in `./social_log/` (`./social_log/streamconfig.json` & `./social_log/twitter.json`), if you want the SOCIAL LOGS to work! (the key `authToken` in streamconfig is not needed to be filled in!)
