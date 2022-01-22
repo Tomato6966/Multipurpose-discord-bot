@@ -127,19 +127,19 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
   
 </details>
 
-## Have Problems while installing?
+## 😩 Have Problems while installing?
 
 > [Check the FAQ](https://github.com/Tomato6966/Multipurpose-discord-bot/wiki)
 
 
-## Setup-Tutorial Video
+## 😎 Setup-Tutorial Video
 
 > *Don't forget to turn on SOUND*
 
 https://user-images.githubusercontent.com/68145571/150640306-d643f59a-c977-43ae-9aa6-7f3d2ec7f119.mp4
 
 
-## SUPPORT ME AND MILRATO DEVELOPMENT
+## 🙏 SUPPORT ME AND MILRATO DEVELOPMENT
 
 > You can always Support me by inviting one of my **own Discord Bots**
 
@@ -147,6 +147,6 @@ https://user-images.githubusercontent.com/68145571/150640306-d643f59a-c977-43ae-
 [![Musicium Music Bot](https://cdn.discordapp.com/attachments/742446682381221938/770055673965707264/test1.png)](https://musicium.musicium.dev)
 [![Milrato Multi Bot](https://cdn.discordapp.com/attachments/742446682381221938/770056826724679680/test1.png)](https://milrato.milrato.dev)
 
-# Credits
+# ✌️ Credits
 
 > If consider using this Bot, make sure to credit me!
