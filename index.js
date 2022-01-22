@@ -1,4 +1,3 @@
-﻿
 /**********************************************************
  * @INFO  [TABLE OF CONTENTS]
  * 1  Import_Modules
@@ -28,10 +27,12 @@ const Discord = require("discord.js");
 const colors = require("colors");
 const enmap = require("enmap"); 
 const fs = require("fs"); 
-const emojis = require("./botconfig/emojis.json")
-const config = require("./botconfig/config.json")
-const advertisement = require("./botconfig/advertisement.json")
-const { delay } = require("./handlers/functions")
+const emojis = require("./botconfig/emojis.json");
+const config = require("./botconfig/config.json");
+const advertisement = require("./botconfig/advertisement.json");
+const { delay } = require("./handlers/functions");
+const Meme = require("memer-api");
+require('dotenv').config();
 
 
 /**********************************************************
@@ -74,8 +75,7 @@ const client = new Discord.Client({
 /**********************************************************
  * @param {4} Create_the_client.memer property from Tomato's Api 
  *********************************************************/
-const Meme = require("memer-api");
-client.memer = new Meme(config.memer_api); // GET a TOKEN HERE: https://discord.gg/Mc2FudJkgP
+client.memer = new Meme(process.env.memer_api || config.memer_api); // GET a TOKEN HERE: https://discord.gg/Mc2FudJkgP
 
 
 
@@ -142,7 +142,7 @@ function requirehandlers(){
 /**********************************************************
  * @param {9} Login_to_the_Bot
  *********************************************************/
-client.login(config.token);
+client.login(process.env.token || config.token);
 
 
 /**********************************************************
