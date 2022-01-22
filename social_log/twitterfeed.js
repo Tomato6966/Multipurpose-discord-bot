@@ -2,6 +2,7 @@ const twitconfig = require("./twitter.json")
 const Twit = require('twit')
 const { databasing, delay } = require(`${process.cwd()}/handlers/functions`)
 var CronJob = require('cron').CronJob;
+require('dotenv').config();
 module.exports = client => {
   //create the job with a "7" Minute delay!
   client.Jobtwitterfeed  = new CronJob('0 */7 * * * *', async function() {
@@ -22,10 +23,10 @@ async function create_twit(client){
       if(!userids || userids.length == 0) return console.log(` [TWITER] :: NO USERIDS: ${userids}`.cyan)
       //create a new TWIT
       var T = new Twit({
-        consumer_key: twitconfig.consumer_key,
-        consumer_secret: twitconfig.consumer_secret,
-        access_token: twitconfig.access_token,
-        access_token_secret: twitconfig.access_token_secret,
+        consumer_key: process.env.consumer_key || twitconfig.consumer_key,
+        consumer_secret: process.env.consumer_secret || twitconfig.consumer_secret,
+        access_token: process.env.access_token || twitconfig.access_token,
+        access_token_secret: process.env.access_token_secret || twitconfig.access_token_secret,
         timeout_ms: twitconfig.timeout_ms, 
         strictSSL: twitconfig.strictSSL, 
       })
