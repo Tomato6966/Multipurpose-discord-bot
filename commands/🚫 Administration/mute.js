@@ -80,8 +80,8 @@ module.exports = {
           message.reply(`No Time added, now using the default time: \`${mutesettings.defaultTime / 1000} ms\``);
           time = mutesettings.default;
       }
-      let mutedRole = mute.roleId ? message.guild.roles.cache.get(mute.roleId) || false : false;
-      if(mutedRole && mute.style == "timeout") {
+      let mutedRole = mutesettings.roleId ? message.guild.roles.cache.get(mutesettings.roleId) || false : false;
+      if(mutedRole && mutesettings.style == "timeout") {
         if (!kickmember.manageable)
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
@@ -103,7 +103,7 @@ module.exports = {
         try {
           mutetime = ms(time);
         } catch (e) {
-          mutetime = mute.defaultTime;
+          mutetime = mutesettings.defaultTime;
         }
 
         member.timeout(mutetime, reason).then(() => {  
