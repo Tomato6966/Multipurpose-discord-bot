@@ -62,6 +62,12 @@ module.exports = async client => {
     }, null, true, 'America/Los_Angeles');
     client.Jobremind = new CronJob("*/5 * * * * *", async function(){
         let data = client.afkDB.get("REMIND")
+        if(!data) {
+            client.afkDB.ensure("REMIND", {
+                REMIND: []
+            });
+            data = [];
+        }
         var reminds_now = data.REMIND.filter(v=>{
             return v.time - (Date.now() - v.timestamp) <= 0
         })
