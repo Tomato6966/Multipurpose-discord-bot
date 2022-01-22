@@ -16,6 +16,10 @@
  *********************************************************/
 
 
+/**
+ * @param {*} INFO: you can use config.token and all other sensitve api keys, with the exact same key in process.env!
+*/
+
 
 /**********************************************************
  * @param {1} Import_Modules for this FIle
