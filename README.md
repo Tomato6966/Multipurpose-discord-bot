@@ -30,8 +30,8 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
   <summary>Click to expand</summary>
 
   1. Download the [Source Code](https://github.com/Tomato6966/Multipurpose-discord-bot/archive/refs/tags/10.0.1.zip)
-    * either by: `git clone https://github.com/Tomato6966/Multipurpose-discord-bot`
-    * or by downloading it as a zip from the releases or a branch
+     * either by: `git clone https://github.com/Tomato6966/Multipurpose-discord-bot`
+     * or by downloading it as a zip from the releases or a branch
   
 </details>
 
