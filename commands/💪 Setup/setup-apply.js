@@ -41,39 +41,14 @@ module.exports = {
     first_layer()
     async function first_layer() {
       try {
-        let menuoptions = [{
-            value: "1 Apply System",
-            description: `Manage/Edit the 1 Apply Setup`,
-            emoji: NumberEmojiIds[1]
-          },
-          {
-            value: "2 Apply System",
-            description: `Manage/Edit the 2 Apply Setup`,
-            emoji: NumberEmojiIds[2]
-          },
-          {
-            value: "3 Apply System",
-            description: `Manage/Edit the 3 Apply Setup`,
-            emoji: NumberEmojiIds[3]
-          },
-          {
-            value: "4 Apply System",
-            description: `Manage/Edit the 4 Apply Setup`,
-            emoji: NumberEmojiIds[4]
-          },
-          {
-            value: "5 Apply System",
-            description: `Manage/Edit the 5 Apply Setup`,
-            emoji: NumberEmojiIds[5]
-          }
-        ]
-        require("fs").readdirSync("./handlers/applies").forEach((file, index) => {
+        let menuoptions = []
+        for(let i = 1; i<=25;i++) {
           menuoptions.push({
-            value: `${index + 5 + 1} Apply System`,
-            description: `Manage/Edit the ${index + 5 + 1} Apply Setup`,
-            emoji: NumberEmojiIds[index + 5 + 1]
+            value: `${i} Apply System`,
+            description: `Manage/Edit the ${i} Apply Setup`,
+            emoji: NumberEmojiIds[i]
           })
-        })
+        }
         //define the selection
         let Selection = new MessageSelectMenu()
           .setCustomId('MenuSelection')

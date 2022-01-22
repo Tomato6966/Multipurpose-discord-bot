@@ -322,41 +322,16 @@ module.exports = {
               }
               let description = collected.first().content.split("++")[1].trim().substr(0, 50);
 
-              let menuoptions = [{
-                value: "1 Apply System",
-                description: `Link to the 1. Apply System`,
-                emoji: NumberEmojiIds[1]
-              },
-              {
-                value: "2 Apply System",
-                description: `Link to the 2. Apply System`,
-                emoji: NumberEmojiIds[2]
-              },
-              {
-                value: "3 Apply System",
-                description: `Link to the 3. Apply System`,
-                emoji: NumberEmojiIds[3]
-              },
-              {
-                value: "4 Apply System",
-                description: `Link to the 4. Apply System`,
-                emoji: NumberEmojiIds[4]
-              },
-              {
-                value: "5 Apply System",
-                description: `Link to the 5. Apply System`,
-                emoji: NumberEmojiIds[5]
+              let menuoptions = []
+              for(let i = 1; i<=25;i++) {
+                menuoptions.push({
+                  value: `${i} Apply System`,
+                  description: `Manage/Edit the ${i} Apply Setup`,
+                  emoji: NumberEmojiIds[i]
+                })
               }
-            ]
-            require("fs").readdirSync("./handlers/applies").forEach((file, index) => {
-              menuoptions.push({
-                value: `${index + 5 + 1} Apply System`,
-                description: `Link to the ${index + 5 + 1}. Apply System`,
-                emoji: NumberEmojiIds[index + 5 + 1]
-              })
-            })
-            //define the selection
-            let Selection = new MessageSelectMenu()
+              //define the selection
+              let Selection = new MessageSelectMenu()
               .setCustomId('MenuSelection')
               .setMaxValues(1) //OPTIONAL, this is how many values you can have at each selection
               .setMinValues(1) //OPTIONAL , this is how many values you need to have at each selection
