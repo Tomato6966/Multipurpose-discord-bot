@@ -29,7 +29,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 <details>
   <summary>Click to expand</summary>
 
-   1. Download the [Source Code]()
+   1. Download the [Source Code](https://github.com/Tomato6966/Multipurpose-discord-bot/archive/refs/tags/10.0.1.zip)
      * either by: `git clone https://github.com/Tomato6966/Multipurpose-discord-bot`
      * or by downloading it as a zip from the releases or a branch
   
@@ -52,6 +52,8 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
      * if you are on linux do this: `wget https://github.com/freyacodes/Lavalink/releases/download/3.4/Lavalink.jar` (prep: `apt-get install -y wget`)
   3. Download [application.yml](https://cdn.discordapp.com/attachments/734517910025928765/934084553751015475/application.yml)
      * Download my example, it's the configuration for the lavalink.jar file!
+     * here is a direct link: https://cdn.discordapp.com/attachments/734517910025928765/934084553751015475/application.yml
+     * if you are on linux do this: `wget https://cdn.discordapp.com/attachments/734517910025928765/934084553751015475/application.yml` (prep: `apt-get install -y wget`)
   4. Now put application.yml and Lavalink.jar in the same folder and start it
      * To start lavalink type: `java -jar Lavalink.jar`
      * Make sure to keep your terminal Open!
