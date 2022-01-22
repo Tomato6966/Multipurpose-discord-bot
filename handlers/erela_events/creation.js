@@ -1,5 +1,3 @@
-
-require('dotenv').config();
 var {
     Manager
   } = require("erela.js"),
