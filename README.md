@@ -29,9 +29,9 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 <details>
   <summary>Click to expand</summary>
 
-   1. Download the [Source Code](https://github.com/Tomato6966/Multipurpose-discord-bot/archive/refs/tags/10.0.1.zip)
-     * either by: `git clone https://github.com/Tomato6966/Multipurpose-discord-bot`
-     * or by downloading it as a zip from the releases or a branch
+  1. Download the [Source Code](https://github.com/Tomato6966/Multipurpose-discord-bot/archive/refs/tags/10.0.1.zip)
+    * either by: `git clone https://github.com/Tomato6966/Multipurpose-discord-bot`
+    * or by downloading it as a zip from the releases or a branch
   
 </details>
 
@@ -40,8 +40,8 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 <details>
   <summary>Click to expand</summary>
 
-  *To have your Bot able to play music, you need to connect it to a lavalink Station!*
-  *There are many public ones out there for example lavalink.eu*
+  * To have your Bot able to play music, you need to connect it to a lavalink Station!*
+  * There are many public ones out there for example lavalink.eu*
   An example for a public configuration will be listed down below
    
   1. Make sure `Java 11` is installed on your System!
