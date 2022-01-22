@@ -96,7 +96,7 @@ const client = new Discord.Client({
  * @param {4} Create_the_client.memer property from Tomato's Api 
  *********************************************************/
 const Meme = require("memer-api");
-client.memer = new Meme("7Yj4j3k3K98"); // GET a TOKEN HERE: https://discord.gg/Mc2FudJkgP
+client.memer = new Meme(config.memer_api); // GET a TOKEN HERE: https://discord.gg/Mc2FudJkgP
 
 
 
@@ -163,9 +163,7 @@ function requirehandlers(){
 /**********************************************************
  * @param {9} Login_to_the_Bot
  *********************************************************/
-setTimeout(()=>{
-  client.login(config.token);
-}, 500)
+client.login(config.token);
 
 
 /**********************************************************
