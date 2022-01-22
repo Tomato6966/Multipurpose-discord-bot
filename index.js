@@ -24,31 +24,6 @@ const Discord = require("discord.js");
 const colors = require("colors");
 const enmap = require("enmap"); 
 const fs = require("fs"); 
-//1.1 Validating script
-if(!fs.existsSync("./botconfig/advertisement.json")){
-  const data = {
-    "adenabled": true,
-    "statusad": { "name": "Bero-Host.de | Host Bots, Websites and Games 4 CHEAP", "type": "PLAYING", "url": "https://twitch.tv/#" },
-    "spacedot": "・",
-    "textad": "> ***[Milrato Development](https://discord.gg/milrato) partnered with:***\n> [**Bero-Host.de**](https://bero.milrato.eu)"
-  }
-  fs.writeFileSync("./botconfig/advertisement.json", JSON.stringify(data), err => {
-    if(err){
-      console.log(err)
-      return;
-    }
-  })
-}
-if(!require("./botconfig/config.json").status.text2){
-  let data = require("./botconfig/config.json");
-  data.status.text2 = "By: discord.gg/milrato"
-  fs.writeFileSync("./botconfig/config.json", JSON.stringify(data), err => {
-    if(err){
-      console.log(err)
-      return;
-    }
-  })
-}
 const emojis = require("./botconfig/emojis.json")
 const config = require("./botconfig/config.json")
 const advertisement = require("./botconfig/advertisement.json")
