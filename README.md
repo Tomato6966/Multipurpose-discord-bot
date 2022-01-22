@@ -126,7 +126,9 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
      * `consumer_secret` you can get from: [twitter Developers](https://developer.twitter.com)
      * `access_token` you can get from: [twitter Developers](https://developer.twitter.com)
      * `access_token_secret` you can get from: [twitter Developers](https://developer.twitter.com)
-  
+  4. `./.env`
+     * `token` get it from [Discord Developer Portal](https://discord.dev)
+     * `memer_api` get it from [Meme API DC](https://discord.gg/vVf3X6NCxA)
 </details>
 
 ## 😩 Have Problems while installing?
