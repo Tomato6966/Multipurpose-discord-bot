@@ -134,6 +134,8 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 
 ## Setup-Tutorial Video
 
+> *Don't forget to turn on SOUND*
+
 https://user-images.githubusercontent.com/68145571/150640306-d643f59a-c977-43ae-9aa6-7f3d2ec7f119.mp4
 
 
