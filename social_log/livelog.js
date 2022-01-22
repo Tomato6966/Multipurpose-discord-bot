@@ -5,7 +5,6 @@ const request = require('request'),
  config = require(`../social_log/streamconfig.json`),
  fs = require('fs');
 const { databasing, delay } = require('../handlers/functions');
-require('dotenv').config();
 const moment = require(`moment`)
 module.exports = async client => {
   //function that will run the checks
