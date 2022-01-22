@@ -108,16 +108,16 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 <details>
   <summary>Click to expand</summary>
 
-   1. `./botconfig/config.json`
+  1. `./botconfig/config.json`
      * `token` you can get from: [discord-Developers](https://discord.com/developers/applications)
      * `memer_api` you can get from: [Meme-Development DC](https://discord.gg/Mc2FudJkgP)
      * `spotify.clientSecret` you can get from: [Spotify-Developer](https://developer.spotify.com)
      * `spotify.clientID` you can get from: [Spotify-Developer](https://developer.spotify.com)
-   2. `./social_log/streamconfig.json`
+  2. `./social_log/streamconfig.json`
      * `twitch_clientID` you can get from: [Twitch-Developer](https://dev.twitch.tv/docs/api) ([developer-console](https://dev.twitch.tv/console))
      * `twitch_secret` you can get from: [Twitch-Developer](https://dev.twitch.tv/docs/api) ([developer-console](https://dev.twitch.tv/console))
      * `authToken` is not required to be filled in --> will be done automatically
-   3. `./social_log/twitter.json`
+  3. `./social_log/twitter.json`
      * `consumer_key` you can get from: [twitter Developers](https://developer.twitter.com)
      * `consumer_secret` you can get from: [twitter Developers](https://developer.twitter.com)
      * `access_token` you can get from: [twitter Developers](https://developer.twitter.com)
