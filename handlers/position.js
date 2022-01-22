@@ -1,0 +1,3 @@
+/**
+ * Moved to ./functions.js
+ */
