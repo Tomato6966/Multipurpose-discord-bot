@@ -1,6 +1,9 @@
 //here the event starts
+const { events: { rateLimit } } = require("../../botconfig/settings.json");
 module.exports = (client, rateLimitData) => {
-    console.log(JSON.stringify(rateLimitData).grey)
+    if(rateLimit) {
+        console.log(JSON.stringify(rateLimitData).grey)
+    }
 }
 /**
   * @INFO
