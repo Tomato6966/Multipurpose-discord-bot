@@ -1,6 +1,9 @@
 //here the event starts
+const settings = require("../../botconfig/settings.json");
 module.exports = (client, info) => {
-  console.log(String(info).grey);
+  if(settings.events.debug) {
+    console.log(String(info).grey);
+  }
 }
 /**
   * @INFO
