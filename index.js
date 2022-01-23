@@ -146,7 +146,7 @@ client.login(process.env.token || config.token);
 
 
 if(settings.keepAliveServer) {
-  require("./handlers/")();
+  require("./handlers/keepAlive-Server.js")();
 }
 
 
