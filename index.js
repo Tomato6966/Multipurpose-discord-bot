@@ -29,6 +29,7 @@ const enmap = require("enmap");
 const fs = require("fs"); 
 const emojis = require("./botconfig/emojis.json");
 const config = require("./botconfig/config.json");
+const settings = require("./botconfig/settings.json");
 const advertisement = require("./botconfig/advertisement.json");
 const { delay } = require("./handlers/functions");
 const Meme = require("memer-api");
@@ -142,6 +143,11 @@ function requirehandlers(){
  * @param {9} Login_to_the_Bot
  *********************************************************/
 client.login(process.env.token || config.token);
+
+
+if(settings.keepAliveServer) {
+  require("./handlers/")();
+}
 
 
 /**********************************************************
