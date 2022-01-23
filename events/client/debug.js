@@ -1,7 +1,7 @@
 //here the event starts
-const settings = require("../../botconfig/settings.json");
+const { events: { debug } } = require("../../botconfig/settings.json");
 module.exports = (client, info) => {
-  if(settings.events.debug) {
+  if(debug) {
     console.log(String(info).grey);
   }
 }
