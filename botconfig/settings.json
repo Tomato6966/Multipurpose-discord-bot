@@ -1,3 +1,8 @@
 {
-    "voice_log_console": false
+    "voice_log_console": false,
+    "keepAliveServer": false,
+    "events": {
+        "debug": true,
+        "rateLimit": true
+    }
 }
