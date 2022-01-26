@@ -6,8 +6,8 @@
                 "variable1": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "botfaq": {
-                "notallowed": "<:no:833101993668771842> You are not allowed to do that! Only: <@{cmduserid}> is allowed to do this.",
-                "placeholder": "Make a selection!",
+                "notallowed": "<:no:833101993668771842> You are not allowed to do that! Only: <@{cmduserid}>",
+                "placeholder": "Click me to make a Selection!",
                 "menuembed": {
                     "title": "Bot Help",
                     "description": "***Select what you need in the `Selection` down Below!***"
@@ -21,20 +21,20 @@
                     },
                     {
                         "value": "Stats",
-                        "description": "Those are my stats!",
+                        "description": "See my Statistics!",
                         "replymsg": "**__📈 Stats!__**\n>>> :gear: **{commandcount} Commands**\n:file_folder: on **{guildcount} Guilds**\n⌚️ **{uptime} Uptime**\n📶 **`{ping}ms` Ping**",
                         "emoji": "📈"
                     },
                     {
-                        "value": "How to use me.",
-                        "description": "Let me explain it to you!",
-                        "replymsg": "**__❓ How do you use me?__**\n> My Prefix is: `{prefix}` but you can always **Ping** me instead!\n\n**Just use one of my {commandcount} Commands by typing:**\n> `{prefix}commandname`\n**Example:**\n> `{prefix}help`\n\n__**I have setups, this is how you manage them:**__\n>>> `{prefix}setup` and react with the emoji for the right action,\nbut you can also do `{prefix}setup-system` e.g. `{prefix}setup-welcome`\n\n\n**Very important is this Command:**\n`{prefix}setup-antinuke`, because it protects you from **nukes**!",
+                        "value": "How to use me",
+                        "description": "Let me explain you!",
+                        "replymsg": "**__❓ How do you use me?__**\n> My Prefix is: `{prefix}` but you can always **Ping** me instead!\n\n**Just use one of my {commandcount} Commands by typing:**\n> `{prefix}commandname`\n**Example:**\n> `{prefix}help`\n\n__**I have setups, this is how you manage them:**__\n>>> `{prefix}setup` and react with the Emoji for the right action,\nbut you can also do `{prefix}setup-SYSTEM` e.g. `{prefix}setup-welcome`\n\n\n**Very important is this Command:**\n`{prefix}setup-antinuke`, because it protects you from NUKES!",
                         "emoji": "❓"
                     },
                     {
                         "value": "Sponsor / Support us",
                         "description": "Thanks for everything, you'll get something back!",
-                        "replymsg": "**__There are several **sponsor options**:__**\n\n> <:PAYPAL:861207258846330880> **Paypal:**\n> https://paypal.me/MilratoDevelopment\n\n> <:PATREON:861207934070816849> **Patreon:**\n> https://www.patreon.com/MilratoDevelopment?fan_landing=true\n\n> 💸 **Donate via Paysafe, Sofort or others: (1/2)**\n> https://bero-host.de/spenden/qgswlxrzgtll\n\n> 💸 **Donate via Paysafe, Sofort or others: (2/2)**\n> https://mc-host24.de/donate/tomato\n\n> **Every donator** gets the **@DONATOR Role** on:\n> https://discord.gg/milrato\n\n\n> **Every Donator** with more then **10€** Gets a **Free Bot** of his **Choice*!",
+                        "replymsg": "**__There are several Sponsor Options:__**\n\n> <:PAYPAL:861207258846330880> **Paypal:**\n> https://paypal.me/MilratoDevelopment\n\n> <:PATREON:861207934070816849> **Patreon:**\n> https://www.patreon.com/MilratoDevelopment?fan_landing=true\n\n> 💸 **Donate via Paysafe, Sofort or others: (1/2)**\n> https://bero-host.de/spenden/qgswlxrzgtll\n\n> 💸 **Donate via Paysafe, Sofort or others: (2/2)**\n> https://mc-host24.de/donate/tomato\n\n> **Every donator** gets the **@DONATOR Role** on:\n> https://discord.gg/milrato\n\n\n> **Every Donator** with more then **10€** Gets a **Free Bot** of his **Choice*!",
                         "emoji": "861207258846330880"
                     },
                     {
@@ -44,15 +44,15 @@
                         "emoji": "866089513436315698"
                     },
                     {
-                        "value": "My bot doesnt work",
+                        "value": "My Bot doesnt work",
                         "description": "If your Bot is not working do this:",
-                        "replymsg": "Contact us on Milrato Development <:Discord:787321652345438228> **Discord:** https://discord.gg/milrato and open a Ticket in the Ticket Support channel, located in the **HELP DECK** category after verifying your account!\n\n***If it still responds with messages but doesn't work right, then you can try to do: `{prefix}reloadbot` / `{prefix}cmdreload [CMDNAME]`***\n\nMake sure that I have enough Permissions, as well as that my role is over the other roles!",
+                        "replymsg": "Contact us in Milrato Development <:Discord:787321652345438228> **Discord:** https://discord.gg/milrato and open a Ticket in <#840332764603351101>\n\n***If it still responds with messages but doesn't work right, then you can try to do: `{prefix}reloadbot` / `{prefix}cmdreload [CMDNAME]`***\n\nMake sure that I have enough Permissions, as well as that the highest Role is high enough!",
                         "emoji": "😓"
                     },
                     {
                         "value": "Change the Bot?",
                         "description": "There are several ways to adjust this Bot...",
-                        "replymsg": "If you are the **Owner** or *one* of the Owners of **{clientusertag}**, then those Commands are available for you:\n\n>>> `{prefix}changename` -- https://discord.gg/milrato To change the bot name\n`{prefix}changeavatar` -- To change the bot avatar\n`{prefix}prefix` -- To Change the local bot prefix\n`{prefix}changestatus` -- To Change the Bot Status\n`{prefix}setup-owner` -- To Change the Bot Owners\n`{prefix}setup-advertise` -- To Enable/Disable Our Advertisements. ||It would be very nice of you if you could not deactivate it, though! We earn our money through those advertisements.||\n`{prefix}setup-embed` -- To Change the Embed Design in this server.",
+                        "replymsg": "If you are one of the OWNERs of **{clientusertag}**, then those Commands are available for you:\n\n>>> `{prefix}changename` -- https://discord.gg/milrato To Change the Bot Name\n`{prefix}changeavatar` -- To Change the Bot Avatar\n`{prefix}prefix` -- To Change the Bot Server-Prefix\n`{prefix}changestatus` -- To Change the Bot Status\n`{prefix}setup-owner` -- To Change the Bot Owners\n`{prefix}setup-advertise` -- To Enable/Disable Our ADS\n`{prefix}setup-embed` -- To Change the Embed Design in this SERVER",
                         "emoji": "⚙️"
                     }
                 ],
@@ -104,7 +104,7 @@
                 "variable1": "`\\`\\`\\`${String(e.stack).substr(0, 2000)}\\`\\`\\``"
             },
             "djmode": {
-                "nodjroles": "No Dj Roles, all Users are Djs",
+                "nodjroles": "no Dj Roles, aka all Users are Djs",
                 "description": "If a Command is listed here, and at least one role exists, then it means that you have to have this Role, in order to be able to use these listed Commands!",
                 "field1": "<:arrow:832598861813776394> Dj Only Commands active for:",
                 "field2": "<:arrow:832598861813776394> Dj Roles",
@@ -402,7 +402,7 @@
                 "field6": {
                     "title": "Location"
                 },
-                "title": "Twitter Information about: `{name}`",
+                "title": "Twitterinformation about: `{name}`",
                 "variable1": "`\\`\\`\\`${user.description}\\`\\`\\``",
                 "variable2": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
@@ -5715,9 +5715,9 @@
                 "variable1": "`**${member.guild.name} IS PROTECT BY A CAPTCHA SYSTEM**`",
                 "variable2": "`<@${member.user.id}> please send me (type) the Captcha Code (Text) in the next 30 Seconds, otherwise, you will be not verified and kicked!`",
                 "variable3": "`✅ Successfully verified for: **${member.guild.name}**`",
-                "variable4": "\"Because you failed the Captcha, the Bot kicked you! HERE IS AN INVITE: \" + invite.url).catch(e => console.log(\"prevented bug\"",
-                "variable5": "\"Because you failed the Captcha, the Bot kicked you!\").catch(e => console.log(\"prevented bug\"",
-                "variable6": "`✅ Successfully verified for: **${member.guild.name}**\\n\\nDELETING CHANNEL in 15 SECONDS, *only if no one else joins until then!*`",
+                "variable4": "\"BECAUSE U FAILED THE CAPTCHA, I KICKED U! HERE IS AN INVITE: \" + invite.url).catch(e => console.log(\"prevented bug\"",
+                "variable5": "\"BECAUSE U FAILED THE CAPTCHA, I KICKED U!\").catch(e => console.log(\"prevented bug\"",
+                "variable6": "`✅ Successfully verified for: **${member.guild.name}**\\n\\nDELETING CHANNEL in 15 SECONDS, *only if noone else joins until then!*`",
                 "variable7": "`**Welcome to ${member.guild.name}!**`",
                 "variablex_8": "\"\\u200b\"","variable8": "invitemessage && !invitemessage.includes(undefined) ? invitemessage : \"\\u200b\"",
                 "variable9": "`**Welcome to ${member.guild.name}!**`",
