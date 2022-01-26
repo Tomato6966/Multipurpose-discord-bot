@@ -1,0 +1,3 @@
+/**
+ * MOVED TO .counter.js
+ */
