@@ -20,9 +20,6 @@ module.exports = client => {
      
     client.on(`ready`, () => {
         client.Jobtiktok.start(); //start the JOB
-        setTimeout(()=>{
-            check(client.guilds.cache.get(`773668217163218944`));
-        })
     });
 
     async function check(guild){
