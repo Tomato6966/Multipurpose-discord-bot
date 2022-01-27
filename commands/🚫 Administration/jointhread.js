@@ -44,6 +44,12 @@ module.exports = {
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable3"]))
         ]});
       let channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0]);
+      if(!channel)
+        return message.reply({embeds :[new MessageEmbed()
+          .setColor(es.wrongcolor)
+          .setFooter(client.getFooter(es))
+          .setTitle(`<:no:833101993668771842> **You forgot to ping a CHANNEL**`)
+        ]});
       if(!channel.isThread())
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
