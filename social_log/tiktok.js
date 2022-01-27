@@ -23,7 +23,7 @@ module.exports = client => {
     });
 
     async function check(guild){
-        return console.log(` [TIKTOK] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} :: Currently Disabled the TIKTOK Logger`.italic.brightMagenta)
+        return console.log(` [TIKTOK] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} :: Currently Disabled the TIKTOK Logger`.italic.brightMagenta)
         console.log(` [TIKTOK] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} :: Checking Accounts...`.italic.brightMagenta)
 
         try {
