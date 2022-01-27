@@ -1,10 +1,10 @@
 {
-   "token": "",
-   "prefix": "t!",
+   "token": "", //get this from https://discord.com/developers/applications
+   "prefix": "",//prefix for bot here
    "ownerIDS": [
-      "442355791412854784"
+      "" //put your discord id here
    ],
-   "memer_api": "get it from: https://discord.gg/Mc2FudJkgP",
+   "memer_api": "", //get this from: https://discord.gg/Mc2FudJkgP
    "status": {
       "text": "{prefix}help | milrato.eu",
       "text2": "by: discord.gg/milrato",
@@ -14,14 +14,14 @@
    "clientsettings": {
       "nodes": [
          {
-            "host": "localhost",
+            "host": "localhost", //change this if you are not hosting lavalink locally 
             "port": 2333,
             "password": "youshallnotpass"
          }
       ]
    },
    "spotify": {
-      "clientSecret": "",
+      "clientSecret": "", // get this from https://developer.spotify.com
       "clientID": ""
    },
    "settings": {
@@ -33,6 +33,6 @@
          "enabled": true,
          "time_delay": 30000
       },
-      "selfDeaf": true
+      "selfDeaf": true 
    }
 }
