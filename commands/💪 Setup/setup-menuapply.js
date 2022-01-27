@@ -27,7 +27,8 @@ module.exports = {
     let es = client.settings.get(message.guild.id, "embed");
     let ls = client.settings.get(message.guild.id, "language")
     try {
-      var theDB = client.menuapply1;
+      var theDB = client.menuapply;
+      let pre;
       //setup-menuapply
       let NumberEmojiIds = getNumberEmojis().map(emoji => emoji?.replace(">", "").split(":")[2])
       let NumberEmojis = getNumberEmojis().map(emoji => emoji?.replace(">", "").split(":")[2])
@@ -135,7 +136,8 @@ module.exports = {
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
             menu?.deferUpdate();
             let SetupNumber = menu?.values[0].split(".")[0];
-            theDB = client[`menuapply${SetupNumber}`]; //change to the right database
+            pre = `menuapply${SetupNumber}` 
+            theDB = client.menuapply; //change to the right database
             second_layer()
           } else menu?.reply({
             content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
@@ -165,7 +167,7 @@ module.exports = {
               }
             */
           ]
-        });
+        },pre);
         let menuoptions = [{
             value: "Send the Config	Message",
             description: `(Re) Send the Menu Apply Message`,
@@ -239,8 +241,8 @@ module.exports = {
       async function handle_the_picks(optionhandletype, menuoptiondata) {
         switch (optionhandletype) {
           case "Send the Config	Message": {
-            let data = theDB.get(message.guild.id, "data");
-            let settings = theDB.get(message.guild.id);
+            let data = theDB.get(message.guild.id, pre+".data");
+            let settings = theDB.get(message.guild.id, pre);
             if (!data || data.length < 1) {
               return message.reply("<:no:833101993668771842> **You need to add at least 1 Open-Apply-Option**")
             }
@@ -274,7 +276,7 @@ module.exports = {
                 time: 90000, errors: ["time"]
               });
               if (collected2 && collected2.first().mentions.channels.size > 0) {
-                let data = theDB.get(message.guild.id, "data");
+                let data = theDB.get(message.guild.id, pre+".data");
                 let channel = collected2.first().mentions.channels.first();
                 let msgContent = collected.first().content;
                 let embed = new MessageEmbed()
@@ -323,13 +325,13 @@ module.exports = {
                     embeds: [embed],
                     components: [new MessageActionRow().addComponents([Selection])]
                   }).then(msg => {
-                    theDB.set(message.guild.id, msg.id, "messageId");
-                    theDB.set(message.guild.id, channel.id, "channelId");
+                    theDB.set(message.guild.id, msg.id, pre+".messageId");
+                    theDB.set(message.guild.id, channel.id, pre+".channelId");
                     message.reply(`Successfully Setupped the Menu-Apply in <#${channel.id}>`)
                   });
                 }).then(msg => {
-                  theDB.set(message.guild.id, msg.id, "messageId");
-                  theDB.set(message.guild.id, channel.id, "channelId");
+                  theDB.set(message.guild.id, msg.id, pre+".messageId");
+                  theDB.set(message.guild.id, channel.id, pre+".channelId");
                   message.reply(`Successfully Setupped the Menu-Apply in <#${channel.id}>`)
                 });
               } else {
@@ -341,7 +343,7 @@ module.exports = {
           }
           break;
           case "Add Apply Option": {
-            let data = theDB.get(message.guild.id, "data");
+            let data = theDB.get(message.guild.id, pre+".data");
             if (data.length >= 25) {
               return message.reply("<:no:833101993668771842> **You reached the limit of 25 different Options!** Remove another Option first!")
             }
@@ -470,8 +472,9 @@ module.exports = {
                       return message.reply("<:no:833101993668771842> **Options can't start the Same Apply System!** There is already an Option with that Application System!");
                   }
                   
-                  var apply_for_here = client[`apply${applySystemExecution == 1 ? "" : applySystemExecution }`]
-                  if(!apply_for_here.has(message.guild.id) || !apply_for_here.has(message.guild.id, "QUESTIONS") || apply_for_here.get(message.guild.id, "QUESTIONS").length < 1) 
+                  let applypre = `apply${applySystemExecution}`
+                  var apply_for_here = client.apply
+                  if(!apply_for_here.has(message.guild.id) || !apply_for_here.has(message.guild.id, applypre) || !apply_for_here.has(message.guild.id, applypre+".QUESTIONS") || apply_for_here.get(message.guild.id, applypre+".QUESTIONS").length < 1) 
                     return message.reply(`<:no:833101993668771842> **The ${applySystemExecution}. Apply System is not setupped / has no Questions, create it first with: \`${prefix}setup-apply\`**`)
                   
                   var rermbed = new MessageEmbed()
@@ -528,7 +531,7 @@ module.exports = {
                       description,
                       applySystemExecution,
                       emoji
-                    }, "data");
+                    }, pre+".data");
                     message.reply({
                       embeds: [
                         new MessageEmbed()
@@ -551,7 +554,7 @@ module.exports = {
           }
           break;
           case "Remove Apply Option": {
-          let data = theDB.get(message.guild.id, "data");
+          let data = theDB.get(message.guild.id, pre+".data");
           if (!data || data.length < 1) {
             return message.reply("<:no:833101993668771842> **There are no Open-Apply-Options to remove**")
           }
@@ -616,7 +619,7 @@ module.exports = {
                 let index = data.findIndex(v => v.value == value);
                 data.splice(index, 1)
               }
-              theDB.set(message.guild.id, data, "data");
+              theDB.set(message.guild.id, data, pre+".data");
               message.reply(`**Successfully removed:**\n>>> ${menu?.values.map(i => `\`${i}\``).join(", ")}\n\nDon't forget to resend the Apply Config-Message!`)
             } else menu?.reply({
               content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,

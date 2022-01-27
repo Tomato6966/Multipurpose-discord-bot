@@ -27,8 +27,8 @@ module.exports = {
     let es = client.settings.get(message.guild.id, "embed");
     let ls = client.settings.get(message.guild.id, "language")
     try {
-      var theDB = client.menuticket1;
-
+      var theDB = client.menuticket;
+      var pre;
 
       let NumberEmojiIds = getNumberEmojis().map(emoji => emoji?.replace(">", "").split(":")[2])
       let NumberEmojis = getNumberEmojis();
@@ -137,7 +137,8 @@ module.exports = {
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
             menu?.deferUpdate();
             let SetupNumber = menu?.values[0].split(".")[0];
-            theDB = client[`menuticket${SetupNumber}`]; //change to the right database
+            pre = `menuticket${SetupNumber}`;
+            theDB = client.menuticket; //change to the right database
             second_layer(SetupNumber)
           } else menu?.reply({
             content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
@@ -174,7 +175,7 @@ module.exports = {
               }
             */
           ]
-        });
+        }, pre);
         let menuoptions = [{
             value: "Send the Config	Message",
             description: `(Re) Send the Open a Ticket Message (with MENU)`,
@@ -275,7 +276,7 @@ module.exports = {
                 messageClaim: "{claimer} **has claimed the Ticket!**\n> He will now give {user} support!"
               }
             */
-            let claimData = theDB.get(message.guild.id, `claim`);
+            let claimData = theDB.get(message.guild.id, `${pre}.claim`);
             third_layer(SetupNumber)
             async function third_layer(SetupNumber) {
               let menuoptions = [{
@@ -363,8 +364,8 @@ module.exports = {
 
               switch (optionhandletype) {
                 case `${claimData.enabled ? "Disable Claim System": "Enable Claim System"}`:{
-                  theDB.set(message.guild.id, !claimData.enabled, `claim.enabled`);
-                  claimData = theDB.get(message.guild.id, `theDBclaim`);
+                  theDB.set(message.guild.id, !claimData.enabled, `${pre}.claim.enabled`);
+                  claimData = theDB.get(message.guild.id, `${pre}.claim`);
                   return message.reply({embeds: [
                     new MessageEmbed().setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
                     .setFooter(client.getFooter(es))
@@ -387,7 +388,7 @@ module.exports = {
                       time: 30000,
                       errors: ['time']
                     }).then(collected => {
-                      theDB.set(message.guild.id, collected.first().content, `claim.messageOpen`);
+                      theDB.set(message.guild.id, collected.first().content, `${pre}.claim.messageOpen`);
                       message.reply(`Successfully set the New Message!`)
                     }).catch(error => {
                       return message.reply({
@@ -416,7 +417,7 @@ module.exports = {
                       time: 30000,
                       errors: ['time']
                     }).then(collected => {
-                      theDB.set(message.guild.id, collected.first().content, `claim.messageClaim`);
+                      theDB.set(message.guild.id, collected.first().content, `${pre}.claim.messageClaim`);
                       message.reply(`Successfully set the New Message!`)
                     }).catch(error => {
                       return message.reply({
@@ -435,8 +436,8 @@ module.exports = {
           }break;
           case "Send the Config	Message": {
             await message.guild.emojis.fetch().catch(() => {});
-            let data = theDB.get(message.guild.id, "data");
-            let settings = theDB.get(message.guild.id);
+            let data = theDB.get(message.guild.id, pre+".data");
+            let settings = theDB.get(message.guild.id, pre);
             if (!data || data.length < 1) {
               return message.reply("<:no:833101993668771842> **You need to add at least 1 Open-Ticket-Option**")
             }
@@ -470,7 +471,7 @@ module.exports = {
                 time: 90000, errors: ["time"]
               });
               if (collected2 && (collected2.first().mentions.channels.size > 0 || message.guild.channels.cache.get(collected2.first().content?.trim()))) {
-                let data = theDB.get(message.guild.id, "data"); 
+                let data = theDB.get(message.guild.id, pre+".data"); 
                 let channel = collected2.first().mentions.channels.first() || message.guild.channels.cache.get(collected2.first().content?.trim());
                 let msgContent = collected.first().content;
                 let embed = new MessageEmbed()
@@ -521,13 +522,13 @@ module.exports = {
                     }).catch((e) => {
                      console.warn(e)  
                     }).then(msg => {
-                      theDB.set(message.guild.id, msg.id, "messageId");
-                      theDB.set(message.guild.id, channel.id, "channelId");
+                      theDB.set(message.guild.id, msg.id, pre+".messageId");
+                      theDB.set(message.guild.id, channel.id, pre+".channelId");
                       message.reply(`Successfully Setupped the Menu-Ticket in <#${channel.id}>`)
                     });
                 }).then(msg => {
-                  theDB.set(message.guild.id, msg.id, "messageId");
-                  theDB.set(message.guild.id, channel.id, "channelId");
+                  theDB.set(message.guild.id, msg.id, pre+".messageId");
+                  theDB.set(message.guild.id, channel.id, pre+".channelId");
                   message.reply(`Successfully Setupped the Menu-Ticket in <#${channel.id}>`)
                 });
               } else {
@@ -539,7 +540,7 @@ module.exports = {
           }
           break;
           case "Add Ticket Option": {
-            let data = theDB.get(message.guild.id, "data");
+            let data = theDB.get(message.guild.id, pre+".data");
             if (data.length >= 25) {
               return message.reply("<:no:833101993668771842> **You reached the limit of 25 different Options!** Remove another Option first!")
             }
@@ -679,7 +680,7 @@ module.exports = {
                         defaultname,
                         replyMsg,
                         emoji
-                      }, "data");
+                      }, pre+".data");
                       message.reply({
                         embeds: [
                           new MessageEmbed()
@@ -715,7 +716,7 @@ module.exports = {
           case "Edit Ticket Option": {
 
 
-            let data = theDB.get(message.guild.id, "data");
+            let data = theDB.get(message.guild.id, pre+".data");
             if (!data || data.length < 1) {
               return message.reply("<:no:833101993668771842> **There are no Open-Ticket-Options to remove**")
             }
@@ -1019,7 +1020,7 @@ module.exports = {
                   }
                 }
                 function finished() {
-                  theDB.set(message.guild.id, data, "data");
+                  theDB.set(message.guild.id, data, pre+".data");
                   let {
                     value,
                     description,
@@ -1064,7 +1065,7 @@ module.exports = {
           }
           break;
           case "Remove Ticket Option": {
-          let data = theDB.get(message.guild.id, "data");
+          let data = theDB.get(message.guild.id, pre+".data");
           if (!data || data.length < 1) {
             return message.reply("<:no:833101993668771842> **There are no Open-Ticket-Options to remove**")
           }
@@ -1132,7 +1133,7 @@ module.exports = {
                 let index = data.findIndex(v => v.value == value);
                 data.splice(index, 1)
               }
-              theDB.set(message.guild.id, data, "data");
+              theDB.set(message.guild.id, data, pre+".data");
               message.reply(`**Successfully removed:**\n>>> ${menu?.values.map(i => `\`${i}\``).join(", ")}\n\nDon't forget to resend the Ticket Config-Message!`)
             } else menu?.reply({
               content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
@@ -1150,7 +1151,7 @@ module.exports = {
         }
         break;
           case "Closed Ticket Category": {
-            let parentId = theDB.get(message.guild.id, `closedParent`);
+            let parentId = theDB.get(message.guild.id, `${pre}.closedParent`);
             let parent = parentId ? message.guild.channels.cache.get(parentId) : null;
             var rembed = new MessageEmbed()
               .setColor(es.color)
@@ -1177,7 +1178,7 @@ module.exports = {
                 if(parent.type !== "GUILD_CATEGORY"){
                   return message.reply(`<#${parent.id}> is not a CATEGORY/PARENT`);
                 }
-                theDB.set(message.guild.id, parent.id, `closedParent`);
+                theDB.set(message.guild.id, parent.id, `${pre}.closedParent`);
                 message.reply(`I will now move closed Tickets to ${parent.name} (${parent.id})`);
               }).catch(error => {
                 return message.reply({
@@ -1209,7 +1210,7 @@ module.exports = {
             });
             if (collected && (collected.first().mentions.roles.size > 0 || collected.first().mentions.users.size > 0)) {
               let { users, roles } = collected.first().mentions;
-              let settings = theDB.get(message.guild.id);
+              let settings = theDB.get(message.guild.id, pre);
               let toadd = [];
               let toremove = [];
               for(const role of roles.map(r => r.id)){
@@ -1227,10 +1228,10 @@ module.exports = {
                 }
               }
               for(const add of toadd) {
-                theDB.push(message.guild.id, add, "access");
+                theDB.push(message.guild.id, add, pre+".access");
               }
               for(const remove of toremove) {
-                theDB.remove(message.guild.id, remove, "access");
+                theDB.remove(message.guild.id, remove, pre+".access");
               }
               message.reply(`👍 Successfully added \`${toadd.length} Users/Roles\` and removed \`${toremove.length} Users/Roles\`\n> They are now always able to see, write and manage stuff in the TICKETS ment for them!`)
             } else {

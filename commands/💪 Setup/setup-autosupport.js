@@ -27,7 +27,8 @@ module.exports = {
     let es = client.settings.get(message.guild.id, "embed");
     let ls = client.settings.get(message.guild.id, "language")
     try {
-      let theDB = client.autosupport1;
+      let theDB = client.autosupport;
+      let pre;
       
       let NumberEmojiIds = getNumberEmojis().map(emoji => emoji?.replace(">", "").split(":")[2])
       let NumberEmojis = getNumberEmojis().map(emoji => emoji?.replace(">", "").split(":")[2])
@@ -135,7 +136,8 @@ module.exports = {
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
             menu?.deferUpdate();
             let SetupNumber = menu?.values[0].split(".")[0];
-            theDB = client[`autosupport${SetupNumber}`]; //change to the right database
+            pre = `autosupport${SetupNumber}`;
+            theDB = client.autosupport; //change to the right database
             second_layer()
           } else menu?.reply({
             content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
@@ -167,7 +169,7 @@ module.exports = {
               }
             */
           ]
-        });
+        }, pre);
         let menuoptions = [{
             value: "Send the Config	Message",
             description: `(Re) Send the auto-responding Support Message (with MENU)`,
@@ -238,15 +240,15 @@ module.exports = {
           menumsg.edit({
             embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
             components: [],
-            content: `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**`
+            content: `<a:yes:833101995723194437> **Selected: \`${collected && collected.first() && collected.first().values.length > 0 ? collected.first().values[0] : "Nothing"}\`**`
           })
         });
       }
       async function handle_the_picks(optionhandletype, menuoptiondata) {
         switch (optionhandletype) {
           case "Send the Config	Message": {
-            let data = theDB.get(message.guild.id, "data");
-            let settings = theDB.get(message.guild.id);
+            let data = theDB.get(message.guild.id, pre+".data");
+            let settings = theDB.get(message.guild.id, pre);
             if (!data || data.length < 1) {
               return message.reply("<:no:833101993668771842> **You need to add at least 1 Auto-Support-Option**")
             }
@@ -280,7 +282,7 @@ module.exports = {
                 time: 90000, errors: ["time"]
               });
               if (collected2 && collected2.first().mentions.channels.size > 0) {
-                let data = theDB.get(message.guild.id, "data");
+                let data = theDB.get(message.guild.id, pre+".data");
                 let channel = collected2.first().mentions.channels.first();
                 let msgContent = collected.first().content;
                 let embed = new MessageEmbed()
@@ -328,13 +330,13 @@ module.exports = {
                       embeds: [embed],
                       components: [new MessageActionRow().addComponents([Selection])]
                     }).catch(() => {}).then(msg => {
-                      theDB.set(message.guild.id, msg.id, "messageId");
-                      theDB.set(message.guild.id, channel.id, "channelId");
+                      theDB.set(message.guild.id, msg.id, pre+".messageId");
+                      theDB.set(message.guild.id, channel.id, pre+".channelId");
                       message.reply(`Successfully Setupped the Auto-Support-System in <#${channel.id}>`)
                     });
                 }).then(msg => {
-                  theDB.set(message.guild.id, msg.id, "messageId");
-                  theDB.set(message.guild.id, channel.id, "channelId");
+                  theDB.set(message.guild.id, msg.id, pre+".messageId");
+                  theDB.set(message.guild.id, channel.id, pre+".channelId");
                   message.reply(`Successfully Setupped the Auto-Support-System in <#${channel.id}>`)
                 });
               } else {
@@ -346,7 +348,7 @@ module.exports = {
           }
           break;
           case "Add AutoSup Option": {
-            let data = theDB.get(message.guild.id, "data");
+            let data = theDB.get(message.guild.id, pre+".data");
             if (data.length >= 25) {
               return message.reply("<:no:833101993668771842> **You reached the limit of 25 different Options!** Remove another Option first!")
             }
@@ -468,7 +470,7 @@ module.exports = {
                       sendEmbed,
                       replyMsg,
                       emoji
-                    }, "data");
+                    }, pre+".data");
                     message.reply({
                       embeds: [
                         new MessageEmbed()
@@ -498,7 +500,7 @@ module.exports = {
           }
           break;
           case "Edit AutoSup Option": {
-            let data = theDB.get(message.guild.id, "data");
+            let data = theDB.get(message.guild.id, pre+".data");
             if (!data || data.length < 1) {
               return message.reply("<:no:833101993668771842> **There are no Open-Ticket-Options to edit**")
             }
@@ -680,7 +682,7 @@ module.exports = {
                           replyMsg,
                           emoji
                         };
-                        theDB.set(message.guild.id, data, "data");
+                        theDB.set(message.guild.id, data, pre+".data");
                         message.reply(`**Successfully edited:**\n>>> ${menu?.values.map(i => `\`${i}\``).join(", ")}\n\nDon't forget to resend the Auto Support Config-Message!`)
                       }
                       
@@ -716,7 +718,7 @@ module.exports = {
           }
           break;
           case "Remove AutoSup Option": {
-          let data = theDB.get(message.guild.id, "data");
+          let data = theDB.get(message.guild.id, pre+".data");
           if (!data || data.length < 1) {
             return message.reply("<:no:833101993668771842> **There are no Auto-Responding-Support-Options to remove**")
           }
@@ -781,7 +783,7 @@ module.exports = {
                 let index = data.findIndex(v => v.value == value);
                 data.splice(index, 1)
               }
-              theDB.set(message.guild.id, data, "data");
+              theDB.set(message.guild.id, data, pre+".data");
               message.reply(`**Successfully removed:**\n>>> ${menu?.values.map(i => `\`${i}\``).join(", ")}\n\nDon't forget to resend the Auto Support Config-Message!`)
             } else menu?.reply({
               content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,

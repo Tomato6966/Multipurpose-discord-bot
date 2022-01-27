@@ -139,12 +139,13 @@ module.exports = {
       }
       async function second_layer(SetupNumber, menuoptiondata)
       {
-        let thedb = client[`jtcsettings${SetupNumber && SetupNumber != 1 ? SetupNumber : ""}`];
+        var pre = `jtcsettings${SetupNumber}`
+        let thedb = client.jtcsettings;
         thedb?.ensure(message.guild.id, {
           channel: "",
           channelname: "{user}' Lounge",
           guild: message.guild.id,
-        });
+        }, pre);
         let menuoptions = [
           {
             value: "Create Channel Setup",
@@ -195,7 +196,7 @@ module.exports = {
         function menuselection(menu) {
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable5"]))
           menu?.deferUpdate();
-          handle_the_picks(menu?.values[0], SetupNumber, thedb)
+          handle_the_picks(menu?.values[0], SetupNumber, thedb, pre)
         }
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
@@ -216,7 +217,7 @@ module.exports = {
           menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
-      async function handle_the_picks(optionhandletype, SetupNumber, thedb){
+      async function handle_the_picks(optionhandletype, SetupNumber, thedb, pre){
         switch (optionhandletype) {
           case "Create Channel Setup": {
             var maxbitrate = 96000;
@@ -243,7 +244,7 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-jtc"]["variable7"]))
               .setFooter(client.getFooter(es))
               ]});
-              thedb?.set(message.guild.id, vc.id, `channel`);
+              thedb?.set(message.guild.id, vc.id, `${pre}.channel`);
             })
           } break;
           case "Use Current Channel": {
@@ -262,7 +263,7 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-jtc"]["variable11"]))
                 .setFooter(client.getFooter(es))
               ]});
-              thedb?.set(message.guild.id, channel.id, `channel`);
+              thedb?.set(message.guild.id, channel.id, `${pre}.channel`);
           } break;
           case "Change the Temp Names": {
             var tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
@@ -277,11 +278,11 @@ module.exports = {
                 errors: ["time"]
               })
               .then(collected => {
-                thedb?.set(message.guild.id, `${collected.first().content}`.substring(0, 32), "channelname");
+                thedb?.set(message.guild.id, `${collected.first().content}`.substring(0, 32), pre+".channelname");
                 message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-jtc"]["variable14"]))
                   .setColor(es.color)
-                  .setDescription(`**New Channel Name:**\n> \`${thedb?.get(message.guild.id, "channelname")}\`\n\n**What it could look like:**\n> \`${thedb?.get(message.guild.id, "channelname").replace("{user}", `${message.author.username}`)}\``)
+                  .setDescription(`**New Channel Name:**\n> \`${thedb?.get(message.guild.id, pre+".channelname")}\`\n\n**What it could look like:**\n> \`${thedb?.get(message.guild.id, pre+".channelname").replace("{user}", `${message.author.username}`)}\``)
                   .setFooter(client.getFooter(es))
                 ]});
               })
