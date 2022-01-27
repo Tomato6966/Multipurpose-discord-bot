@@ -38,8 +38,9 @@ module.exports = function (client) {
       let index = false;
       if (!index) {
         for (let i = 1; i <= maxJoinToCreate; i++) {
-          const d = client[`jtcsettings${i && i != 1 ? i : ""}`]
-          if (d?.has(newState.guild.id) && d?.get(newState.guild.id, "channel").includes(newState.channelId)) index = i;
+          const d = client.jtcsettings
+          var pre = `jtcsettings${i}`;
+          if (d?.has(newState.guild.id) && d?.has(newState.guild.id, pre) && d?.get(newState.guild.id, pre+".channel").includes(newState.channelId)) index = i;
         }
       }
       if (!index) {
@@ -98,8 +99,9 @@ module.exports = function (client) {
         let index = false;
         if (!index) {
           for (let i = 1; i <= maxJoinToCreate; i++) {
-            const d = client[`jtcsettings${i && i != 1 ? i : ""}`]
-            if (d?.has(newState.guild.id) && d?.get(newState.guild.id, "channel").includes(newState.channelId)) index = i;
+            const d = client.jtcsettings
+            var pre = `jtcsettings${i}`;
+            if (d?.has(newState.guild.id) && d?.has(newState.guild.id, pre) && d?.get(newState.guild.id, pre+".channel").includes(newState.channelId)) index = i;
           }
         }
         if (index) {

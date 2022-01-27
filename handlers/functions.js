@@ -260,12 +260,12 @@ function GetGlobalUser(message, arg){
  * @param {*} the_roster_db | the Database of the Roster
  * @returns true / false + edits the message
  */
-async function edit_Roster_msg(client, guild, the_roster_db) {
+async function edit_Roster_msg(client, guild, the_roster_db, pre) {
   try{
     //fetch all guild members
     await guild.members.fetch().catch(() => {});
     //get the roster data
-    var data = the_roster_db?.get(guild.id)
+    var data = the_roster_db?.get(guild.id, pre)
     //get the EMBED SETTINGS
     let es = client.settings.get(guild.id, "embed")
     let ls = client.settings.get(guild.id, "language")
@@ -317,21 +317,21 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
       //try to send the roster with the right style..
       if (data.rosterstyle == "1") {
         //define the memberarray
-        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, "rosteremoji")} <@${member.user.id}> | \`${member.user.tag}\``)
+        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, pre+".rosteremoji")} <@${member.user.id}> | \`${member.user.tag}\``)
         //loopthrough the array for 20 members / page
         for (let i = 0; i < memberarray.length; i += 20) {
           var thearray = memberarray;
           if (rosterembed.length > 5000) break;
-          if (!the_roster_db?.get(guild.id, "showallroles") || memberarray.length < 20)
+          if (!the_roster_db?.get(guild.id, pre+".showallroles") || memberarray.length < 20)
             try { 
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024) + `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, "rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024) + `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, pre+".rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, pre+".inline"))
             } catch (e) {
               console.error(e)
             }
@@ -339,28 +339,28 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
         //if there are no members who have this role, do this
         if(memberarray.length === 0){
           try {
-            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
           } catch (e) {
             console.error(e)
           }
         }
       } else if (data.rosterstyle == "2") {
         //define the memberarray
-        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, "rosteremoji")} <@${member.user.id}>`)
+        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, pre+".rosteremoji")} <@${member.user.id}>`)
         //loopthrough the array for 20 members / page
         for (let i = 0; i < memberarray.length; i += 20) {
           var thearray = memberarray;
           if (rosterembed.length > 5000) break;
-          if (!the_roster_db?.get(guild.id, "showallroles") || memberarray.length < 20)
+          if (!the_roster_db?.get(guild.id, pre+".showallroles") || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, "rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, pre+".rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, pre+".inline"))
             } catch (e) {
               console.error(e)
             }
@@ -368,28 +368,28 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
         //if there are no members who have this role, do this
         if(memberarray.length === 0){
           try {
-            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
           } catch (e) {
             console.error(e)
           }
         }
       } else if (data.rosterstyle == "3") {
         //define the memberarray
-        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, "rosteremoji")} **${member.user.tag}**`)
+        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, pre+".rosteremoji")} **${member.user.tag}**`)
         //loopthrough the array for 20 members / page
         for (let i = 0; i < memberarray.length; i += 20) {
           var thearray = memberarray;
           if (rosterembed.length > 5000) break;
-          if (!the_roster_db?.get(guild.id, "showallroles") || memberarray.length < 20)
+          if (!the_roster_db?.get(guild.id, pre+".showallroles") || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, "rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, pre+".rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, pre+".inline"))
             } catch (e) {
               console.error(e)
             }
@@ -397,7 +397,7 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
         //if there are no members who have this role, do this   
         if(memberarray.length === 0){
           try {
-            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
           } catch (e) {
             console.error(e)
           }
@@ -414,21 +414,21 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
         
       } else if (data.rosterstyle == "4") {
         //define the memberarray
-        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, "rosteremoji")} **${member.user.username}**`)
+        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, pre+".rosteremoji")} **${member.user.username}**`)
         //loopthrough the array for 20 members / page
         for (let i = 0; i < memberarray.length; i += 20) {
           var thearray = memberarray;
           if (rosterembed.length > 5000) break;
-          if (!the_roster_db?.get(guild.id, "showallroles") || memberarray.length < 20)
+          if (!the_roster_db?.get(guild.id, pre+".showallroles") || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, "rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, pre+".rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, pre+".inline"))
             } catch (e) {
               console.error(e)
             }
@@ -436,27 +436,27 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
         //if there are no members who have this role, do this
         if(memberarray.length === 0){
           try {
-            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
           } catch (e) {
             console.error(e)
           }
         }
       } else if (data.rosterstyle == "5") {
         //define the memberarray
-        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, "rosteremoji")} <@${member.user.id}> | \`${member.user.id}\``)
+        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, pre+".rosteremoji")} <@${member.user.id}> | \`${member.user.id}\``)
         //loopthrough the array for 20 members / page
         for (let i = 0; i < memberarray.length; i += 20) {
           var thearray = memberarray;
           if (rosterembed.length > 5000) break;
-          if (!the_roster_db?.get(guild.id, "showallroles") || memberarray.length < 20)
+          if (!the_roster_db?.get(guild.id, pre+".showallroles") || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, "rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, pre+".rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, pre+".inline"))
             } catch (e) {
               console.error(e)
             }
@@ -464,7 +464,7 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
         //if there are no members who have this role, do this
         if(memberarray.length === 0){
           try {
-            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
             break;
           } catch (e) {
             console.error(e)
@@ -472,23 +472,23 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
         }
       } else if (data.rosterstyle == "6") {
         //define the memberarray
-        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, "rosteremoji")} <@${member.user.id}> | **${member.user.username}**`)
+        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, pre+".rosteremoji")} <@${member.user.id}> | **${member.user.username}**`)
         //loopthrough the array for 20 members / page
         for (let i = 0; i < memberarray.length; i += 20) {
 
           var thearray = memberarray;
           if (rosterembed.length > 5000) break;
           if (!thearray) return;
-          if (!the_roster_db?.get(guild.id, "showallroles") || memberarray.length < 20)
+          if (!the_roster_db?.get(guild.id, pre+".showallroles") || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, "rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, pre+".rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, pre+".inline"))
             } catch (e) {
               console.error(e)
             }
@@ -496,28 +496,28 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
         //if there are no members who have this role, do this
         if(memberarray.length === 0){
           try {
-            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
           } catch (e) {
             console.error(e)
           }
         }
       } else if (data.rosterstyle == "7") {
         //define the memberarray
-        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, "rosteremoji")} <@${member.user.id}> | **${member.user.tag}**`)
+        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, pre+".rosteremoji")} <@${member.user.id}> | **${member.user.tag}**`)
         //loopthrough the array for 20 members / page
         for (let i = 0; i < memberarray.length; i += 20) {
           var thearray = memberarray;
           if (rosterembed.length > 5000) break;
-          if (!the_roster_db?.get(guild.id, "showallroles") || memberarray.length < 20)
+          if (!the_roster_db?.get(guild.id, pre+".showallroles") || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, "rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, pre+".rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, pre+".inline"))
             } catch (e) {
               console.error(e)
             }
@@ -525,7 +525,7 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
         //if there are no members who have this role, do this
         if(memberarray.length === 0){
           try {
-            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
 
           } catch (e) {
             console.error(e)
@@ -533,7 +533,7 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
         }
       } else {
         //define the memberarray
-        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, "rosteremoji")} <@${member.user.id}> | \`${member.user.tag}\``)
+        let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, pre+".rosteremoji")} <@${member.user.id}> | \`${member.user.tag}\``)
         //loopthrough the array for 20 members / page
         for (let i = 0; i < memberarray.length; i += 20) {
           var thearray = memberarray;
@@ -542,16 +542,16 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
             totalbreak = true;
             break;
           }
-          if (!the_roster_db?.get(guild.id, "showallroles") || memberarray.length < 20)
+          if (!the_roster_db?.get(guild.id, pre+".showallroles") || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, "rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, pre+".rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, "inline"))
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, pre+".inline"))
             } catch (e) {
               console.error(e)
             }
@@ -559,7 +559,7 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
         //if there are no members who have this role, do this
         if(memberarray.length === 0){
           try {
-            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+            rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
           } catch (e) {
             console.error(e)
           }
@@ -576,23 +576,25 @@ async function edit_Roster_msg(client, guild, the_roster_db) {
     console.log("ROSTER_COULD NOT FIND THE MESSAGE".grey, e)
   }
 }
-async function send_roster_msg(client, guild, the_roster_db) {
+async function send_roster_msg(client, guild, the_roster_db, pre) {
   //ensure the database
-  dbEnsure(the_roster_db, guild.id, {
+  const obj = { };
+  obj[pre] = {
     rosterchannel: "notvalid", showallroles: false, rostermessage: "", rostertitle: "Roster",
     rosteremoji: "➤", rosterstyle: "1", rosterroles: [], inline: false,
-  })
+  }
+  dbEnsure(the_roster_db, guild.id, obj)
   let es = client.settings.get(guild.id, "embed")
   let ls = client.settings.get(guild.id, "language")
-  if (the_roster_db?.get(guild.id, "rosterchannel") == "notvalid") return;
-  let channel = await client.channels.fetch(the_roster_db?.get(guild.id, "rosterchannel")).catch(() => {});
+  if (the_roster_db?.get(guild.id, pre+".rosterchannel") == "notvalid") return;
+  let channel = await client.channels.fetch(the_roster_db?.get(guild.id, pre+".rosterchannel")).catch(() => {});
   //define the embed
   let rosterembed = new Discord.MessageEmbed()
     .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-    .setTitle(String(the_roster_db?.get(guild.id, "rostertitle")).substring(0, 256))
+    .setTitle(String(the_roster_db?.get(guild.id, pre+".rostertitle")).substring(0, 256))
     .setFooter(client.getFooter(es))
   //get rosterole and loop through every single role
-  let rosterroles = the_roster_db?.get(guild.id, "rosterroles");
+  let rosterroles = the_roster_db?.get(guild.id, pre+".rosterroles");
   if (!rosterroles || rosterroles.length === 0) try {
     rosterembed.addField(eval(client.la[ls]["handlers"]["functionsjs"]["functions"]["variablex_2"]), eval(client.la[ls]["handlers"]["functionsjs"]["functions"]["variable2"]))
   } catch (e) {
@@ -613,7 +615,7 @@ async function send_roster_msg(client, guild, the_roster_db) {
       leftnum = rosterembed.length - leftnum - 100;
     }
     //define the memberarray
-    let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, "rosteremoji")} <@${member.user.id}> | \`${member.user.tag}\``)
+    let memberarray = role.members.map(member => `${the_roster_db?.get(guild.id, pre+".rosteremoji")} <@${member.user.id}> | \`${member.user.tag}\``)
     //loopthrough the array for 20 members / page
     for (let i = 0; i < memberarray.length; i += 20) {
       var thearray = memberarray;
@@ -622,16 +624,16 @@ async function send_roster_msg(client, guild, the_roster_db) {
         totalbreak = true;
         break;
       }
-      if (!the_roster_db?.get(guild.id, "showallroles") || memberarray.length < 20)
+      if (!the_roster_db?.get(guild.id, pre+".showallroles") || memberarray.length < 20)
         try {
-          rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, "rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+          rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20 > 0 ? `\n${the_roster_db?.get(guild.id, pre+".rosteremoji")} ***\`${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
           break;
         } catch (e) {
           console.error(e)
         }
       else
         try {
-          rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, "inline"))
+          rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), the_roster_db?.get(guild.id, pre+".inline"))
         } catch (e) {
           console.error(e)
         }
@@ -639,16 +641,16 @@ async function send_roster_msg(client, guild, the_roster_db) {
     //if there are no members who have this role, do this
     if(memberarray.length === 0){
       try {
-        rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, "inline"))
+        rosterembed.addField(`**__${role.name.toUpperCase()} [0]__**`, "> ***No one has this Role***".substring(0, 1024), the_roster_db?.get(guild.id, pre+".inline"))
       } catch (e) {
         console.error(e)
       }
     }
   }
   channel.send({embeds: [rosterembed]}).then(msg => {
-    the_roster_db?.set(guild.id, msg.id, "rostermessage");
+    the_roster_db?.set(guild.id, msg.id, pre+".rostermessage");
     setTimeout(() => {
-      edit_Roster_msg(client, guild, the_roster_db)
+      edit_Roster_msg(client, guild, the_roster_db, pre)
     }, 500)
   }).catch(e => console.log("Couldn't send a message, give the Bot permissions or smt!"))
 }
@@ -2046,25 +2048,19 @@ async function check_voice_channels(client) {
   for (let i = 0; i < guilds.length; i++) {
       try {
           let guild = await client.guilds.cache.get(guilds[i]);
-          dbEnsure(client.jtcsettings, guild.id, {
-            channel: "",
-            channelname: "{user}' Room",
-            guild: guild.id,
-          });
-          dbEnsure(client.jtcsettings2, guild.id, {
-            channel: "",
-            channelname: "{user}' Channel",
-            guild: guild.id,
-          });
-          dbEnsure(client.jtcsettings3, guild.id, {
-            channel: "",
-            channelname: "{user}' Lounge",
-            guild: guild.id,
-          });
+          const obj = {}
+          for(let i = 1; i<=100; i++) {
+            obj[`jtcsettings${i}`] = {
+              channel: "",
+              channelname: "{user}' Room",
+              guild: guild.id,
+            }
+          }
+          dbEnsure(client.jtcsettings, guild.id, obj);
           let jointocreate = []; //get the data from the database onto one variables
-          jointocreate.push(client.jtcsettings.get(guild.id, "channel"));
-          jointocreate.push(client.jtcsettings2.get(guild.id, "channel"));
-          jointocreate.push(client.jtcsettings3.get(guild.id, "channel"));
+          for(let i = 1; i<=100; i++) {
+            jointocreate.push(client.jtcsettings.get(guild.id, `jtcsettings${i}.channel`));
+          }
           await guild.channels.cache.filter(ch => ch.type == "GUILD_VOICE" && jointocreate.includes(ch.id)).each(async (channel, j) => {
               try{
                   let members = channel.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
@@ -2124,10 +2120,7 @@ async function check_created_voice_channels(client) {
 
 function create_join_to_create_Channel(client, voiceState, type) {
   let ls = client.settings.get(voiceState.member.guild.id, "language")
-  let chname = "{user}'s Room";
-  if(type > 1 && type < 100) { 
-    chname = client[`jtcsettings${type && type != 1 ? type : ""}`].get(voiceState.member.guild.id, `channelname`)
-  }
+  let chname =  client.jtcsettings.get(voiceState.member.guild.id, `jtcsettings${type}.channelname`) || "{user}'s Room";
   
   //CREATE THE CHANNEL
   if (!voiceState.guild.me.permissions.has("MANAGE_CHANNELS")) {
@@ -2241,12 +2234,12 @@ async function create_transcript(message, client, msglimit) {
  */
 
  function dbEnsure(db, key, data) {
-  if(!db.has(key)) {
-     db.ensure(key, data);
+  if(!db?.has(key)) {
+     db?.ensure(key, data);
   } else {
     for(const [Okey, value] of Object.entries(data)) {
-      if(!db.has(key, Okey)) {
-        db.ensure(key, value, Okey);
+      if(!db?.has(key, Okey)) {
+        db?.ensure(key, value, Okey);
       } else {
       }
     }

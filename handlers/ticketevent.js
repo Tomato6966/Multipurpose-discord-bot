@@ -69,8 +69,8 @@ module.exports = client => {
         let closedParent = ticket?.closedParent;
         if(String(Ticketdata.type).includes("menu") && Ticketdata.menutickettype && Ticketdata.menutickettype > 0) {
             
-            const theDB = client[`menuticket${Ticketdata.menutickettype}`]
-            const settings = theDB.get(guild.id);
+            const theDB = client.menuticket
+            const settings = theDB.get(guild.id, `menuticket${Ticketdata.menutickettype}`);
             let adminRoles = settings.access;
             if(Ticketdata.menuticketIndex !== undefined) {
                 const data = settings.data[Ticketdata.menuticketIndex];
@@ -960,8 +960,9 @@ module.exports = client => {
             let { user, message, channelId, values, guild } = interaction;
             let DBindex = false;
             for(let i = 1; i<=100; i++) {
-                let d = client[`menuticket${i}`];
-                if(d?.has(guild.id) && message.id === d?.get(guild.id, "messageId") && (channelId === d?.get(guild.id, "channelId") || message.channelId === d?.get(guild.id, "channelId"))) DBindex = i;
+                let pre = `menuticket${i}`;
+                let d = client.menuticket
+                if(d?.has(guild.id) && d?.has(guild.id, pre) && message.id === d?.get(guild.id, pre+".messageId") && (channelId === d?.get(guild.id, pre+".channelId") || message.channelId === d?.get(guild.id, pre+".channelId"))) DBindex = i;
             }
             if(!DBindex) {
                 if(interaction.placeholder) {
@@ -970,7 +971,8 @@ module.exports = client => {
                 if(interaction.replied) return interaction?.editReply(":x: Could not find the Database for your Application!");
                 else return
             }
-            let theDB = client[`menuticket${DBindex}`]
+            let pre = `menuticket${DBindex}`;
+            let theDB = client.menuticket
             dbEnsure(theDB, message.guild.id, {
                 messageId: "",
                 channelId: "",
@@ -990,8 +992,8 @@ module.exports = client => {
                     }
                   */
                 ]
-            });
-            let settings = theDB.get(guild.id);
+            }, pre);
+            let settings = theDB.get(guild.id, pre);
             if(message.id == settings.messageId && (channelId == settings.channelId || message.channelId == settings.channelId)){
                let index = settings.data.findIndex(v => v.value == values[0]);
                 if(index < 0) {
@@ -1229,8 +1231,9 @@ module.exports = client => {
             let { user, message, channelId, values, guild } = interaction;
             let DBindex = false;
             for(let i = 1; i<=100; i++) {
-                let d = client[`autosupport${i}`];
-                if(d?.has(guild.id) && message.id === d?.get(guild.id, "messageId") && (channelId === d?.get(guild.id, "channelId") || message.channelId === d?.get(guild.id, "channelId"))) DBindex = i;
+                let pre = `autosupport${i}`;
+                let d = client.autosupport
+                if(d?.has(guild.id) && d?.has(guild.id, pre) && message.id === d?.get(guild.id, pre+".messageId") && (channelId === d?.get(guild.id, pre+".channelId") || message.channelId === d?.get(guild.id, pre+".channelId"))) DBindex = i;
             }
             if(!DBindex) {
                 if(interaction.placeholder) {
@@ -1239,7 +1242,8 @@ module.exports = client => {
                 if(interaction.replied) return interaction?.editReply(":x: Could not find the Database for your Application!");
                 else return
             }
-            let theDB = client[`autosupport${DBindex}`]
+            let theDB = client.autosupport
+            let pre = `autosupport${DBindex}`;
             dbEnsure(theDB, guild.id, {
                 messageId: "",
                 channelId: "",
@@ -1253,8 +1257,8 @@ module.exports = client => {
                         }
                     */
                 ],
-            });
-            let settings = theDB.get(guild.id);
+            }, pre);
+            let settings = theDB.get(guild.id, pre);
             let es = client.settings.get(guild.id, "embed")
             if(message.id == settings.messageId && (channelId == settings.channelId || message.channelId == settings.channelId)){
                 let index = settings.data.findIndex(v => v.value == values[0]);
@@ -1285,8 +1289,9 @@ module.exports = client => {
             let { user, message, channelId, values, guild } = interaction;
             let DBindex = false;
             for(let i = 1; i<=100; i++) {
-                let d = client[`menuapply${i}`]
-                if(d?.has(guild.id) && message.id === d?.get(guild.id, "messageId") && (channelId === d?.get(guild.id, "channelId") || message.channelId === d?.get(guild.id, "channelId"))) DBindex = i;
+                let pre = `menuapply${i}`;
+                let d = client.menuapply
+                if(d?.has(guild.id) && d?.has(guild.id, pre) && message.id === d?.get(guild.id, pre+".messageId") && (channelId === d?.get(guild.id, pre+".channelId") || message.channelId === d?.get(guild.id, pre+".channelId"))) DBindex = i;
             }
             if(!DBindex) {
                 if(interaction.placeholder) {
@@ -1295,7 +1300,8 @@ module.exports = client => {
                 if(interaction.replied) return interaction?.editReply(":x: Could not find the Database for your Application!");
                 else return
             }
-            let theDB = client[`menuapply${DBindex}`]
+            let pre = `menuapply${DBindex}`;
+            let theDB = client.menuapply
             dbEnsure(theDB, guild.id, {
                 messageId: "",
                 channelId: "",
@@ -1308,10 +1314,10 @@ module.exports = client => {
                         }
                     */
                 ],
-            });
+            }, pre);
             const es = client.settings.get(guild.id, "embed")
             const ls = client.settings.get(guild.id, "language")
-            const settings = theDB.get(guild.id);
+            const settings = theDB.get(guild.id, pre);
             const index = settings.data.findIndex(v => v.value == values[0]);
             if(index < 0) {
                 return interaction?.reply({ephemeral: true, content: ":x: **Could not find the Ticket-Settings for this Option**"});

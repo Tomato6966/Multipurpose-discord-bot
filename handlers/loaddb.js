@@ -78,7 +78,33 @@ module.exports = client => {
         dataDir: "./databases/warns"
     });
 
+    client.jtcsettings = new Enmap({
+        name: `jtcsettings`,
+        dataDir: `./databases/jtc1`
+    }); // - CHANGE TO : {jtc1 : data, jtc2: data, jtc3: data, ..., jtc100: data}
+/**/client.roster = new Enmap({
+        name: `roster`,
+        dataDir: `./databases/roster`
+    }); // - CHANGE TO : {roster1 : data, roster2: data, roster3: data, ..., roster100: data}
+/**/client.autosupport = new Enmap({
+        name: `autosupport`,
+        dataDir: `./databases/menuticket`
+    }); // - CHANGE TO : {autosupport1 : data, autosupport2: data, autosupport3: data, ..., autosupport100: data}
+/**/client.menuticket = new Enmap({
+        name: `menuticket`,
+        dataDir: `./databases/menuticket`
+    }); // - CHANGE TO : {menuticket1 : data, menuticket2: data, menuticket3: data, ..., menuticket100: data}
 
+/**/client.menuapply = new Enmap({
+        name: `menuapply`,
+        dataDir: `./databases/menuticket`
+    }); // - CHANGE TO : {menuapply1 : data, menuapply2: data, menuapply3: data, ..., menuapply100: data}
+    
+/**/client.apply = new Enmap({
+        name: `apply`,
+        dataDir: `./databases/apply`
+    }); // - CHANGE TO : {apply1 : data, apply2: data, apply3: data, ..., apply100: data}
+/*
     for (let i = 0; i <= 100; i++) {
         let index = i + 1;
         client[`jtcsettings${index != 1 ? index : ""}`] = new Enmap({
@@ -107,7 +133,7 @@ module.exports = client => {
             name: `apply${i}`,
             dataDir: `./databases/apply${i == 1 ? "" : i == 2 ? "2" : i == 3 ? "3" : i == 4 ? "4" : "5"}`
         });
-    }
+    }*/
     
 
     client.points = new Enmap({
