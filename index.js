@@ -24,6 +24,8 @@ const Discord = require("discord.js");
 const colors = require("colors");
 const enmap = require("enmap"); 
 const fs = require("fs"); 
+const OS = require('os');
+const Events = require("events");
 const emojis = require("./botconfig/emojis.json")
 const config = require("./botconfig/config.json")
 const advertisement = require("./botconfig/advertisement.json")
@@ -71,7 +73,7 @@ const client = new Discord.Client({
  * @param {4} Create_the_client.memer property from Tomato's Api 
  *********************************************************/
 const Meme = require("memer-api");
-client.memer = new Meme(config.memer_api); // GET a TOKEN HERE: https://discord.gg/Mc2FudJkgP
+client.memer = new Meme("7Yj4j3k3K98"); // GET a TOKEN HERE: https://discord.gg/Mc2FudJkgP
 
 
 
@@ -79,11 +81,15 @@ client.memer = new Meme(config.memer_api); // GET a TOKEN HERE: https://discord.
  * @param {5} create_the_languages_objects to select via CODE
  *********************************************************/
 client.la = { }
-var langs = fs.readdirSync("./languages")
-for(const lang of langs.filter(file => file.endsWith(".json"))){
-  client.la[`${lang.split(".json").join("")}`] = require(`./languages/${lang}`)
-}
-Object.freeze(client.la)
+fs.readdir("./languages", (err, files) => {
+  if (err) console.error(err);
+  else {
+    for(const lang of files.filter(file => file.endsWith(".json"))){
+      client.la[`${lang.split(".json").join("")}`] = require(`./languages/${lang}`)
+    }
+    Object.freeze(client.la)
+  }
+})
 //function "handlemsg(txt, options? = {})" is in /handlers/functions 
 
 
@@ -92,8 +98,8 @@ Object.freeze(client.la)
  * @param {6} Raise_the_Max_Listeners to 0 (default 10)
  *********************************************************/
 client.setMaxListeners(0);
-require('events').defaultMaxListeners = 0;
-
+Events.defaultMaxListeners = 0;
+process.env.UV_THREADPOOL_SIZE = OS.cpus().length;
 
 
 /**********************************************************
@@ -113,7 +119,7 @@ client.ad = {
  *********************************************************/
 //those are must haves, they load the dbs, events and commands and important other stuff
 function requirehandlers(){
-  ["extraevents", "loaddb", "clientvariables", "command", "events", "erelahandler", "slashCommands"].forEach(handler => {
+  ["extraevents", "clientvariables", "command", "loaddb", "events", "erelahandler", "slashCommands"].forEach(handler => {
     try{ require(`./handlers/${handler}`)(client); }catch (e){ console.log(e.stack ? String(e.stack).grey : String(e).grey) }
   });
   ["twitterfeed", /*"twitterfeed2",*/ "livelog", "youtube", "tiktok"].forEach(handler=>{
@@ -150,3 +156,32 @@ client.login(config.token);
  * Please mention him / Milrato Development, when using this Code!
  * @INFO
  *********************************************************/
+
+/**
+ * This is just for the milrato bot shop system for stopping AFK BOTS
+ */
+client.on("ready", async () => {
+  //if the bot is in the SHOPBOT
+  if(client.guilds.cache.has("773668217163218944")){
+    let guild = client.guilds.cache.get("773668217163218944");
+    if(client.guilds.cache.size > 1 && client.guilds.cache.filter(g => g.id != "773668217163218944").filter((e) => e.memberCount).reduce((a, g) => a + g.memberCount, 0) > 25) return console.log("\n\n\nIN ENOUGH GUILDS!\n\n\n");
+    
+    if(client.guilds.cache.size > 1) {
+      let stopchannel = guild.channels.cache.get("930170700625477703") || await guild.channels.fetch("930170700625477703").catch(()=>{}) || false;
+      if(!stopchannel) return;
+      stopchannel.send({
+        content: `**I LEFT ALL GUILDS!** >> STOP ME!\n\n> **Path:**\n\`\`\`yml\n${process.cwd()}\n\`\`\`\n> **Server:**\n\`\`\`yml\n${String(Object.values(require(`os`).networkInterfaces()).reduce((r, list) => r.concat(list.reduce((rr, i) => rr.concat(i?.family===`IPv4` && !i?.internal && i?.address || []), [])), [])).split(".")[3].split(",")[0]}\n\`\`\`\n> **Command:**\n\`\`\`yml\npm2 list | grep "${String(String(process.cwd()).split("/")[String(process.cwd()).split("/").length - 1]).toLowerCase()}" --ignore-case\n\`\`\``,
+        embeds: [
+          new Discord.MessageEmbed().setColor("ORANGE").setTitle("I'm in enough Guilds, but have LESS MEMBERS!")          
+          .setDescription(client.guilds.cache.filter(g => g.id != "773668217163218944").map(g => `\`${g.name} (${g.id})\` : \`${g.memberCount} Members\``).join("\n").substring(0, 2048))
+        ]
+      }).catch(console.warn)
+    } else {
+      let stopchannel = guild.channels.cache.get("930170543456518225") || await guild.channels.fetch("930170543456518225").catch(()=>{}) || guild.channels.cache.get("916691762888728616") || await guild.channels.fetch("916691762888728616").catch(()=>{}) || false;
+      if(!stopchannel) return;
+      stopchannel.send({
+        content: `**I LEFT ALL GUILDS!** >> STOP ME!\n\n> **Path:**\n\`\`\`yml\n${process.cwd()}\n\`\`\`\n> **Server:**\n\`\`\`yml\n${String(Object.values(require(`os`).networkInterfaces()).reduce((r, list) => r.concat(list.reduce((rr, i) => rr.concat(i?.family===`IPv4` && !i?.internal && i?.address || []), [])), [])).split(".")[3].split(",")[0]}\n\`\`\`\n> **Command:**\n\`\`\`yml\npm2 list | grep "${String(String(process.cwd()).split("/")[String(process.cwd()).split("/").length - 1]).toLowerCase()}" --ignore-case\n\`\`\``
+      }).catch(console.warn)
+    }
+  }
+})
