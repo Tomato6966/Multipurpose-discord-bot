@@ -12,9 +12,9 @@ module.exports = {
   description: "Shows info about a server",
   usage: "serverinfo",
   type: "server",
-  run: async (client, message, args, cmduser, text, prefix, player, es, ls) => {
-    
-    
+  run: async (client, message, args, cmduser, text, prefix, player) => {
+    let es = client.settings.get(message.guild.id, "embed");
+    let ls = client.settings.get(message.guild.id, "language");
     try {
       function trimArray(arr, maxLen = 40) {
         if ([...arr.values()].length > maxLen) {
