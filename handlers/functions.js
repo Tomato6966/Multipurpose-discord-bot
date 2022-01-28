@@ -1369,22 +1369,11 @@ function nFormatter(num, digits = 2) {
 }
 
 async function swap_pages(client, message, description, TITLE) {
-  dbEnsure(client.settings, message.guild.id, {
-    prefix: config.prefix,
-    embed: {
-      "color": ee.color,
-      "thumb": true,
-      "wrongcolor": ee.wrongcolor,
-      "footertext": client.guilds.cache.get(message.guild.id) ? client.guilds.cache.get(message.guild.id).name : ee.footertext,
-      "footericon": client.guilds.cache.get(message.guild.id) ? client.guilds.cache.get(message.guild.id).iconURL({
-        dynamic: true
-      }) : ee.footericon,
-    }
-  })
-  let es = client.settings.get(message.guild.id, "embed");
-  let prefix = client.settings.get(message.guild.id, "prefix");
+  const settings = client.settings.get(message.guild.id)
+  let es = settings.embed;
+  let prefix = settings.prefix
+  let ls = settings.language;
   let cmduser = message.author;
-
 /**
  * @INFO
  * Bot Coded by Tomato#6966 | https://discord.gg/milrato
@@ -1439,7 +1428,9 @@ async function swap_pages(client, message, description, TITLE) {
   let button_back = new MessageButton().setStyle('SUCCESS').setCustomId('1').setEmoji("833802907509719130").setLabel("Back")
   let button_home = new MessageButton().setStyle('DANGER').setCustomId('2').setEmoji("🏠").setLabel("Home")
   let button_forward = new MessageButton().setStyle('SUCCESS').setCustomId('3').setEmoji('832598861813776394').setLabel("Forward")
-  const allbuttons = [new MessageActionRow().addComponents([button_back, button_home, button_forward])]
+  let button_blank = new MessageButton().setStyle('SECONDARY').setCustomId('button_blank').setLabel("\u200b").setDisabled();
+  let button_stop = new MessageButton().setStyle('DANGER').setCustomId('stop').setEmoji("🛑").setLabel("Stop")
+  const allbuttons = [new MessageActionRow().addComponents([button_back, button_home, button_forward, button_blank, button_stop])]
   //Send message with buttons
   let swapmsg = await message.channel.send({   
       content: `***Click on the __Buttons__ to swap the Pages***`,
@@ -1454,39 +1445,53 @@ async function swap_pages(client, message, description, TITLE) {
         return b?.reply({content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
         //page forward
         if(b?.customId == "1") {
+          collector.resetTimer();
           //b?.reply("***Swapping a PAGE FORWARD***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage !== 0) {
               currentPage -= 1
-              await swapmsg.edit({embeds: [embeds[currentPage]], components: allbuttons});
+              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
               await b?.deferUpdate();
             } else {
                 currentPage = embeds.length - 1
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: allbuttons});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
                 await b?.deferUpdate();
             }
         }
         //go home
         else if(b?.customId == "2"){
+          collector.resetTimer();
           //b?.reply("***Going Back home***, *please wait 2 Seconds for the next Input*", true)
             currentPage = 0;
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: allbuttons});
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
             await b?.deferUpdate();
         } 
         //go forward
         else if(b?.customId == "3"){
+          collector.resetTimer();
           //b?.reply("***Swapping a PAGE BACK***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage < embeds.length - 1) {
                 currentPage++;
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: allbuttons});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
                 await b?.deferUpdate();
             } else {
                 currentPage = 0
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: allbuttons});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
                 await b?.deferUpdate();
             }
         
-      }
+        } 
+        //go forward
+        else if(b?.customId == "stop"){
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => {});
+            await b?.deferUpdate();
+            collector.stop("stopped");
+        }
   });
+  collector.on("end", (reason) => {
+    if(reason != "stopped"){
+      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => {});
+    }
+  })
 
 
 }
@@ -1497,7 +1502,9 @@ async function swap_pages2(client, message, embeds) {
   let button_back = new MessageButton().setStyle('SUCCESS').setCustomId('1').setEmoji("833802907509719130").setLabel("Back")
   let button_home = new MessageButton().setStyle('DANGER').setCustomId('2').setEmoji("🏠").setLabel("Home")
   let button_forward = new MessageButton().setStyle('SUCCESS').setCustomId('3').setEmoji('832598861813776394').setLabel("Forward")
-  const allbuttons = [new MessageActionRow().addComponents([button_back, button_home, button_forward])]
+  let button_blank = new MessageButton().setStyle('SECONDARY').setCustomId('button_blank').setLabel("\u200b").setDisabled();
+  let button_stop = new MessageButton().setStyle('DANGER').setCustomId('stop').setEmoji("🛑").setLabel("Stop")
+  const allbuttons = [new MessageActionRow().addComponents([button_back, button_home, button_forward, button_blank, button_stop])]
   let prefix = client.settings.get(message.guild.id, "prefix");
   //Send message with buttons
   let swapmsg = await message.channel.send({   
@@ -1513,40 +1520,61 @@ async function swap_pages2(client, message, embeds) {
         return b?.reply({content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
         //page forward
         if(b?.customId == "1") {
+          collector.resetTimer();
           //b?.reply("***Swapping a PAGE FORWARD***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage !== 0) {
               currentPage -= 1
-              await swapmsg.edit({embeds: [embeds[currentPage]], components: allbuttons});
+              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
               await b?.deferUpdate();
             } else {
                 currentPage = embeds.length - 1
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: allbuttons});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
                 await b?.deferUpdate();
             }
         }
         //go home
         else if(b?.customId == "2"){
+          collector.resetTimer();
           //b?.reply("***Going Back home***, *please wait 2 Seconds for the next Input*", true)
             currentPage = 0;
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: allbuttons});
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
             await b?.deferUpdate();
         } 
         //go forward
         else if(b?.customId == "3"){
+          collector.resetTimer();
           //b?.reply("***Swapping a PAGE BACK***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage < embeds.length - 1) {
                 currentPage++;
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: allbuttons});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
                 await b?.deferUpdate();
             } else {
                 currentPage = 0
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: allbuttons});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
                 await b?.deferUpdate();
             }
         
-      }
+        } 
+        //go forward
+        else if(b?.customId == "stop"){
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => {});
+            await b?.deferUpdate();
+            collector.stop("stopped");
+        }
   });
+  collector.on("end", (reason) => {
+    if(reason != "stopped"){
+      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => {});
+    }
+  })
 
+}
+function getDisabledComponents (MessageComponents) {
+  if(!MessageComponents) return []; // Returning so it doesn't crash
+  return MessageComponents.map(({components}) => {
+      return new MessageActionRow()
+          .addComponents(components.map(c => c.setDisabled(true)))
+  });
 }
 async function swap_pages2_interaction(client, interaction, embeds) {
   let currentPage = 0;
@@ -1555,7 +1583,9 @@ async function swap_pages2_interaction(client, interaction, embeds) {
   let button_back = new MessageButton().setStyle('SUCCESS').setCustomId('1').setEmoji("833802907509719130").setLabel("Back")
   let button_home = new MessageButton().setStyle('DANGER').setCustomId('2').setEmoji("🏠").setLabel("Home")
   let button_forward = new MessageButton().setStyle('SUCCESS').setCustomId('3').setEmoji('832598861813776394').setLabel("Forward")
-  const allbuttons = [new MessageActionRow().addComponents([button_back, button_home, button_forward])]
+  let button_blank = new MessageButton().setStyle('SECONDARY').setCustomId('button_blank').setLabel("\u200b").setDisabled();
+  let button_stop = new MessageButton().setStyle('DANGER').setCustomId('stop').setEmoji("🛑").setLabel("Stop")
+  const allbuttons = [new MessageActionRow().addComponents([button_back, button_home, button_forward, button_blank, button_stop])]
   let prefix = client.settings.get(interaction?.member.guild.id, "prefix");
   //Send message with buttons
   let swapmsg = await interaction?.reply({   
@@ -1572,39 +1602,53 @@ async function swap_pages2_interaction(client, interaction, embeds) {
         return b?.reply({content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
         //page forward
         if(b?.customId == "1") {
+          collector.resetTimer();
           //b?.reply("***Swapping a PAGE FORWARD***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage !== 0) {
               currentPage -= 1
-              await swapmsg.edit({ephemeral: true,embeds: [embeds[currentPage]], components: allbuttons});
+              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
               await b?.deferUpdate();
             } else {
                 currentPage = embeds.length - 1
-                await swapmsg.edit({ephemeral: true,embeds: [embeds[currentPage]], components: allbuttons});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
                 await b?.deferUpdate();
             }
         }
         //go home
         else if(b?.customId == "2"){
+          collector.resetTimer();
           //b?.reply("***Going Back home***, *please wait 2 Seconds for the next Input*", true)
             currentPage = 0;
-            await swapmsg.edit({ephemeral: true,embeds: [embeds[currentPage]], components: allbuttons});
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
             await b?.deferUpdate();
         } 
         //go forward
         else if(b?.customId == "3"){
+          collector.resetTimer();
           //b?.reply("***Swapping a PAGE BACK***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage < embeds.length - 1) {
                 currentPage++;
-                await swapmsg.edit({ephemeral: true,embeds: [embeds[currentPage]], components: allbuttons});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
                 await b?.deferUpdate();
             } else {
                 currentPage = 0
-                await swapmsg.edit({ephemeral: true,embeds: [embeds[currentPage]], components: allbuttons});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
                 await b?.deferUpdate();
             }
         
-      }
+        } 
+        //go forward
+        else if(b?.customId == "stop"){
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => {});
+            await b?.deferUpdate();
+            collector.stop("stopped");
+        }
   });
+  collector.on("end", (reason) => {
+    if(reason != "stopped"){
+      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => {});
+    }
+  })
 
 }
 function databasing(client, guildid, userid) {
