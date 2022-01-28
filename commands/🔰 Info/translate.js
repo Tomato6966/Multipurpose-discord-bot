@@ -12,7 +12,7 @@ module.exports = {
   aliases: ["trans", "tran", "tr"],
   cooldown: 5,
   usage: "translate <from> <to> <TEXT>",
-  description: "Gives you an Invite link for this Bot",
+  description: "Translates Text from a Language to another one!",
   type: "util",
   run: async (client, message, args, cmduser, text, prefix) => {
     
