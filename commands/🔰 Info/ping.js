@@ -18,13 +18,13 @@ module.exports = {
     
     let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
     try {
-      let oldate = new Date().getMilliseconds()
+      let oldate = Math.floor(Date.now() / 10)
       message.reply({embeds: [new MessageEmbed()
         .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
         .setFooter(client.getFooter(es))
         .setTitle(handlemsg(client.la[ls].cmds.info.ping.m1))
       ]}).then(msg => {
-        let newtime = new Date().getMilliseconds() - oldate;
+        let newtime = Math.floor(Math.floor(Date.now() / 10) - oldate);
         if(newtime < 0) newtime*=-1;
         msg.edit({embeds: [new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
