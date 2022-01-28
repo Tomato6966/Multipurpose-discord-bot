@@ -39,7 +39,7 @@ module.exports = client => {
         let dData = d.get(guild.id);
         for(let i = 1; i<=applySystemAmount; i++) {
           let pre = `apply${i}`;
-          if(message.id === dData[`${pre}`][`message_id`] && channel.id === dData[`${pre}`][`channel_id`]) index = i;
+          if(dData[`${pre}`] && message.id === dData[`${pre}`][`message_id`] && channel.id === dData[`${pre}`][`channel_id`]) index = i;
         }
       }
     }
