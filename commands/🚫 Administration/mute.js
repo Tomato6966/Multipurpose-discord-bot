@@ -7,7 +7,7 @@ const {
   Permissions
 } = require(`discord.js`)
 const {
-  databasing
+  databasing, delay
 } = require(`${process.cwd()}/handlers/functions`);
 module.exports = {
   name: `mute`,
@@ -82,7 +82,7 @@ module.exports = {
       }
       let mutedRole = mutesettings.roleId ? message.guild.roles.cache.get(mutesettings.roleId) || false : false;
       
-      if(!mutedRole && mutesettings.style == "timeout") {
+      if(!mutedRole || mutesettings.style == "timeout") {
         if (!member.manageable)
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
@@ -144,6 +144,8 @@ module.exports = {
           ]});
         if (String(time).toLowerCase().includes("pe")) {
           try{
+            args.shift();
+            let reason = args.join(` `);
             await member.roles.add(mutedRole).catch(e=>{
               console.log(e.stack ? String(e.stack).grey : String(e).grey)
             })
@@ -209,6 +211,8 @@ module.exports = {
            ] });
           }
         } else {
+          args.shift();
+          let reason = args.join(` `);
           let mutetime;
           try {
             mutetime = ms(time);
