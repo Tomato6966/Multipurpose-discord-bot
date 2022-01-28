@@ -1,10 +1,10 @@
 const Discord = require("discord.js");
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`)
-var ee = require(`${process.cwd()}/botconfig/embed.json`)
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`)
+var ee = require(`../../botconfig/embed.json`)
+const emoji = require(`../../botconfig/emojis.json`);
 const moment = require("moment")
-const { swap_pages, handlemsg } = require(`${process.cwd()}/handlers/functions`)
+const { swap_pages2, handlemsg } = require(`../../handlers/functions`)
 module.exports = {
   name: "serverinfo",
   aliases: ["sinfo"],
@@ -12,9 +12,9 @@ module.exports = {
   description: "Shows info about a server",
   usage: "serverinfo",
   type: "server",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       function trimArray(arr, maxLen = 40) {
         if ([...arr.values()].length > maxLen) {
@@ -45,9 +45,9 @@ module.exports = {
       if (boosts >= 7) maxbitrate = 256000;
       if (boosts >= 14) maxbitrate = 384000;
       let embed = new Discord.MessageEmbed()
-      .setAuthor(client.la[ls].cmds.info.serverinfo.author + " " +  message.guild.name, message.guild.iconURL({
+      .setAuthor(client.getAuthor(client.la[ls].cmds.info.serverinfo.author + " " +  message.guild.name, message.guild.iconURL({
         dynamic: true
-      }), "https://discord.com/api/oauth2/authorize?client_id=734513783338434591&permissions=8&scope=bot%20applications.commands")
+      }), "https://discord.com/api/oauth2/authorize?client_id=734513783338434591&permissions=8&scope=bot%20applications.commands"))
       .setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
       embed.addField(client.la[ls].cmds.info.serverinfo.field1, `${message.guild.owner}\n\`${message.guild.owner.tag}\``, true)
       embed.addField(client.la[ls].cmds.info.serverinfo.field2, "\`" + moment(message.guild.createdTimestamp).format("DD/MM/YYYY") + "\`\n" + "`"+ moment(message.guild.createdTimestamp).format("hh:mm:ss") +"`", true)
@@ -91,7 +91,10 @@ module.exports = {
       embeds.push(embed_emojis);
       //Roles
       embed_roles.setTitle(eval(client.la[ls]["cmds"]["info"]["serverinfo"]["variablex_2"]))
-      embed_roles.setDescription(eval(client.la[ls]["cmds"]["info"]["serverinfo"]["variable2"]))
+      embed_roles.setDescription(`>>> ${message.guild.roles.cache.size <= 40 ?
+        [...message.guild.roles.cache.values()].sort((a, b) => b.rawPosition - a.rawPosition).map(role => `<@&${role.id}>`).join(', ') 
+        : message.guild.roles.cache.size > 40 ? trimArray(message.guild.roles.cache) : 'None'}`
+      )
       embeds.push(embed_roles);
       
 
@@ -110,10 +113,6 @@ module.exports = {
         embeds.push(embed2);
       }
       //add the footer to the end
-      embeds[embeds.length - 1].setFooter("ID: " + message.guild.id, message.guild.iconURL({
-        dynamic: true
-      }))
-      //color each embed with thumbnail, except the last one
       embeds.forEach((embed, index)=>{
         if(index < embeds.length - 1) {
           embed.setThumbnail(message.guild.iconURL({
@@ -121,10 +120,12 @@ module.exports = {
           }));
         }
         embed.setColor(es.color);
+        embed.setFooter(client.getFooter("ID: " + message.guild.id, message.guild.iconURL({
+          dynamic: true
+        })))
       })
-
-      message.reply({embeds});
-     
+      if(embeds.length == 1) return message.reply({embeds});
+      return swap_pages2(client, message, embeds);
     } catch (e) {
       console.log(String(e.stack).grey.bgRed)
       return message.reply({embeds: [new MessageEmbed()
