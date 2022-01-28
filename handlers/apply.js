@@ -33,7 +33,7 @@ module.exports = client => {
   //define the apply system variable
   async function ApplySystem({ guild, channel, user, message, interaction, es, ls, preindex = false }) {
     let index = preindex ? preindex : false;
-    if(!index) {
+        if(!index) {
       let d = client.apply
       if(d.has(guild.id)) {
         let dData = d.get(guild.id);
@@ -44,8 +44,8 @@ module.exports = client => {
       }
     }
     if(!index) {
-      if(!interaction.replied) return interaction?.reply(`:x: Could not find the Database for your Application!`);
-      else return interaction?.editReply(`:x: Could not find the Database for your Application!`);
+      if(!interaction.replied) return interaction?.reply({ephemeral: true, content: `:x: Could not find the Database for your Application!`});
+      else return interaction?.editReply({ephemeral: true, content: `:x: Could not find the Database for your Application!`});
     }
     let applyname = `apply${index}`;
     let applytickets = `applytickets${index}`; 
