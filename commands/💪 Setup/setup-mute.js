@@ -21,6 +21,12 @@ module.exports = {
   run: async (client, message, args, cmduser, text, prefix) => {
     
     let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    client.settings.ensure(message.guild.id, {
+      style: "timeout",
+      roleId: "",
+      defaultTime: 60000, // in ms  
+    }, "mute")
+    const menusettings = client.settings.get(message.guild.id, "mute");
     try {
 
 
@@ -33,12 +39,6 @@ module.exports = {
       */
       first_layer()
       async function first_layer(){
-        client.settings.ensure(message.guild.id, {
-          style: "timeout",
-          roleId: "",
-          defaultTime: 60000, // in ms  
-        })
-        const menusettings = client.settings.get(message.guild.id, "mute");
         let menuoptions = [
           {
             value: "Toggle Style",
