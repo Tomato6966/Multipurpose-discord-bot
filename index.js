@@ -77,20 +77,19 @@ client.memer = new Meme("7Yj4j3k3K98"); // GET a TOKEN HERE: https://discord.gg/
 
 
 
+
+
 /**********************************************************
  * @param {5} create_the_languages_objects to select via CODE
  *********************************************************/
 client.la = { }
-fs.readdir("./languages", (err, files) => {
-  if (err) console.error(err);
-  else {
-    for(const lang of files.filter(file => file.endsWith(".json"))){
-      client.la[`${lang.split(".json").join("")}`] = require(`./languages/${lang}`)
-    }
-    Object.freeze(client.la)
-  }
-})
+var langs = fs.readdirSync("./languages")
+for(const lang of langs.filter(file => file.endsWith(".json"))){
+  client.la[`${lang.split(".json").join("")}`] = require(`./languages/${lang}`)
+}
+Object.freeze(client.la)
 //function "handlemsg(txt, options? = {})" is in /handlers/functions 
+
 
 
 
