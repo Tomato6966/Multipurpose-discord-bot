@@ -394,17 +394,17 @@ module.exports = (c) => {
 
 async function send_log(c, guild, color, title, description, thumb, fieldt, fieldv, fieldt2, fieldv2) {
   try {
-    if(!guild || guild.available == false) return console.log("NO GUILD");
+    if(!guild || guild?.available == false) return console.log("NO GUILD");
     //CREATE THE EMBED
     const LogEmbed = new Discord.MessageEmbed()
       .setColor(color ? color : "BLACK")
       .setDescription(description ? description.substring(0, 2048) : "\u200b")
       .setTitle(title ? title.substring(0, 256) : "\u200b")
       .setTimestamp()
-      .setThumbnail(thumb ? thumb : guild.iconURL({
+      .setThumbnail(thumb ? thumb : guild?.iconURL({
         format: "png"
       }))
-      .setFooter(c.getFooter(guild?.name + " | powered by: milrato.eu", guild.iconURL({
+      .setFooter(c.getFooter(guild?.name + " | powered by: milrato.eu", guild?.iconURL({
         format: "png"
       })))
     if(fieldt && fieldv){
@@ -424,6 +424,5 @@ async function send_log(c, guild, color, title, description, thumb, fieldt, fiel
     if (!logger) throw new SyntaxError("CHANNEL NOT FOUND")
     return logger.send({embeds: [LogEmbed]}).catch(() => {})
   } catch (e) {
-    console.error(e)
   }
 }
