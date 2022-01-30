@@ -20,7 +20,7 @@ const {
   simple_databasing
 } = require(`./functions`);
 const {
-  CaptchaGenerator
+  Captcha
 } = require(`captcha-canvas`); //require package here
 const ms = require("ms");
 //Create Variables
@@ -301,12 +301,12 @@ module.exports = client => {
         invitemessage = "\u200b"
       }
       if (client.settings.get(member.guild.id, "welcome.captcha") && !member.user.bot) {
-        const captcha = new CaptchaGenerator({
-          height: 200,
-          width: 600
-        });
-
-        const buffer = await captcha.generate(); //returns buffer of the captcha image
+       const captcha = new Captcha();
+        captcha.async = false //Sync
+        captcha.addDecoy(); //Add decoy text on captcha canvas.
+        captcha.drawTrace(); //draw trace lines on captcha canvas.
+        captcha.drawCaptcha(); //draw captcha text on captcha canvas
+        const buffer = captcha.png; //returns buffer of the captcha image
         const attachment = new Discord.MessageAttachment(buffer, `${captcha.text}_Captcha.png`)
         //fin a muted role
         let mutedrole = member.guild.roles.cache.find(r => r.name.toLowerCase().includes("captcha")) || false;
