@@ -3,7 +3,6 @@ const canvacord = require("canvacord");
 const Discord = require("discord.js");
 const Canvas = require("canvas");
 const { GetUser, duration, nFormatter } = require(`./functions`)
-const { parse } = require( "twemoji-parser" )
 //Canvas.registerFont( "./assets/fonts/DMSans-Bold.ttf" , { family: "DM Sans", weight: "bold" } );
 //Canvas.registerFont( "./assets/fonts/DMSans-Regular.ttf" , { family: "DM Sans", weight: "regular" } );
 //Canvas.registerFont( "./assets/fonts/STIXGeneral.ttf" , { family: "STIXGeneral" } );
@@ -463,7 +462,7 @@ module.exports = function (client) {
                 let banner = null;
                 try {
                     await rankuser.fetch().then(u => u.banner ? banner = rankuser.bannerURL({dynamic: false, format: "png", size: 4096}) : banner = false);
-                    if(!banner) await member.fetch().then(u => u.banner ? banner = rankuser.bannerURL({dynamic: false, format: "png", size: 4096}) : banner = false);
+                    if(!banner) await rankMember.fetch().then(u => u.banner ? banner = rankuser.bannerURL({dynamic: false, format: "png", size: 4096}) : banner = false);
                 }catch(e){console.log(e)}
 /*
                 if(banner){
@@ -605,8 +604,22 @@ module.exports = function (client) {
 
                 // COLOR BACKGROUND
                 const grd = ctx.createLinearGradient(AvatarX, AvatarY, AvatarSize, AvatarSize );
-                grd.addColorStop(0, "#d3357a");
-                grd.addColorStop(1, "#3a0c7b");
+                const firstColors = {
+                    "null" : "#d3357a",
+                    "online": "#7FFF00",
+                    "dnd": "#DC143C",
+                    "idle": "#E9967A",
+                    "streaming": "#9200FE"
+                }
+                const secondColors = {
+                    "null" : "#3a0c7b",
+                    "online": "#2E8B57",
+                    "dnd": "#800000",
+                    "idle": "#FF6347",
+                    "streaming": "#4B0082"
+                }
+                grd.addColorStop(0, firstColors[rankMember.presence && rankMember.presence.status != "offline" ? rankMember.presence.status : "null"]);
+                grd.addColorStop(1, secondColors[rankMember.presence && rankMember.presence.status != "offline" ? rankMember.presence.status : "null"]);
                 ctx.lineWidth = 30;
                 ctx.fillStyle = grd;
                 ctx.strokeStyle = grd;
@@ -636,7 +649,6 @@ module.exports = function (client) {
                 const name = rankuser.username;
                 while(ctx.measureText(name).width > 1200-fontsize){
                     const newFont = `bold ${ fontsize-- }px ${Fonts}`
-                    console.log(newFont)
                     ctx.font = newFont;
                 }
                 const NameYSpace = fontsize/2;
@@ -710,7 +722,7 @@ module.exports = function (client) {
                     //restore ctx
                     ctx.restore();
                     //draw text
-                    const progressionText = `${xp_data.text.current} / ${xp_data.text.needed}`;
+                    const progressionText = `${current} / ${Needed}`;
                     const FontSize = Height - Height/6;
                     ctx.fillStyle = "#ffffff";
                     ctx.font = `regular ${FontSize}px ${Fonts}`;
