@@ -160,7 +160,7 @@ module.exports = {
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle("Settings of the AUDIT-LOG")
                 .setColor(es.color)
-                .setDescription(`**Channel:** ${thesettings == "no" ? "Not Setupped" : `<#${thesettings}> | \`${thesettings}\``}`.substring(0, 2048))
+                .setDescription(`**Channel:** ${thesettings.channel == "no" ? "Not Setupped" : `<#${thesettings.channel}> | \`${thesettings.channel}\``}`.substring(0, 2048))
                 .setFooter(client.getFooter(es))
               ]});
             }
