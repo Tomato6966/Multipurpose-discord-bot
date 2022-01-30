@@ -116,8 +116,9 @@ module.exports = {
       async function handle_the_picks(optionhandletype, SetupNumber, menuoptiondata) {
         switch (optionhandletype) {
           case "Toggle Style": {
-              client.settings.set(message.guild.id, menusettings.style === "timeout" ? "role" : "timeout", "style");
-              return message.reply(`Successfully changed the Style from ${menusettings.style} to ${menusettings.style === "timeout" ? "role" : "timeout"}`);
+            const newStyle = menusettings.style == "timeout" ? "role" : "timeout";
+            client.settings.set(message.guild.id, newStyle, "mute.style");
+            return message.reply(`Successfully changed the Style from ${menusettings.style} to ${newStyle}`);
           }break;
           case "Set Mute-Role": {
             var tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
