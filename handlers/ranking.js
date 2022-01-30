@@ -363,55 +363,71 @@ module.exports = function (client) {
             try {
                 let rankuser = the_rankuser || message.author;
                 if (!rankuser) return message.reply(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable14"]));
+                let rankMember = message.guild.members.cache.get(rankuser.id) || await message.guild.members.fetch(rankuser.id).catch(() => {});
 
-                // if(rankuser.bot) return message.reply(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable16"]));
-                //Call the databasing function!
                 const key = `${message.guild.id}-${rankuser.id}`;
-                databasing(rankuser);
-                let theDbDatas = ["level", "points", "neededpoints", ]
-                if(type == "voice") theDbDatas = ["voicelevel", "voicepoints", "neededvoicepoints", ]
-                let tempmessage = await message.channel.send(`📊 *Getting the ${type == "voice" ? "🔉" : "💬"}__${type.toUpperCase()}__-RANK-DATA of: **${rankuser.tag}** ...*`)
-                //do some databasing
-                const filtered = client.points.filter(p => p.guild === message.guild.id).map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
-                const sorted = filtered
+                await databasing(rankuser);
+                let theDbDatas = [["level", "points", "neededpoints"], ["voicelevel", "voicepoints", "neededvoicepoints"]]
+                let tempmessage = await message.channel.send(`📊 *Getting the RANK-DATA of: **${rankuser.tag}** ...*`)
+                
+                /**
+                 * TEXT RANK
+                 */
+                const filteredText = client.points.filter(p => p.guild === message.guild.id).map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
+                const sortedText = filteredText
                 .sort((a, b) => { 
-                    if(b[`${theDbDatas[1]}`]) return b[`${theDbDatas[0]}`] - a[`${theDbDatas[0]}`] || b[`${theDbDatas[1]}`] - a[`${theDbDatas[1]}`];
-                    else return b[`${theDbDatas[0]}`] - a[`${theDbDatas[0]}`] || -1
+                    if(b[`${theDbDatas[0][1]}`]) return b[`${theDbDatas[0][0]}`] - a[`${theDbDatas[0][0]}`] || b[`${theDbDatas[0][1]}`] - a[`${theDbDatas[0][1]}`];
+                    else return b[`${theDbDatas[0][0]}`] - a[`${theDbDatas[0][0]}`] || -1
                 }) 
-                const top10 = sorted.splice(0, message.guild.memberCount);
-                let i = 0;
-                //count server rank sometimes an error comes
-                for (const data of top10) {
-                    try {
-                        i++;
-                        if (data.user === rankuser.id) break; //if its the right one then break it ;)
-                    } catch {
-                        i = `X`;
-                        break;
+                let RankText = sortedText.splice(0, message.guild.memberCount).findIndex(d => d.user == rankuser.id) + 1;
+
+                if(!client.points.get(key, `${theDbDatas[0][1]}`)) client.points.set(key, 1, `${theDbDatas[0][1]}`)
+                if(!client.points.get(key, `${theDbDatas[0][2]}`)) client.points.set(key, 1, `${theDbDatas[0][2]}`)
+
+                let curLevelText = Number(await client.points.get(key, `${theDbDatas[0][0]}`));
+                let curpointsText = Number(await client.points.get(key, `${theDbDatas[0][1]}`)?.toFixed(2));
+                let curnextlevelText = Number(await client.points.get(key, `${theDbDatas[0][2]}`)?.toFixed(2));
+                if (curLevelText === undefined) RankText = `NaN`;
+                
+                /**
+                 * VOICE RANK
+                 */
+                const filteredVoice = client.points.filter(p => p.guild === message.guild.id).map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
+                const sortedVoice = filteredVoice
+                .sort((a, b) => { 
+                    if(b[`${theDbDatas[1][1]}`]) return b[`${theDbDatas[1][0]}`] - a[`${theDbDatas[1][0]}`] || b[`${theDbDatas[1][1]}`] - a[`${theDbDatas[1][1]}`];
+                    else return b[`${theDbDatas[1][0]}`] - a[`${theDbDatas[1][0]}`] || -1
+                }) 
+                let RankVoice = sortedVoice.splice(0, message.guild.memberCount).findIndex(d => d.user == rankuser.id) + 1;
+
+                if(!await client.points.get(key, `${theDbDatas[1][1]}`)) await client.points.set(key, 1, `${theDbDatas[1][1]}`)
+                if(!await client.points.get(key, `${theDbDatas[1][2]}`)) await client.points.set(key, 1, `${theDbDatas[1][2]}`)
+                let curLevelVoice = Number(await client.points.get(key, `${theDbDatas[1][0]}`));
+                let curpointsVoice = Number(await client.points.get(key, `${theDbDatas[1][1]}`)?.toFixed(2));
+                let curnextlevelVoice = Number(await client.points.get(key, `${theDbDatas[1][2]}`)?.toFixed(2));
+                if (curLevelVoice === undefined) RankVoice = `NaN`;
+                
+
+                
+                var xp_data = {
+                    avatar: rankMember && rankMember.avatar ? rankMember.displayAvatarURL({ dynamic: false, format: "png", size: 4096 }) : rankuser.displayAvatarURL({ dynamic: false, format: "png", size: 4096 }),
+                    text: {
+                        cur_level: Number(curLevelText),
+                        rank: Number(RankText),
+                        current: Number(curpointsText.toFixed(2)),
+                        needed: Number(curnextlevelText.toFixed(2)),
+                        percent: Number(Number(curpointsText.toFixed(2)) / Number(curnextlevelText.toFixed(2)) * 100).toFixed(2),
+                    },
+                    voice: {
+                        cur_level: Number(curLevelVoice),
+                        rank: Number(RankVoice),
+                        current: Number(curpointsVoice.toFixed(2)),
+                        needed: Number(curnextlevelVoice.toFixed(2)),
+                        percent: Number(Number(curpointsVoice.toFixed(2)) / Number(curnextlevelVoice.toFixed(2)) * 100).toFixed(2),
                     }
                 }
-                let j = 0;
-                //count server rank sometimes an error comes
-                if(!client.points.get(key, `${theDbDatas[1]}`)) client.points.set(key, 1, `${theDbDatas[1]}`)
-                if(!client.points.get(key, `${theDbDatas[2]}`)) client.points.set(key, 1, `${theDbDatas[2]}`)
-                let curpoints = Number(client.points.get(key, `${theDbDatas[1]}`)?.toFixed(2));
-                let curnextlevel = Number(client.points.get(key, `${theDbDatas[2]}`)?.toFixed(2));
-                if (client.points.get(key, `${theDbDatas[0]}`) === undefined) i = `No Rank`;
 
-               
-                var xp_data = {
-                    avatar: rankuser.displayAvatarURL({ dynamic: false, format: "png", size: 4096 }),
-                    text: {
-                        cur_level: Number(client.points.get(key, `${theDbDatas[0]}`)),
-                        rank: Number(i),
-                        current: Number(curpoints.toFixed(2)),
-                        needed: Number(curnextlevel.toFixed(2)),
-                        percent: Number(curpoints.toFixed(2)) / Number(curnextlevel.toFixed(2)) * 100,
-                    },
-                }
-
-
-                const canvas = Canvas.createCanvas(1500, 500);
+                const canvas = Canvas.createCanvas(3768, 2144);
                 const ctx = canvas.getContext("2d");
                 ctx.roundRect = function ( x, y, width, height, radius, fill, stroke ) {
                     //just make the rectangle rounded with a bit px
@@ -438,63 +454,94 @@ module.exports = function (client) {
                     fill    && this.fill();
                 };
                 ctx.save();
+                
+                
 
+                /**
+                 * GET THE USERBANNER
+                 */
+                let banner = null;
+                try {
+                    await rankuser.fetch().then(u => u.banner ? banner = rankuser.bannerURL({dynamic: false, format: "png", size: 4096}) : banner = false);
+                    if(!banner) await member.fetch().then(u => u.banner ? banner = rankuser.bannerURL({dynamic: false, format: "png", size: 4096}) : banner = false);
+                }catch(e){console.log(e)}
+/*
+                if(banner){
+                    const BannerBg = await Canvas.loadImage(banner)
+                    ctx.drawImage(BannerBg, 0, 0, canvas.width, canvas.height );
+                }
+*/
+                /**
+                 * DRAWING THE BACKGROUND
+                 */
                 const bg = await Canvas.loadImage("./assets/base.png")
                 ctx.drawImage(bg, 0, 0, canvas.width, canvas.height );
+
+                /**
+                 * DRAWING THE FLAGS
+                 */
                 if(rankuser.bot){
-                    if(rankuser.flags && rankuser.flags.toArray().includes("VERIFIED_BOT")){
-                        const bg = await Canvas.loadImage("https://cdn.discordapp.com/emojis/846290690534015018.png")
-                        ctx.drawImage(bg, 480, 175, 225, 80 );
-                    }else{
-                        const bg = await Canvas.loadImage("https://cdn.discordapp.com/attachments/820695790170275871/869218298833829948/bot.png")
-                        ctx.drawImage(bg, 480, 175, 150, 80 );
-                    }
+                    const FlagsX = 635;
+                    const FlagsY = 1850;
+                    const SizeY = 200;
+                    const SizeX = rankuser.flags && rankuser.flags.toArray().includes("VERIFIED_BOT") ? 400 : 301.1765
+                    let bgIMG = rankuser.flags && rankuser.flags.toArray().includes("VERIFIED_BOT") ? "https://cdn.discordapp.com/emojis/846290690534015018.png" : "https://cdn.discordapp.com/attachments/820695790170275871/869218298833829948/bot.png"
+                    const bg = await Canvas.loadImage(bgIMG)
+                    ctx.drawImage(bg, FlagsX-SizeX/2, FlagsY-SizeY/2, SizeX, SizeY);
                 }
                 else{
                     if(rankuser.flags) {
                         let flags = rankuser.flags.toArray();
-                        let member = message.guild.members.cache.get(rankuser);
-                        if(!member) member = await message.guild.members.fetch(rankuser).catch(() => {})
-                        if(member.premiumSinceTimestamp != 0) {
-                            if(member.premiumSinceTimestamp){
-                                flags.push("1_MONTH")
-                            }else if(member.premiumSinceTimestamp < Date.now() - (2-1) * 2678400000){
-                                flags.push("2_MONTH")
-                            } else if(member.premiumSinceTimestamp < Date.now() - (3-1) * 2678400000){
-                                flags.push("3_MONTH")
-                            } else if(member.premiumSinceTimestamp < Date.now() - (6-1) * 2678400000){
-                                flags.push("6_MONTH")
-                            } else if(member.premiumSinceTimestamp < Date.now() - (9-1) * 2678400000){
-                                flags.push("9_MONTH")
-                            } else if(member.premiumSinceTimestamp < Date.now() - (12-1) * 2678400000){
-                                flags.push("12_MONTH")
-                            } else if(member.premiumSinceTimestamp < Date.now() - (15-1) * 2678400000){
-                                flags.push("15_MONTH")
-                            } else if(member.premiumSinceTimestamp < Date.now() - (18-1) * 2678400000){
-                                flags.push("18_MONTH")
-                            } else if(member.premiumSinceTimestamp < Date.now() - 24 * 2678400000){
+                        let member = rankMember
+                        if(member.premiumSinceTimestamp && member.roles.cache.has(message.guild.roles.premiumSubscriberRole?.id)) {
+                            const getMonths = (t1, t2) => Math.floor((t1-t2)/1000/60/60/24/30) 
+                            const difference = getMonths(Date.now(), member.premiumSinceTimestamp);
+                            if(difference >= 24){
                                 flags.push("24_MONTH")
-                            } 
+                            } else if(difference >= 18){
+                                flags.push("18_MONTH")
+                            } else if(difference >= 15){
+                                flags.push("15_MONTH")
+                            } else if(difference >= 12){
+                                flags.push("12_MONTH")
+                            } else if(difference >= 9){
+                                flags.push("9_MONTH")
+                            } else if(difference >= 6){
+                                flags.push("6_MONTH")
+                            } else if(difference >= 3){
+                                flags.push("3_MONTH")
+                            } else if(difference >= 2){
+                                flags.push("2_MONTH")
+                            } else {
+                                flags.push("1_MONTH")
+                            }
                         }
-                        if(rankuser.displayAvatarURL({dynamic:true}).endsWith(".gif")) flags.push("NITRO")
                         if(flags.includes("EARLY_VERIFIED_DEVELOPER")){
                             const index = flags.indexOf("EARLY_VERIFIED_DEVELOPER");
                             if(index > -1){
                                 flags.splice(index, 1);
                             }
                         }
+                        
+                        //NITRO MUST BE ADDED AT THE END
+                        if(member && member.avatar || banner || rankuser.displayAvatarURL({dynamic:true}).endsWith(".gif")) flags.push("NITRO")
+                        
                         for(let i = 0; i< flags.length; i++){
+                            const Size = 200;
+                            const spaceBetween = 60;
+                            const x = 635 + i * Size + i * spaceBetween - (flags.length == 1 ? 0 : flags.length == 2 ? 1.5 * Size/2 : 3 * Size/2);
+                            const y = 1850;
                             if (flags[i] === "HOUSE_BALANCE") { 
                                 const bg = await Canvas.loadImage("https://discord.com/assets/9fdc63ef8a3cc1617c7586286c34e4f1.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size); 
                             } 
                             if (flags[i]  === "HOUSE_BRILLIANCE") { 
                                 const bg = await Canvas.loadImage("https://discord.com/assets/48cf0556d93901c8cb16317be2436523.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size);
                             } 
                             if (flags[i]  === "HOUSE_BRAVERY") { 
                                 const bg = await Canvas.loadImage("https://discord.com/assets/64ae1208b6aefc0a0c3681e6be36f0ff.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size);
                             } 
                             if (flags[i]  === "VERIFIED_DEVELOPER") { 
                                 const bg = await Canvas.loadImage("https://discord.com/assets/45cd06af582dcd3c6b79370b4e3630de.svg")
@@ -502,138 +549,179 @@ module.exports = function (client) {
                             } 
                             if (flags[i]  === "EARLY_SUPPORTER") { 
                                 const bg = await Canvas.loadImage("https://discord.com/assets/23e59d799436a73c024819f84ea0b627.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size);
                             } 
                             if(flags[i]  === "NITRO"){
                                 const bg = await Canvas.loadImage("https://cdn.discordapp.com/attachments/820695790170275871/869228654775918662/813372466759598110.png")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 100, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size+Size/5, Size);
                             }
                             if(flags[i]  === "1_MONTH"){
                                 const bg = await Canvas.loadImage("https://discordapp.com/assets/fbb6f1e160280f0e9aeb5d7c452eefe1.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size);
                             }
                             if(flags[i]  === "2_MONTH"){
                                 const bg = await Canvas.loadImage("https://discordapp.com/assets/b4b741bef6c3de9b29e2e0653e294620.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size);
                             }
                             if(flags[i]  === "3_MONTH"){
                                 const bg = await Canvas.loadImage("https://discordapp.com/assets/93f5a393e22796a850931483166d7cb9.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size);
                             }
                             if(flags[i]  === "6_MONTH"){
-                                const bg = await Canvas.loadImage("https://discordapp.com/assets/4c380650960c2b1e1584115d5e9ad63b?.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                const bg = await Canvas.loadImage("https://discordapp.com/assets/4c380650960c2b1e1584115d5e9ad63b.svg")
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size);
                             }
                             if(flags[i]  === "9_MONTH"){
                                 const bg = await Canvas.loadImage("https://discordapp.com/assets/438dd7ecbffcf21b6cbf2773ade51a04.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size);
                             }
                             if(flags[i]  === "12_MONTH"){
                                 const bg = await Canvas.loadImage("https://discordapp.com/assets/7a5f78de816fcecbbd1d5d6e635cc7dd.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size);
                             }
                             if(flags[i]  === "15_MONTH"){
                                 const bg = await Canvas.loadImage("https://discordapp.com/assets/5a24b20b84fb3eafc138916729386e76.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size);
                             }
                             if(flags[i]  === "18_MONTH"){
                                 const bg = await Canvas.loadImage("https://discordapp.com/assets/f31d590e1f3629cd0b614330f4a8ee2a.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size);
                             }
                             if(flags[i]  === "24_MONTH"){
                                 const bg = await Canvas.loadImage("https://discordapp.com/assets/9ba64f1fa91ccde0eba506c1c33f3d1a.svg")
-                                ctx.drawImage(bg, 480 + 80 * i + (i > 0 ? 15 : 0), 175, 80, 80 ); 
+                                ctx.drawImage(bg, x-Size/2, y-Size/2, Size, Size);
                             } 
                         }
                    } 
                 }
+
                 ctx.restore();
                 ctx.save();
+
+                /**
+                 * DRAWING THE AVATAR
+                 */
+                const AvatarSize = 912; AvatarX = 167, AvatarY = 307;
+
+                // COLOR BACKGROUND
+                const grd = ctx.createLinearGradient(AvatarX, AvatarY, AvatarSize, AvatarSize );
+                grd.addColorStop(0, "#d3357a");
+                grd.addColorStop(1, "#3a0c7b");
+                ctx.lineWidth = 30;
+                ctx.fillStyle = grd;
+                ctx.strokeStyle = grd;
+                ctx.beginPath()
+                ctx.arc(AvatarX + AvatarSize/2, AvatarY + AvatarSize/2, AvatarSize/2+ ctx.lineWidth, 0, Math.PI * 2, false); 
+                ctx.closePath();
+                ctx.fill();
+                //Draw avatar
                 ctx.beginPath();
-                ctx.arc(126 + 158.5, 92 + 158.5, 158.5, 0, Math.PI * 2, true); 
+                ctx.arc(AvatarX + AvatarSize/2, AvatarY + AvatarSize/2, AvatarSize/2, 0, Math.PI * 2, true); 
                 ctx.closePath();
                 ctx.clip();
                 const avatar = await Canvas.loadImage(xp_data.avatar);
-                ctx.drawImage(avatar, 126, 92, 317, 317);
+                ctx.drawImage(avatar, AvatarX, AvatarY, AvatarSize, AvatarSize);
 
+                //restore ctx
                 ctx.restore();
 
-
-                let currWidth = 0;
-
-                ctx.font = `bold 57px ${Fonts}`;
+                /**
+                 * DRAWING THE USERNAME
+                 */
+                const NameX = 635;
+                const NameY = 1530;
+                let fontsize = 250;
+                ctx.font = `bold ${fontsize}px ${Fonts}`;
                 ctx.fillStyle = "#ffffff"
-
-
-                let fontsize = 57;
                 const name = rankuser.username;
-
-                while(ctx.measureText(name).width > 550){
-                    ctx.font = `bold ${ fontsize-- }px ${Fonts}`;
+                while(ctx.measureText(name).width > 1200-fontsize){
+                    const newFont = `bold ${ fontsize-- }px ${Fonts}`
+                    console.log(newFont)
+                    ctx.font = newFont;
                 }
-                for (const character of name) {
-                    const parseEmoji = parse(character);
-                    if ( parseEmoji?.length ) {
-        
-                        const img = await Canvas.loadImage( parseEmoji[0].url );
-        
-                        ctx.drawImage( img, 482 + currWidth, 149 - fontsize + 10, fontsize - 3, fontsize - 3 );
-        
-                        currWidth += fontsize;
-        
-                    } else {
-                        ctx.fillText( character, 482 + currWidth, 149 );
-                        currWidth += ctx.measureText( character ).width;
-                    };
+                const NameYSpace = fontsize/2;
+                const TextNameSize = ctx.measureText(name).width
+                canvacord.Util.renderEmoji(ctx, name, NameX -TextNameSize/2, NameY - fontsize/2 + NameYSpace)
+
+                /**
+                 * DRAWING THE DISCRIMINATOR
+                 */
+                const disriminator = "#"+ rankuser.discriminator
+                ctx.font = `bold 125px ${Fonts}`;
+                ctx.fillStyle = "#3d4459"
+                const TextDiscriminatorSize = ctx.measureText(disriminator).width
+                ctx.fillText(disriminator, NameX + TextNameSize/2 - TextDiscriminatorSize, NameY - fontsize/2 + NameYSpace + 150);
+
+                /**
+                 * DRAWING THE RANKS
+                 */
+                const TextRankX = 1985;
+                const TextRankY = 660;
+                const VoiceRankX = 1985;
+                const VoiceRankY = 1755;
+                ctx.fillStyle = "#1d68ff";
+                ctx.font = `bold italic 150px ${Fonts}`;
+                ctx.fillText(xp_data.text.rank, TextRankX , TextRankY);
+                ctx.fillText(xp_data.voice.rank, VoiceRankX , VoiceRankY);
+
+                /**
+                 * DRAWING THE LEVELS
+                 */
+                const TextLevelX = 3105;
+                const TextLevelY = 660;
+                const VoiceLevelX = 3105;
+                const VoiceLevelY = 1755;
+                ctx.fillStyle = "#1d68ff";
+                ctx.font = `bold italic 150px ${Fonts}`;
+                ctx.fillText(xp_data.text.cur_level, TextLevelX , TextLevelY);
+                ctx.fillText(xp_data.voice.cur_level, VoiceLevelX , VoiceLevelY);
+
+                DrawProgressionBar("#3a0c7b", "#d3357a", 1550, 850, 2000, 125, xp_data.text.current, xp_data.text.needed, 3475, 835, "TEXT")
+                DrawProgressionBar("#3a0c7b", "#d3357a", 1550, 1985, 2000, 125, xp_data.voice.current, xp_data.voice.needed, 3475, 1970, "VOICE")
+                
+                function DrawProgressionBar(LeftColor, RightColor, StartX, StartY, Width, Height, current, Needed, ProgressionRightX, ProgressionRightY, BarDescription){
+                    const bounds = (Height + 5) / 2;
+                    const DataRadius = { upperLeft: bounds, upperRight: bounds, lowerLeft: bounds, lowerRight: bounds }
+                    const percent = Number(current / Needed * 100).toFixed(2);
+                    // Save the ctx current settings
+                    ctx.save();
+                    // CREATE THE ROUNDED BOARDED
+                    ctx.beginPath();
+                    ctx.roundRect(StartX - 2, StartY - Height - 2, Width + 3, Height + 5, DataRadius, false, false );
+                    ctx.closePath();
+                    ctx.clip();
+                    //DRAW BACKGROUND
+                    const BGgrd = ctx.createLinearGradient(StartX, StartY, Width, Height );
+                    BGgrd.addColorStop( 0, "#0e101a");
+                    BGgrd.addColorStop( 1, "#080a0f");
+                    ctx.lineWidth = 4;
+                    ctx.fillStyle = BGgrd;
+                    ctx.strokeStyle = BGgrd;
+                    ctx.roundRect(StartX, StartY - Height, Width, Height, DataRadius, true, true );
+                    //Draw bar
+                    const grd = ctx.createLinearGradient(StartX, StartY, Width, Height );
+                    grd.addColorStop( 0, LeftColor);
+                    grd.addColorStop( 1, RightColor);
+                    ctx.lineWidth = 4;
+                    ctx.fillStyle = grd;
+                    ctx.strokeStyle = grd;
+                    ctx.roundRect(StartX, StartY - Height, Width, Height, DataRadius, false, true );
+                    ctx.roundRect(StartX, StartY - Height, Width * ( percent / 100 ) , Height, DataRadius, true, false );
+                    //restore ctx
+                    ctx.restore();
+                    //draw text
+                    const progressionText = `${xp_data.text.current} / ${xp_data.text.needed}`;
+                    const FontSize = Height - Height/6;
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = `regular ${FontSize}px ${Fonts}`;
+                    ctx.fillText(progressionText, ProgressionRightX - ctx.measureText(progressionText).width + (Height/2.5)/2, ProgressionRightY - Height/2 + FontSize/2);
+                    ctx.fillText(BarDescription, StartX + Height/2.5, ProgressionRightY - Height/2 + FontSize/2)
                 }
-                const disriminator =  "#"+ rankuser.discriminator
-                ctx.font = `bold 35px ${Fonts}`;
-                ctx.fillStyle = "#666A73"
-                ctx.fillText( disriminator, 482 + currWidth, 149 );
-
-
-                ctx.fillStyle = "#008BFF";
-                ctx.font = `bold 57px ${Fonts}`;
-                let ranklength = ctx.measureText( xp_data.text.rank ).width;
-                ctx.fillText( xp_data.text.rank, 1369 - ranklength , 92 + 57 );
-
-                ctx.fillStyle = "#ffffff";
-                ctx.font = `bold 38px ${Fonts}`;
-
-                ctx.globalAlpha = 0.2;
-                ctx.fillText( "Rank:" , 1345 - ranklength - ctx.measureText("Rank").width , 92 + 57 );
-                ctx.globalAlpha = 1;
-
-                ctx.font = `regular 31px ${Fonts}`;
-                // —— Creation of the experience progress bar
-                const grd = ctx.createLinearGradient( 482, 349, 907, 59 );
-                grd.addColorStop( 0, "#4e5ff4" );
-                grd.addColorStop( 1, "#2345e5" );
-                ctx.lineWidth = 4;
-                ctx.fillStyle = grd;
-                ctx.strokeStyle = grd;
-
-                ctx.beginPath();
-                ctx.roundRect( 480, 347, 910, 63, { upperLeft: 32.5, upperRight: 32.5, lowerLeft: 32.5, lowerRight: 32.5 }, false, false );
-                ctx.closePath();
-                ctx.clip();
-
-                ctx.roundRect( 482, 349, 907, 59, { upperLeft: 32.5, upperRight: 32.5, lowerLeft: 32.5, lowerRight: 32.5 }, false, true );
-                ctx.roundRect( 482, 349, 907 * ( xp_data.text.percent / 100 ) , 59, { upperLeft: 32.5, upperRight: 32.5, lowerLeft: 32.5, lowerRight: 32.5 }, true, false );
-
-                ctx.font = `regular 38px ${Fonts}`;
-                ctx.fillStyle = "#ffffff";
-                ctx.fillText( `Lvl. ${ xp_data.text.cur_level }`, 505, 355 + 36 );
-
-                ctx.font = `regular 31px ${Fonts}`;
-
-                const progression = ` ${xp_data.text.current} / ${xp_data.text.needed}`;
-
-                ctx.fillText( progression, 1369 - ctx.measureText( progression ).width, 356 + 33 );
-
+                
                 return tempmessage.edit({
                     content: `${tempmessage.content}${type == "voice" ? `\n**Connected Time:** ${duration(client.points.get(key, "voicetime") * 60 * 1000).map(i=>`\`${i}\``).join(", ")}\n**Note:** *\`You only gain Points, if you leave the Channel!\`*`: ""}`,
-                    files:[new Discord.MessageAttachment( canvas.toBuffer(), "card.png" )]});;
+                    files:[new Discord.MessageAttachment( canvas.toBuffer(), "card.png" )]});
+
             } catch (error) {
                 console.log(error)
                 message.reply(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable17"]));
@@ -1652,10 +1740,7 @@ module.exports = function (client) {
                 oldmessage: "",
             });
             client.points.set(key, newState.member.user.tag, `usertag`); 
-            let VoicePoints = 0;
-            for(let i = 0; i < (connectedTime / 60000); i++) {
-                VoicePoints += 5;
-            }
+            let VoicePoints = Math.floor(connectedTime / 60000)
             client.points.math(key, "+", Math.floor(connectedTime / 60000), `voicetime`); 
             //console.log("CONNECTED TIME: " + Math.floor(connectedTime / 60000) + "min | " + "POINTS FOR IT: " + VoicePoints);
             let curPoints = client.points.get(key, `voicepoints`);
