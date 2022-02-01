@@ -7,7 +7,7 @@ module.exports = {
 	//definition
 	name: "compile", //the name of the command 
 	category: "⌨️ Programming", //the category this will be listed at, for the help cmd
-	aliases: [""], //every parameter can be an alias
+	aliases: ["code"], //every parameter can be an alias
 	cooldown: 4, //this will set it to a 4 second cooldown
 	usage: "compile <Code>", //this is for the help command for EACH cmd
   	description: "Compile Code", //the description of the command
