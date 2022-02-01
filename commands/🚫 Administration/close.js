@@ -25,7 +25,7 @@ module.exports = {
       let adminroles = client.settings.get(message.guild.id, "adminroles")
       let cmdroles = client.settings.get(message.guild.id, "cmdadminroles.ticket")
       let cmdroles2 = client.settings.get(message.guild.id, "cmdadminroles.close")
-      try{for (const r of cmdroles2) cmdrole.push(r)}catch{}
+      try{for (const r of cmdroles2) cmdroles.push(r)}catch{}
      
       if( !client.setups.get("TICKETS", "tickets")?.includes(message.channel.id) &&
           !client.setups.get("TICKETS", "tickets1")?.includes(message.channel.id) &&
