@@ -1,4 +1,4 @@
-﻿
+
 /**********************************************************
  * @INFO  [TABLE OF CONTENTS]
  * 1  Import_Modules
@@ -143,7 +143,7 @@ function requirehandlers(){
 /**********************************************************
  * @param {9} Login_to_the_Bot
  *********************************************************/
-client.login(config.token);
+client.login(config.token || process.env.token);
 
 
 /**********************************************************
