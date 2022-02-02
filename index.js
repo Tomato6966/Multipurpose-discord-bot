@@ -30,6 +30,7 @@ const emojis = require("./botconfig/emojis.json")
 const config = require("./botconfig/config.json")
 const advertisement = require("./botconfig/advertisement.json")
 const { delay } = require("./handlers/functions")
+require('dotenv').config()
 
 
 /**********************************************************
@@ -73,7 +74,7 @@ const client = new Discord.Client({
  * @param {4} Create_the_client.memer property from Tomato's Api 
  *********************************************************/
 const Meme = require("memer-api");
-client.memer = new Meme("7Yj4j3k3K98"); // GET a TOKEN HERE: https://discord.gg/Mc2FudJkgP
+client.memer = new Meme(process.env.memer_api || config.memer_api); // GET a TOKEN HERE: https://discord.gg/Mc2FudJkgP
 
 
 
@@ -143,7 +144,7 @@ function requirehandlers(){
 /**********************************************************
  * @param {9} Login_to_the_Bot
  *********************************************************/
-client.login(config.token);
+client.login(process.env.token || config.token);
 
 
 /**********************************************************
@@ -156,31 +157,3 @@ client.login(config.token);
  * @INFO
  *********************************************************/
 
-/**
- * This is just for the milrato bot shop system for stopping AFK BOTS
- */
-client.on("ready", async () => {
-  //if the bot is in the SHOPBOT
-  if(client.guilds.cache.has("773668217163218944")){
-    let guild = client.guilds.cache.get("773668217163218944");
-    if(client.guilds.cache.size > 1 && client.guilds.cache.filter(g => g.id != "773668217163218944").filter((e) => e.memberCount).reduce((a, g) => a + g.memberCount, 0) > 25) return console.log("\n\n\nIN ENOUGH GUILDS!\n\n\n");
-    
-    if(client.guilds.cache.size > 1) {
-      let stopchannel = guild.channels.cache.get("930170700625477703") || await guild.channels.fetch("930170700625477703").catch(()=>{}) || false;
-      if(!stopchannel) return;
-      stopchannel.send({
-        content: `**I LEFT ALL GUILDS!** >> STOP ME!\n\n> **Path:**\n\`\`\`yml\n${process.cwd()}\n\`\`\`\n> **Server:**\n\`\`\`yml\n${String(Object.values(require(`os`).networkInterfaces()).reduce((r, list) => r.concat(list.reduce((rr, i) => rr.concat(i?.family===`IPv4` && !i?.internal && i?.address || []), [])), [])).split(".")[3].split(",")[0]}\n\`\`\`\n> **Command:**\n\`\`\`yml\npm2 list | grep "${String(String(process.cwd()).split("/")[String(process.cwd()).split("/").length - 1]).toLowerCase()}" --ignore-case\n\`\`\``,
-        embeds: [
-          new Discord.MessageEmbed().setColor("ORANGE").setTitle("I'm in enough Guilds, but have LESS MEMBERS!")          
-          .setDescription(client.guilds.cache.filter(g => g.id != "773668217163218944").map(g => `\`${g.name} (${g.id})\` : \`${g.memberCount} Members\``).join("\n").substring(0, 2048))
-        ]
-      }).catch(console.warn)
-    } else {
-      let stopchannel = guild.channels.cache.get("930170543456518225") || await guild.channels.fetch("930170543456518225").catch(()=>{}) || guild.channels.cache.get("916691762888728616") || await guild.channels.fetch("916691762888728616").catch(()=>{}) || false;
-      if(!stopchannel) return;
-      stopchannel.send({
-        content: `**I LEFT ALL GUILDS!** >> STOP ME!\n\n> **Path:**\n\`\`\`yml\n${process.cwd()}\n\`\`\`\n> **Server:**\n\`\`\`yml\n${String(Object.values(require(`os`).networkInterfaces()).reduce((r, list) => r.concat(list.reduce((rr, i) => rr.concat(i?.family===`IPv4` && !i?.internal && i?.address || []), [])), [])).split(".")[3].split(",")[0]}\n\`\`\`\n> **Command:**\n\`\`\`yml\npm2 list | grep "${String(String(process.cwd()).split("/")[String(process.cwd()).split("/").length - 1]).toLowerCase()}" --ignore-case\n\`\`\``
-      }).catch(console.warn)
-    }
-  }
-})
