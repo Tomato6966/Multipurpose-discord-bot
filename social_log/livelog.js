@@ -52,7 +52,7 @@ module.exports = async client => {
         let member = await guild.members.fetch(chan.DISCORD_USER_ID).catch(() => {});;
         if(!member) return console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  MEMBER NOT FOUND!`.magenta)
         
-        let StreamData = await getStreamData(chan.ChannelName, config.twitch_clientID, config.authToken);
+        let StreamData = await getStreamData(chan.ChannelName, process.env.twitch_clientID || config.twitch_clientID, config.authToken);
         if(!StreamData) return console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  No Stream Data`.magenta)
         if(!StreamData.data || StreamData.data.length == 0)  {
           if(tempData.roleID_GIVE && guild.roles.cache.has(tempData.roleID_GIVE) && member.roles.cache.has(tempData.roleID_GIVE))
@@ -73,7 +73,7 @@ module.exports = async client => {
         }
         
         //get the channel data for the thumbnail image
-        const ChannelData = await getChannelData(chan.ChannelName, config.twitch_clientID, config.authToken)
+        const ChannelData = await getChannelData(chan.ChannelName, process.env.twitch_clientID || config.twitch_clientID, config.authToken)
         if (!ChannelData) return console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  NO TWITCH CHANNEL DATA INFORMATION FOUND`.magenta)
         
 
@@ -177,7 +177,7 @@ module.exports = async client => {
 
   async function UpdateAuthConfig(){
     let tempData = JSON.parse(fs.readFileSync('./social_log/streamconfig.json'));
-    const authKey = await getKey(tempData.twitch_clientID, tempData.twitch_secret);
+    const authKey = await getKey(process.env.twitch_clientID || tempData.twitch_clientID, process.env.twitch_secret || tempData.twitch_secret);
     if (!authKey) return console.log(`NO AUTH`);
     var tempConfig = JSON.parse(fs.readFileSync('./social_log/streamconfig.json'));
     tempConfig.authToken = authKey;

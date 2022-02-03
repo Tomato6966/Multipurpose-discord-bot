@@ -30,6 +30,7 @@ const emojis = require("./botconfig/emojis.json")
 const config = require("./botconfig/config.json")
 const advertisement = require("./botconfig/advertisement.json")
 const { delay } = require("./handlers/functions")
+require('dotenv').config()
 
 
 /**********************************************************
@@ -73,7 +74,7 @@ const client = new Discord.Client({
  * @param {4} Create_the_client.memer property from Tomato's Api 
  *********************************************************/
 const Meme = require("memer-api");
-client.memer = new Meme("7Yj4j3k3K98"); // GET a TOKEN HERE: https://discord.gg/Mc2FudJkgP
+client.memer = new Meme(process.env.memer_api || config.memer_api); // GET a TOKEN HERE: https://discord.gg/Mc2FudJkgP
 
 
 
@@ -143,7 +144,7 @@ function requirehandlers() {
 /**********************************************************
  * @param {9} Login_to_the_Bot
  *********************************************************/
-client.login(config.token);
+client.login(process.env.token || config.token);
 
 
 /**********************************************************
