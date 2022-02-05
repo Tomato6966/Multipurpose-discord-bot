@@ -119,7 +119,7 @@ module.exports = client => {
   });
 
   client.on("guildCreate", async guild => {
-    if(!guild || guild.available === false) return
+    if(!guild || guild.available === false) return;
     let theowner = "NO OWNER DATA! ID: ";
     await guild.fetchOwner().then(({ user }) => {
       theowner = user;
@@ -135,6 +135,7 @@ module.exports = client => {
       .addField("Servers Bot is in", `>>> \`\`\`${client.guilds.cache.size}\`\`\``)
       .addField("Leave Server:", `>>> \`\`\`${config.prefix}leaveserver ${guild.id}\`\`\``)
       .setThumbnail(guild.iconURL({dynamic: true}));
+      if (!client.settings.get(guild.id,"showjoinandleave")) return;
     for(const owner of config.ownerIDS){
       //If the Owner is Tomato, and the Bot is in not a Milrato Development, Public Bot, then dont send information!
       if(owner == "442355791412854784"){
@@ -150,7 +151,8 @@ module.exports = client => {
   });
 
   client.on("guildDelete", async guild => {
-    if(!guild || guild.available === false) return
+    if(!guild || guild.available === false) return;
+    if (!config.status.showJoinAndLeave) return;
     function clearDBData(key) {
       function cleardb(db, theKey) {
         if(db && db?.has(theKey)) {
@@ -203,6 +205,7 @@ module.exports = client => {
       .addField("Member Count", `>>> \`\`\`${guild.memberCount}\`\`\``)
       .addField("Servers Bot is in", `>>> \`\`\`${client.guilds.cache.size}\`\`\``)
       .setThumbnail(guild.iconURL({dynamic: true}));
+      if (!client.settings.get(guild.id,"showjoinandleave")) return;
     for(const owner of config.ownerIDS){
       //If the Owner is Tomato, and the Bot is in not a Milrato Development, Public Bot, then dont send information!
       if(owner == "442355791412854784"){
