@@ -33,6 +33,7 @@
          "enabled": true,
          "time_delay": 30000
       },
-      "selfDeaf": true
+      "selfDeaf": true,
+      "showJoinAndLeave": true
    }
 }
