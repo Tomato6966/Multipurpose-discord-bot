@@ -1772,6 +1772,7 @@ function databasing(client, guildid, userid) {
         volume: "69",
         adminroles: [],
         language: "en",
+        showjoinandleave: config.settings.showJoinAndLeave,
 
         mute: {
           style: "timeout",
