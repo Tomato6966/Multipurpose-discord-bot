@@ -1,0 +1,7 @@
+/node_modules
+/databases
+/social_log/youtubelog
+/social_log/streamconfig.json
+json.sqlite
+package-lock.json
+.env

@@ -1,22 +1,22 @@
 {
    "token": "",
-   "prefix": "t!",
+   "prefix": "?",
    "ownerIDS": [
-      "442355791412854784"
+      "96932876871811072"
    ],
-   "memer_api": "get it from: https://discord.gg/Mc2FudJkgP",
+   "memer_api": "",
    "status": {
-      "text": "{prefix}help | milrato.eu",
-      "text2": "by: discord.gg/milrato",
-      "type": "PLAYING",
-      "url": "https://twitch.tv/milratoDiscordBot"
+      "text": "{prefix}help | All Purposes Bot",
+      "text2": "Your Best Companion Guide!",
+      "type": "LISTENING",
+      "url": "https://twitch.tv/hanstiefel"
    },
    "clientsettings": {
       "nodes": [
          {
-            "host": "localhost",
+            "host": "node04.lavalink.eu",
             "port": 2333,
-            "password": "youshallnotpass"
+            "password": "Raccoon"
          }
       ]
    },
