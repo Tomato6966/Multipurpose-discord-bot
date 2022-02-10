@@ -14,9 +14,9 @@
    "clientsettings": {
       "nodes": [
          {
-            "host": "node04.lavalink.eu",
-            "port": 2333,
-            "password": "Raccoon"
+            "host": "lava.link",
+            "port": 80,
+            "password": "anything as a password"
          }
       ]
    },
