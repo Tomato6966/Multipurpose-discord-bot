@@ -172,8 +172,6 @@ requirehandlers();
   *********************************************************/
 client.cluster = new Cluster.Client(client); //Init the Client & So we can also access broadcastEval...
 client.login(process.env.token || config.token);
-//start the dashboard
-//require("/home/Milrato-Developers/index.js")(client);
  
  /**********************************************************
   * @INFO
@@ -288,3 +286,9 @@ client.on("interactionCreate", (interaction) => {
     });
   }
 });
+
+
+//start the dashboard if on cluster 0
+if(client.cluster.id == 0) {
+   //require("/home/Milrato-Developers/index.js")(client);
+}
