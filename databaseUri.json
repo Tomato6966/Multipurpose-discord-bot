@@ -1,0 +1,3 @@
+{
+    "mongoUri": "mongodb://<username>:<password>@<IP>:<PORT>/<DatabaseName>"
+}
