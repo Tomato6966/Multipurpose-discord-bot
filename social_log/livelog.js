@@ -2,26 +2,26 @@
 const request = require('request'),
 Discord = require('discord.js'),
 CronJob = require('cron').CronJob,
-config = require(`./streamconfig.json`),
+config = require(`../social_log/streamconfig.json`),
 fs = require('fs');
 const { dbEnsure, delay } = require('../handlers/functions');
 const moment = require(`moment`)
 module.exports = async client => {
  //function that will run the checks
 
- client.Joblivelog = new CronJob('0 */7 * * * *', async function() {
-   await delay(1 * 60 * 1000)
-   console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} ::  Checking Accounts - ${moment().format(`LLLL`)}`.magenta)
-   var guilds = await client.social_log.all().then(d => {
-    return d.filter(d => d?.data?.twitch?.channels?.length > 0 && d?.data?.twitch.channelId?.length > 1).map(v => v.data.twitch)
-})
-if(!guilds) return;
-   for(const g of guilds){
-     var guild = client.guilds.cache.get(g.DiscordServerId);
-     if(!guild) continue;
-     getStreams(guild);
-     await delay(1500);
-   }
+ client.Joblivelog = new CronJob('0 1,9,17,23,29,35,41,47,53,59 * * * *', async function() {
+    console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} ::  Checking Accounts - ${moment().format(`LLLL`)}`.magenta)
+    var guilds = await client.social_log.all().then(d => {
+        return d.filter(d => d?.data?.twitch?.channels?.length > 0 && d?.data?.twitch.channelId?.length > 1).map(v => v.data.twitch)
+    })
+    if(!guilds) return;
+    for(const g of guilds){
+      var guild = client.guilds.cache.get(g.DiscordServerId);
+      if(!guild) continue;
+      getStreams(guild);
+      await delay(1500);
+    }
+    return true;
  }, null, true, 'America/Los_Angeles');
 
  //update the authorization key every hour

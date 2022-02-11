@@ -6,9 +6,7 @@ const { delay, dbEnsure } = require('../handlers/functions');
 const moment = require(`moment`)
 module.exports = async (client) => {
 
-    client.Jobtiktok = new CronJob('0 */7 * * * *', async function(){
-        await delay(2 * 60 * 1000)
-        
+    client.Jobtiktok = new CronJob('0 2,10,18,24,32,36,42,48,54 * * * *', async function(){
         var guilds = await client.social_log.all().then(d => {
             return d.filter(d => d?.data?.tiktok?.channels?.length > 0 && d?.data?.tiktok.dc_channel > 1).map(d => d.ID)
         })

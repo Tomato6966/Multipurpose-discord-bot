@@ -5,8 +5,7 @@ const { databasing, delay, getLatestVideos, channelInfo } = require('../handlers
 
 module.exports = async (client) => {
 
-    client.Jobyoutube = new CronJob('0 */7 * * * *', async function(){
-        await delay(4 * 60 * 1000)
+    client.Jobyoutube = new CronJob('0 3,11,19,25,31,37,43,49,55 * * * *', async function(){
         check(client); 
     }, null, true, 'America/Los_Angeles');
     

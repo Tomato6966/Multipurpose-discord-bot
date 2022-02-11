@@ -4,9 +4,9 @@ const { dbEnsure, delay } = require(`${process.cwd()}/handlers/functions`)
 var CronJob = require('cron').CronJob;
 module.exports = async (client) => {
   //create the job with a "7" Minute delay!
-  client.Jobtwitterfeed  = new CronJob('0 */7 * * * *', async function() {
-    await delay(3 * 60 * 1000)
+  client.Jobtwitterfeed  = new CronJob('0 0,8,16,22,28,34,40,46,52,58 * * * *', async function() {
     create_twit(client);
+    return true;
   }, null, true, 'Europe/Berlin');
 
   client.on('ready', () => {
