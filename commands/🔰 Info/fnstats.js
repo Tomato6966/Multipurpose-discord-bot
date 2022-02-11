@@ -60,7 +60,8 @@ module.exports = {
         if (platform !== "pc" && platform !== "xbl" && platform !== "psn") platform = "pc";
         let themsg = await message.reply(`<a:Loading:833101350623117342> Getting the Fortnite Stats of ${Epic}`)
         const stats = new Canvas.FortniteStats()
-        const image = await stats.setToken("e032828b-886d-4ed6-9aa1-0e2e725592a8")
+        const image = await stats.setToken(
+          process.env.fortnitetracker || config.fortnitetracker)
           .setUser(Epic)
           .setPlatform(platform.toLowerCase())
           .toAttachment();
