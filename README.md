@@ -6,6 +6,10 @@
 
 
 # Important notes and thank ❤️
+This is the sharded version of [Milrato](https://milrato.com) [(CLAN BOT SOURCE CODE - MAIN)](https://github.com/Tomato6966/Multipurpose-discord-bot), it is needed to be used, if ur bot is above 1800 Guilds! *Note, it is suggested to be used, since the beginning, as the db can't get converted from the main to the `sharded_with_mongo` version, and it really doesn't use much memory, it won't work on a replit.com tho, as it needs more resources for the shards....*
+
+If you want you can add a DASHBOARD too, an example how to start it, is listed in `bot.js` at the very bottom!
+
 First of all, thanks for using this Source Code, it was and is a ton of work to create and maintain it!
 That's why I'm asking everyone to [**donate a little bit of money**](https://donate.milrato.dev) or if that's not possible, then join my [Discord Server](https://discord.gg/milrato)!
 
@@ -94,6 +98,8 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 <details>
   <summary>Click to expand</summary>
 
+  **NOTE:** *you can do the exact same configuration inside of the `example.env` File, just make sure to rename it to `.env` or use environment variables!*
+ 
    1. Check `🎶 Music Requirements` that you started lavalink / use a valid public lavalink station
    2. Fill in all required data in `./botconfig/config.json` **NOTE:** *If you're on replit.com, it is exposed to everyone!(use .env instead)*
    3. Fill in all required data in the `.json` Files in `./social_log/` (`./social_log/streamconfig.json` & `./social_log/twitter.json`), if you want the SOCIAL LOGS to work! (the key `authToken` in streamconfig is not needed to be filled in!)
@@ -109,6 +115,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
   <summary>Click to expand</summary>
 
   **NOTE:** *you can do the exact same configuration inside of the `example.env` File, just make sure to rename it to `.env` or use environment variables!*
+ 
   1. `./botconfig/config.json`
      * `token` you can get from: [discord-Developers](https://discord.com/developers/applications)
      * `memer_api` you can get from: [Meme-Development DC](https://discord.gg/Mc2FudJkgP)
