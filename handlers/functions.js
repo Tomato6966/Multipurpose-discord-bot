@@ -2171,87 +2171,76 @@ function change_status(client) {
     });
   }
 }
-
+// Check if there is a setup-jointocreate vc with members in it to create temp channels
 async function check_voice_channels(client) {
-  let guilds = client.guilds.cache.map(guild => guild.id);
-  for (let i = 0; i < guilds.length; i++) {
-      try {
-          let guild = client.guilds.cache.get(guilds[i]);
-          if(!guild) continue;
-          const obj = {}
-          for(let i = 1; i<=100; i++) {
-            obj[`jtcsettings${i}`] = {
-              channel: "",
-              channelname: "{user}' Room",
-              guild: guild.id,
-            }
-          }
-          await dbEnsure(client.jtcsettings, guild.id, obj);
-          let jointocreate = []; //get the data from the database onto one variables
-          const rawData = await client.jtcsettings.get(guild.id)
-          for(let i = 1; i<=100; i++) {
-            jointocreate.push(rawData[`jtcsettings${i}`]?.channel);
-          }
-          await guild.channels.cache.filter(ch => ch.type == "GUILD_VOICE" && jointocreate.includes(ch.id)).each(async (channel, j) => {
-              try{
-                  let members = channel.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
-                  if (members && members.length != 0){
-                      for (let k = 0; k < members.length; k++) {
-                          let themember = await guild.members.fetch(members[k]).catch(() => {});
-                          create_join_to_create_Channel(client, themember.voice, j + 1);
-                      }
-                  }else {
-                      //console.log("NO MEMBERS")
-                  }
-              }catch (e){
-                  console.error(e)
-              }
-
-          });
-      } catch (e) {
+  console.log("CHECK_VOICE_CHANNELS")
+  let rawData = await client.jtcsettings.all()
+  const guilds = [...client.guilds.cache.values()]
+  .filter(g => rawData.find(d => d.ID == g.id)?.data && typeof rawData.find(d => d.ID == g.id)?.data == "object")
+  .filter(g => Object.entries(rawData.find(d => d.ID == g.id)?.data).filter(([key, value]) => value && value.channel && value.channel.length > 6).length > 0);
+  if(!guilds || guilds.length == 0) return console.log(" CHECK SETUPPED :: NO GUILDS")
+  for(const guild of guilds) {
+    for(const [key, value] of Object.entries(rawData.find(d => d.ID == guild.id)?.data).filter(([key, value]) => value && value.channel && value.channel.length > 6)) {
+       
+      let channel = guild.channels.cache.find(ch => ch.type == "GUILD_VOICE" && value.channel == ch.id)
+      if(!channel) continue;
+      
+      try{
+        let members = channel.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
+        if (!members || members.length == 0) continue;
+        for(const member of members) {
+          let themember = await guild.members.fetch(member).catch(() => {});
+          if(!themember) continue;
+          create_join_to_create_Channel(client, themember.voice, key);
+        }
+      }catch (e){
           console.error(e)
+          continue;
       }
+    }
   }
   return;
 }
 
 async function check_created_voice_channels(client) {
-  let guilds = client.guilds.cache.map(guild => guild.id);
-  for (let i = 0; i < guilds.length; i++) {
-      try {
-          let guild = client.guilds.cache.get(guilds[i]);      
-          if(guild) {
-            guild.channels.cache.filter(ch => ch.type == "GUILD_VOICE").each(async vc => {
-              try{
-                  if(await client.jointocreatemap.get(`tempvoicechannel_${vc.guild.id}_${vc.id}`) == vc.id){
-                      let members = vc.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
-                      if(!members || members == undefined || members.length == undefined || members.length == 0){
-                        await client.jointocreatemap.delete(`tempvoicechannel_${vc.guild.id}_${vc.id}`);
-                        await client.jointocreatemap.delete(`owner_${vc.guild.id}_${vc.id}`);
-                        //move user
-                        if(vc.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
-                          vc.delete().catch(e => console.error(e) )
-                          console.log(`Deleted the Channel: ${vc.name} in: ${vc.guild ? vc.guild.name : "undefined"} DUE TO EMPTYNESS`.strikethrough.brightRed)
-                        } else {
-                          console.log(`I couldn't delete the Channel: ${vc.name} in: ${vc.guild ? vc.guild.name : "undefined"} DUE TO EMPTYNESS`.strikethrough.brightRed)
-                        }                          
-                      }
-                  }
-              }catch (e){
-                 // console.log("Not in db")
-              }
-            });
-          }
-      } catch (e) {
-          console.error(e)
+  console.log("CHECK_CREATED_VOICE_CHANNELS")
+  let map = await client.jointocreatemap.all();
+  for(const guild of [...client.guilds.cache.values()].filter(g => g.channels && g.channels.cache.size > 0)) {
+    try {
+      const vcs = guild.channels.cache.filter(ch => ch.type == "GUILD_VOICE")
+        .filter(vc => vc.members.size <= 0)
+        .filter(ch => ch.id == map.find(d => d.ID == `tempvoicechannel_${ch.guild.id}_${ch.id}`)?.data).map(d => d)
+      if(!vcs || vcs.length == 0) continue;
+      for(const vc of vcs) {
+        try{
+          console.log(`CHECK CREATED :: CHECKMEMBERS ${vc.name}`)
+          await client.jointocreatemap.delete(`tempvoicechannel_${vc.guild.id}_${vc.id}`);
+          await client.jointocreatemap.delete(`owner_${vc.guild.id}_${vc.id}`);
+          //move user
+          if(vc.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
+            vc.delete().catch(e => console.error(e) )
+            console.log(`Deleted the Channel: ${vc.name} in: ${vc.guild ? vc.guild.name : "undefined"} DUE TO EMPTYNESS`.strikethrough.brightRed)
+            continue;
+          } else {
+            console.log(`I couldn't delete the Channel: ${vc.name} in: ${vc.guild ? vc.guild.name : "undefined"} DUE TO EMPTYNESS`.strikethrough.brightRed)
+            continue;
+          }    
+        }catch (e){
+          // console.log("Not in db")
+          continue;
+        }
       }
+    } catch (e) {
+      continue;
+        console.error(e)
+    }
   }
   return;
 }
 
-async function create_join_to_create_Channel(client, voiceState, type) {
+async function create_join_to_create_Channel(client, voiceState, prekey) {
   let ls = await client.settings.get(voiceState.member.guild.id+".language") || "en"
-  let chname = await client.jtcsettings.get(voiceState.member.guild.id+`.jtcsettings${type}.channelname`) || "{user}'s Room";
+  let chname = await client.jtcsettings.get(voiceState.member.guild.id+`${prekey}.channelname`) || "{user}'s Room";
   
   //CREATE THE CHANNEL
   if (!voiceState.guild.me.permissions.has("MANAGE_CHANNELS")) {
