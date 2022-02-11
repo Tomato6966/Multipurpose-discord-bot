@@ -1,13 +1,16 @@
 # Public Bot and Support Server!
 
-<a href="https://discord.gg/milrato"><img src="https://discord.com/api/guilds/773668217163218944/widget.png?style=banner2"></a>
+<a href="https://discord.gg/dcdev"><img src="https://discord.com/api/guilds/773668217163218944/widget.png?style=banner2"></a>
  
-[**Invite the Public Version of this Bot**](https://milrato.milrato.dev) So you don't need to host it by yourself or [join my discord Server](https://discord.gg/milrato) to get a custom hosted Bot for you!
+[**Invite the Public Version of this Bot**](https://milrato.milrato.dev) So you don't need to host it by yourself or [join my discord Server](https://discord.gg/dcdev) to get a custom hosted Bot for you!
 
 
 # Important notes and thank ❤️
 First of all, thanks for using this Source Code, it was and is a ton of work to create and maintain it!
-That's why I'm asking everyone to [**donate a little bit of money**](https://donate.milrato.dev) or if that's not possible, then join my [Discord Server](https://discord.gg/milrato)!
+That's why I'm asking everyone to [**donate a little bit of money**](https://donate.milrato.dev) or if that's not possible, then join my [Discord Server](https://discord.gg/dcdev)!
+
+  **NOTE:** It is suggested to use the [Sharded (&Clustered) version](https://github.com/Tomato6966/Multipurpose-discord-bot/tree/sharded_with_mongo), if u plan on using it for a VERIFIED BOT (on more then 2000 Servers!)
+ 
 
 # Installation Guide 🔥
 
@@ -28,8 +31,9 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 
 <details>
   <summary>Click to expand</summary>
-
-   1. Download the [Source Code]()
+  **NOTE:** It is suggested to use the [Sharded (&Clustered) version](https://github.com/Tomato6966/Multipurpose-discord-bot/tree/sharded_with_mongo), if u plan on using it for a VERIFIED BOT (on more then 2000 Servers!)
+ 
+  1. Download the [Source Code](https://github.com/Tomato6966/Multipurpose-discord-bot/releases/latest)
      * either by: `git clone https://github.com/Tomato6966/Multipurpose-discord-bot`
      * or by downloading it as a zip from the releases or a branch
   
