@@ -17,27 +17,25 @@ var CronJob = require('cron').CronJob;
 module.exports = function (client) {
 
   const maxJoinToCreate = 100;
-
+  // check channels every minute
   client.JobJointocreate = new CronJob('0 * * * * *', async function() {
     check_voice_channels(client)
-  }, null, true, 'America/Los_Angeles');
-  client.JobJointocreate2 = new CronJob('0 * * * * *', async function() {
     check_created_voice_channels(client)
-  }, null, true, 'America/Los_Angeles');
+  }, null, true, 'Europe/Berlin');
 
   client.on("ready", () => {
     check_voice_channels(client);
     check_created_voice_channels(client)
-    client.JobJointocreate.start();
-    client.JobJointocreate2.start();
+    setTimeout(() => {
+      client.JobJointocreate.start();
+    }, 60_000)
   })
   //voice state update event to check joining/leaving channels
   client.on("voiceStateUpdate", async (oldState, newState) => {
     // JOINED A CHANNEL
-    const d = client.jtcsettings
-    const rawData = await d.all()
+    const rawData = await client.jtcsettings.all()
     const keys = rawData.map(d => d.ID);
-    const guildData = rawData.find(d => d.ID == newState.guild.id);
+    const guildData = rawData.find(d => d.ID == newState.guild.id)?.data;
     if (!oldState.channelId && newState.channelId) {
       let index = false;
       if (!index) {
@@ -46,10 +44,9 @@ module.exports = function (client) {
           if (keys.includes(newState.guild.id) && guildData[pre] && guildData[pre]?.channel?.includes(newState.channelId)) index = i;
         }
       }
-      if (!index) {
-        return // console.log("No valid database for this jtc channel found...");
+      if (index) {
+        return create_join_to_create_Channel(client, newState, `jtcsettings${index}`);
       }
-      return create_join_to_create_Channel(client, newState, index);
     }
     // LEFT A CHANNEL
     if (oldState.channelId && !newState.channelId) {
@@ -81,7 +78,7 @@ module.exports = function (client) {
             //delete the old owner
             await vc.permissionOverwrites.delete(oldState.id).catch(() => {})
             try {
-              let es = client.settings.get(vc.guild.id, "embed")
+              let es = await client.settings.get(vc.guild.id+".embed")
               client.users.fetch(randommemberid).then(user => {
                 user.send({embeds: [new MessageEmbed()
                   .setColor(es.color).setThumbnail(oldState.member.displayAvatarURL({dynamic:true}))
@@ -108,7 +105,7 @@ module.exports = function (client) {
           }
         }
         if (index) {
-          create_join_to_create_Channel(client, newState, index);
+          create_join_to_create_Channel(client, newState, `jtcsettings${index}`);
         }
         
         const tempC = await client.jointocreatemap.get(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`);
@@ -139,7 +136,7 @@ module.exports = function (client) {
               //delete the old owner
               await vc.permissionOverwrites.delete(oldState.id).catch(() => {})
               try {
-                let es = client.settings.get(vc.guild.id, "embed")
+                let es = await client.settings.get(vc.guild.id+".embed")
                 client.users.fetch(randommemberid).then(user => {
                   user.send({embeds: [new MessageEmbed()
                     .setColor(es.color).setThumbnail(oldState.member.displayAvatarURL({dynamic:true}))
@@ -156,6 +153,7 @@ module.exports = function (client) {
         }
       }
     }
+    return;
   })
 }
 
