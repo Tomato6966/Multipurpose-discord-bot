@@ -76,15 +76,16 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
      }
      ```
   6. You don't want to host your own Lavalink?
-     * then use something like this: 
+     * [Here is a list of many free-to-use Lavalink Servers!](https://lavalink.darrennathanael.com/#how2host)
+     * Or just use something like this: 
      ```json
      {
         "clientsettings": {
             "nodes": [
                 {
-                    "host": "node01.lavalink.eu",
-                    "port": 2333,
-                    "password": "Raccoon"
+                    "host": "lava.link",
+                    "port": 80,
+                    "password": "Anything for the Password"
                 }
             ]
         }
