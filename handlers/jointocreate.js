@@ -57,7 +57,7 @@ module.exports = function (client) {
     }
     
     async function joinChannel() {
-      return new Promise((res) => {
+      return new Promise(async (res) => {
         let indexPre = false;
         for(const [key, value] of guildData) {
           if(value && value.channel && value.channel.includes(newState.channelId)) {
@@ -75,7 +75,7 @@ module.exports = function (client) {
     }
 
     async function leaveChannel() {
-      return new Promise((res) => {
+      return new Promise(async (res) => {
         const tempC = await client.jointocreatemap.get(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`);
         var vc = oldState.guild.channels.cache.get(tempC);
         if (tempC && vc) {
