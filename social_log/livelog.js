@@ -106,7 +106,7 @@ module.exports = async client => {
                client.social_log.set(ch.guild.id+`.twitch`, tempDat)
                console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  NOTIFICATION SENT: https://www.twitch.tv/${StreamData.user_login}`.magenta)
                //fs.writeFileSync('./social_log/streamconfig.json', JSON.stringify(tempData, null, 3))
-           }).catch(e=>{cconsole.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  Prevented send bug embed`.gray)})
+           }).catch(e=>{console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  Prevented send bug embed`.gray)})
          }
        }).catch(() => {});
    })

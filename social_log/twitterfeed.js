@@ -51,8 +51,8 @@ async function create_twit(client){
               var TwitterName = tweet.user.screen_name;
               var url = "https://twitter.com/" + TwitterName + "/status/" + tweet.id_str;
               //get the guildid for the twitter account
-              var userids = await client.social_log.all().then(d => {
-                return d.find(d => d?.data?.twitter?.TWITTER_USER_ID == tweet.user.id_str)?.[0]
+              var guildid = await client.social_log.all().then(d => {
+                return d.find(d => d?.data?.twitter?.TWITTER_USER_ID == tweet.user.id_str)?.ID
               })
               //get the settings from the guildid
               if(!guildid || guildid == null || guildid == undefined || guildid.length != 18) return console.log(" [TWITER] :: NO VALID GUILD ".cyan)
