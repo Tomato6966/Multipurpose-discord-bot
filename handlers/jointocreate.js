@@ -1,6 +1,6 @@
 const {
   MessageEmbed,
-  Collection, Permissions
+  Collection, Permissions, Guild
 } = require("discord.js")
 const config = require(`${process.cwd()}/botconfig/config.json`);
 const kernelsettings = require(`${process.cwd()}/botconfig/settings.json`);
@@ -32,91 +32,60 @@ module.exports = function (client) {
   })
   //voice state update event to check joining/leaving channels
   client.on("voiceStateUpdate", async (oldState, newState) => {
-    // JOINED A CHANNEL
     const rawData = await client.jtcsettings.all()
+
     const keys = rawData.map(d => d.ID);
+    if(!keys.includes(newState.guild.id)) return;
+
     const guildData = rawData.find(d => d.ID == newState.guild.id)?.data;
+    if(!guildData || typeof guildData != "object") return;
+    // JOINED A CHANNEL
     if (!oldState.channelId && newState.channelId) {
-      let index = false;
-      if (!index) {
-        for (let i = 1; i <= maxJoinToCreate; i++) {
-          var pre = `jtcsettings${i}`;
-          if (keys.includes(newState.guild.id) && guildData[pre] && guildData[pre]?.channel?.includes(newState.channelId)) index = i;
-        }
-      }
-      if (index) {
-        return create_join_to_create_Channel(client, newState, `jtcsettings${index}`);
-      }
+        let joined = await joinChannel();
+        if(joined) return;
     }
     // LEFT A CHANNEL
     if (oldState.channelId && !newState.channelId) {
-      const tempC = await client.jointocreatemap.get(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`);
-      if (tempC && oldState.guild.channels.cache.has(tempC)) {
-        //CHANNEL DELETE CHECK
-        var vc = oldState.guild.channels.cache.get(tempC);
-        if (vc.members.size < 1) {
-          await client.jointocreatemap.delete(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`);
-          await client.jointocreatemap.delete(`owner_${vc.guild.id}_${vc.id}`);
-          console.log(`Deleted the Channel: ${vc.name} in: ${vc.guild ? vc.guild.name : "undefined"} DUE TO EMPTYNESS`.strikethrough.brightRed)
-          return vc.delete().catch(e => console.log("Couldn't delete room"));
-        } else {
-          let ownerId = await client.jointocreatemap.get(`owner_${vc.guild.id}_${vc.id}`);
-          //if owner left, then pick a random user
-          if (ownerId == oldState.id) {
-            let members = vc.members.map(m => m.id);
-            let randommemberid = members[Math.floor(Math.random() * members.length)];
-            //set the new owner + perms
-            await client.jointocreatemap.set(`owner_${vc.guild.id}_${vc.id}`, randommemberid);
-            if(vc.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
-              await vc.permissionOverwrites.edit(randommemberid, {
-                CONNECT: true,
-                VIEW_CHANNEL: true,
-                MANAGE_CHANNELS: true,
-                MANAGE_ROLES: true
-              }).catch(() => {})
-            }
-            //delete the old owner
-            await vc.permissionOverwrites.delete(oldState.id).catch(() => {})
-            try {
-              let es = await client.settings.get(vc.guild.id+".embed")
-              client.users.fetch(randommemberid).then(user => {
-                user.send({embeds: [new MessageEmbed()
-                  .setColor(es.color).setThumbnail(oldState.member.displayAvatarURL({dynamic:true}))
-                  .setFooter(client.getFooter(es))
-                  .setTitle(`The VC-OWNER \`${oldState.member.user.tag}\` left the VC! A new Random Owner got picked!`)
-                  .addField(`You now have access to all \`voice Commands\``, `> ${client.commands.filter((cmd) => cmd.category === "🎤 Voice").first().extracustomdesc.split(",").map(i => i?.trim()).join("︲")}`)
-                ]}).catch(() => {})
-              }).catch(() => {})
-            } catch {
-              /* */
-            }
-          }
-        }
-      }
+      let left = await leaveChannel()
+      if(left) return;
     }
     // Switch A CHANNEL
-    if (oldState.channelId && newState.channelId) {
-      if (oldState.channelId !== newState.channelId) {
-        let index = false;
-        if (!index) {
-          for (let i = 1; i <= maxJoinToCreate; i++) {
-            var pre = `jtcsettings${i}`;
-            if (keys.includes(newState.guild.id) && guildData[pre] && guildData[pre]?.channel?.includes(newState.channelId)) index = i;
+    if (oldState.channelId && newState.channelId && oldState.channelId !== newState.channelId) {
+      let joined = await joinChannel();
+      let left = await leaveChannel();
+      if(joined || left) return;
+    }
+    
+    async function joinChannel() {
+      return new Promise((res) => {
+        let indexPre = false;
+        for(const [key, value] of guildData) {
+          if(value && value.channel && value.channel.includes(newState.channelId)) {
+            indexPre = key;
+            break;
           }
+          continue;
         }
-        if (index) {
-          create_join_to_create_Channel(client, newState, `jtcsettings${index}`);
+        if (indexPre) {
+          create_join_to_create_Channel(client, newState, index);
+          return res(true);
         }
-        
+        return res(false);
+      })
+    }
+
+    async function leaveChannel() {
+      return new Promise((res) => {
         const tempC = await client.jointocreatemap.get(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`);
-        if (tempC && oldState.guild.channels.cache.has(tempC)) {
+        var vc = oldState.guild.channels.cache.get(tempC);
+        if (tempC && vc) {
           //CHANNEL DELETE CHECK
-          var vc = oldState.guild.channels.cache.get(tempC);
-          if (vc.members.size < 1) {
+          if (vc?.members?.size < 1) {
             await client.jointocreatemap.delete(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`);
             await client.jointocreatemap.delete(`owner_${vc.guild.id}_${vc.id}`);
             console.log(`Deleted the Channel: ${vc.name} in: ${vc.guild ? vc.guild.name : "undefined"} DUE TO EMPTYNESS`.strikethrough.brightRed)
-            return vc.delete().catch(e => console.log("Couldn't delete room"));
+            vc.delete().catch(e => console.log("Couldn't delete room"));
+            return res(true);
           } else {
             let ownerId = await client.jointocreatemap.get(`owner_${vc.guild.id}_${vc.id}`);
             //if owner left, then pick a random user
@@ -148,10 +117,14 @@ module.exports = function (client) {
               } catch {
                 /* */
               }
+              return res(true);
+            } else {
+              return;
             }
           }
         }
-      }
+        return res(false);
+      })
     }
     return;
   })
