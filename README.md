@@ -72,15 +72,16 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
      }
      ```
   6. You don't want to host your own Lavalink?
-     * then use something like this: 
+     * [Here is a list of many free-to-use Lavalink Servers!](https://lavalink.darrennathanael.com/#how2host)
+     * Or just use something like this: 
      ```json
      {
         "clientsettings": {
             "nodes": [
                 {
-                    "host": "node01.lavalink.eu",
-                    "port": 2333,
-                    "password": "Raccoon"
+                    "host": "lava.link",
+                    "port": 80,
+                    "password": "Anything for the Password"
                 }
             ]
         }
@@ -94,6 +95,8 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 <details>
   <summary>Click to expand</summary>
 
+  **NOTE:** *you can do the exact same configuration inside of the `example.env` File, just make sure to rename it to `.env` or use environment variables!*
+ 
    1. Check `🎶 Music Requirements` that you started lavalink / use a valid public lavalink station
    2. Fill in all required data in `./botconfig/config.json` **NOTE:** *If you're on replit.com, it is exposed to everyone!(use .env instead)*
    3. Fill in all required data in the `.json` Files in `./social_log/` (`./social_log/streamconfig.json` & `./social_log/twitter.json`), if you want the SOCIAL LOGS to work! (the key `authToken` in streamconfig is not needed to be filled in!)
@@ -108,11 +111,15 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 <details>
   <summary>Click to expand</summary>
 
+  **NOTE:** *you can do the exact same configuration inside of the `example.env` File, just make sure to rename it to `.env` or use environment variables!*
+ 
   1. `./botconfig/config.json`
      * `token` you can get from: [discord-Developers](https://discord.com/developers/applications)
      * `memer_api` you can get from: [Meme-Development DC](https://discord.gg/Mc2FudJkgP)
      * `spotify.clientSecret` you can get from: [Spotify-Developer](https://developer.spotify.com)
      * `spotify.clientID` you can get from: [Spotify-Developer](https://developer.spotify.com)
+     * `fnbr` is a FNBR token, which you may get from [FNBRO.co](https://fnbr.co/api/docs) (needed for fnshop)
+     * `fortnitetracker` is a FORTNITE TRACKER token, which you may get from [fortnitetracker.com](https://fortnitetracker.com/site-api) (needed for fnstats)
   2. `./social_log/streamconfig.json`
      * `twitch_clientID` you can get from: [Twitch-Developer](https://dev.twitch.tv/docs/api) ([developer-console](https://dev.twitch.tv/console))
      * `twitch_secret` you can get from: [Twitch-Developer](https://dev.twitch.tv/docs/api) ([developer-console](https://dev.twitch.tv/console))
