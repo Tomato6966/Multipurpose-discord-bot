@@ -24,7 +24,7 @@ module.exports = {
     try {
       let themsg = await message.reply("<a:Loading:833101350623117342> Getting the Shop-Data")
       const shop = new Canvas.FortniteShop();
-      const image = await shop.setToken("a6f38e28-5a9b-428d-bb5f-9bcd3842bc25").setBackground("#23272A").toAttachment();
+      const image = await shop.setToken(process.env.fnbr || config.fnbr).setBackground("#23272A").toAttachment();
       let attachment = new Discord.MessageAttachment(image, "FortniteShop.png");
       themsg.edit({content: "Todays Fortnite Shop:", files: [attachment]}).catch(()=>{
 
