@@ -67,7 +67,7 @@ module.exports = function (client) {
           continue;
         }
         if (indexPre) {
-          create_join_to_create_Channel(client, newState, index);
+          create_join_to_create_Channel(client, newState, indexPre);
           return res(true);
         }
         return res(false);
