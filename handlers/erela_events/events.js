@@ -93,17 +93,18 @@ module.exports = (client) => {
         if(client.musicsettings.get(player.guild, "channel") && client.musicsettings.get(player.guild, "channel").length > 5){
           let messageId = client.musicsettings.get(player.guild, "message");
           let guild = client.guilds.cache.get(player.guild);
-          if(!guild) return 
+          if(!guild)  
           let channel = guild.channels.cache.get(client.musicsettings.get(player.guild, "channel"));
-          if(!channel) return 
-          let message = channel.messages.cache.get(messageId);
-          if(!message) message = await channel.messages.fetch(messageId).catch(()=>{});
-          if(!message) return
-          //edit the message so that it's right!
-          var data = require("./musicsystem").generateQueueEmbed(client, player.guild)
-          message.edit(data).catch(() => {})
-          if(client.musicsettings.get(player.guild, "channel") == player.textChannel){
-            return;
+          if(guild && channel && message) {
+            let channel = guild.channels.cache.get(musicsettings.channel);
+            let message = channel.messages.cache.get(messageId);
+            if(!message) message = await channel.messages.fetch(messageId).catch(() => null);
+            //edit the message so that it's right!
+            var data = require("./musicsystem").generateQueueEmbed(client, player.guild, true)
+            message?.edit(data).catch(() => null)
+            if(musicsettings.channel == player.textChannel){
+              return;
+            }
           }
         }
         if(player.textChannel && player.get("previoustrack")){
