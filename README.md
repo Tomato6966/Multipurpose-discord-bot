@@ -19,10 +19,16 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 
 <details>
   <summary>Click to expand</summary>
-
+ 
+ ### System Requirements
+  * min. 300mB Ram, suggested: 500mb (as it takes 300mb on idle
+  * 1 Core with min. 2.4ghz
+  * min. 150mb Storage, suggested: More, because the DATABASE needs Storage...
   * [nodejs](https://nodejs.org) version 16.6 or higher, i recommend the latest STABLE version
   * [python](https://python.org) version 3.8 or higher, to install the database `enmap` (better-sqlite3)
-  * a VPS would be adviced, so you don't need to keep your pc/laptop/raspi 24/7 online! [click here for a debian setup](https://github.com/Tomato6966/Debian-Cheat-Sheet-Setup/wiki/)
+
+ ### Recommendations
+  * a VPS would be adviced, so you don't need to keep your pc/laptop/raspi 24/7 online! [click here for a debian setup Guide](https://github.com/Tomato6966/Debian-Cheat-Sheet-Setup/wiki/)
   * Check out my Recommended Host: [BERO-HOST](https://bero.milrato.dev) and use code `milrato` for cheap OP VPS (kvm)
   * [Click here for a Direct Order Link](https://bero-host.de/server/prepaid-kvm-rootserver-paket-mieten)
 
