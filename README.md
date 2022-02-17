@@ -45,7 +45,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
   <summary>Click to expand</summary>
 
   *To have your Bot able to play music, you need to connect it to a lavalink Station!*
-  *There are many public ones out there for example lavalink.eu*
+  *There are many public ones out there for example lava.link*
   An example for a public configuration will be listed down below
    
   1. Make sure `Java 11` is installed on your System!
