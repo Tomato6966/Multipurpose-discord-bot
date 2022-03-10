@@ -4,7 +4,6 @@
     "ownerIDS": [
         "442355791412854784"
     ],
-    "pm2process": "Use pm2 process name/id like 'Bot_Name'. If you use `pm2 start --name Bot_Name index.js`",
     "fnbr": "GET from: https://fnbr.co",
     "fortnitetracker": "GET from: https://fortnitetracker.com",
     "memer_api": "GET from: https://discord.gg/Mc2FudJkgP",
