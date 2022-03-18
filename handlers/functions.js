@@ -688,7 +688,7 @@ async function create_transcript_buffer(Messages, Channel, Guild){
                 subcontent += `<div class="content"><div class="markdown"><span class="preserve-whitespace">${markdowntohtml(String(msg.cleanContent ? msg.cleanContent : msg.content).replace(/\n/ig, "<br/>"))}</div></div>` 
               } 
               if (msg.embeds[0]){
-                  subcontent += `<div class="embed"><div class=embed-color-pill style=background-color:"${msg.embeds[0].color ? msg.embeds[0].color : "transparent"}"></div><div class=embed-content-container><div class=embed-content><div class=embed-text>` 
+                  subcontent += `<div class="embed"><div class=embed-color-pill style="background-color: ${msg.embeds[0].color ? "#"+msg.embeds[0].color : "transparent"}"></div><div class=embed-content-container><div class=embed-content><div class=embed-text>` 
                   
                   if(msg.embeds[0].author){
                     subcontent += `<div class="embed-ath">`;
