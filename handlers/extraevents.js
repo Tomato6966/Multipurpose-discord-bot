@@ -1,8 +1,31 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, MessageActionRow } = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
 const { simple_databasing } = require(`./functions`);
 module.exports = client => {
-    
+   client.disableComponentMessag = (C) => {
+    if(C && C.message && C.message.components.length > 0) {
+      if(C.replied) {
+        C.edit({
+          components: client.getDisabledComponents(C.message.components)
+        }).catch(() => null);
+      } else {
+        C.update({
+          components: client.getDisabledComponents(C.message.components)
+        }).catch(() => null);
+      }
+      return true;
+    } else {
+      return;
+    }
+  }
+  client.getDisabledComponents = (MessageComponents) => {
+    if(!MessageComponents) return []; // Returning so it doesn't crash
+
+    return MessageComponents.map(({components}) => {
+        return new MessageActionRow()
+            .addComponents(components.map(c => c.setDisabled(true)))
+    });
+  }
   client.getFooter = (es, stringurl = null) => {
     //allow inputs: ({footericon, footerurl}) and (footericon, footerurl);
     let embedData = { };
