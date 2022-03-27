@@ -2,7 +2,7 @@ const { MessageEmbed, MessageActionRow } = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
 const { simple_databasing } = require(`./functions`);
 module.exports = client => {
-   client.disableComponentMessag = (C) => {
+   client.disableComponentMessage = (C) => {
     if(C && C.message && C.message.components.length > 0) {
       if(C.replied) {
         C.edit({
