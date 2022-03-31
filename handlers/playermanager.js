@@ -52,7 +52,7 @@ module.exports = async (client, message, args, type, slashCommand = false, extra
       .setTitle(eval(client.la[ls]["handlers"]["playermanagerjs"]["playermanager"]["variable2"]))
     ]}).catch((e)=>console.log(String(e).grey));
   }
-  if(botchannel && channel.userLimit != 0 && channel.full){
+  if(!botchannel && channel.userLimit != 0 && channel.full){
     if(slashCommand)  return slashCommand.reply({embeds: [new MessageEmbed().setTitle(":x: Your Voice Channel is full!").setColor(es.wrongcolor).setFooter(client.getFooter(es))]}).catch(()=>{});
     return message.reply({embeds: [new MessageEmbed().setTitle(":x: Your Voice Channel is full!").setColor(es.wrongcolor).setFooter(client.getFooter(es))]}).catch(()=>{});
   }
