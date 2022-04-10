@@ -2,6 +2,7 @@ const { MessageEmbed, Permissions } = require("discord.js");
 const Discord = require("discord.js");
 const config = require(`../../botconfig/config.json`);
 var ee = require(`../../botconfig/embed.json`);
+const { dbEnsure } = require("../../handlers/functions");
 module.exports = {
     name: "voice",
     category: "🎤 Voice",
@@ -44,17 +45,18 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable1"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
+        
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
     
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -103,16 +105,16 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable6"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds :[new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -159,17 +161,17 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable1"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
     
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -218,16 +220,16 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable6"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds :[new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -276,17 +278,17 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable1"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
     
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -335,16 +337,16 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable6"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds :[new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -391,16 +393,16 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable11"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -463,16 +465,16 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable23"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -560,16 +562,16 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable36"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -647,16 +649,16 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable47"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -715,16 +717,16 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable56"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -783,16 +785,16 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable65"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -851,16 +853,16 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable74"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -909,16 +911,16 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable81"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
@@ -972,16 +974,16 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable88"]))
           .setFooter(client.getFooter(es))
         ]})
-        client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
-        client.jointocreatemap.ensure(`owner_${message.guild.id}_${channel.id}`, false);
-        if (client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
+        await dbEnsure(client.jointocreatemap, `tempvoicechannel_${message.guild.id}_${channel.id}`, false)
+        await dbEnsure(client.jointocreatemap, `owner_${message.guild.id}_${channel.id}`, false);
+        if (await client.jointocreatemap.get(`tempvoicechannel_${message.guild.id}_${channel.id}`)) {
           var vc = channel
           let perms = vc.permissionOverwrites.cache.map(c => c)
           let owner = false;
           for (let i = 0; i < perms.length; i++) {
             if (perms[i].id === message.author?.id && perms[i].allow.toArray().includes("MANAGE_CHANNELS")) owner = true;
           }
-          if (client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
+          if (await client.jointocreatemap.get(`owner_${message.guild.id}_${channel.id}`) === message.author?.id) owner = true;
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)

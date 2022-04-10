@@ -43,12 +43,7 @@ module.exports = {
       await client.settings.push(`${message.guild.id}.botchannel`, channel.id);
       //these lines create the string of the Bot Channels
       botChannels = await client.settings.get(`${message.guild.id}.botchannel`);
-      let leftb = ``;
-      if(botChannels.join(``) ===``) leftb = `no Channels, aka all Channels are Bot Channels`
-      else
-      for(let i = 0; i < botChannels.length; i++){
-        leftb += `<#` +botChannels[i] + `> | `
-      }
+      let leftb = botChannels.length == 0 ? `no Channels, aka all Channels are Bot Channels`: botChannels.map(b => `<#${b}>`).join(" | ");
       //send informational message
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
@@ -69,7 +64,7 @@ module.exports = {
 };
 /**
   * @INFO
-  * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+  * Bot Coded by Tomato#6966 | https://discord.gg/milrato
   * @INFO
   * Work for Milrato Development | https://milrato.eu
   * @INFO

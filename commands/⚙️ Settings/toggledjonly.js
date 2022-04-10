@@ -46,7 +46,7 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["settings"]["toggledjonly"]["variable4"]))
               ]});
             }catch (e){
-              console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              console.error(e);
               return message.reply({embeds :[new MessageEmbed()
                 .setColor(es.wrongcolor)
                 .setFooter(client.getFooter(es))
@@ -65,7 +65,7 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["settings"]["toggledjonly"]["variable8"]))
               ]});
             }catch (e){
-              console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              console.error(e);
               return message.reply({embeds : [new MessageEmbed()
                 .setColor(es.wrongcolor)
                 .setFooter(client.getFooter(es))
@@ -95,7 +95,7 @@ module.exports = {
 */
 /**
   * @INFO
-  * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+  * Bot Coded by Tomato#6966 | https://discord.gg/milrato
   * @INFO
   * Work for Milrato Development | https://milrato.eu
   * @INFO

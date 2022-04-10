@@ -589,7 +589,7 @@ module.exports = {
               }, message.author);
               player.queue.add(unresolvedTrack);
             } catch (e) {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               continue;
             }
             let res;
@@ -610,7 +610,7 @@ module.exports = {
 
                 player.queue.add(res.tracks[0]);
             } catch (e) {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
                 continue;
             }
 
@@ -689,7 +689,7 @@ Object.size = function (obj) {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

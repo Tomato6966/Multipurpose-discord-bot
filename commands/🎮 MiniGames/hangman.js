@@ -35,7 +35,7 @@ class HangmanGame {
 
         const embed = new Discord.MessageEmbed()
             .setColor("#2f3136")
-            .setAuthor('Hangman Minigame', "https://imgur.com/0guxxtY.png", "https://discord.gg/dcdev")
+            .setAuthor('Hangman Minigame', "https://imgur.com/0guxxtY.png", "https://discord.gg/milrato")
             .setDescription(this.getDescription())
             .addField(eval(client.la[ls]["cmds"]["minigames"]["hangman"]["variablex_1"]), eval(client.la[ls]["cmds"]["minigames"]["hangman"]["variable1"]))
             .addField('How To Play', "React to this message using the emojis that look like letters (🅰️, 🇹, )")
@@ -88,7 +88,7 @@ class HangmanGame {
         this.inGame = false;
         const editEmbed = new Discord.MessageEmbed()
             .setColor('RED')
-            .setAuthor('Hangman Minigame', "https://imgur.com/0guxxtY.png", "https://discord.gg/dcdev")
+            .setAuthor('Hangman Minigame', "https://imgur.com/0guxxtY.png", "https://discord.gg/milrato")
             .setDescription((win ? "**Chat Wins!**" : "**Chat losses**"))
             .addField(eval(client.la[ls]["cmds"]["minigames"]["hangman"]["variablex_3"]),eval(client.la[ls]["cmds"]["minigames"]["hangman"]["variable3"]))
         this.gameEmbed.edit({embeds: [editEmbed]});

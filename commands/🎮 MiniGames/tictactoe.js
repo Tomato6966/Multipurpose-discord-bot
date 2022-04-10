@@ -557,7 +557,7 @@ class TicTacToe {
                                                 new MessageActionRow().addComponents([B1.setDisabled(), B2.setDisabled(), B3.setDisabled()]),
                                                 new MessageActionRow().addComponents([C1.setDisabled(), C2.setDisabled(), C3.setDisabled()]),
                                         ]
-                                }).catch(() => {})
+                                }).catch(() => null)
                         })
 
                 })

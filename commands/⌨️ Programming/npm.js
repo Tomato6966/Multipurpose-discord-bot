@@ -41,9 +41,9 @@ module.exports = {
 				return res.json();
 				});
 		
-			const version = body.versions[body["dist-tags"].latest];
+			const version = body.versions[body["dist-tags"]?.latest] || "Unknown";
 		
-			let deps = version.dependencies ? Object.keys(version.dependencies) : null;
+			let deps = version?.dependencies ? Object.keys(version.dependencies) : null;
 			let maintainers = body.maintainers.map((user) => user.name);
 		
 			if(maintainers.length > 10) {
