@@ -144,7 +144,7 @@ module.exports = {
               const ms = require("ms");
               try {
                 if(dur.includes("+")){
-                  for(const d of dur.split("+")){
+                  for await (const d of dur.split("+")){
                     try {
                       time += ms(d.trim());
                     } catch {
@@ -182,7 +182,7 @@ module.exports = {
               const ms = require("ms");
               try {
                 if(dur.includes("+")){
-                  for(const d of dur.split("+")){
+                  for await (const d of dur.split("+")){
                     try {
                       time += ms(d.trim());
                     } catch {
@@ -223,7 +223,7 @@ module.exports = {
               const ms = require("ms");
               try {
                 if(dur.includes("+")){
-                  for(const d of dur.split("+")){
+                  for await (const d of dur.split("+")){
                     try {
                       time += ms(d.trim());
                     } catch {
@@ -267,7 +267,7 @@ module.exports = {
               const ms = require("ms");
               try {
                 if(dur.includes("+")){
-                  for(const d of dur.split("+")){
+                  for await (const d of dur.split("+")){
                     try {
                       time += ms(d.trim());
                     } catch {
@@ -311,7 +311,7 @@ module.exports = {
               const ms = require("ms");
               try {
                 if(dur.includes("+")){
-                  for(const d of dur.split("+")){
+                  for await (const d of dur.split("+")){
                     try {
                       time += ms(d.trim());
                     } catch {
@@ -352,7 +352,7 @@ module.exports = {
               const ms = require("ms");
               try {
                 if(dur.includes("+")){
-                  for(const d of dur.split("+")){
+                  for await (const d of dur.split("+")){
                     try {
                       time += ms(d.trim());
                     } catch {

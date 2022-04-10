@@ -80,7 +80,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new MessageEmbed()
           .setColor(es.color)
-          .setAuthor('Twitter Setup', 'https://cdn.discordapp.com/emojis/840255600851812393.png?size=96', 'https://discord.gg/dcdev')
+          .setAuthor('Twitter Setup', 'https://cdn.discordapp.com/emojis/840255600851812393.png?size=96', 'https://discord.gg/milrato')
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({
@@ -98,7 +98,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           } else menu?.reply({
@@ -250,7 +250,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({
                 embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitter"]["variable29"]))
@@ -305,7 +305,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({
                 embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitter"]["variable37"]))
@@ -399,7 +399,7 @@ module.exports = {
                     }
                   })
                   .catch(e => {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     return message.reply({
                       embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitter"]["variable50"]))
@@ -421,7 +421,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({
                 embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitter"]["variable53"]))

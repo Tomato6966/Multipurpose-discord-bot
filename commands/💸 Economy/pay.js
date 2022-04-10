@@ -27,7 +27,7 @@ module.exports = {
     var topay = message.mentions.members.filter(member=>member.guild.id == message.guild.id).first();
     if(!topay) 
     return message.reply({embeds: [new MessageEmbed()
-        .setColor(es.wrongcolor)
+        .setColor(ee.wrongcolor)
         .setFooter(client.getFooter(user.tag, user.displayAvatarURL({ dynamic: true })))
         .setTitle(eval(client.la[ls]["cmds"]["economy"]["pay"]["variable1"]))
         .setDescription(eval(client.la[ls]["cmds"]["economy"]["pay"]["variable2"]))
@@ -84,7 +84,7 @@ module.exports = {
   } catch (e) {
     console.log(String(e.stack).grey.bgRed)
     return message.reply({embeds: [new MessageEmbed()
-      .setColor(es.wrongcolor)
+      .setColor(ee.wrongcolor)
       .setFooter(client.getFooter(es))
       .setTitle(client.la[ls].common.erroroccur)
       .setDescription(eval(client.la[ls]["cmds"]["economy"]["pay"]["variable11"]))
@@ -94,7 +94,7 @@ module.exports = {
 };
 /**
 * @INFO
-* Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+* Bot Coded by Tomato#6966 | https://discord.gg/milrato
 * @INFO
 * Work for Milrato Development | https://milrato.eu
 * @INFO

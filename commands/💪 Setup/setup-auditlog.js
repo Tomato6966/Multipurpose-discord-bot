@@ -22,8 +22,8 @@ module.exports = {
     
     try {
       message.reply(`Redirecting to: \`setup-logger\` ...`).then((msg)=>{
-        setTimeout(()=>{msg.delete().catch(() => {})}, 3000)
-      }).catch(() => {})
+        setTimeout(()=>{msg.delete().catch(() => null)}, 3000)
+      }).catch(() => null)
       require("./setup-logger").run(client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings);
     } catch (e) {
       console.log(String(e.stack).grey.bgRed)
@@ -37,7 +37,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

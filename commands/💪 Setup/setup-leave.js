@@ -22,8 +22,6 @@ module.exports = {
   run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
     
-    return message.reply(`<a:Milrato_Animated:900394164829708388> **Since the last update, this got not fixxed yet, will be fixxed as soon as possible** :cry:!
-> Join https://discord.gg/dcdev for updates!`);
     try {
       var timeouterror;
       var tempmsg;
@@ -37,7 +35,7 @@ module.exports = {
           {
             value: "Channel Leave Messages",
             description: `Manage Leave Messages in 1 CHANNEL`,
-            emoji: "895066899619119105" //
+            emoji: "895066899619119105"
           },
           {
             value: "Direct Leave Messages",
@@ -70,7 +68,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new MessageEmbed()
           .setColor(es.color)
-          .setAuthor('Leave Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b?.png', 'https://discord.gg/dcdev')
+          .setAuthor(client.getAuthor('Leave Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b.png', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -85,7 +83,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
@@ -105,8 +103,8 @@ module.exports = {
             async function second_layer(){
               let menuoptions = [
                 {
-                  value: `${client.settings.get(message.guild.id, "leave.channel") == "nochannel" ? "Set Channel": "Overwrite Channel"}`,
-                  description: `${client.settings.get(message.guild.id, "leave.channel") == "nochannel" ? "Set a Channel where the Leave Messages should be": "Overwrite the current Channel with a new one"}`,
+                  value: `${GuildSettings.leave.channel == "nochannel" ? "Set Channel": "Overwrite Channel"}`,
+                  description: `${GuildSettings.leave.channel == "nochannel" ? "Set a Channel where the Leave Messages should be": "Overwrite the current Channel with a new one"}`,
                   emoji: "895066899619119105" //
                 },
                 {
@@ -125,8 +123,8 @@ module.exports = {
                   emoji: "877653386747605032"
                 },
                 {
-                  value: `${client.settings.get(message.guild.id, "leave.invite") ? "Disable InviteInformation": "Enable Invite Information"}`,
-                  description: `${client.settings.get(message.guild.id, "leave.invite") ? "No longer show Information who invited him/her": "Show Information about who invited him/her"}`,
+                  value: `${GuildSettings.leave.invite ? "Disable InviteInformation": "Enable Invite Information"}`,
+                  description: `${GuildSettings.leave.invite ? "No longer show Information who invited him/her": "Show Information about who invited him/her"}`,
                   emoji: "877653386747605032"
                 },
                 {
@@ -155,7 +153,7 @@ module.exports = {
               //define the embed
               let MenuEmbed = new MessageEmbed()
                 .setColor(es.color)
-                .setAuthor('Leave Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b?.png', 'https://discord.gg/dcdev')
+                .setAuthor('Leave Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b.png', 'https://discord.gg/milrato')
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
               //send the menu msg
               let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -170,7 +168,7 @@ module.exports = {
                   collector.stop();
                   let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                   if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   let SetupNumber = menu?.values[0].split(" ")[0]
                   handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata)
                 }
@@ -183,7 +181,7 @@ module.exports = {
             }
             async function handle_the_picks_2(optionhandletype, SetupNumber, menuoptiondata){
               switch (optionhandletype) {
-                case `${client.settings.get(message.guild.id, "leave.channel") == "nochannel" ? "Set Channel": "Overwrite Channel"}`:{
+                case `${GuildSettings.leave.channel == "nochannel" ? "Set Channel": "Overwrite Channel"}`:{
                   tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable7"]))
                     .setColor(es.color)
@@ -199,11 +197,11 @@ module.exports = {
                       var message = collected.first();
                       var channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
                       if (channel) {
-                        client.settings.set(message.guild.id, channel.id, "leave.channel")
+                        await client.settings.set(message.guild.id+".leave.channel", channel.id)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable9"]))
                           .setColor(es.color)
-                          .setDescription(`If Someone joins this Server, a message will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "Not defined yet"}!\nEdit the message with: \`${prefix}setup-leave  --> Pick 1️⃣ --> Pick 4️⃣\``.substring(0, 2048))
+                          .setDescription(`If Someone joins this Server, a message will be sent into ${channel}!\nEdit the message with: \`${prefix}setup-leave  --> Pick 1️⃣ --> Pick 4️⃣\``.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                       } else {
@@ -211,7 +209,7 @@ module.exports = {
                       }
                     })
                   .catch(e => {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable12"]))
                       .setColor(es.wrongcolor)
@@ -221,7 +219,7 @@ module.exports = {
                   })
                 }break;
                 case `Disable Leave`:{
-                  client.settings.set(reaction.message.guild.id, "nochannel", "leave.channel")
+                  await client.settings.set(reaction.message.guild.id+".leave.channel", "nochannel")
                   return reaction.message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable13"]))
                     .setColor(es.color)
@@ -259,28 +257,28 @@ module.exports = {
                         emoji: "🖼"
                       },
                       {
-                        value: `${client.settings.get(message.guild.id, "leave.frame") ? "Disable" : "Enable"} Frame`,
-                        description: `${client.settings.get(message.guild.id, "leave.frame") ? "I won't show the Frame anymore" : "Let me display a colored Frame for highlighting"}`,
+                        value: `${GuildSettings.leave.frame ? "Disable" : "Enable"} Frame`,
+                        description: `${GuildSettings.leave.frame ? "I won't show the Frame anymore" : "Let me display a colored Frame for highlighting"}`,
                         emoji: "✏️" 
                       },
                       {
-                        value: `${client.settings.get(message.guild.id, "leave.discriminator") ? "Disable" : "Enable"} User-Tag`,
-                        description: `${client.settings.get(message.guild.id, "leave.discriminator") ? "I won't show the User-Tag anymore" : "Let me display a colored User-Tag (#1234)"}`,
+                        value: `${GuildSettings.leave.discriminator ? "Disable" : "Enable"} User-Tag`,
+                        description: `${GuildSettings.leave.discriminator ? "I won't show the User-Tag anymore" : "Let me display a colored User-Tag (#1234)"}`,
                         emoji: "🔢" 
                       },
                       {
-                        value: `${client.settings.get(message.guild.id, "leave.membercount") ? "Disable" : "Enable"} Member Count`,
-                        description: `${client.settings.get(message.guild.id, "leave.membercount") ? "I won't show the Member Count anymore" : "Let me display a colored MemberCount of the Server"}`,
+                        value: `${GuildSettings.leave.membercount ? "Disable" : "Enable"} Member Count`,
+                        description: `${GuildSettings.leave.membercount ? "I won't show the Member Count anymore" : "Let me display a colored MemberCount of the Server"}`,
                         emoji: "📈" 
                       },
                       {
-                        value: `${client.settings.get(message.guild.id, "leave.servername") ? "Disable" : "Enable"} Server Name`,
-                        description: `${client.settings.get(message.guild.id, "leave.servername") ? "I won't show the ServerName anymore" : "Let me display a colored ServerName"}`,
+                        value: `${GuildSettings.leave.servername ? "Disable" : "Enable"} Server Name`,
+                        description: `${GuildSettings.leave.servername ? "I won't show the ServerName anymore" : "Let me display a colored ServerName"}`,
                         emoji: "🗒" 
                       },
                       {
-                        value: `${client.settings.get(message.guild.id, "leave.pb") ? "Disable" : "Enable"} User-Avatar`,
-                        description: `${client.settings.get(message.guild.id, "leave.pb") ? "I won't show the User-Avatar anymore" : "Let me display the User-Avatar"}`,
+                        value: `${GuildSettings.leave.pb ? "Disable" : "Enable"} User-Avatar`,
+                        description: `${GuildSettings.leave.pb ? "I won't show the User-Avatar anymore" : "Let me display the User-Avatar"}`,
                         emoji: "💯" 
                       },
                       {
@@ -314,7 +312,7 @@ module.exports = {
                     //define the embed
                     let MenuEmbed = new MessageEmbed()
                       .setColor(es.color)
-                      .setAuthor('Leave Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b?.png', 'https://discord.gg/dcdev')
+                      .setAuthor('Leave Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b.png', 'https://discord.gg/milrato')
                       .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
                     //send the menu msg
                     let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -329,7 +327,7 @@ module.exports = {
                         collector.stop();
                         let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                         if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                        menu?.deferUpdate();
+                        client.disableComponentMessage(menu);
                         let SetupNumber = menu?.values[0].split(" ")[0]
                         handle_the_picks_3(menu?.values[0], SetupNumber, menuoptiondata)
                       }
@@ -343,20 +341,20 @@ module.exports = {
                   async function handle_the_picks_3(optionhandletype, SetupNumber, menuoptiondata){
                     switch (optionhandletype) {
                       case `Disable the Image`:{
-                        client.settings.set(message.guild.id, false, "leave.image")
+                        await client.settings.set(message.guild.id+".leave.image", false)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable18"]))
                           .setColor(es.color)
-                          .setDescription(`If Someone joins this Server, a message **with__out__ an image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                          .setDescription(`If Someone joins this Server, a message **with__out__ an image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
                       case `Enable auto Image`:{
-                        client.settings.set(message.guild.id, true, "leave.image")
+                        await client.settings.set(message.guild.id+".leave.image", true)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable21"]))
                           .setColor(es.color)
-                          .setDescription(`I will be using ${client.settings.get(message.guild.id, "leave.custom") === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                          .setDescription(`I will be using ${GuildSettings.leave.custom === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
@@ -377,12 +375,12 @@ module.exports = {
                             //push the answer of the user into the answers lmfao
                             if (collected.first().attachments.size > 0) {
                               if (collected.first().attachments.every(attachIsImage)) {
-                                client.settings.set(message.guild.id, "no", "leave.custom")
-                                client.settings.set(message.guild.id, url, "leave.background")
+                                await client.settings.set(message.guild.id+".leave.custom", "no")
+                                await client.settings.set(message.guild.id+".leave.background", url)
                                 return reaction.message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable26"]))
                                   .setColor(es.color)
-                                  .setDescription(`I will be using ${client.settings.get(message.guild.id, "leave.custom") === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                                  .setDescription(`I will be using ${GuildSettings.leave.custom === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                                   .setFooter(client.getFooter(es))
                                 ]});
                               } else {
@@ -395,12 +393,12 @@ module.exports = {
                             } else {
                               if (isValidURL(collected.first().content)) {
                                 url = collected.first().content;
-                                client.settings.set(message.guild.id, "no", "leave.custom")
-                                client.settings.set(message.guild.id, url, "leave.background")
+                                await client.settings.set(message.guild.id+".leave.custom", "no")
+                                await client.settings.set(message.guild.id+".leave.background", url)
                                 return reaction.message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable28"]))
                                   .setColor(es.color)
-                                  .setDescription(`I will be using ${client.settings.get(message.guild.id, "leave.custom") === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                                  .setDescription(`I will be using ${GuildSettings.leave.custom === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                                   .setFooter(client.getFooter(es))
                                 ]});
                               } else {
@@ -422,7 +420,7 @@ module.exports = {
                             }
                           })
                           .catch(e => {
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable31"]))
                               .setColor(es.wrongcolor)
@@ -432,12 +430,12 @@ module.exports = {
                           })
                       } break;
                       case `Del Image Background`:{
-                        client.settings.set(message.guild.id, true, "leave.image")
-                        client.settings.get(message.guild.id, "transparent", "leave.background")
+                        await client.settings.set(message.guild.id+".leave.image", true)
+                        await client.settings.get(message.guild.id+".leave.background", "transparent")
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable32"]))
                           .setColor(es.color)
-                          .setDescription(`If Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                          .setDescription(`If Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
@@ -457,11 +455,11 @@ module.exports = {
                             //push the answer of the user into the answers lmfao
                             if (collected.first().attachments.size > 0) {
                               if (collected.first().attachments.every(attachIsImage)) {
-                                client.settings.set(message.guild.id, url, "leave.custom")
+                                await client.settings.set(message.guild.id+".leave.custom", url)
                                 return reaction.message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable36"]))
                                   .setColor(es.color)
-                                  .setDescription(`I will be using ${client.settings.get(message.guild.id, "leave.custom") === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                                  .setDescription(`I will be using ${GuildSettings.leave.custom === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                                   .setFooter(client.getFooter(es))
                                 ]});
                               } else {
@@ -474,11 +472,11 @@ module.exports = {
                             } else {
                               if (isValidURL(collected.first().content)) {
                                 url = collected.first().content;
-                                client.settings.set(message.guild.id, url, "leave.custom")
+                                await client.settings.set(message.guild.id+".leave.custom", url)
                                 return reaction.message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable38"]))
                                   .setColor(es.color)
-                                  .setDescription(`I will be using ${client.settings.get(message.guild.id, "leave.custom") === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                                  .setDescription(`I will be using ${GuildSettings.leave.custom === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                                   .setFooter(client.getFooter(es))
                                 ]});
                               } else {
@@ -500,7 +498,7 @@ module.exports = {
                             }
                           })
                           .catch(e => {
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable41"]))
                               .setColor(es.wrongcolor)
@@ -509,53 +507,53 @@ module.exports = {
                             ]});
                           })
                       } break;
-                      case `${client.settings.get(message.guild.id, "leave.frame") ? "Disable" : "Enable"} Frame`:{
-                        client.settings.set(message.guild.id, "no", "leave.custom")
-                        client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "leave.frame"), "leave.frame")
+                      case `${GuildSettings.leave.frame ? "Disable" : "Enable"} Frame`:{
+                        await client.settings.set(message.guild.id+".leave.custom", "no")
+                        await client.settings.set(message.guild.id+".leave.frame", !GuildSettings.leave.frame)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable42"]))
                           .setColor(es.color)
-                          .setDescription(`If Someone joins this Server, a message **with an automated image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                          .setDescription(`If Someone joins this Server, a message **with an automated image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
-                      case `${client.settings.get(message.guild.id, "leave.discriminator") ? "Disable" : "Enable"} User-Tag`:{
-                        client.settings.set(message.guild.id, "no", "leave.custom")
-                        client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "leave.discriminator"), "leave.discriminator")
+                      case `${GuildSettings.leave.discriminator ? "Disable" : "Enable"} User-Tag`:{
+                        await client.settings.set(message.guild.id+".leave.custom", "no")
+                        await client.settings.set(message.guild.id+".leave.discriminator", !GuildSettings.leave.discriminator)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable45"]))
                           .setColor(es.color)
-                          .setDescription(`If Someone joins this Server, a message **with an automated image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                          .setDescription(`If Someone joins this Server, a message **with an automated image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
-                      case `${client.settings.get(message.guild.id, "leave.membercount") ? "Disable" : "Enable"} Member Count`:{
-                        client.settings.set(message.guild.id, "no", "leave.custom")
-                        client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "leave.membercount"), "leave.membercount")
+                      case `${GuildSettings.leave.membercount ? "Disable" : "Enable"} Member Count`:{
+                        await client.settings.set(message.guild.id+".leave.custom", "no")
+                        await client.settings.set(message.guild.id+".leave.membercount", !GuildSettings.leave.membercount)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable48"]))
                           .setColor(es.color)
-                          .setDescription(`If Someone joins this Server, a message **with an automated image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                          .setDescription(`If Someone joins this Server, a message **with an automated image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
-                      case `${client.settings.get(message.guild.id, "leave.servername") ? "Disable" : "Enable"} Server Name`:{
-                        client.settings.set(message.guild.id, "no", "leave.custom")
-                        client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "leave.servername"), "leave.servername")
+                      case `${GuildSettings.leave.servername ? "Disable" : "Enable"} Server Name`:{
+                        await client.settings.set(message.guild.id+".leave.custom", "no")
+                        await client.settings.set(message.guild.id+".leave.servername", !GuildSettings.leave.servername)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable51"]))
                           .setColor(es.color)
-                          .setDescription(`If Someone joins this Server, a message **with an automated image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                          .setDescription(`If Someone joins this Server, a message **with an automated image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
-                      case `${client.settings.get(message.guild.id, "leave.pb") ? "Disable" : "Enable"} User-Avatar`:{
-                        client.settings.set(message.guild.id, "no", "leave.custom")
-                        client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "leave.pb"), "leave.pb")
+                      case `${GuildSettings.leave.pb ? "Disable" : "Enable"} User-Avatar`:{
+                        await client.settings.set(message.guild.id+".leave.custom", "no")
+                        await client.settings.set(message.guild.id+".leave.pb", !GuildSettings.leave.pb)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable54"]))
                           .setColor(es.color)
-                          .setDescription(`If Someone joins this Server, a message **with an automated image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                          .setDescription(`If Someone joins this Server, a message **with an automated image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
@@ -595,11 +593,11 @@ module.exports = {
                         collector.on('collect', async button => {
                           if (button?.user.id === cmduser.id) {
                             var color = button?.customId;
-                            client.settings.set(message.guild.id, color, "leave.framecolor")
+                            await client.settings.set(message.guild.id+".leave.framecolor", color)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable59"]))
                               .setColor(color)
-                              .setDescription(`If Someone leaves this Server, a message **with an automated image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
+                              .setDescription(`If Someone leaves this Server, a message **with an automated image** will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
                               .setFooter(client.getFooter(es))
                             ]});
                           } else {
@@ -625,16 +623,16 @@ module.exports = {
                     })
                     .then(async collected => {
                       var message = collected.first();
-                        client.settings.set(message.guild.id, message.content, "leave.msg")
+                        await client.settings.set(message.guild.id+".leave.msg", message.content)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable66"]))
                           .setColor(es.color)
-                          .setDescription(`If Someone joins this Server, this message will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL YET"}!\n\n${message.content.replace("{user}", message.author)}`.substring(0, 2048))
+                          .setDescription(`If Someone joins this Server, this message will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "NO CHANNEL YET"}!\n\n${message.content.replace("{user}", message.author)}`.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                     })
                   .catch(e => {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable69"]))
                       .setColor(es.wrongcolor)
@@ -643,12 +641,12 @@ module.exports = {
                     ]});
                   })
                 }break;
-                case `${client.settings.get(message.guild.id, "leave.invite") ? "Disable InviteInformation": "Enable Invite Information"}`:{
-                  client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "leave.invite"), "leave.invite")
+                case `${GuildSettings.leave.invite ? "Disable InviteInformation": "Enable Invite Information"}`:{
+                  await client.settings.set(message.guild.id+".leave.invite", !GuildSettings.leave.invite)
                   return reaction.message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable70"]))
                     .setColor(es.color)
-                    .setDescription(`If Someone joins this Server, a message with Invite Information will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "Not defined yet"}!\nEdit the message with: \`${prefix}setup-leave  --> Pick 1️⃣ --> Pick 4️⃣\``.substring(0, 2048))
+                    .setDescription(`If Someone joins this Server, a message with Invite Information will be sent into ${message.guild.channels.cache.get(GuildSettings.leave.channel) ? message.guild.channels.cache.get(GuildSettings.leave.channel) : "Not defined yet"}!\nEdit the message with: \`${prefix}setup-leave  --> Pick 1️⃣ --> Pick 4️⃣\``.substring(0, 2048))
                     .setFooter(client.getFooter(es))
                   ]});
                 }break;
@@ -661,8 +659,8 @@ module.exports = {
             async function second_layer(){
               let menuoptions = [
                 {
-                  value: `${!client.settings.get(message.guild.id, "leave.dm") ? "Enable Dm Messages": "Disable Dm Messages"}`,
-                  description: `${!client.settings.get(message.guild.id, "leave.dm") ? "Send Dm Messages if the user leaves": "Don't send any dms when he leaves"}`,
+                  value: `${!GuildSettings.leave.dm ? "Enable Dm Messages": "Disable Dm Messages"}`,
+                  description: `${!GuildSettings.leave.dm ? "Send Dm Messages if the user leaves": "Don't send any dms when he leaves"}`,
                   emoji: "895066899619119105" //
                 },
                 {
@@ -676,8 +674,8 @@ module.exports = {
                   emoji: "877653386747605032"
                 },
                 {
-                  value: `${client.settings.get(message.guild.id, "leave.invitedm") ? "Disable InviteInformation": "Enable Invite Information"}`,
-                  description: `${client.settings.get(message.guild.id, "leave.invitedm") ? "No longer show Information who invited him/her": "Show Information about who invited him/her"}`,
+                  value: `${GuildSettings.leave.invitedm ? "Disable InviteInformation": "Enable Invite Information"}`,
+                  description: `${GuildSettings.leave.invitedm ? "No longer show Information who invited him/her": "Show Information about who invited him/her"}`,
                   emoji: "877653386747605032"
                 },
                 {
@@ -706,7 +704,7 @@ module.exports = {
               //define the embed
               let MenuEmbed = new MessageEmbed()
                 .setColor(es.color)
-                .setAuthor('Leave Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b?.png', 'https://discord.gg/dcdev')
+                .setAuthor('Leave Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b.png', 'https://discord.gg/milrato')
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
               //send the menu msg
               let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -721,7 +719,7 @@ module.exports = {
                   collector.stop();
                   let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                   if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   let SetupNumber = menu?.values[0].split(" ")[0]
                   handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata)
                 }
@@ -734,16 +732,16 @@ module.exports = {
             }
             async function handle_the_picks_2(optionhandletype, SetupNumber, menuoptiondata){
               switch (optionhandletype) {
-                case `${!client.settings.get(message.guild.id, "leave.dm") ? "Enable Dm Messages": "Disable Dm Messages"}`:{
-                  if(client.settings.get(message.guild.id, "leave.dm")){
-                    client.settings.set(message.guild.id, false, "leave.dm")
+                case `${!GuildSettings.leave.dm ? "Enable Dm Messages": "Disable Dm Messages"}`:{
+                  if(GuildSettings.leave.dm){
+                    await client.settings.set(message.guild.id+".leave.dm", false)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable79"]))
                       .setColor(es.color)
                       .setFooter(client.getFooter(es))
                     ]});
                   } else {
-                    client.settings.set(message.guild.id, true, "leave.dm")
+                    await client.settings.set(message.guild.id+".leave.dm", true)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable76"]))
                       .setColor(es.color)
@@ -781,28 +779,28 @@ module.exports = {
                         emoji: "🖼"
                       },
                       {
-                        value: `${client.settings.get(message.guild.id, "leave.framedm") ? "Disable" : "Enable"} Frame`,
-                        description: `${client.settings.get(message.guild.id, "leave.framedm") ? "I won't show the Frame anymore" : "Let me display a colored Frame for highlighting"}`,
+                        value: `${GuildSettings.leave.framedm ? "Disable" : "Enable"} Frame`,
+                        description: `${GuildSettings.leave.framedm ? "I won't show the Frame anymore" : "Let me display a colored Frame for highlighting"}`,
                         emoji: "✏️" 
                       },
                       {
-                        value: `${client.settings.get(message.guild.id, "leave.discriminatordm") ? "Disable" : "Enable"} User-Tag`,
-                        description: `${client.settings.get(message.guild.id, "leave.discriminatordm") ? "I won't show the User-Tag anymore" : "Let me display a colored User-Tag (#1234)"}`,
+                        value: `${GuildSettings.leave.discriminatordm ? "Disable" : "Enable"} User-Tag`,
+                        description: `${GuildSettings.leave.discriminatordm ? "I won't show the User-Tag anymore" : "Let me display a colored User-Tag (#1234)"}`,
                         emoji: "🔢" 
                       },
                       {
-                        value: `${client.settings.get(message.guild.id, "leave.membercountdm") ? "Disable" : "Enable"} Member Count`,
-                        description: `${client.settings.get(message.guild.id, "leave.membercountdm") ? "I won't show the Member Count anymore" : "Let me display a colored MemberCount of the Server"}`,
+                        value: `${GuildSettings.leave.membercountdm ? "Disable" : "Enable"} Member Count`,
+                        description: `${GuildSettings.leave.membercountdm ? "I won't show the Member Count anymore" : "Let me display a colored MemberCount of the Server"}`,
                         emoji: "📈" 
                       },
                       {
-                        value: `${client.settings.get(message.guild.id, "leave.servernamedm") ? "Disable" : "Enable"} Server Name`,
-                        description: `${client.settings.get(message.guild.id, "leave.servernamedm") ? "I won't show the ServerName anymore" : "Let me display a colored ServerName"}`,
+                        value: `${GuildSettings.leave.servernamedm ? "Disable" : "Enable"} Server Name`,
+                        description: `${GuildSettings.leave.servernamedm ? "I won't show the ServerName anymore" : "Let me display a colored ServerName"}`,
                         emoji: "🗒" 
                       },
                       {
-                        value: `${client.settings.get(message.guild.id, "leave.pbdm") ? "Disable" : "Enable"} User-Avatar`,
-                        description: `${client.settings.get(message.guild.id, "leave.pbdm") ? "I won't show the User-Avatar anymore" : "Let me display the User-Avatar"}`,
+                        value: `${GuildSettings.leave.pbdm ? "Disable" : "Enable"} User-Avatar`,
+                        description: `${GuildSettings.leave.pbdm ? "I won't show the User-Avatar anymore" : "Let me display the User-Avatar"}`,
                         emoji: "💯" 
                       },
                       {
@@ -836,7 +834,7 @@ module.exports = {
                     //define the embed
                     let MenuEmbed = new MessageEmbed()
                       .setColor(es.color)
-                      .setAuthor('Leave Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b?.png', 'https://discord.gg/dcdev')
+                      .setAuthor('Leave Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b.png', 'https://discord.gg/milrato')
                       .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
                     //send the menu msg
                     let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -851,7 +849,7 @@ module.exports = {
                         collector.stop();
                         let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                         if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                        menu?.deferUpdate();
+                        client.disableComponentMessage(menu);
                         let SetupNumber = menu?.values[0].split(" ")[0]
                         handle_the_picks_3(menu?.values[0], SetupNumber, menuoptiondata)
                       }
@@ -865,7 +863,7 @@ module.exports = {
                   async function handle_the_picks_3(optionhandletype, SetupNumber, menuoptiondata){
                     switch (optionhandletype) {
                       case `Disable the Image`:{
-                        client.settings.set(message.guild.id, false, "leave.imagedm")
+                        await client.settings.set(message.guild.id+".leave.imagedm", false)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable18"]))
                           .setColor(es.color)
@@ -874,11 +872,11 @@ module.exports = {
                         ]});
                       } break;
                       case `Enable auto Image`:{
-                        client.settings.set(message.guild.id, true, "leave.imagedm")
+                        await client.settings.set(message.guild.id+".leave.imagedm", true)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable21"]))
                           .setColor(es.color)
-                          .setDescription(`I will be using ${client.settings.get(message.guild.id, "leave.customdm") === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into DMS`.substring(0, 2048))
+                          .setDescription(`I will be using ${GuildSettings.leave.customdm === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into DMS`.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
@@ -899,12 +897,12 @@ module.exports = {
                             //push the answer of the user into the answers lmfao
                             if (collected.first().attachments.size > 0) {
                               if (collected.first().attachments.every(attachIsImage)) {
-                                client.settings.set(message.guild.id, "no", "leave.customdm")
-                                client.settings.set(message.guild.id, url, "leave.backgrounddm")
+                                await client.settings.set(message.guild.id+".leave.customdm", "no")
+                                await client.settings.set(message.guild.id+".leave.backgrounddm", url)
                                 return reaction.message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable26"]))
                                   .setColor(es.color)
-                                  .setDescription(`I will be using ${client.settings.get(message.guild.id, "leave.customdm") === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into DMS`.substring(0, 2048))
+                                  .setDescription(`I will be using ${GuildSettings.leave.customdm === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into DMS`.substring(0, 2048))
                                   .setFooter(client.getFooter(es))
                                 ]});
                               } else {
@@ -917,12 +915,12 @@ module.exports = {
                             } else {
                               if (isValidURL(collected.first().content)) {
                                 url = collected.first().content;
-                                client.settings.set(message.guild.id, "no", "leave.customdm")
-                                client.settings.set(message.guild.id, url, "leave.backgrounddm")
+                                await client.settings.set(message.guild.id+".leave.customdm", "no")
+                                await client.settings.set(message.guild.id+".leave.backgrounddm", url)
                                 return reaction.message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable28"]))
                                   .setColor(es.color)
-                                  .setDescription(`I will be using ${client.settings.get(message.guild.id, "leave.customdm") === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into DMS`.substring(0, 2048))
+                                  .setDescription(`I will be using ${GuildSettings.leave.customdm === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into DMS`.substring(0, 2048))
                                   .setFooter(client.getFooter(es))
                                 ]});
                               } else {
@@ -944,7 +942,7 @@ module.exports = {
                             }
                           })
                           .catch(e => {
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable31"]))
                               .setColor(es.wrongcolor)
@@ -954,8 +952,8 @@ module.exports = {
                           })
                       } break;
                       case `Del Image Background`:{
-                        client.settings.set(message.guild.id, true, "leave.imagedm")
-                        client.settings.get(message.guild.id, "transparent", "leave.backgrounddm")
+                        await client.settings.set(message.guild.id+".leave.imagedm", true)
+                        await client.settings.get(message.guild.id+".leave.backgrounddm", "transparent")
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable32"]))
                           .setColor(es.color)
@@ -979,11 +977,11 @@ module.exports = {
                             //push the answer of the user into the answers lmfao
                             if (collected.first().attachments.size > 0) {
                               if (collected.first().attachments.every(attachIsImage)) {
-                                client.settings.set(message.guild.id, url, "leave.customdm")
+                                await client.settings.set(message.guild.id+".leave.customdm", url)
                                 return reaction.message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable36"]))
                                   .setColor(es.color)
-                                  .setDescription(`I will be using ${client.settings.get(message.guild.id, "leave.customdm") === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into DMS`.substring(0, 2048))
+                                  .setDescription(`I will be using ${GuildSettings.leave.customdm === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into DMS`.substring(0, 2048))
                                   .setFooter(client.getFooter(es))
                                 ]});
                               } else {
@@ -996,11 +994,11 @@ module.exports = {
                             } else {
                               if (isValidURL(collected.first().content)) {
                                 url = collected.first().content;
-                                client.settings.set(message.guild.id, url, "leave.customdm")
+                                await client.settings.set(message.guild.id+".leave.customdm", url)
                                 return reaction.message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable38"]))
                                   .setColor(es.color)
-                                  .setDescription(`I will be using ${client.settings.get(message.guild.id, "leave.customdm") === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into DMS`.substring(0, 2048))
+                                  .setDescription(`I will be using ${GuildSettings.leave.customdm === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into DMS`.substring(0, 2048))
                                   .setFooter(client.getFooter(es))
                                 ]});
                               } else {
@@ -1022,7 +1020,7 @@ module.exports = {
                             }
                           })
                           .catch(e => {
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable41"]))
                               .setColor(es.wrongcolor)
@@ -1031,9 +1029,9 @@ module.exports = {
                             ]});
                           })
                       } break;
-                      case `${client.settings.get(message.guild.id, "leave.framedm") ? "Disable" : "Enable"} Frame`:{
-                        client.settings.set(message.guild.id, "no", "leave.customdm")
-                        client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "leave.framedm"), "leave.framedm")
+                      case `${GuildSettings.leave.framedm ? "Disable" : "Enable"} Frame`:{
+                        await client.settings.set(message.guild.id+".leave.customdm", "no")
+                        await client.settings.set(message.guild.id+".leave.framedm", !GuildSettings.leave.framedm)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable42"]))
                           .setColor(es.color)
@@ -1041,9 +1039,9 @@ module.exports = {
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
-                      case `${client.settings.get(message.guild.id, "leave.discriminatordm") ? "Disable" : "Enable"} User-Tag`:{
-                        client.settings.set(message.guild.id, "no", "leave.customdm")
-                        client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "leave.discriminatordm"), "leave.discriminatordm")
+                      case `${GuildSettings.leave.discriminatordm ? "Disable" : "Enable"} User-Tag`:{
+                        await client.settings.set(message.guild.id+".leave.customdm", "no")
+                        await client.settings.set(message.guild.id+".leave.discriminatordm", !GuildSettings.leave.discriminatordm)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable45"]))
                           .setColor(es.color)
@@ -1051,9 +1049,9 @@ module.exports = {
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
-                      case `${client.settings.get(message.guild.id, "leave.membercountdm") ? "Disable" : "Enable"} Member Count`:{
-                        client.settings.set(message.guild.id, "no", "leave.customdm")
-                        client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "leave.membercountdm"), "leave.membercountdm")
+                      case `${GuildSettings.leave.membercountdm ? "Disable" : "Enable"} Member Count`:{
+                        await client.settings.set(message.guild.id+".leave.customdm", "no")
+                        await client.settings.set(message.guild.id+".leave.membercountdm", !GuildSettings.leave.membercountdm)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable48"]))
                           .setColor(es.color)
@@ -1061,9 +1059,9 @@ module.exports = {
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
-                      case `${client.settings.get(message.guild.id, "leave.servernamedm") ? "Disable" : "Enable"} Server Name`:{
-                        client.settings.set(message.guild.id, "no", "leave.customdm")
-                        client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "leave.servernamedm"), "leave.servernamedm")
+                      case `${GuildSettings.leave.servernamedm ? "Disable" : "Enable"} Server Name`:{
+                        await client.settings.set(message.guild.id+".leave.customdm", "no")
+                        await client.settings.set(message.guild.id+".leave.servernamedm", !GuildSettings.leave.servernamedm)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable51"]))
                           .setColor(es.color)
@@ -1071,9 +1069,9 @@ module.exports = {
                           .setFooter(client.getFooter(es))
                         ]});
                       } break;
-                      case `${client.settings.get(message.guild.id, "leave.pbdm") ? "Disable" : "Enable"} User-Avatar`:{
-                        client.settings.set(message.guild.id, "no", "leave.customdm")
-                        client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "leave.pbdm"), "leave.pbdm")
+                      case `${GuildSettings.leave.pbdm ? "Disable" : "Enable"} User-Avatar`:{
+                        await client.settings.set(message.guild.id+".leave.customdm", "no")
+                        await client.settings.set(message.guild.id+".leave.pbdm", !GuildSettings.leave.pbdm)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable54"]))
                           .setColor(es.color)
@@ -1117,7 +1115,7 @@ module.exports = {
                         collector.on('collect', async button => {
                           if (button?.user.id === cmduser.id) {
                             var color = button?.customId;
-                            client.settings.set(message.guild.id, color, "leave.framecolordm")
+                            await client.settings.set(message.guild.id+".leave.framecolordm", color)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable59"]))
                               .setColor(color)
@@ -1147,7 +1145,7 @@ module.exports = {
                     })
                     .then(async collected => {
                       var message = collected.first();
-                        client.settings.set(message.guild.id, message.content, "leave.msgdm")
+                        await client.settings.set(message.guild.id+".leave.msgdm", message.content)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable66"]))
                           .setColor(es.color)
@@ -1156,7 +1154,7 @@ module.exports = {
                         ]});
                     })
                   .catch(e => {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable69"]))
                       .setColor(es.wrongcolor)
@@ -1165,8 +1163,8 @@ module.exports = {
                     ]});
                   })
                 }break;
-                case `${client.settings.get(message.guild.id, "leave.invitedm") ? "Disable InviteInformation": "Enable Invite Information"}`:{
-                  client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "leave.invitedm"), "leave.invitedm")
+                case `${GuildSettings.leave.invitedm ? "Disable InviteInformation": "Enable Invite Information"}`:{
+                  await client.settings.set(message.guild.id+".leave.invitedm", !GuildSettings.leave.invitedm)
                   return reaction.message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable70"]))
                     .setColor(es.color)
@@ -1191,7 +1189,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

@@ -28,7 +28,7 @@ module.exports = {
       await ensure_economy_user(client, message.guild.id, user.id)
         var users = await client.economy.all().then(d => d.filter(i => String(i.ID).startsWith(message.guild.id)).map(i => i.ID));
         var datas = [];
-        for(const user of users)
+        for await (const user of users)
           try{
             datas.push(await client.economy.get(user)) 
           }catch{
@@ -94,11 +94,11 @@ module.exports = {
         
         var stringarray = []
         var yourrank = false;
-        for(let i = 0; i < sorted.length; i++){
+        for (let i = 0; i < sorted.length; i++){
           let index = i;
           const data = sorted[i]
           if(!data.user || data.user == undefined) continue;
-          const tuser = await client.users.fetch(data.user).catch(() => {});
+          const tuser = await client.users.fetch(data.user).catch(() => null);
           if(!tuser) continue;
           if(user == message.author) {
             if(yourrank && yourrank > index + 1) yourrank = index + 1;
@@ -215,7 +215,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

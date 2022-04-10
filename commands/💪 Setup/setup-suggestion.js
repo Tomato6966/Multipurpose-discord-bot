@@ -110,7 +110,7 @@ module.exports = {
             }))
 
         //define the embed
-        let MenuEmbed = new MessageEmbed().setColor(es.color).setAuthor('Suggestion System', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/light-bulb_1f4a1.png', 'https://discord.gg/dcdev').setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
+        let MenuEmbed = new MessageEmbed().setColor(es.color).setAuthor('Suggestion System', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/light-bulb_1f4a1.png', 'https://discord.gg/milrato').setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({
           embeds: [MenuEmbed],
@@ -127,7 +127,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           } else menu?.reply({
@@ -177,7 +177,7 @@ module.exports = {
                       ]
                     });
                   } catch (e) {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     return message.reply({
                       embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable7"]))
@@ -192,7 +192,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
                 return message.reply({
                   embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable9"]))
@@ -245,7 +245,7 @@ module.exports = {
                     ]
                   });
                 } catch (e) {
-                  console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  console.error(e)
                   return message.reply({
                     embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable13"]))
@@ -260,7 +260,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({
                 embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable9"]))
@@ -316,7 +316,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({
                 embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable9"]))
@@ -358,7 +358,7 @@ module.exports = {
                     ]
                   });
                 } catch (e) {
-                  console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  console.error(e)
                   return message.reply({
                     embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable25"]))
@@ -373,7 +373,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({
                 embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable9"]))
@@ -429,7 +429,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({
                 embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable9"]))
@@ -471,7 +471,7 @@ module.exports = {
                     ]
                   });
                 } catch (e) {
-                  console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  console.error(e)
                   return message.reply({
                     embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable37"]))
@@ -486,7 +486,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({
                 embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable9"]))
@@ -528,7 +528,7 @@ module.exports = {
                     ]
                   });
                 } catch (e) {
-                  console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  console.error(e)
                   return message.reply({
                     embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable37"]))
@@ -543,7 +543,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({
                 embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable9"]))
@@ -602,7 +602,7 @@ module.exports = {
                     });
                   }
                 } catch (e) {
-                  console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  console.error(e)
                   return message.reply({
                     embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable48"]))
@@ -617,7 +617,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({
                 embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable50"]))
@@ -676,7 +676,7 @@ module.exports = {
                     });
                   }
                 } catch (e) {
-                  console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  console.error(e)
                   return message.reply({
                     embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable59"]))
@@ -691,7 +691,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({
                 embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-suggestion"]["variable61"]))
@@ -720,7 +720,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

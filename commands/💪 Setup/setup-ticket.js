@@ -24,8 +24,6 @@ module.exports = {
   type: "system",
   run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     try {
-      return message.reply(`<a:Milrato_Animated:900394164829708388> **Since the last update, this got not fixxed yet, will be fixxed as soon as possible** :cry:!
-> Join https://discord.gg/dcdev for updates!`);
       let temptype = 0;
       let errored = false;
       let guildid = message.guild.id;
@@ -115,7 +113,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.getAuthor('Ticket Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/incoming-envelope_1f4e8.png', 'https://discord.gg/dcdev'))
+          .setAuthor(client.getAuthor('Ticket Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/incoming-envelope_1f4e8.png', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         let used1 = false;
         //send the menu msg
@@ -127,7 +125,7 @@ module.exports = {
         function menuselection(menu) {
           let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
           if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
           let SetupNumber = menu?.values[0].split(" ")[0]
           used1 = true;
           second_layer(SetupNumber, menuoptiondata)
@@ -235,7 +233,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.getAuthor(SetupNumber + " Ticket Setup", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/incoming-envelope_1f4e8.png", "https://discord.gg/dcdev"))
+          .setAuthor(client.getAuthor(SetupNumber + " Ticket Setup", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/incoming-envelope_1f4e8.png", "https://discord.gg/milrato"))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable4"]))
         //send the menu msg
         let menumsg = await message.reply({
@@ -246,7 +244,7 @@ module.exports = {
         async function menuselection(menu) {
           let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
           if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable5"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
           var ticket = await client.setups.get(message.guild.id+`.ticketsystem${SetupNumber}`);
           handle_the_picks(menu?.values[0], SetupNumber, ticket)
         }
@@ -679,7 +677,7 @@ module.exports = {
               //define the embed
               let MenuEmbed = new Discord.MessageEmbed()
                 .setColor(es.color)
-                .setAuthor(SetupNumber + " Ticket Setup", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/incoming-envelope_1f4e8.png", "https://discord.gg/dcdev")
+                .setAuthor(SetupNumber + " Ticket Setup", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/incoming-envelope_1f4e8.png", "https://discord.gg/milrato")
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable4"]))
               //send the menu msg
               let menumsg = await message.reply({
@@ -690,7 +688,7 @@ module.exports = {
               async function menuselection(menu) {
                 let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
                 if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable5"]))
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 var ticket = await client.setups.get(message.guild.id+`.ticketsystem${SetupNumber}`);
                 handle_the_picks2(menu?.values[0], SetupNumber, ticket)
               }
@@ -856,7 +854,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

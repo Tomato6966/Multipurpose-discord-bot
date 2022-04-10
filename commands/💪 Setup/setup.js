@@ -20,7 +20,6 @@ module.exports = {
   type: "info",
   run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    return message.reply(`<a:Milrato_Animated:900394164829708388> **Since the last update, this got not fixxed yet, will be fixxed as soon as possible** :cry:!\n> Join https://discord.gg/dcdev for updates!`);
     try {
       first_layer()
         async function first_layer(){
@@ -222,7 +221,7 @@ module.exports = {
             },
           ]
           let Selection1 = new MessageSelectMenu()
-            .setPlaceholder('Click me to setup the (1/3) Systems [A-C]!').setCustomId('MenuSelection') 
+            .setPlaceholder('Click me to setup the (1/3) Systems [A-C]!').setCustomId('setup_cmd_MenuSelection') 
             .setMaxValues(1).setMinValues(1)
             .addOptions(
             menuoptions.map((option, index) => {
@@ -237,7 +236,7 @@ module.exports = {
               }
            }).filter(Boolean))
           let Selection2 = new MessageSelectMenu()
-            .setPlaceholder('Click me to setup the (2/3) Systems [C-R]!').setCustomId('MenuSelection') 
+            .setPlaceholder('Click me to setup the (2/3) Systems [C-R]!').setCustomId('setup_cmd_MenuSelection2') 
             .setMaxValues(1).setMinValues(1)
             .addOptions(
             menuoptions.map((option, index) => {
@@ -252,7 +251,7 @@ module.exports = {
               }
            }).filter(Boolean))
           let Selection3 = new MessageSelectMenu()
-            .setPlaceholder('Click me to setup the (3/3) Systems [R-Z]!').setCustomId('MenuSelection') 
+            .setPlaceholder('Click me to setup the (3/3) Systems [R-Z]!').setCustomId('setup_cmd_MenuSelection3') 
             .setMaxValues(1).setMinValues(1)
             .addOptions(
             menuoptions.map((option, index) => {
@@ -269,52 +268,31 @@ module.exports = {
           //define the embed
           let MenuEmbed1 = new Discord.MessageEmbed()
             .setColor(es.color)
-            .setAuthor("Setup-Systems | (1/3) [A-C]", 
+            .setAuthor(client.getAuthor("Setup-Systems", 
             "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/lg/57/gear_2699.png",
-            "https://discord.gg/dcdev")
+            "https://discord.gg/milrato"))
             .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup"]["variable1"]))
-          let MenuEmbed2 = new Discord.MessageEmbed()
-            .setColor(es.color)
-            .setAuthor("Setup-Systems | (2/3) [C-R]", 
-            "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/lg/57/gear_2699.png",
-            "https://discord.gg/dcdev")
-            .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup"]["variable2"]))
-          let MenuEmbed3 = new Discord.MessageEmbed()
-            .setColor(es.color)
-            .setAuthor("Setup-Systems | (3/3) [R-Z]", 
-            "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/lg/57/gear_2699.png",
-            "https://discord.gg/dcdev")
-            .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup"]["variable3"]))
+         
           //send the menu msg
-          let menumsg1 = await message.reply({embeds: [MenuEmbed1], components: [new MessageActionRow().addComponents(Selection1)]})
-          let menumsg2 = await message.reply({embeds: [MenuEmbed2], components: [new MessageActionRow().addComponents(Selection2)]})
-          let menumsg3 = await message.reply({embeds: [MenuEmbed3], components: [new MessageActionRow().addComponents(Selection3)]})
+          let menumsg1 = await message.reply({embeds: [MenuEmbed1], components: [
+            new MessageActionRow().addComponents(Selection1),
+            new MessageActionRow().addComponents(Selection2),
+            new MessageActionRow().addComponents(Selection3),
+          ]})
           //function to handle the menuselection
           function menuselection(menu) {
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
             let menuoptionindex = menuoptions.findIndex(v => v.value == menu?.values[0])
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             handle_the_picks(menuoptionindex, menuoptiondata)
           }
           //Event
           client.on('interactionCreate', async (menu) => {
+            if(!menu.isSelectMenu() || !menu.customId.startsWith("setup_cmd_")) return;
+            if(!menumsg1) return;
             if (menu?.message.id === menumsg1.id) {
               if (menu?.user.id === cmduser.id) {
-                menumsg1.edit({components: [], embeds: menumsg1.embeds}).catch(() => {});
-                menuselection(menu);
-              }
-              else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
-            }
-            if (menu?.message.id === menumsg2.id) {
-              if (menu?.user.id === cmduser.id) {
-                menumsg2.edit({components: [], embeds: menumsg2.embeds}).catch(() => {});
-                menuselection(menu);
-              }
-              else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
-            }
-            if (menu?.message.id === menumsg3.id) {
-              if (menu?.user.id === cmduser.id) {
-                menumsg3.edit({components: [], embeds: menumsg3.embeds}).catch(() => {});
+                menumsg1.edit({components: [], embeds: menumsg1.embeds}).catch(() => null);
                 menuselection(menu);
               }
               else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
@@ -337,7 +315,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

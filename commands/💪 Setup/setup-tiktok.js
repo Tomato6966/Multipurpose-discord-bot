@@ -195,7 +195,7 @@ https://www.tiktok.com/@milratodev`)
           ]});
           var buffer = "";
           var emojis = ["0️⃣", "5️⃣"]
-          for(let i = 0; i< client.social_log.get(message.guild.id, "tiktok.channels").length; i++){
+          for (let i = 0; i< client.social_log.get(message.guild.id, "tiktok.channels").length; i++){
             buffer += `${emojis[i]} ${client.social_log.get(message.guild.id, "tiktok.channels")[i]}`
           }
           tempmsg = await tempmsg.edit({embeds: [new Discord.MessageEmbed()
@@ -204,8 +204,8 @@ https://www.tiktok.com/@milratodev`)
             .setDescription(buffer+ "\n\n\n*React with the emoji regarding to the Channel you wanna remove*")
             .setFooter(client.getFooter(es))]
           })
-          for(const emoji of emojis){
-            tempmsg.react(emoji).catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
+          for await (const emoji of emojis){
+            tempmsg.react(emoji).catch(e=>console.error(e))
           }
         await tempmsg.awaitReactions({ filter: (reaction, user) => user.id == message.author?.id && emojis.includes(reaction.emoji?.name), 
             max: 1,
@@ -243,7 +243,7 @@ https://www.tiktok.com/@milratodev`)
           ]});
           var buffer = "";
           var emojis = ["0️⃣", "5️⃣"]
-          for(let i = 0; i< client.social_log.get(message.guild.id, "tiktok.channels").length; i++){
+          for (let i = 0; i< client.social_log.get(message.guild.id, "tiktok.channels").length; i++){
             buffer += `${emojis[i]} ${client.social_log.get(message.guild.id, "tiktok.channels")[i]}`
           }
           tempmsg = await tempmsg.edit({embeds: [new Discord.MessageEmbed()
@@ -252,8 +252,8 @@ https://www.tiktok.com/@milratodev`)
             .setDescription(buffer+ "\n\n\n*React with the emoji regarding to the Channel you wanna edit*")
             .setFooter(client.getFooter(es))]
           })
-          for(const emoji of emojis){
-            tempmsg.react(emoji).catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
+          for await (const emoji of emojis){
+            tempmsg.react(emoji).catch(e=>console.error(e))
           }
         await tempmsg.awaitReactions({ filter: (reaction, user) => user.id == message.author?.id && emojis.includes(reaction.emoji?.name), 
             max: 1,
@@ -302,7 +302,7 @@ https://www.tiktok.com/@milratodev`)
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               timeouterror = e;
             })
           if (timeouterror)
@@ -314,7 +314,7 @@ https://www.tiktok.com/@milratodev`)
             ]});
           })
           .catch(e => {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
             timeouterror = e;
           })
         if (timeouterror)
@@ -344,7 +344,7 @@ https://www.tiktok.com/@milratodev`)
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

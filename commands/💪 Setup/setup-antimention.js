@@ -89,7 +89,7 @@ module.exports = {
           .setColor(es.color)
           .setAuthor(client.getAuthor("Anti-Mention System Setup", 
           "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/a-button-blood-type_1f170-fe0f.png",
-          "https://discord.gg/dcdev"))
+          "https://discord.gg/milrato"))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-anticaps"]["variable1"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -105,7 +105,7 @@ module.exports = {
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             let menuoptiondataIndex = menuoptions.findIndex(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menuoptiondataIndex, SetupNumber, menuoptiondata)
           }
@@ -151,7 +151,7 @@ module.exports = {
                         .setFooter(client.getFooter(es))]
                       });
                     } catch (e) {
-                      console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                      console.error(e)
                       return message.reply({embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-anticaps"]["variable8"]))
                         .setColor(es.wrongcolor)
@@ -163,7 +163,7 @@ module.exports = {
                     message.reply( "you didn't ping a valid Channel")
                   }
                 }) .catch(e => {
-                  console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  console.error(e)
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-anticaps"]["variable10"]))
                     .setColor(es.wrongcolor)
@@ -366,7 +366,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

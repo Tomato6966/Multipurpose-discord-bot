@@ -297,7 +297,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
         .setColor(es.color)
-        .setAuthor('Anti Nuke Setup', 'https://cdn.discordapp.com/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png', 'https://discord.gg/dcdev')
+        .setAuthor('Anti Nuke Setup', 'https://cdn.discordapp.com/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png', 'https://discord.gg/milrato')
         .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable3"]))
         let used1 = false;
         //send the menu msg
@@ -329,7 +329,7 @@ module.exports = {
           });
           } 
           else if(menu?.values[0] == "Manage Whitelist"){
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             menuoptions = [
               {
                 value: "General Users/Roles",
@@ -392,7 +392,7 @@ module.exports = {
             //define the embed
             let MenuEmbed = new Discord.MessageEmbed()
             .setColor(es.color)
-            .setAuthor('Anti Nuke Settings', 'https://cdn.discordapp.com/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png', 'https://discord.gg/dcdev')
+            .setAuthor('Anti Nuke Settings', 'https://cdn.discordapp.com/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png', 'https://discord.gg/milrato')
             .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable16"]))
             //send the menu msg
             let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -403,7 +403,7 @@ module.exports = {
               let index = menuoptions.findIndex(v=>v.value == menu?.values[0])
               //Toggle
               if(String(index) == "0"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable18"]))
@@ -425,14 +425,14 @@ module.exports = {
                     let removedusers = [];
                     let removedroles = [];
                     let current = await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted");
-                    for(const u of users){
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
@@ -440,16 +440,16 @@ module.exports = {
                       }
                     }
                     
-                    for(const u of addedusers){
+                    for await (const u of addedusers){
                       await client.Anti_Nuke_System.push(message.guild.id+".all.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
+                    for await (const r of addedroles){
                       await client.Anti_Nuke_System.push(message.guild.id+".all.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
+                    for await (const u of removedusers){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".all.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
+                    for await (const r of removedroles){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".all.whitelisted.roles", r)
                     }
                     return message.reply({embeds: [new Discord.MessageEmbed()
@@ -472,7 +472,7 @@ module.exports = {
                     .setFooter(client.getFooter(es))]
                   });
               } else if(String(index) == "1"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable24"]))
@@ -494,30 +494,30 @@ module.exports = {
                     let removedusers = [];
                     let removedroles = [];
                     let current = await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted");
-                    for(const u of users){
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
+                    for await (const u of addedusers){
                       await client.Anti_Nuke_System.push(message.guild.id+".antibot.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
+                    for await (const r of addedroles){
                       await client.Anti_Nuke_System.push(message.guild.id+".antibot.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
+                    for await (const u of removedusers){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".antibot.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
+                    for await (const r of removedroles){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".antibot.whitelisted.roles", r)
                     }
                   
@@ -541,7 +541,7 @@ module.exports = {
                     .setFooter(client.getFooter(es))]
                   });
               } else if(String(index) == "2"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable30"]))
@@ -563,30 +563,30 @@ module.exports = {
                     let removedusers = [];
                     let removedroles = [];
                     let current = await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted");
-                    for(const u of users){
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
+                    for await (const u of addedusers){
                       await client.Anti_Nuke_System.push(message.guild.id+".antideleteuser.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
+                    for await (const r of addedroles){
                       await client.Anti_Nuke_System.push(message.guild.id+".antideleteuser.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
+                    for await (const u of removedusers){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".antideleteuser.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
+                    for await (const r of removedroles){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".antideleteuser.whitelisted.roles", r)
                     }
                   
@@ -610,7 +610,7 @@ module.exports = {
                     .setFooter(client.getFooter(es))]
                   });
               } else if(String(index) == "3"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable36"]))
@@ -632,30 +632,30 @@ module.exports = {
                     let removedusers = [];
                     let removedroles = [];
                     let current = await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted");
-                    for(const u of users){
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
+                    for await (const u of addedusers){
                       await client.Anti_Nuke_System.push(message.guild.id+".anticreaterole.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
+                    for await (const r of addedroles){
                       await client.Anti_Nuke_System.push(message.guild.id+".anticreaterole.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
+                    for await (const u of removedusers){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".anticreaterole.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
+                    for await (const r of removedroles){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".anticreaterole.whitelisted.roles", r)
                     }
                   
@@ -679,7 +679,7 @@ module.exports = {
                     .setFooter(client.getFooter(es))]
                   });
               } else if(String(index) == "4"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable42"]))
@@ -701,30 +701,30 @@ module.exports = {
                     let removedusers = [];
                     let removedroles = [];
                     let current = await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted");
-                    for(const u of users){
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
+                    for await (const u of addedusers){
                       await client.Anti_Nuke_System.push(message.guild.id+".antideleterole.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
+                    for await (const r of addedroles){
                       await client.Anti_Nuke_System.push(message.guild.id+".antideleterole.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
+                    for await (const u of removedusers){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".antideleterole.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
+                    for await (const r of removedroles){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".antideleterole.whitelisted.roles", r)
                     }
                   
@@ -748,7 +748,7 @@ module.exports = {
                     .setFooter(client.getFooter(es))]
                   });
               } else if(String(index) == "5"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable48"]))
@@ -770,30 +770,30 @@ module.exports = {
                     let removedusers = [];
                     let removedroles = [];
                     let current = await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted");
-                    for(const u of users){
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
+                    for await (const u of addedusers){
                       await client.Anti_Nuke_System.push(message.guild.id+"antichanneldelete.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
+                    for await (const r of addedroles){
                       await client.Anti_Nuke_System.push(message.guild.id+".antichanneldelete.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
+                    for await (const u of removedusers){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+ ".antichanneldelete.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
+                    for await (const r of removedroles){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".antichanneldelete.whitelisted.roles", r)
                     }
                   
@@ -817,7 +817,7 @@ module.exports = {
                     .setFooter(client.getFooter(es))]
                   });
               } else if(String(index) == "6"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable54"]))
@@ -839,30 +839,30 @@ module.exports = {
                     let removedusers = [];
                     let removedroles = [];
                     let current = await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted");
-                    for(const u of users){
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
+                    for await (const u of addedusers){
                       await client.Anti_Nuke_System.push(message.guild.id+".antichannelcreate.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
+                    for await (const r of addedroles){
                       await client.Anti_Nuke_System.push(message.guild.id+".antichannelcreate.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
+                    for await (const u of removedusers){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".antichannelcreate.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
+                    for await (const r of removedroles){
                       await dbRemove(client.Anti_Nuke_System, message.guild.id+".antichannelcreate.whitelisted.roles", r)
                     }
                   
@@ -910,7 +910,7 @@ module.exports = {
         
           } 
           else if(menu?.values[0] == "Manage Settings"){
-              menu?.deferUpdate();
+              client.disableComponentMessage(menu);
               menuoptions = [
                 {
                   value: await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled") ? "Disable complete AntiNuke": "Enable complete Anti Nuke",
@@ -988,7 +988,7 @@ module.exports = {
               //define the embed
               let MenuEmbed = new Discord.MessageEmbed()
               .setColor(es.color)
-              .setAuthor( 'Anti Nuke Settings',  'https://cdn.discordapp.com/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png',  'https://discord.gg/dcdev')
+              .setAuthor( 'Anti Nuke Settings',  'https://cdn.discordapp.com/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png',  'https://discord.gg/milrato')
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable62"]))
               //send the menu msg
               let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -1007,7 +1007,7 @@ module.exports = {
                   .addField("\u200b", eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable66"]))
                 ]});
                 } else if(String(index) == "1"){
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   let timeouterror = false;
                   let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable67"]))
@@ -1031,7 +1031,7 @@ module.exports = {
                             .setFooter(client.getFooter(es))]
                           })
                         }catch (e){
-                          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                          console.error(e)
                         }
                         try{
                           message.reply({embeds: [new Discord.MessageEmbed()
@@ -1041,7 +1041,7 @@ module.exports = {
                             .setFooter(client.getFooter(es))
                           ]})
                         }catch (e){
-                          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                          console.error(e)
                         }
                         await client.Anti_Nuke_System.set(message.guild.id+`.all.logger`, message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first().id)
                         return message.reply({embeds: [new Discord.MessageEmbed()
@@ -1074,7 +1074,7 @@ module.exports = {
                   .addField("\u200b", eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable75"]))
                 ]});
                 } else if(String(index) == "3"){
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   let timeouterror = false;
                   let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable76"]))
@@ -1233,7 +1233,7 @@ module.exports = {
                       //define the embed
                       let MenuEmbed = new Discord.MessageEmbed()
                         .setColor(es.color)
-                        .setAuthor('Antinuke Setup', 'https://media.discordapp.net/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png', 'https://discord.gg/dcdev')
+                        .setAuthor('Antinuke Setup', 'https://media.discordapp.net/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png', 'https://discord.gg/milrato')
                         .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable2"]))
                       let used33 = false;
                       //send the menu msg
@@ -1248,7 +1248,7 @@ module.exports = {
                             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
                             let menuoptionindex = menuoptions.findIndex(v => v.value == menu?.values[0])
                             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable3"]))
-                            menu?.deferUpdate();
+                            client.disableComponentMessage(menu);
                             used33 = true;
                             const dd = await client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`);
                             if(menu?.values[0] == dd ? `Disable ${thename}`: `Enable ${thename}`) {
@@ -1304,7 +1304,7 @@ module.exports = {
                           ]});
                         })
                       .catch(e => {
-                        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                        console.error(e)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable69"]))
                           .setColor(es.wrongcolor)
@@ -1553,7 +1553,7 @@ module.exports = {
               return menu?.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable93"])})
             }
             menu?.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable94"])})
-            for(const ch of channels.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966)){
+            for await (const ch of channels.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966)){
               try {
                 if(ch) {
                   if(ch.permissionsFor(ch.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
@@ -1573,7 +1573,7 @@ module.exports = {
             }
             message.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable95"])});
           } else {
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
           }
         }
         //Create the collector
@@ -1607,7 +1607,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

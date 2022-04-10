@@ -25,7 +25,7 @@ module.exports = {
   memberpermissions: ["ADMINISTRATOR"],
   type: "system",
   run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
-    let pre;
+    let pre, rostercount = 0;
     const filter = (reaction, user) => {
       return user.id == cmduser.id
     }
@@ -50,7 +50,7 @@ module.exports = {
       async function first_layer(){
         
         let menuoptions = [ ]
-        for(let i = 1; i <= 100; i++){
+        for (let i = 1; i <= 100; i++){
           menuoptions.push({
             value: `${i} Roster System`,
             description: `Manage/Edit the ${i}. Server Roster System`,
@@ -131,7 +131,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
         .setColor(es.color)
-        .setAuthor(client.getAuthor('Server Roster Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/page-with-curl_1f4c3.png', 'https://discord.gg/dcdev'))
+        .setAuthor(client.getAuthor('Server Roster Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/page-with-curl_1f4c3.png', 'https://discord.gg/milrato'))
         .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         let used1 = false;
         //send the menu msg
@@ -140,9 +140,10 @@ module.exports = {
         function menuselection(menu) {
           let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
           let SetupNumber = menu?.values[0].split(" ")[0]
           pre = `roster${SetupNumber}`;
+          rostercount = SetupNumber;
           used1 = true;
           second_layer(SetupNumber, menuoptiondata)
         }
@@ -245,7 +246,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor(SetupNumber + " Server Roster Setup", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/page-with-curl_1f4c3.png", "https://discord.gg/dcdev")
+          .setAuthor(SetupNumber + " Server Roster Setup", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/page-with-curl_1f4c3.png", "https://discord.gg/milrato")
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable4"]))
         //send the menu msg
         let menumsg = await message.reply({
@@ -256,7 +257,7 @@ module.exports = {
         function menuselection(menu) {
           let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
           if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable5"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
           handle_the_picks(menu?.values[0], SetupNumber)
         }
         //Create the collector
@@ -335,7 +336,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
                   return message.reply({
                     embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-roster"]["variable12"]))
@@ -400,7 +401,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
                   return message.reply({
                     embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-roster"]["variable21"]))
@@ -467,7 +468,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
                   return message.reply({
                     embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-roster"]["variable30"]))
@@ -497,10 +498,10 @@ module.exports = {
               ]
             })
             try{
-              for(const emoji of ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣"])
+              for await (const emoji of ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣"])
                tempmsg.react(emoji)
             }catch(e){
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             }
             await tempmsg.awaitReactions({
                 filter,
@@ -677,7 +678,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
                 return message.reply({
                   embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-roster"]["variable50"]))
@@ -734,7 +735,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
                 return message.reply({
                   embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-roster"]["variable56"]))
@@ -806,7 +807,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

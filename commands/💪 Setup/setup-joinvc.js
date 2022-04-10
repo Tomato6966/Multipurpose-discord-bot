@@ -78,7 +78,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.getAuthor('Join VC System', 'https://cdn.discordapp.com/emojis/834052497492410388.gif?size=96', 'https://discord.gg/dcdev'))
+          .setAuthor(client.getAuthor('Join VC System', 'https://cdn.discordapp.com/emojis/834052497492410388.gif?size=96', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
           .addField("Send Message in a Channel", `If a User joins a specific Channel, it will send a define able Message (e.g. Ping for Role(s)) in a defined Channel.\nThis is useful if you have a Waitingroomchannel, and it's needed to check if a user joins it or not with pings!\n*After leaving the Channel, the sent message get's edited and removes the ping*`)
           .addField("Add / Remove Role", `If a User joins a VC he/she will get a specific Role, this Role will get removed again, if he/she leaves the vc again!`)        
@@ -95,7 +95,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             handle_the_picks(menu?.values[0], menuoptiondata)
           }
           else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
@@ -151,7 +151,7 @@ module.exports = {
               //define the embed
               let MenuEmbed = new Discord.MessageEmbed()
                 .setColor(es.color)
-                .setAuthor('Join VC System', 'https://cdn.discordapp.com/emojis/834052497492410388.gif?size=96', 'https://discord.gg/dcdev')
+                .setAuthor('Join VC System', 'https://cdn.discordapp.com/emojis/834052497492410388.gif?size=96', 'https://discord.gg/milrato')
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
               //send the menu msg
               let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -166,7 +166,7 @@ module.exports = {
                   collector.stop();
                   let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                   if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   handle_the_picks2(menu?.values[0], menuoptiondata)
                 }
                 else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
@@ -199,7 +199,7 @@ module.exports = {
                       try {
                         let a = await client.joinvc.get(message.guild.id+".vcmessages")
                         //remove invalid ids
-                        for(const vc of a){
+                        for await (const vc of a){
                           if(!message.guild.channels.cache.get(vc.channelId)){
                             await dbRemove(client.joinvc, message.guild.id+".vcmessages", d => d.channelId == vc.channelId)
                           }
@@ -233,7 +233,7 @@ module.exports = {
                       }
                     })
                     .catch(e => {
-                      console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                      console.error(e)
                       return message.reply({embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable12"]))
                         .setColor(es.wrongcolor)
@@ -263,7 +263,7 @@ module.exports = {
                       try {
                         let a = await client.joinvc.get(message.guild.id+".vcmessages")
                         //remove invalid ids
-                        for(const vc of a){
+                        for await (const vc of a){
                           if(!message.guild.channels.cache.get(vc.channelId)){
                             await dbRemove(client.joinvc, message.guild.id+".vcmessages", d => d.channelId == vc.channelId)
                           }
@@ -294,7 +294,7 @@ module.exports = {
                       }
                     })
                     .catch(e => {
-                      console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                      console.error(e)
                       return message.reply({embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable12"]))
                         .setColor(es.wrongcolor)
@@ -306,7 +306,7 @@ module.exports = {
                 case "Show all VCS": {
                   let a = await client.joinvc.get(message.guild.id+".vcmessages")
                   //remove invalid ids
-                  for(const vc of a){
+                  for await (const vc of a){
                     if(!message.guild.channels.cache.get(vc.channelId)){
                       await dbRemove(client.joinvc, message.guild.id+".vcmessages", d => d.channelId == vc.channelId)
                     }
@@ -370,7 +370,7 @@ module.exports = {
               //define the embed
               let MenuEmbed = new Discord.MessageEmbed()
                 .setColor(es.color)
-                .setAuthor('Join VC System', 'https://cdn.discordapp.com/emojis/834052497492410388.gif?size=96', 'https://discord.gg/dcdev')
+                .setAuthor('Join VC System', 'https://cdn.discordapp.com/emojis/834052497492410388.gif?size=96', 'https://discord.gg/milrato')
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
               //send the menu msg
               let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -385,7 +385,7 @@ module.exports = {
                   collector.stop();
                   let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                   if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   handle_the_picks2(menu?.values[0], menuoptiondata)
                 }
                 else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
@@ -424,7 +424,7 @@ module.exports = {
                       try {
                         let a = await client.joinvc.get(message.guild.id+".vcroles")
                         //remove invalid ids
-                        for(const vc of a){
+                        for await (const vc of a){
                           if(!message.guild.channels.cache.get(vc.channelId)){
                             await dbRemove(client.joinvc, message.guild.id+".vcroles", d => d.channelId == vc.channelId)
                           }
@@ -456,7 +456,7 @@ module.exports = {
                       }
                     })
                     .catch(e => {
-                      console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                      console.error(e)
                       return message.reply({embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable12"]))
                         .setColor(es.wrongcolor)
@@ -486,7 +486,7 @@ module.exports = {
                       try {
                         let a = await client.joinvc.get(message.guild.id+".vcroles")
                         //remove invalid ids
-                        for(const vc of a){
+                        for await (const vc of a){
                           if(!message.guild.channels.cache.get(vc.channelId)){
                             await dbRemove(client.joinvc, message.guild.id+".vcroles", d => d.channelId == vc.channelId)
                           }
@@ -517,7 +517,7 @@ module.exports = {
                       }
                     })
                     .catch(e => {
-                      console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                      console.error(e)
                       return message.reply({embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable12"]))
                         .setColor(es.wrongcolor)
@@ -529,7 +529,7 @@ module.exports = {
                 case "Show all VCS": {
                   let a = await client.joinvc.get(message.guild.id+".vcroles")
                   //remove invalid ids
-                  for(const vc of a){
+                  for await (const vc of a){
                     if(!message.guild.channels.cache.get(vc.channelId)){
                       await dbRemove(client.joinvc, message.guild.id+".vcroles", d => d.channelId == vc.channelId)
                     }
@@ -565,7 +565,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

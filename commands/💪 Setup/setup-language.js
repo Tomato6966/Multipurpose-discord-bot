@@ -82,7 +82,7 @@ module.exports = {
           .setColor(es.color)
           .setAuthor(client.getAuthor("Language System Setup", 
           "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/flag-united-kingdom_1f1ec-1f1e7.png",
-          "https://discord.gg/dcdev"))
+          "https://discord.gg/milrato"))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-language"]["variable1"]))
         let used1 = false;
         //send the menu msg
@@ -92,7 +92,7 @@ module.exports = {
           let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
           let menuoptionindex = menuoptions.findIndex(v => v.value == menu?.values[0])
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-language"]["variable2"]))
-          menu?.deferUpdate(); used1 = true;
+          client.disableComponentMessage(menu); used1 = true;
           handle_the_picks(menuoptionindex, menuoptiondata)
         }
         //Event
@@ -223,7 +223,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

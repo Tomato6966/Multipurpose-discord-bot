@@ -77,7 +77,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.getAuthor('Youtube-Poster', 'https://cdn.discordapp.com/emojis/840260133686870036.png?size=128', 'https://discord.gg/dcdev'))
+          .setAuthor(client.getAuthor('Youtube-Poster', 'https://cdn.discordapp.com/emojis/840260133686870036.png?size=128', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -92,7 +92,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
@@ -135,7 +135,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e)
+                console.error(e)
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-youtube"]["variable8"]))
                   .setColor(es.wrongcolor)
@@ -188,7 +188,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e)
+              console.error(e)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-youtube"]["variable14"]))
                 .setColor(es.wrongcolor)
@@ -234,7 +234,7 @@ module.exports = {
             //define the embed
             let MenuEmbed = new MessageEmbed()
               .setColor(es.color)
-              .setAuthor(client.getAuthor('Youtube-Poster', 'https://cdn.discordapp.com/emojis/840260133686870036.png?size=128', 'https://discord.gg/dcdev'))
+              .setAuthor(client.getAuthor('Youtube-Poster', 'https://cdn.discordapp.com/emojis/840260133686870036.png?size=128', 'https://discord.gg/milrato'))
               .setDescription("Select all Youtube Channels you want to remove!")
             //send the menu msg
             let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -247,7 +247,7 @@ module.exports = {
             collector.on('collect', async menu => {
               if (menu?.user.id === cmduser.id) {
                 collector.stop();
-                for(const value of menu?.values) {
+                for await (const value of menu?.values) {
                   let menuoptiondataIndex = menuoptions.findIndex(v=>v.value == value)
                   await dbRemove(client.social_log, message.guild.id+".youtube.channels", channels[menuoptiondataIndex])
                 }
@@ -297,7 +297,7 @@ module.exports = {
             //define the embed
             let MenuEmbed = new MessageEmbed()
               .setColor(es.color)
-              .setAuthor('Youtube-Poster', 'https://cdn.discordapp.com/emojis/840260133686870036.png?size=128', 'https://discord.gg/dcdev')
+              .setAuthor('Youtube-Poster', 'https://cdn.discordapp.com/emojis/840260133686870036.png?size=128', 'https://discord.gg/milrato')
               .setDescription("Select the Youtube Channel you want to edit!")
             //send the menu msg
             let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -348,7 +348,7 @@ module.exports = {
                   }
                 })
                 .catch(e => {
-                  console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  console.error(e)
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-youtube"]["variable23"]))
                     .setColor(es.wrongcolor)
@@ -391,7 +391,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

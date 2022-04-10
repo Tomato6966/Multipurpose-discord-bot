@@ -33,7 +33,7 @@ module.exports = {
       async function first_layer() {
         
         let menuoptions = []
-        for(let i = 1; i<=100;i++) {
+        for (let i = 1; i<=100;i++) {
           menuoptions.push({
             value: `${i}. Menu Ticket`,
             description: `Manage/Edit the ${i}. Menu Ticket Setup`,
@@ -113,7 +113,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.getAuthor('Menu Ticket Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/envelope_2709-fe0f.png', 'https://discord.gg/dcdev'))
+          .setAuthor(client.getAuthor('Menu Ticket Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/envelope_2709-fe0f.png', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
           
         //send the menu msg
@@ -132,7 +132,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(".")[0];
             pre = `menuticket${SetupNumber}`;
             theDB = client.menuticket; //change to the right database
@@ -148,7 +148,7 @@ module.exports = {
             embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
             components: [],
             content: `<a:yes:833101995723194437> **Selected: \`${collected && collected.first() && collected.first().values ? collected.first().values[0] : "Nothing"}\`**`
-          }).catch(() => {});
+          }).catch(() => null);
         });
       }
       async function second_layer(SetupNumber) {
@@ -228,7 +228,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.getAuthor('Menu Ticket Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/envelope_2709-fe0f.png', 'https://discord.gg/dcdev'))
+          .setAuthor(client.getAuthor('Menu Ticket Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/envelope_2709-fe0f.png', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
           
         //send the menu msg
@@ -247,7 +247,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             handle_the_picks(menu?.values[0], menuoptiondata, SetupNumber)
           } else menu?.reply({
             content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
@@ -317,7 +317,7 @@ module.exports = {
               //define the embed
               let MenuEmbed = new Discord.MessageEmbed()
                 .setColor(es.color)
-                .setAuthor(SetupNumber + " Ticket Setup", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/incoming-envelope_1f4e8.png", "https://discord.gg/dcdev")
+                .setAuthor(SetupNumber + " Ticket Setup", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/incoming-envelope_1f4e8.png", "https://discord.gg/milrato")
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable4"]))
               //send the menu msg
               let menumsg = await message.reply({
@@ -328,7 +328,7 @@ module.exports = {
               function menuselection(menu) {
                 let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
                 if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable5"]))
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 handle_the_picks2(menu?.values[0], SetupNumber)
               }
               //Create the collector
@@ -432,7 +432,7 @@ module.exports = {
             }
           }break;
           case "Send the Config	Message": {
-            await message.guild.emojis.fetch().catch(() => {});
+            await message.guild.emojis.fetch().catch(() => null);
             let data = await theDB.get(`${message.guild.id}.${pre}.data`);
             let settings = await theDB.get(`${message.guild.id}.${pre}`);
             if (!data || data.length < 1) {
@@ -655,7 +655,7 @@ module.exports = {
                             emojiMsg = NumberEmojis[data.length];
                           }
                         } catch (e){
-                          console.log(e)
+                          console.error(e)
                           message.reply(":x: **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!");
                           emoji = null;
                           emojiMsg = NumberEmojis[data.length];
@@ -828,7 +828,7 @@ module.exports = {
                 //define the embed
                 let MenuEmbed = new Discord.MessageEmbed()
                   .setColor(es.color)
-                  .setAuthor(client.getAuthor('Menu Ticket Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/envelope_2709-fe0f.png', 'https://discord.gg/dcdev'))
+                  .setAuthor(client.getAuthor('Menu Ticket Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/envelope_2709-fe0f.png', 'https://discord.gg/milrato'))
                   .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
                   
                 //send the menu msg
@@ -847,7 +847,7 @@ module.exports = {
                     collector.stop();
                     let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
                     if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                    menu?.deferUpdate();
+                    client.disableComponentMessage(menu);
                     handle_the_picks3(menu?.values[0], menuoptiondata, SetupNumber)
                   } else menu?.reply({
                     content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
@@ -978,14 +978,14 @@ module.exports = {
                                 data[index].emojiMsg = emojiMsg;
                               }
                             } catch (e){
-                              console.log(e)
+                              console.error(e)
                               message.reply(":x: **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!");
                               data[index].emoji = null;
                               data[index].emojiMsg = NumberEmojis[data.length];
                             }
                             finished();
                           }).catch((e) => {
-                            console.log(e)
+                            console.error(e)
                             message.reply(":x: **No valid emoji added, using default EMOJI**");
                             data[index].emoji = null;
                             data[index].emojiMsg = NumberEmojis[data.length];
@@ -1210,24 +1210,24 @@ module.exports = {
               let settings = await theDB.get(`${message.guild.id}.${pre}`);
               let toadd = [];
               let toremove = [];
-              for(const role of roles.map(r => r.id)){
+              for await (const role of roles.map(r => r.id)){
                 if([...settings.access].includes(role)) {
                   toremove.push(role)
                 } else {
                   toadd.push(role)
                 }
               }
-              for(const user of users.map(r => r.id)){
+              for await (const user of users.map(r => r.id)){
                 if([...settings.access].includes(user)) {
                   toremove.push(user)
                 } else {
                   toadd.push(user)
                 }
               }
-              for(const add of toadd) {
+              for await (const add of toadd) {
                 await theDB.push(`${message.guild.id}.${pre}`+".access", add);
               }
-              for(const remove of toremove) {
+              for await (const remove of toremove) {
                 await theDB.remove(`${message.guild.id}.${pre}`+".access", remove);
               }
               message.reply(`👍 Successfully added \`${toadd.length} Users/Roles\` and removed \`${toremove.length} Users/Roles\`\n> They are now always able to see, write and manage stuff in the TICKETS ment for them!`)
@@ -1293,7 +1293,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

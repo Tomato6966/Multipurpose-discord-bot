@@ -76,7 +76,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.getAuthor('Warn Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/prohibited_1f6ab?.png', 'https://discord.gg/dcdev'))
+          .setAuthor(client.getAuthor('Warn Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/prohibited_1f6ab.png', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable2"]))
         let used1 = false;
         //send the menu msg
@@ -86,7 +86,7 @@ module.exports = {
           let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
           let menuoptionindex = menuoptions.findIndex(v => v.value == menu?.values[0])
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable3"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
           used1 = true;
           handle_the_picks(menuoptionindex, menuoptiondata)
         }
@@ -388,7 +388,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

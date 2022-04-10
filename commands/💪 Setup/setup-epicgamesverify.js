@@ -64,7 +64,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.getAuthor('Epic Games Verify Setup', 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Epic_Games_logo.svg/882px-Epic_Games_logo.svg.png', 'https://discord.gg/dcdev'))
+          .setAuthor(client.getAuthor('Epic Games Verify Setup', 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Epic_Games_logo.svg/882px-Epic_Games_logo.svg.png', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -79,7 +79,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
@@ -118,7 +118,7 @@ module.exports = {
                 
                 channel.send({
                   embeds: [
-                    new MessageEmbed().setColor(es.color).setFooter(message.guild.name + " | Powered by: discord.gg/dcdev", message.guild.iconURL({dynamic: true})).setThumbnail(es.thumb ? message.guild.iconURL({dynamic: true}) : null)
+                    new MessageEmbed().setColor(es.color).setFooter(message.guild.name + " | Powered by: discord.gg/milrato", message.guild.iconURL({dynamic: true})).setThumbnail(es.thumb ? message.guild.iconURL({dynamic: true}) : null)
                     .setTitle(`Click the Button to Verify and Link your Epic Games Account`)
                     .setDescription(`If you click the Button you can verify your Epic Games account to this Server!\nYou can click it again to change your Account details!`)
                   ],
@@ -143,7 +143,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-admincmdlog"]["variable7"]))
                 .setColor(es.wrongcolor)
@@ -182,7 +182,7 @@ module.exports = {
             }
           })
           .catch(e => {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
             return message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-admincmdlog"]["variable7"]))
               .setColor(es.wrongcolor)
@@ -216,7 +216,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

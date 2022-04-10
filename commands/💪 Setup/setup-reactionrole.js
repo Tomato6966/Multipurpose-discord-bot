@@ -142,7 +142,7 @@ module.exports = {
               return finished();
             }
           }).catch((e) => {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
             message.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable11"])});
             return finished();
           });
@@ -215,15 +215,15 @@ module.exports = {
                       try {
                         buffer += objet.Parameters[i].Emojimsg + "  **==**  <@&" + objet.Parameters[i].Role + ">\n";
                       } catch (e) {
-                        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                        console.error(e)
                       }
                     }
                     channel.send({embeds: [embed.setDescription(buffer)]}).then(async (msg) => {
                       for (var i = 0; i < objet.Parameters.length; i++) {
                         try {
-                          msg.react(objet.Parameters[i].Emoji).catch(e => console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                          msg.react(objet.Parameters[i].Emoji).catch(e => console.error(e))
                         } catch (e) {
-                          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                          console.error(e)
                         }
                       }
                       objet.MESSAGE_ID = msg.id;
@@ -235,11 +235,11 @@ module.exports = {
                     message.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable20"])});
                     return;
                   }
-                }).catch(e => console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                }).catch(e => console.error(e))
               })
-            }).catch(e => console.log(e.stack ? String(e.stack).grey : String(e).grey))
+            }).catch(e => console.error(e))
           })
-        }).catch(e => console.log(e.stack ? String(e.stack).grey : String(e).grey))
+        }).catch(e => console.error(e))
       })
     }
   
@@ -255,7 +255,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

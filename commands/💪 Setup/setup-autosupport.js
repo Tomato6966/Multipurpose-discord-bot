@@ -23,8 +23,6 @@ module.exports = {
   memberpermissions: ["ADMINISTRATOR"],
   type: "system",
   run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
-    return message.reply(`<a:Milrato_Animated:900394164829708388> **Since the last update, this got not fixxed yet, will be fixxed as soon as possible** :cry:!
-> Join https://discord.gg/dcdev for updates!`);
     try {
       let theDB = client.autosupport;
       let pre;
@@ -35,7 +33,7 @@ module.exports = {
       async function first_layer() {
         
         let menuoptions = []
-        for(let i = 1; i<=100;i++) {
+        for (let i = 1; i<=100;i++) {
           menuoptions.push({
             value: `${i}. Auto Support`,
             description: `Manage/Edit the ${i}. Auto Support Setup`,
@@ -114,7 +112,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.getAuthor('Auto Support Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/envelope_2709-fe0f.png', 'https://discord.gg/dcdev'))
+          .setAuthor(client.getAuthor('Auto Support Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/envelope_2709-fe0f.png', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
           
         //send the menu msg
@@ -133,7 +131,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(".")[0];
             pre = `autosupport${SetupNumber}`;
             theDB = client.autosupport; //change to the right database
@@ -154,7 +152,8 @@ module.exports = {
       }
       async function second_layer() {
         //setup-autosupport
-        theDB.ensure(message.guild.id, {
+        const obj = {}
+        obj[pre] = {
           messageId: "",
           channelId: "",
           data: [
@@ -168,7 +167,8 @@ module.exports = {
               }
             */
           ]
-        }, pre);
+        }
+        await dbEnsure(theDB, message.guild.id, obj);
         let menuoptions = [{
             value: "Send the Config	Message",
             description: `(Re) Send the auto-responding Support Message (with MENU)`,
@@ -209,7 +209,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor('Auto Support Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/298/question-mark_2753.png', 'https://discord.gg/dcdev')
+          .setAuthor(client.getAuthor('Auto Support Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/298/question-mark_2753.png', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({
@@ -227,7 +227,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             handle_the_picks(menu?.values[0], menuoptiondata)
           } else menu?.reply({
             content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
@@ -246,8 +246,8 @@ module.exports = {
       async function handle_the_picks(optionhandletype, menuoptiondata) {
         switch (optionhandletype) {
           case "Send the Config	Message": {
-            let data = theDB.get(message.guild.id, pre+".data");
-            let settings = theDB.get(message.guild.id, pre);
+            let settings = await theDB.get(`${message.guild.id}.${pre}`);
+            let data = settings?.data;
             if (!data || data.length < 1) {
               return message.reply("<:no:833101993668771842> **You need to add at least 1 Auto-Support-Option**")
             }
@@ -281,7 +281,6 @@ module.exports = {
                 time: 90000, errors: ["time"]
               });
               if (collected2 && collected2.first().mentions.channels.size > 0) {
-                let data = theDB.get(message.guild.id, pre+".data");
                 let channel = collected2.first().mentions.channels.first();
                 let msgContent = collected.first().content;
                 let embed = new MessageEmbed()
@@ -328,14 +327,14 @@ module.exports = {
                     channel.send({
                       embeds: [embed],
                       components: [new MessageActionRow().addComponents([Selection])]
-                    }).catch(() => {}).then(async (msg) => {
-                      theDB.set(message.guild.id, msg.id, pre+".messageId");
-                      theDB.set(message.guild.id, channel.id, pre+".channelId");
+                    }).catch(() => null).then(async (msg) => {
+                      await theDB.set(`${message.guild.id}.${pre}.messageId`, msg.id);
+                      await theDB.set(`${message.guild.id}.${pre}.channelId`, channel.id);
                       message.reply(`Successfully Setupped the Auto-Support-System in <#${channel.id}>`)
                     });
                 }).then(async (msg) => {
-                  theDB.set(message.guild.id, msg.id, pre+".messageId");
-                  theDB.set(message.guild.id, channel.id, pre+".channelId");
+                  await theDB.set(`${message.guild.id}.${pre}.messageId`, msg.id);
+                  await theDB.set(`${message.guild.id}.${pre}.channelId`, channel.id);
                   message.reply(`Successfully Setupped the Auto-Support-System in <#${channel.id}>`)
                 });
               } else {
@@ -347,7 +346,8 @@ module.exports = {
           }
           break;
           case "Add AutoSup Option": {
-            let data = theDB.get(message.guild.id, pre+".data");
+            let settings = await theDB.get(`${message.guild.id}.${pre}`);
+            let data = settings?.data;
             if (data.length >= 25) {
               return message.reply("<:no:833101993668771842> **You reached the limit of 25 different Options!** Remove another Option first!")
             }
@@ -449,7 +449,7 @@ module.exports = {
                           emojiMsg = NumberEmojis[data.length];
                         }
                       } catch (e){
-                        console.log(e)
+                        console.error(e)
                         message.reply(":x: **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!");
                         emoji = null;
                         emojiMsg = NumberEmojis[data.length];
@@ -462,14 +462,14 @@ module.exports = {
                       finished();
                     });
                   })
-                  function finished() {
-                    theDB.push(message.guild.id, {
+                  async function finished() {
+                    await theDB.push(`${message.guild.id}.${pre}.data`, {
                       value,
                       description,
                       sendEmbed,
                       replyMsg,
                       emoji
-                    }, pre+".data");
+                    });
                     message.reply({
                       embeds: [
                         new MessageEmbed()
@@ -499,7 +499,8 @@ module.exports = {
           }
           break;
           case "Edit AutoSup Option": {
-            let data = theDB.get(message.guild.id, pre+".data");
+            let settings = await theDB.get(`${message.guild.id}.${pre}`);
+            let data = settings?.data;
             if (!data || data.length < 1) {
               return message.reply("<:no:833101993668771842> **There are no Open-Ticket-Options to edit**")
             }
@@ -660,7 +661,7 @@ module.exports = {
                               emojiMsg = NumberEmojis[data.length];
                             }
                           } catch (e){
-                            console.log(e)
+                            console.error(e)
                             message.reply(":x: **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!");
                             emoji = null;
                             emojiMsg = NumberEmojis[data.length];
@@ -673,7 +674,7 @@ module.exports = {
                           finished();
                         });
                       })
-                      function finished() {
+                      async function finished() {
                         data[index] = {
                           value,
                           description,
@@ -681,7 +682,7 @@ module.exports = {
                           replyMsg,
                           emoji
                         };
-                        theDB.set(message.guild.id, data, pre+".data");
+                        await theDB.set(`${message.guild.id}.${pre}.data`, data);
                         message.reply(`**Successfully edited:**\n>>> ${menu?.values.map(i => `\`${i}\``).join(", ")}\n\nDon't forget to resend the Auto Support Config-Message!`)
                       }
                       
@@ -717,7 +718,8 @@ module.exports = {
           }
           break;
           case "Remove AutoSup Option": {
-          let data = theDB.get(message.guild.id, pre+".data");
+          let settings = await theDB.get(`${message.guild.id}.${pre}`);
+          let data = settings?.data;
           if (!data || data.length < 1) {
             return message.reply("<:no:833101993668771842> **There are no Auto-Responding-Support-Options to remove**")
           }
@@ -782,7 +784,7 @@ module.exports = {
                 let index = data.findIndex(v => v.value == value);
                 data.splice(index, 1)
               }
-              theDB.set(message.guild.id, data, pre+".data");
+              await theDB.set(`${message.guild.id}.${pre}.data`, data);
               message.reply(`**Successfully removed:**\n>>> ${menu?.values.map(i => `\`${i}\``).join(", ")}\n\nDon't forget to resend the Auto Support Config-Message!`)
             } else menu?.reply({
               content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
@@ -857,7 +859,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

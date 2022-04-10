@@ -7,7 +7,7 @@ var ee = require(`../../botconfig/embed.json`);
 var emoji = require(`../../botconfig/emojis.json`);
 var {
   dbEnsure,
-  isValidURL
+  isValidURL, dbRemove
 } = require(`../../handlers/functions`);
 //Import npm modules
 const Canvas = require("canvas");
@@ -86,7 +86,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new MessageEmbed()
           .setColor(es.color)
-          .setAuthor('Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b?.png', 'https://discord.gg/dcdev')
+          .setAuthor('Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b.png', 'https://discord.gg/milrato')
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -101,7 +101,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
@@ -171,7 +171,7 @@ module.exports = {
               //define the embed
               let MenuEmbed = new MessageEmbed()
                 .setColor(es.color)
-                .setAuthor('Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b?.png', 'https://discord.gg/dcdev')
+                .setAuthor('Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b.png', 'https://discord.gg/milrato')
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
               //send the menu msg
               let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -186,7 +186,7 @@ module.exports = {
                   collector.stop();
                   let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                   if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   let SetupNumber = menu?.values[0].split(" ")[0]
                   handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata)
                 }
@@ -215,11 +215,11 @@ module.exports = {
                     var message = collected.first();
                     var channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
                     if (channel) {
-                        await client.settings.set(message.guild.id+".welcome.channel", channel.id)
+                        await client.settings.set(`${message.guild.id}.welcome.channel`, channel.id)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable9"]))
                           .setColor(es.color)
-                          .setDescription(`If Someone joins this Server, a message will be sent into ${message.guild.channels.cache.get(GuildSettings?.welcome?.channel) ? message.guild.channels.cache.get(GuildSettings?.welcome?.channel) : "Not defined yet"}!\nEdit the message with: \`${prefix}setup-welcome\``.substring(0, 2048))
+                          .setDescription(`If Someone joins this Server, a message will be sent into ${channel}!\nEdit the message with: \`${prefix}setup-welcome\``.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                     } else {
@@ -227,7 +227,7 @@ module.exports = {
                     }
                   })
                   .catch(e => {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable12"]))
                       .setColor(es.wrongcolor)
@@ -237,7 +237,7 @@ module.exports = {
                   })
                 }break;
                 case `Disable Welcome`:{
-                  await client.settings.set(message.guild.id+".welcome.channel", "nochannel")
+                  await client.settings.set(`${message.guild.id}.welcome.channel`, "nochannel")
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable13"]))
                     .setColor(es.color)
@@ -330,7 +330,7 @@ module.exports = {
                     //define the embed
                     let MenuEmbed = new MessageEmbed()
                       .setColor(es.color)
-                      .setAuthor(client.getAuthor('Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b?.png', 'https://discord.gg/dcdev'))
+                      .setAuthor(client.getAuthor('Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b.png', 'https://discord.gg/milrato'))
                       .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
                     //send the menu msg
                     let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -345,7 +345,7 @@ module.exports = {
                         collector.stop();
                         let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                         if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                        menu?.deferUpdate();
+                        client.disableComponentMessage(menu);
                         let SetupNumber = menu?.values[0].split(" ")[0]
                         handle_the_picks_3(menu?.values[0], SetupNumber, menuoptiondata)
                       }
@@ -359,7 +359,7 @@ module.exports = {
                   async function handle_the_picks_3(optionhandletype, SetupNumber, menuoptiondata){
                     switch (optionhandletype) {
                       case `Disable the Image`:{
-                        await client.settings.set(message.guild.id+".welcome.image", false)
+                        await client.settings.set(`${message.guild.id}.welcome.image`, false)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable18"]))
                           .setColor(es.color)
@@ -368,7 +368,7 @@ module.exports = {
                         ]});
                       } break;
                       case `Enable auto Image`:{
-                        await client.settings.set(message.guild.id+".welcome.image", true)
+                        await client.settings.set(`${message.guild.id}.welcome.image`, true)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable21"]))
                           .setColor(es.color)
@@ -392,8 +392,8 @@ module.exports = {
                             //push the answer of the user into the answers lmfao
                             if (collected.first().attachments.size > 0) {
                               if (collected.first().attachments.every(attachIsImage)) {
-                                await client.settings.set(message.guild.id+".welcome.custom", "no")
-                                await client.settings.set(message.guild.id+".welcome.background", url)
+                                await client.settings.set(`${message.guild.id}.welcome.custom`, "no")
+                                await client.settings.set(`${message.guild.id}.welcome.background`, url)
                                 return message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable26"]))
                                   .setColor(es.color)
@@ -410,8 +410,8 @@ module.exports = {
                             } else {
                               if (isValidURL(collected.first().content)) {
                                 url = collected.first().content;
-                                await client.settings.set(message.guild.id+".welcome.custom", "no")
-                                await client.settings.set(message.guild.id+".welcome.background", url)
+                                await client.settings.set(`${message.guild.id}.welcome.custom`, "no")
+                                await client.settings.set(`${message.guild.id}.welcome.background`, url)
                                 return message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable28"]))
                                   .setColor(es.color)
@@ -437,7 +437,7 @@ module.exports = {
                             }
                           })
                           .catch(e => {
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable31"]))
                               .setColor(es.wrongcolor)
@@ -447,8 +447,8 @@ module.exports = {
                           })
                       } break;
                       case `Del Image Background`:{
-                        await client.settings.set(message.guild.id+".welcome.image", true)
-                        await client.settings.set(message.guild.id+".welcome.background", "transparent")
+                        await client.settings.set(`${message.guild.id}.welcome.image`, true)
+                        await client.settings.set(`${message.guild.id}.welcome.background`, "transparent")
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable32"]))
                           .setColor(es.color)
@@ -472,7 +472,7 @@ module.exports = {
                             //push the answer of the user into the answers lmfao
                             if (collected.first().attachments.size > 0) {
                               if (collected.first().attachments.every(attachIsImage)) {
-                                await client.settings.set(message.guild.id+".welcome.custom", url)
+                                await client.settings.set(`${message.guild.id}.welcome.custom`, url)
                                 return message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable36"]))
                                   .setColor(es.color)
@@ -489,7 +489,7 @@ module.exports = {
                             } else {
                               if (isValidURL(collected.first().content)) {
                                 url = collected.first().content;
-                                await client.settings.set(message.guild.id+".welcome.custom", url)
+                                await client.settings.set(`${message.guild.id}.welcome.custom`, url)
                                 return message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable38"]))
                                   .setColor(es.color)
@@ -515,7 +515,7 @@ module.exports = {
                             }
                           })
                           .catch(e => {
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable41"]))
                               .setColor(es.wrongcolor)
@@ -525,8 +525,8 @@ module.exports = {
                           })
                       } break;
                       case `${GuildSettings?.welcome?.frame ? "Disable" : "Enable"} Frame`:{
-                        await client.settings.set(message.guild.id+".welcome.custom", "no")
-                        await client.settings.set(message.guild.id+".welcome.frame", !GuildSettings?.welcome?.frame)
+                        await client.settings.set(`${message.guild.id}.welcome.custom`, "no")
+                        await client.settings.set(`${message.guild.id}.welcome.frame`, !GuildSettings?.welcome?.frame)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable42"]))
                           .setColor(es.color)
@@ -535,8 +535,8 @@ module.exports = {
                         ]});
                       } break;
                       case `${GuildSettings?.welcome?.discriminator ? "Disable" : "Enable"} User-Tag`:{
-                        await client.settings.set(message.guild.id+".welcome.custom", "no")
-                        await client.settings.set(message.guild.id+".welcome.discriminator", !GuildSettings?.welcome?.discriminator)
+                        await client.settings.set(`${message.guild.id}.welcome.custom`, "no")
+                        await client.settings.set(`${message.guild.id}.welcome.discriminator`, !GuildSettings?.welcome?.discriminator)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable45"]))
                           .setColor(es.color)
@@ -546,7 +546,7 @@ module.exports = {
                       } break;
                       case `${GuildSettings?.welcome?.membercount ? "Disable" : "Enable"} Member Count`:{
                         await client.settings.set(message.guild.id, "no", +".welcome.custom")
-                        await client.settings.set(message.guild.id+".welcome.membercount", !GuildSettings?.welcome?.membercount)
+                        await client.settings.set(`${message.guild.id}.welcome.membercount`, !GuildSettings?.welcome?.membercount)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable48"]))
                           .setColor(es.color)
@@ -555,8 +555,8 @@ module.exports = {
                         ]});
                       } break;
                       case `${GuildSettings?.welcome?.servername ? "Disable" : "Enable"} Server Name`:{
-                        await client.settings.set(message.guild.id+".welcome.custom", "no")
-                        await client.settings.set(message.guild.id+".welcome.servername", !GuildSettings?.welcome?.servername)
+                        await client.settings.set(`${message.guild.id}.welcome.custom`, "no")
+                        await client.settings.set(`${message.guild.id}.welcome.servername`, !GuildSettings?.welcome?.servername)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable51"]))
                           .setColor(es.color)
@@ -565,8 +565,8 @@ module.exports = {
                         ]});
                       } break;
                       case `${GuildSettings?.welcome?.pb ? "Disable" : "Enable"} User-Avatar`:{
-                        await client.settings.set(message.guild.id+".welcome.custom", "no")
-                        await client.settings.set(message.guild.id+".welcome.pb", !GuildSettings?.welcome?.pb)
+                        await client.settings.set(`${message.guild.id}.welcome.custom`, "no")
+                        await client.settings.set(`${message.guild.id}.welcome.pb`, !GuildSettings?.welcome?.pb)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable54"]))
                           .setColor(es.color)
@@ -610,7 +610,7 @@ module.exports = {
                         collector.on('collect', async button => {
                           if (button?.user.id === cmduser.id) {
                             var color = button?.customId;
-                            await client.settings.set(message.guild.id+".welcome.framecolor", color)
+                            await client.settings.set(`${message.guild.id}.welcome.framecolor`, color)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable59"]))
                               .setColor(color)
@@ -640,7 +640,7 @@ module.exports = {
                   })
                   .then(async collected => {
                     var message = collected.first();
-                    await client.settings.set(message.guild.id+".welcome.msg", message.content)
+                    await client.settings.set(`${message.guild.id}.welcome.msg`, message.content)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable66"]))
                       .setColor(es.color)
@@ -649,7 +649,7 @@ module.exports = {
                     ]});
                   })
                   .catch(e => {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable69"]))
                       .setColor(es.wrongcolor)
@@ -659,7 +659,7 @@ module.exports = {
                   })
                 }break;
                 case `${GuildSettings?.welcome?.invite ? "Disable InviteInformation": "Enable Invite Information"}`:{
-                  await client.settings.set(message.guild.id+".welcome.invite", !GuildSettings?.welcome?.invite)
+                  await client.settings.set(`${message.guild.id}.welcome.invite`, !GuildSettings?.welcome?.invite)
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable70"]))
                     .setColor(es.color)
@@ -715,7 +715,7 @@ module.exports = {
               //define the embed
               let MenuEmbed = new MessageEmbed()
                 .setColor(es.color)
-                .setAuthor(client.getAuthor('Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b?.png', 'https://discord.gg/dcdev'))
+                .setAuthor(client.getAuthor('Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b.png', 'https://discord.gg/milrato'))
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
               //send the menu msg
               let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -730,7 +730,7 @@ module.exports = {
                   collector.stop();
                   let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                   if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   let SetupNumber = menu?.values[0].split(" ")[0]
                   handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata)
                 }
@@ -759,11 +759,11 @@ module.exports = {
                     var message = collected.first();
                     var channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
                     if (channel) {
-                        await client.settings.set(message.guild.id+".welcome.secondchannel", channel.id)
+                        await client.settings.set(`${message.guild.id}.welcome.secondchannel`, channel.id)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable9"]))
                           .setColor(es.color)
-                          .setDescription(`If Someone joins this Server, a message will be sent into ${message.guild.channels.cache.get(GuildSettings?.welcome?.secondchannel) ? message.guild.channels.cache.get(GuildSettings?.welcome?.secondchannel) : "Not defined yet"}!\nEdit the message with: \`${prefix}setup-welcome\``.substring(0, 2048))
+                          .setDescription(`If Someone joins this Server, a message will be sent into ${channel}!\nEdit the message with: \`${prefix}setup-welcome\``.substring(0, 2048))
                           .setFooter(client.getFooter(es))
                         ]});
                     } else {
@@ -771,7 +771,7 @@ module.exports = {
                     }
                   })
                   .catch(e => {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable12"]))
                       .setColor(es.wrongcolor)
@@ -781,7 +781,7 @@ module.exports = {
                   })
                 }break;
                 case `Disable Welcome 2`:{
-                  await client.settings.set(message.guild.id+".welcome.secondchannel", "nochannel")
+                  await client.settings.set(`${message.guild.id}.welcome.secondchannel`, "nochannel")
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable13"]))
                     .setColor(es.color)
@@ -803,7 +803,7 @@ module.exports = {
                   })
                   .then(async collected => {
                     var message = collected.first();
-                    await client.settings.set(message.guild.id+".welcome.secondmsg", message.content)
+                    await client.settings.set(`${message.guild.id}.welcome.secondmsg`, message.content)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable66"]))
                       .setColor(es.color)
@@ -812,7 +812,7 @@ module.exports = {
                     ]});
                   })
                   .catch(e => {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable69"]))
                       .setColor(es.wrongcolor)
@@ -875,7 +875,7 @@ module.exports = {
               //define the embed
               let MenuEmbed = new MessageEmbed()
                 .setColor(es.color)
-                .setAuthor(client.getAuthor('DM - Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b?.png', 'https://discord.gg/dcdev'))
+                .setAuthor(client.getAuthor('DM - Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b.png', 'https://discord.gg/milrato'))
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
               //send the menu msg
               let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -890,7 +890,7 @@ module.exports = {
                   collector.stop();
                   let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                   if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   let SetupNumber = menu?.values[0].split(" ")[0]
                   handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata)
                 }
@@ -904,7 +904,7 @@ module.exports = {
             async function handle_the_picks_2(optionhandletype, SetupNumber, menuoptiondata){
               switch (optionhandletype) {
                 case `${!GuildSettings?.welcome?.dm ? "ENABLE DM WELCOME": "DISABLE DM WELCOME"}`:{
-                  await client.settings.set(message.guild.id+".welcome.dm", !GuildSettings.welcome?.dm)
+                  await client.settings.set(`${message.guild.id}.welcome.dm`, !GuildSettings.welcome?.dm)
                   if(!!GuildSettings.welcome?.dm){
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable79"]))
@@ -1004,7 +1004,7 @@ module.exports = {
                     //define the embed
                     let MenuEmbed = new MessageEmbed()
                       .setColor(es.color)
-                      .setAuthor(client.getAuthor('Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b?.png', 'https://discord.gg/dcdev'))
+                      .setAuthor(client.getAuthor('Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b.png', 'https://discord.gg/milrato'))
                       .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
                     //send the menu msg
                     let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -1019,7 +1019,7 @@ module.exports = {
                         collector.stop();
                         let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                         if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                        menu?.deferUpdate();
+                        client.disableComponentMessage(menu);
                         let SetupNumber = menu?.values[0].split(" ")[0]
                         handle_the_picks_3(menu?.values[0], SetupNumber, menuoptiondata)
                       }
@@ -1033,7 +1033,7 @@ module.exports = {
                   async function handle_the_picks_3(optionhandletype, SetupNumber, menuoptiondata){
                     switch (optionhandletype) {
                       case `Disable the Image`:{
-                        await client.settings.set(message.guild.id+".welcome.imagedm", false)
+                        await client.settings.set(`${message.guild.id}.welcome.imagedm`, false)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable84"]))
                           .setColor(es.color)
@@ -1041,7 +1041,7 @@ module.exports = {
                         ]});
                       } break;
                       case `Enable auto Image`:{
-                        await client.settings.set(message.guild.id+".welcome.imagedm", true)
+                        await client.settings.set(`${message.guild.id}.welcome.imagedm`, true)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable87"]))
                           .setColor(es.color)
@@ -1065,8 +1065,8 @@ module.exports = {
                             //push the answer of the user into the answers lmfao
                             if (collected.first().attachments.size > 0) {
                               if (collected.first().attachments.every(attachIsImage)) {
-                                await client.settings.set(message.guild.id+".welcome.customdm", "no")
-                                await client.settings.set(message.guild.id+".welcome.backgrounddm", url)
+                                await client.settings.set(`${message.guild.id}.welcome.customdm`, "no")
+                                await client.settings.set(`${message.guild.id}.welcome.backgrounddm`, url)
                                 return message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable92"]))
                                   .setColor(es.color)
@@ -1083,8 +1083,8 @@ module.exports = {
                             } else {
                               if (isValidURL(collected.first().content)) {
                                 url = collected.first().content;
-                                await client.settings.set(message.guild.id+".welcome.customdm", "no")
-                                await client.settings.set(message.guild.id+".welcome.backgrounddm", url)
+                                await client.settings.set(`${message.guild.id}.welcome.customdm`, "no")
+                                await client.settings.set(`${message.guild.id}.welcome.backgrounddm`, url)
                                 return message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable94"]))
                                   .setColor(es.color)
@@ -1110,7 +1110,7 @@ module.exports = {
                             }
                           })
                           .catch(e => {
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable31"]))
                               .setColor(es.wrongcolor)
@@ -1120,8 +1120,8 @@ module.exports = {
                           })
                       } break;
                       case `Del Image Background`:{
-                        await client.settings.set(message.guild.id+".welcome.imagedm", true)
-                        await client.settings.set(message.guild.id+".welcome.backgrounddm", "transparent")
+                        await client.settings.set(`${message.guild.id}.welcome.imagedm`, true)
+                        await client.settings.set(`${message.guild.id}.welcome.backgrounddm`, "transparent")
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable98"]))
                           .setColor(es.color)
@@ -1144,7 +1144,7 @@ module.exports = {
                             //push the answer of the user into the answers lmfao
                             if (collected.first().attachments.size > 0) {
                               if (collected.first().attachments.every(attachIsImage)) {
-                                await client.settings.set(message.guild.id+".welcome.customdm", url)
+                                await client.settings.set(`${message.guild.id}.welcome.customdm`, url)
                                 return message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable102"]))
                                   .setColor(es.color)
@@ -1161,7 +1161,7 @@ module.exports = {
                             } else {
                               if (isValidURL(collected.first().content)) {
                                 url = collected.first().content;
-                                await client.settings.set(message.guild.id+".welcome.customdm", url)
+                                await client.settings.set(`${message.guild.id}.welcome.customdm`, url)
                                 return message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable104"]))
                                   .setColor(es.color)
@@ -1187,7 +1187,7 @@ module.exports = {
                             }
                           })
                           .catch(e => {
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable41"]))
                               .setColor(es.wrongcolor)
@@ -1197,8 +1197,8 @@ module.exports = {
                           })
                       } break;
                       case `${GuildSettings?.welcome?.framedm ? "Disable" : "Enable"} Frame`:{
-                        await client.settings.set(message.guild.id+".welcome.customdm", "no")
-                        await client.settings.set(message.guild.id+".welcome.framedm", !GuildSettings?.welcome?.framedm)
+                        await client.settings.set(`${message.guild.id}.welcome.customdm`, "no")
+                        await client.settings.set(`${message.guild.id}.welcome.framedm`, !GuildSettings?.welcome?.framedm)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable108"]))
                           .setColor(es.color)
@@ -1206,8 +1206,8 @@ module.exports = {
                         ]});
                       } break;
                       case `${GuildSettings?.welcome?.discriminatordm ? "Disable" : "Enable"} User-Tag`:{
-                        await client.settings.set(message.guild.id+".welcome.customdm", "no")
-                        await client.settings.set(message.guild.id+".welcome.discriminatordm", !GuildSettings?.welcome?.discriminatordm)
+                        await client.settings.set(`${message.guild.id}.welcome.customdm`, "no")
+                        await client.settings.set(`${message.guild.id}.welcome.discriminatordm`, !GuildSettings?.welcome?.discriminatordm)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable111"]))
                           .setColor(es.color)
@@ -1216,8 +1216,8 @@ module.exports = {
                         ]});
                       } break;
                       case `${GuildSettings?.welcome?.membercountdm ? "Disable" : "Enable"} Member Count`:{
-                        await client.settings.set(message.guild.id+".welcome.customdm", "no")
-                        await client.settings.set(message.guild.id+".welcome.membercountdm", !GuildSettings?.welcome?.membercountdm)
+                        await client.settings.set(`${message.guild.id}.welcome.customdm`, "no")
+                        await client.settings.set(`${message.guild.id}.welcome.membercountdm`, !GuildSettings?.welcome?.membercountdm)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable114"]))
                           .setColor(es.color)
@@ -1226,8 +1226,8 @@ module.exports = {
                         ]});
                       } break;
                       case `${GuildSettings?.welcome?.servernamedm ? "Disable" : "Enable"} Server Name`:{
-                        await client.settings.set(message.guild.id+".welcome.customdm", "no")
-                        await client.settings.set(message.guild.id+".welcome.servernamedm", !GuildSettings?.welcome?.servernamedm)
+                        await client.settings.set(`${message.guild.id}.welcome.customdm`, "no")
+                        await client.settings.set(`${message.guild.id}.welcome.servernamedm`, !GuildSettings?.welcome?.servernamedm)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable117"]))
                           .setColor(es.color)
@@ -1236,8 +1236,8 @@ module.exports = {
                         ]});
                       } break;
                       case `${GuildSettings?.welcome?.pbdm ? "Disable" : "Enable"} User-Avatar`:{
-                        await client.settings.set(message.guild.id+".welcome.custom", "no")
-                        await client.settings.set(message.guild.id+".welcome.pbdm", !GuildSettings?.welcome?.pbdm)
+                        await client.settings.set(`${message.guild.id}.welcome.custom`, "no")
+                        await client.settings.set(`${message.guild.id}.welcome.pbdm`, !GuildSettings?.welcome?.pbdm)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable120"]))
                           .setColor(es.color)
@@ -1281,7 +1281,7 @@ module.exports = {
                         collector.on('collect', async button => {
                           if (button?.user.id === cmduser.id) {
                             var color = button?.customId;
-                            await client.settings.set(message.guild.id+".welcome.framecolordm", color)
+                            await client.settings.set(`${message.guild.id}.welcome.framecolordm`, color)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable125"]))
                               .setColor(color)
@@ -1311,7 +1311,7 @@ module.exports = {
                     })
                     .then(async collected => {
                       var message = collected.first();
-                      await client.settings.set(message.guild.id+".welcome.dm_msg", message.content)
+                      await client.settings.set(`${message.guild.id}.welcome.dm_msg`, message.content)
                       return message.reply({embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable132"]))
                         .setColor(es.color)
@@ -1320,7 +1320,7 @@ module.exports = {
                       ]});
                     })
                   .catch(e => {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable69"]))
                       .setColor(es.wrongcolor)
@@ -1330,7 +1330,7 @@ module.exports = {
                   })
                 }break;
                 case `${GuildSettings?.welcome?.invite ? "Disable InviteInformation": "Enable Invite Information"}`:{
-                  await client.settings.set(message.guild.id+".welcome.invite", !GuildSettings?.welcome?.invitedm)
+                  await client.settings.set(`${message.guild.id}.welcome.invite`, !GuildSettings?.welcome?.invitedm)
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable136"]))
                     .setColor(es.color)
@@ -1386,7 +1386,7 @@ module.exports = {
               //define the embed
               let MenuEmbed = new MessageEmbed()
                 .setColor(es.color)
-                .setAuthor('Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b?.png', 'https://discord.gg/dcdev')
+                .setAuthor(client.getAuthor('Welcome Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/samsung/306/waving-hand_1f44b.png', 'https://discord.gg/milrato'))
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
               //send the menu msg
               let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -1401,7 +1401,7 @@ module.exports = {
                   collector.stop();
                   let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                   if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   let SetupNumber = menu?.values[0].split(" ")[0]
                   handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata)
                 }
@@ -1430,13 +1430,14 @@ module.exports = {
                     var message = collected.first();
                     var role = message.mentions.roles.filter(role=>role.guild.id==message.guild.id).first();
                     if (role) {
-                      var welcomeroles = GuildSettings?.welcome?.roles
+                      var welcomeroles = GuildSettings?.welcome?.roles || [];
                       if (welcomeroles.includes(role.id)) return message.reply({embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable144"]))
                         .setColor(es.wrongcolor)
                         .setFooter(client.getFooter(es))
                       ]});
-                      await client.settings.push(message.guild.id, role.id, +".welcome.roles");
+                      welcomeroles.push(role.id);
+                      await client.settings.set(`${message.guild.id}.welcome.roles`, welcomeroles);
                       return message.reply({embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable145"]))
                         .setColor(es.color)
@@ -1448,7 +1449,7 @@ module.exports = {
                     }
                   })
                   .catch(e => {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                       return message.reply({embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable146"]))
                         .setColor(es.wrongcolor)
@@ -1473,13 +1474,13 @@ module.exports = {
                       var message = collected.first();
                       var role = message.mentions.roles.filter(role=>role.guild.id==message.guild.id).first();
                       if (role) {
-                        var welcomeroles = GuildSettings?.welcome?.roles
+                        var welcomeroles = GuildSettings?.welcome?.roles || []
                         if (!welcomeroles.includes(role.id)) return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable149"]))
                           .setColor(es.wrongcolor)
                           .setFooter(client.getFooter(es))
                         ]});
-                        await client.settings.remove(message.guild.id, role.id, +".welcome.roles");
+                        await dbRemove(client.settings, `${message.guild.id}.welcome.roles`, role.id);
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable150"]))
                           .setColor(es.color)
@@ -1491,7 +1492,7 @@ module.exports = {
                       }
                     })
                     .catch(e => {
-                      console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                      console.error(e)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable151"]))
                           .setColor(es.wrongcolor)
@@ -1512,7 +1513,7 @@ module.exports = {
             }
           }break;
           case "Captcha System (Security)":{
-            await client.settings.set(message.guild.id+".welcome.captcha", !GuildSettings?.welcome?.captcha)
+            await client.settings.set(`${message.guild.id}.welcome.captcha`, !GuildSettings?.welcome?.captcha)
             return message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable154"]))
               .setColor(es.color)
@@ -1529,7 +1530,7 @@ module.exports = {
               if(!themessage || themessage.length == 0) themessage = ":wave: {user} **Welcome to our Server!** :v:";
               themessage = themessage.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`)
               if(message.channel.permissionsFor(message.channel.guild.me).has(Discord.Permissions.FLAGS.SEND_MESSAGES)){
-                message.channel.send({content: `**CHANNEL 2 MESSAGE in ${welcome.secondchannel != "nochannel" ? `<#${welcome.secondchannel}>` : ` \`NO CHANNEL - SETUPPED\``}:**\n\n${themessage}`.substring(0, 2000)}).catch(() => {});
+                message.channel.send({content: `**CHANNEL 2 MESSAGE in ${welcome.secondchannel != "nochannel" ? `<#${welcome.secondchannel}>` : ` \`NO CHANNEL - SETUPPED\``}:**\n\n${themessage}`.substring(0, 2000)}).catch(() => null);
               }
             }
       
@@ -1570,11 +1571,11 @@ module.exports = {
                     channel.send({
                       content: `**CHANNEL WELCOME in ${welcome.channel!= "nochannel" ? `<#${welcome.channel}>` : ` \`NO CHANNEL - SETUPPED\``}:**\n\n<@${member.user.id}>`,
                       embeds: [welcomeembed]
-                    }).catch(() => {});
+                    }).catch(() => null);
                   } else {
                     channel.send({
                       content: `**CHANNEL WELCOME in ${welcome.channel!= "nochannel" ? `<#${welcome.channel}>` : ` \`NO CHANNEL - SETUPPED\``}:**\n\n<@${member.user.id}>\n${welcomeembed.description}`.substring(0, 2000),
-                    }).catch(() => {});
+                    }).catch(() => null);
                   }
                 }
               
@@ -1595,7 +1596,7 @@ module.exports = {
               channel.send({
                 content: `**DIRECT MESSAGE WELCOME:**\n\n<@${member.user.id}>`,
                 embeds: [welcomeembed]
-              }).catch(() => {});
+              }).catch(() => null);
             }
       
       
@@ -1616,7 +1617,7 @@ module.exports = {
               channel.send({
                 content: `**DIRECT MESSAGE WELCOME:**\n\n<@${member.user.id}>`,
                 embeds: [welcomeembed]
-              }).catch(() => {});
+              }).catch(() => null);
             }
             async function msg_withimg(member) {
               let { channel } = message;
@@ -1638,11 +1639,11 @@ module.exports = {
                   channel.send({
                     content: `**CHANNEL WELCOME in ${welcome.channel!= "nochannel" ? `<#${welcome.channel}>` : ` \`NO CHANNEL - SETUPPED\``}:**\n\n<@${member.user.id}>`,
                     embeds: [welcomeembed]
-                  }).catch(() => {});
+                  }).catch(() => null);
                 } else {
                   channel.send({
                     content: `**CHANNEL WELCOME in ${welcome.channel!= "nochannel" ? `<#${welcome.channel}>` : ` \`NO CHANNEL - SETUPPED\``}:**\n\n<@${member.user.id}>\n${welcomeembed.description}`.substring(0, 2000),
-                  }).catch(() => {});
+                  }).catch(() => null);
                 }
               }
             }
@@ -1701,7 +1702,7 @@ module.exports = {
       
                   ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
                   if (GuildSettings?.welcome?.pbdm) {
-                    background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1framepb?.png`);
+                    background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1framepb.png`);
                     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
                   }
                 }
@@ -1760,7 +1761,7 @@ module.exports = {
                   content: `**DIRECT MESSAGE WELCOME:**\n\n<@${member.user.id}>`,
                   embeds: [welcomeembed.setImage(`attachment://welcome-image.png`) ],
                   files: [attachment]
-                }).catch(() => {});
+                }).catch(() => null);
                 //member roles add on welcome every single role
               } catch {}
             }
@@ -1822,7 +1823,7 @@ module.exports = {
                     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
       
                     if (GuildSettings?.welcome?.pb) {
-                      background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1framepb?.png`);
+                      background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1framepb.png`);
                       ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
                     }
                   }
@@ -1881,24 +1882,24 @@ module.exports = {
                         content: `**CHANNEL WELCOME in ${welcome.channel!= "nochannel" ? `<#${welcome.channel}>` : ` \`NO CHANNEL - SETUPPED\``}:**\n\n<@${member.user.id}>`,
                         embeds: [welcomeembed.setImage(`attachment://welcome-image.png`)],
                         files: [attachment]
-                      }).catch(() => {});
+                      }).catch(() => null);
                     } else if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.ATTACH_FILES)){
                       channel.send({
                         content: `**CHANNEL WELCOME in ${welcome.channel!= "nochannel" ? `<#${welcome.channel}>` : ` \`NO CHANNEL - SETUPPED\``}:**\n\n<@${member.user.id}>\n${welcomeembed.description}`.substring(0, 2000),
                         files: [attachment]
-                      }).catch(() => {});
+                      }).catch(() => null);
                     } else {
                       channel.send({
                         content: `**CHANNEL WELCOME in ${welcome.channel!= "nochannel" ? `<#${welcome.channel}>` : ` \`NO CHANNEL - SETUPPED\``}:**\n\n<@${member.user.id}>\n${welcomeembed.description}`.substring(0, 2000),
                         files: [attachment]
-                      }).catch(() => {});
+                      }).catch(() => null);
                     }
                   }
                 } catch (e) {
-                  console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                  console.error(e);
                 }
               } catch (e) {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
               }
             }
           }break;
@@ -1919,7 +1920,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

@@ -81,7 +81,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new MessageEmbed()
           .setColor(es.color)
-          .setAuthor('Anti-Self-Bot', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/microsoft/310/hammer_1f528.png', 'https://discord.gg/dcdev')
+          .setAuthor('Anti-Self-Bot', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/microsoft/310/hammer_1f528.png', 'https://discord.gg/milrato')
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -96,7 +96,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
@@ -177,7 +177,7 @@ module.exports = {
             //define the embed
             let MenuEmbed = new MessageEmbed()
               .setColor(es.color)
-              .setAuthor('Anti-Self-Bot', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/microsoft/310/hammer_1f528.png', 'https://discord.gg/dcdev')
+              .setAuthor('Anti-Self-Bot', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/microsoft/310/hammer_1f528.png', 'https://discord.gg/milrato')
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
             //send the menu msg
             let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -192,7 +192,7 @@ module.exports = {
                 collector.stop();
                 let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                 if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                menu?.deferUpdate();                
+                client.disableComponentMessage(menu);                
                 await client.settings.set(message.guild.id+`antiselfbot.action`, String(menu?.values[0]).toLowerCase())
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(`Successfully set the new Action to: ${menu?.values[0]}`)
@@ -270,7 +270,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

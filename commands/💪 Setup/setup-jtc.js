@@ -24,7 +24,7 @@ module.exports = {
       async function first_layer(){
         
         let menuoptions = [ ]
-        for(let i = 0; i < 100; i++){
+        for (let i = 0; i < 100; i++){
           menuoptions.push({
             value: `${i + 1} Join-To-Create System`,
             description: `Manage/Edit the ${i + 1} Join-to-Create Setup`,
@@ -104,7 +104,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
         .setColor(es.color)
-        .setAuthor(client.getAuthor('Join-to-Create Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/joypixels/291/studio-microphone_1f399-fe0f.png', 'https://discord.gg/dcdev'))
+        .setAuthor(client.getAuthor('Join-to-Create Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/joypixels/291/studio-microphone_1f399-fe0f.png', 'https://discord.gg/milrato'))
         .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [row1, row2, row3, row4]})
@@ -112,7 +112,7 @@ module.exports = {
         function menuselection(menu) {
           let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
           let SetupNumber = menu?.values[0].split(" ")[0]
           second_layer(SetupNumber, menuoptiondata)
         }
@@ -189,14 +189,14 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
         .setColor(es.color)
-        .setAuthor(client.getAuthor(SetupNumber + " Join-to-Create Setup", 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/joypixels/291/studio-microphone_1f399-fe0f.png', 'https://discord.gg/dcdev'))
+        .setAuthor(client.getAuthor(SetupNumber + " Join-to-Create Setup", 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/joypixels/291/studio-microphone_1f399-fe0f.png', 'https://discord.gg/milrato'))
         .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable4"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
         //function to handle the menuselection
         function menuselection(menu) {
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable5"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
           handle_the_picks(menu?.values[0], SetupNumber, thedb, pre)
         }
         //Create the collector

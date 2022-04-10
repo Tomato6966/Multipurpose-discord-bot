@@ -130,7 +130,7 @@ module.exports = {
         return b?.reply({content: ":x: Only the one who typed the Command is allowed to select Things!", ephemeral: true});
      
         let enabled = 0, disabled = 0;
-        for(const value of b?.values) {
+        for await (const value of b?.values) {
           let oldstate = GuildSettings[`${value.toUpperCase()}`];
           if(!oldstate) enabled++;
           else disabled++;
@@ -158,7 +158,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

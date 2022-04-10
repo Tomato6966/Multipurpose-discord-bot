@@ -82,7 +82,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.getAuthor('Twitch-Logger', 'https://cdn.discordapp.com/emojis/720391959746969710.gif?size=160', 'https://discord.gg/dcdev'))
+          .setAuthor(client.getAuthor('Twitch-Logger', 'https://cdn.discordapp.com/emojis/720391959746969710.gif?size=160', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -97,7 +97,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
@@ -171,7 +171,7 @@ module.exports = {
           //define the embed
           let MenuEmbed = new MessageEmbed()
             .setColor(es.color)
-            .setAuthor(client.getAuthor('Twitch-Poster', 'https://cdn.discordapp.com/emojis/720391959746969710.gif?size=160', 'https://discord.gg/dcdev'))
+            .setAuthor(client.getAuthor('Twitch-Poster', 'https://cdn.discordapp.com/emojis/720391959746969710.gif?size=160', 'https://discord.gg/milrato'))
             .setDescription("Select all Twitch Channels you want to remove!")
           //send the menu msg
           let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
@@ -184,7 +184,7 @@ module.exports = {
           collector.on('collect', async menu => {
             if (menu?.user.id === cmduser.id) {
               collector.stop();
-              for(const value of menu?.values) {
+              for await (const value of menu?.values) {
                 let menuoptiondataIndex = menuoptions.findIndex(v=> v.value == value)
                 await dbRemove(client.social_log+".twitch.channels", message.guild.id, d=> d.ChannelName == channels[menuoptiondataIndex].ChannelName)
               }
@@ -268,7 +268,7 @@ module.exports = {
                             }
                           })
                           .catch(e => {
-                            console.log(e)
+                            console.error(e)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable15"]))
                               .setColor(es.wrongcolor)
@@ -282,7 +282,7 @@ module.exports = {
                       }
                     })
                     .catch(e => {
-                      console.log(e)
+                      console.error(e)
                       return message.reply({embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable15"]))
                         .setColor(es.wrongcolor)
@@ -296,7 +296,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e)
+                console.error(e)
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable15"]))
                   .setColor(es.wrongcolor)
@@ -350,7 +350,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e)
+              console.error(e)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable23"]))
                 .setColor(es.wrongcolor)
@@ -404,7 +404,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e)
+                console.error(e)
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable30"]))
                   .setColor(es.wrongcolor)
@@ -458,7 +458,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e)
+              console.error(e)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable37"]))
                 .setColor(es.wrongcolor)
@@ -483,7 +483,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

@@ -33,7 +33,7 @@ module.exports = {
       async function first_layer() {
         
         let menuoptions = []
-        for(let i = 1; i<=100;i++) {
+        for (let i = 1; i<=100;i++) {
           menuoptions.push({
             value: `${i}. Menu Apply`,
             description: `Manage/Edit the ${i}. Menu Apply Setup`,
@@ -112,7 +112,7 @@ module.exports = {
         
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.getAuthor('Menu Apply Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/envelope_2709-fe0f.png', 'https://discord.gg/dcdev'))
+          .setAuthor(client.getAuthor('Menu Apply Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/envelope_2709-fe0f.png', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
           
         //send the menu msg
@@ -131,7 +131,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(".")[0];
             pre = `menuapply${SetupNumber}` 
             theDB = client.menuapply; //change to the right database
@@ -200,7 +200,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor('Menu Apply Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/envelope_2709-fe0f.png', 'https://discord.gg/dcdev')
+          .setAuthor('Menu Apply Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/envelope_2709-fe0f.png', 'https://discord.gg/milrato')
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
           
         //send the menu msg
@@ -219,7 +219,7 @@ module.exports = {
             collector.stop();
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             handle_the_picks(menu?.values[0], menuoptiondata)
           } else menu?.reply({
             content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
@@ -369,7 +369,7 @@ module.exports = {
 
               
               let menuoptions = []
-              for(let i = 1; i<=100;i++) {
+              for (let i = 1; i<=100;i++) {
                 menuoptions.push({
                   value: `${i} Apply System`,
                   description: `Manage/Edit the ${i} Apply Setup`,
@@ -448,7 +448,7 @@ module.exports = {
               //define the embed
               let MenuEmbed = new Discord.MessageEmbed()
                 .setColor(es.color)
-                .setAuthor(client.getAuthor('Menu Apply Setup', 'https://cdn.discordapp.com/emojis/877653386747605032.png?size=96', 'https://discord.gg/dcdev'))
+                .setAuthor(client.getAuthor('Menu Apply Setup', 'https://cdn.discordapp.com/emojis/877653386747605032.png?size=96', 'https://discord.gg/milrato'))
                 .setDescription("Select which Application System should be started with this Option")
               //send the menu msg
               let menumsg = await message.reply({embeds: [MenuEmbed], components: [row1, row2, row3, row4]})
@@ -462,7 +462,7 @@ module.exports = {
                 if (menu?.user.id === cmduser.id) {
                   collector.stop();
                   if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   let applySystemExecution = menu?.values[0].split(" ")[0]
                   let index = data.findIndex(v => v.applySystemExecution == applySystemExecution);
                   if(index >= 0) {
@@ -507,7 +507,7 @@ module.exports = {
                           emojiMsg = NumberEmojis[data.length];
                         }
                       } catch (e){
-                        console.log(e)
+                        console.error(e)
                         message.reply(":x: **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!");
                         emoji = null;
                         emojiMsg = NumberEmojis[data.length];
@@ -692,7 +692,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

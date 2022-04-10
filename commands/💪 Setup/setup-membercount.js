@@ -21,7 +21,7 @@ module.exports = {
     
     //ensure the database
     let ensureobject = { }
-    for(let i = 1; i <= 25; i++){
+    for (let i = 1; i <= 25; i++){
       ensureobject[`channel${i}`] = "no";
       ensureobject[`message${i}`] = "🗣 Members: {member}";
     }
@@ -33,7 +33,7 @@ module.exports = {
       async function first_layer(){
         
         let menuoptions = [ ]
-        for(let i = 1; i <= 25; i++){
+        for (let i = 1; i <= 25; i++){
           menuoptions.push({
             value: `${i} Member Counter`,
             description: `Manage/Edit the ${i}. Member Counter`,
@@ -60,7 +60,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
         .setColor(es.color)
-        .setAuthor('Member Counter Setup', 'https://cdn.discordapp.com/emojis/891040423605321778.png?size=96', 'https://discord.gg/dcdev')
+        .setAuthor('Member Counter Setup', 'https://cdn.discordapp.com/emojis/891040423605321778.png?size=96', 'https://discord.gg/milrato')
         .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         let used1 = false;
         //send the menu msg
@@ -69,7 +69,7 @@ module.exports = {
         function menuselection(menu) {
           let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
           let SetupNumber = menu?.values[0].split(" ")[0]
           used1 = true;
           second_layer(SetupNumber, menuoptiondata)
@@ -295,7 +295,7 @@ module.exports = {
             }
           })
           .catch(e => {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
             return message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-membercount"]["variable12"]))
               .setColor(es.wrongcolor)
