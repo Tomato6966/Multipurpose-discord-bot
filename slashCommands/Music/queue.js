@@ -19,7 +19,7 @@ module.exports = {
     "activeplayer": true,
     "previoussong": false
   },
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     		//things u can directly access in an interaction!
 		const { member } = interaction;
     const { guild } = member;
@@ -47,7 +47,7 @@ module.exports = {
         ]}).then(msg => {
           setTimeout(()=>{
             try { 
-              msg.delete().catch(() => {});
+              msg.delete().catch(() => null);
             } catch {} 
           }, 5000)
         })
@@ -62,7 +62,7 @@ module.exports = {
         ]}).then(msg => {
           setTimeout(()=>{
             try { 
-              msg.delete().catch(() => {});
+              msg.delete().catch(() => null);
             } catch {} 
           }, 5000)
         })

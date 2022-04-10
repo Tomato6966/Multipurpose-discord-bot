@@ -10,16 +10,16 @@ const { connected } = require("process");
 module.exports = {
     name: "botinfo",
     description: "Sends detailed info about the client",
-    run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+    run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     //things u can directly access in an interaction!
     const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;    
     try{
       let tempmsg = await interaction?.reply({embeds: [new Discord.MessageEmbed().setColor(es.color)
-      .setAuthor(client.la[ls].cmds.info.botinfo.loading, "https://cdn.discordapp.com/emojis/756773010123522058.gif", "https://discord.gg/dcdev")], ephemeral: true})
+      .setAuthor(client.getAuthor(client.la[ls].cmds.info.botinfo.loading, "https://cdn.discordapp.com/emojis/756773010123522058.gif", "https://discord.gg/milrato"))], ephemeral: true})
       cpuStat.usagePercent(function (e, percent, seconds) {
           if (e) {
-              return console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              return console.error(e);
           }
           let connectedchannelsamount = 0;
           let guilds = client.guilds.cache.map((guild) => guild);
@@ -36,7 +36,7 @@ module.exports = {
           createdTimestamp
         }
         const botinfo = new Discord.MessageEmbed()
-            .setAuthor(client.user.tag + " Information", es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL(), `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`) 
+            .setAuthor(client.getAuthor(client.user.tag + " Information", es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL(), `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`)) 
             .setDescription(eval(client.la[ls]["cmds"]["info"]["botinfo"]["variable1"]))
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
             .addField(client.la[ls].cmds.info.botinfo.field1.title, handlemsg(client.la[ls].cmds.info.botinfo.field1.value, {totalGuilds: totalGuilds, totalMembers: totalMembers, connections: connectedchannelsamount, connectedchannelsamount: connectedchannelsamount}), true)
@@ -54,7 +54,7 @@ module.exports = {
 };
 /**
   * @INFO
-  * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+  * Bot Coded by Tomato#6966 | https://discord.gg/milrato
   * @INFO
   * Work for Milrato Development | https://milrato.eu
   * @INFO

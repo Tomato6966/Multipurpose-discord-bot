@@ -21,7 +21,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
   options: [
     {"Integer": { name: "seconds", description: "To what amount of Seconds do you want to seek?", required: true }}, 
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     
     //
     if(GuildSettings.MUSIC === false) {

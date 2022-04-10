@@ -16,7 +16,7 @@ module.exports = {
   aliases: ["voteskip", "s", "vs"],
   description: "Skips the current song",
   usage: "skip",
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     
     //
     if(GuildSettings.MUSIC === false) {

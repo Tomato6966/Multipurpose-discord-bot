@@ -17,7 +17,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
   options: [ 
     {"StringChoices": { name: "looptype", description: "What Loop do you want to do?", required: true, choices: [["Song Loop", "song"], ["Queue Loop", "queue"]] }},
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     
     //
     if(GuildSettings.MUSIC === false) {

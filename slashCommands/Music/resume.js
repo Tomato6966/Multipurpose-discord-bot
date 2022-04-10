@@ -21,7 +21,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     "check_dj": true,
     "previoussong": false
   },
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     
     //
     if(GuildSettings.MUSIC === false) {

@@ -15,7 +15,7 @@ module.exports = {
   options: [
     { "String": { name: "text", description: "What should I send? [ +n+ = Newline ]", required: true } }, //to use in the code: interacton.getString("title")
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
 
     if (GuildSettings.FUN === false) {
       return interaction?.reply({
@@ -40,7 +40,7 @@ module.exports = {
         .setColor("RED")
         .setDescription(eval(client.la[ls]["cmds"]["fun"]["ohno"]["variable3"]))
       ]
-    }).catch(() => {})
+    }).catch(() => null)
 
     //get the memer image
     client.memer.ohno(text).then(image => {
@@ -54,14 +54,14 @@ module.exports = {
           .setAuthor(`Meme for: ${message.author.tag}`, message.author.displayAvatarURL())
           .setImage("attachment://ohno2.png")
         ], files: [attachment], ephemeral: true
-      }).catch(() => {})
+      }).catch(() => null)
     })
 
   }
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

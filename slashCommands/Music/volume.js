@@ -20,7 +20,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
   options: [
     {"Integer": { name: "volume", description: "To What % do you want to change the volume to?", required: true }}, 
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     
     //
     if(GuildSettings.MUSIC === false) {
