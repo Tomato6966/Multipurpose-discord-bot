@@ -38,8 +38,8 @@ const { handlemsg } = require(`../../handlers/functions`);
           .setTitle(eval(client.la[ls]["cmds"]["music"]["play"]["variable1"]))
         ]});
 
-      message.react("🔎").catch(()=>{})
-      message.react("840260133686870036").catch(()=>{})
+      message.react("🔎").catch(() => null)
+      message.react("840260133686870036").catch(() => null)
       //play the SONG from YOUTUBE
       playermanager(client, message, args, `song:youtube`);
     } catch (e) {

@@ -36,18 +36,18 @@ module.exports = {
       player.set(`autoplay`, !player.get(`autoplay`))
       if(player.get(`autoplay`)){
         try{
-          message.react("♾").catch(()=>{})
-          message.react("833101995723194437").catch(()=>{})
+          message.react("♾").catch(() => null)
+          message.react("833101995723194437").catch(() => null)
         }catch{ }
       }else {
         try{
-          message.react("♾").catch(()=>{})
-          message.react("833101993668771842").catch(()=>{})
+          message.react("♾").catch(() => null)
+          message.react("833101993668771842").catch(() => null)
         }catch{  }
       }
       //Send Success Message
       return message.reply({embeds :[new MessageEmbed()
-        .setColor(es.color)
+        .setColor(es. color)
         .setTitle(eval(client.la[ls]["cmds"]["music"]["autoplay"]["variable1"]))
         .setDescription(eval(client.la[ls]["cmds"]["music"]["autoplay"]["variable2"]))
       ]});

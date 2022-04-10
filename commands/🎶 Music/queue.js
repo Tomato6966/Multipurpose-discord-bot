@@ -47,7 +47,7 @@ const { handlemsg } = require(`../../handlers/functions`);
           .setDescription(eval(client.la[ls]["cmds"]["music"]["queue"]["variable2"]))
         ]}).then(async (msg) => {
           setTimeout(()=>{try { 
-            msg.delete().catch(() => {});
+            msg.delete().catch(() => null);
           } catch {} 
           }, 5000)
         })
@@ -61,7 +61,7 @@ const { handlemsg } = require(`../../handlers/functions`);
           .setColor(es.color).setDescription(tracks.map((track, index) => `**\` ${++index}. \`${track.uri ? `[${track.title.substring(0, 60).replace(/\[/igu, "\\[").replace(/\]/igu, "\\]")}](${track.uri})`: track.title}** - \`${track.isStream ? `LIVE STREAM` : format(track.duration).split(` | `)[0]}\`\n> *Requested by: __${track.requester.tag}__*`).join(`\n`))
         ]}).then(async (msg) => {
           setTimeout(()=>{try { 
-            msg.delete().catch(() => {});
+            msg.delete().catch(() => null);
           } catch {} 
           }, 5000)
         })

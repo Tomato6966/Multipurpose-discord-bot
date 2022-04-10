@@ -52,7 +52,8 @@ const { handlemsg } = require(`../../handlers/functions`);
       embed.addField(`${emoji?.msg.equalizer} Equalizer: `, `\`\`\`${player.get("eq")}\`\`\``, true)
       embed.addField(`🎛 Filter: `, `\`\`\`${player.get("filter")}\`\`\``, true)
       embed.addField(`:clock1: AFK Mode`, `\`\`\`PLAYER: ${player.get("afk") ? `✅ Enabled` : `❌ Disabled`}\`\`\``, true)
-
+      .addField(":notes: Music Dashboard :new: ", `[**Check out the :new: Music Dashboard!**](https://milrato.com/dashboard/queue/${message.guild.id})\n> Live Music View, Live Music Requests, Live Music Control and more!`) 
+        
       embed.setColor(es.color)
 
       embed.addField(eval(client.la[ls]["cmds"]["music"]["queuestatus"]["variablex_4"]), eval(client.la[ls]["cmds"]["music"]["queuestatus"]["variable4"]))

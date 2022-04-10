@@ -18,7 +18,7 @@ module.exports = {
   description: "Restarts the Bot, if it`s not working as intended or so..",
   run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    
+    return;
     try {
       await message.reply("NOW RESTARTING!");
       require("child_process").exec(`pm2 restart ID_OF_THE_BOT_PROCESS_IN_PM2_LIST`, (error, stdout, stderr) => {
@@ -42,7 +42,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

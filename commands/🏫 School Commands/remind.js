@@ -38,7 +38,7 @@ module.exports = {
     let time = 0;
       try {
         const timeargs = newargs[0].trim().split(" ")
-        for(const t of timeargs){
+        for await (const t of timeargs){
           time += ms(t);
           console.log(t, ms(t))
         }

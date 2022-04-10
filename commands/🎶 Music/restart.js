@@ -37,9 +37,9 @@ const { handlemsg } = require(`../../handlers/functions`);
       //seek to 0
       player.seek(0);
       //send informational message
-      message.react(emoji?.react.replay_track).catch(()=>{})
+      message.react(emoji?.react.replay_track).catch(() => null)
       
-      message.react("🔃").catch(()=>{})
+      message.react("🔃").catch(() => null)
     } catch (e) {
       console.log(String(e.stack).dim.bgRed)
       return message.reply({embeds : [new MessageEmbed()

@@ -38,9 +38,9 @@ const { handlemsg } = require(`../../handlers/functions`);
           .setColor(es.wrongcolor)
           .setTitle(eval(client.la[ls]["cmds"]["music"]["playskip"]["variable1"]))
         ]});
-      message.react("🔎").catch(()=>{})
-      message.react("840260133686870036").catch(()=>{})
-      message.react(emoji?.react.skip_track).catch(()=>{})
+      message.react("🔎").catch(() => null)
+      message.react("840260133686870036").catch(() => null)
+      message.react(emoji?.react.skip_track).catch(() => null)
 
       //play the SONG from YOUTUBE
       playermanager(client, message, args, `skiptrack:youtube`);

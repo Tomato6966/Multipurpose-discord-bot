@@ -37,8 +37,8 @@ const { handlemsg } = require(`../../handlers/functions`);
       //if the previous was from soundcloud, then use type soundcloud
       if (player.queue.previous.uri?.includes(`soundcloud`)) type = `skiptrack:soundcloud`
       //plays it
-      if (type != "skiptrack:soundcloud") message.react("840260133686870036").catch(()=>{})
-      else message.react("840260133686870036").catch(()=>{})
+      if (type != "skiptrack:soundcloud") message.react("840260133686870036").catch(() => null)
+      else message.react("840260133686870036").catch(() => null)
       playermanager(client, message, Array(player.queue.previous.uri), type);
     } catch (e) {
       console.log(String(e.stack).dim.bgRed)

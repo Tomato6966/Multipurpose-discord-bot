@@ -39,9 +39,10 @@ module.exports = {
     let answer;
 
     try {
-      answer = math.eval(args.join(" "));
+      answer = await math.eval(args.join(" ").replace(/mod/igu, "Mod").replace(/%/igu, "Mod"));
     } catch (err) {
-      message.reply({content: eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variable3"])});
+      console.error(err);
+      return message.reply({content: `Invalid Math Equation: \`\`\`${String(err.message ? err.message : err).substring(0, 150)}\`\`\``});
     }
 
     message.reply({embeds: [new MessageEmbed() 

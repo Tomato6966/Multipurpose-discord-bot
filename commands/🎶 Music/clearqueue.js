@@ -38,7 +38,7 @@ const { handlemsg } = require(`../../handlers/functions`);
         .setTitle(client.la[ls].cmds.music.clearqueue.title)
         .setColor(es.color)
       ]});
-      message.react("💥").catch(()=>{})
+      message.react("💥").catch(() => null)
     } catch (e) {
       console.log(String(e.stack).dim.bgRed)
       return message.reply({embeds :[new MessageEmbed()

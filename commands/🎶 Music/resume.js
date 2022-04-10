@@ -45,8 +45,8 @@ const { handlemsg } = require(`../../handlers/functions`);
       //pause the player
       player.pause(false);
       //send success message
-      message.react(emoji?.react.SUCCESS).catch(()=>{})
-      message.react("▶️").catch(()=>{})
+      message.react(emoji?.react.SUCCESS).catch(() => null)
+      message.react("▶️").catch(() => null)
     } catch (e) {
       console.log(String(e.stack).dim.bgRed)
       return message.reply({embeds : [new MessageEmbed()

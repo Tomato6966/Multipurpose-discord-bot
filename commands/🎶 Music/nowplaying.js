@@ -52,6 +52,7 @@ const { handlemsg } = require(`../../handlers/functions`);
         .addField(`${emoji?.msg.time} Duration: `, `\`${format(player.queue.current.duration).split(" | ")[0]}\` | \`${format(player.queue.current.duration).split(" | ")[1]}\``, true)
         .addField(`${emoji?.msg.song_by} Song By: `, `\`${player.queue.current.author}\``, true)
         .addField(`${emoji?.msg.repeat_mode} Queue length: `, `\`${player.queue.length} Songs\``, true)
+        .addField(":notes: Music Dashboard :new: ", `[**Check out the :new: Music Dashboard!**](https://milrato.com/dashboard/queue/${message.guild.id})\n> Live Music View, Live Music Requests, Live Music Control and more!`) 
         .setFooter(client.getFooter(`Requested by: ${player.queue.current.requester.tag}`, player.queue.current.requester.displayAvatarURL({
           dynamic: true
         })))

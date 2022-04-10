@@ -67,8 +67,8 @@ const { handlemsg } = require(`../../handlers/functions`);
         let lastitem = array[array.length - 1];
         let flatObject = [, ...Object.values(radios.REYFM), ...Object.values(radios.ILOVERADIO), ...Object.values(radios.EU), ...Object.values(radios.OTHERS)];
         let allArray = [];
-        for(const element of flatObject){
-          if(Array.isArray(element)) for(const e of element) allArray.push(e);
+        for (const element of flatObject){
+          if(Array.isArray(element)) for (const e of element) allArray.push(e);
           else allArray.push(element);
         }
         return allArray.indexOf(lastitem);
