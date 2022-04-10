@@ -35,7 +35,7 @@ module.exports = {
         .setTitle(eval(client.la[ls]["cmds"]["fun"]["ohno"]["variable2"]))
         .setColor("RED")
         .setDescription(eval(client.la[ls]["cmds"]["fun"]["ohno"]["variable3"]))
-      ]}).catch(() => {})
+      ]}).catch(() => null)
       
       //get the memer image
       client.memer.ohno(text).then(image => {
@@ -47,14 +47,14 @@ module.exports = {
         message.reply({embeds : [tempmsg.embeds[0]
           .setAuthor(`Meme for: ${message.author.tag}`, message.author.displayAvatarURL())
           .setImage("attachment://ohno2.png")
-        ], files : [attachment]}).catch(() => {})
+        ], files : [attachment]}).catch(() => null)
       })
       
   }
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

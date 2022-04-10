@@ -36,7 +36,7 @@ module.exports = {
             search: args[1],
             degreeType: degree
         }, function (e, result) {
-            if (e) return console.log(e.stack ? String(e.stack).grey : String(e).grey);
+            if (e) return console.error(e);
             try {
                 let embed = new MessageEmbed()
                     .setColor(es.color)
@@ -65,7 +65,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

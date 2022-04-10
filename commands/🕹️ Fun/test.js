@@ -65,13 +65,13 @@ const emoji = require(`../../botconfig/emojis.json`);
         .setAuthor(`Command for: ${message.author.tag}`, message.author.displayAvatarURL({dynamic:true}))
         .setColor(es.color)
         .setImage("attachment://spotify.png")
-        ], files : [attachment]}).catch(() => {})
+        ], files : [attachment]}).catch(() => null)
         
     }
   }
   /**
    * @INFO
-   * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+   * Bot Coded by Tomato#6966 | https://discord.gg/milrato
    * @INFO
    * Work for Milrato Development | https://milrato.eu
    * @INFO

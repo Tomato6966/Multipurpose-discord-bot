@@ -33,7 +33,7 @@ module.exports = {
         return message.reply({embeds : [embed2]});
       request(`https://8ball.delegator.com/magic/JSON/${question}`, function (e, response, body) {
         if (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey);
+          console.error(e);
           message.reply({content : eval(client.la[ls]["cmds"]["fun"]["8ball"]["variable2"])});
         }
         body = JSON.parse(body);
@@ -67,7 +67,7 @@ const embed3 = new Discord.MessageEmbed()
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

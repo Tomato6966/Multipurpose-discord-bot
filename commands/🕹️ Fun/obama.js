@@ -43,7 +43,7 @@ module.exports = {
         .setTitle(eval(client.la[ls]["cmds"]["fun"]["obama"]["variable2"]))
         .setColor("RED")
         .setDescription(eval(client.la[ls]["cmds"]["fun"]["obama"]["variable3"]))
-      ]}).catch(() => {})
+      ]}).catch(() => null)
 
       //get the memer image
       client.memer.obama(text, avatar).then(image => {
@@ -55,14 +55,14 @@ module.exports = {
         message.reply({embeds : [tempmsg.embeds[0]
           .setAuthor(`Meme for: ${user.tag}`, avatar)
           .setImage("attachment://obama.png")
-        ], files : [attachment]}).catch(() => {})
+        ], files : [attachment]}).catch(() => null)
       })
       
   }
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

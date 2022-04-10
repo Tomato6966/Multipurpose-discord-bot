@@ -31,7 +31,7 @@ module.exports = {
       //find the USER
       let user = message.mentions.users.first();
       if(!user && args[0] && args[0].length == 18) {
-        let tmp = await client.users.fetch(args[0]).catch(() => {})
+        let tmp = await client.users.fetch(args[0]).catch(() => null)
         if(tmp) user = tmp;
         if(!tmp) return message.reply({content : eval(client.la[ls]["cmds"]["fun"]["byemom"]["variable2"])})
       }
@@ -53,7 +53,7 @@ module.exports = {
         .setTitle(eval(client.la[ls]["cmds"]["fun"]["byemom"]["variable4"]))
         .setColor("RED")
         .setDescription(eval(client.la[ls]["cmds"]["fun"]["byemom"]["variable5"]))
-      ]}).catch(() => {})
+      ]}).catch(() => null)
 
       //get the memer image
       client.memer.byemom(avatar, user.username, text).then(image => {
@@ -66,14 +66,14 @@ module.exports = {
           .setAuthor(`Meme for: ${message.author.tag}`,message.author.displayAvatarURL())
           .setColor(es.color)          
           .setImage("attachment://byemom.png") 
-        ], files : [attachment]}).catch(() => {})
+        ], files : [attachment]}).catch(() => null)
       })
       
   }
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

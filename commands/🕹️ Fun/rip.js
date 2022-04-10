@@ -32,7 +32,7 @@ module.exports = {
       //find the USER
       let user = message.mentions.users.first();
       if(!user && args[0] && args[0].length == 18) {
-        let tmp = await client.users.fetch(args[0]).catch(() => {})
+        let tmp = await client.users.fetch(args[0]).catch(() => null)
         if(tmp) user = tmp;
         if(!tmp) return message.reply({content : eval(client.la[ls]["cmds"]["fun"]["rip"]["variable2"])})
       }
@@ -57,7 +57,7 @@ module.exports = {
         .setColor(es.color)
         .setImage("attachment://rip.png")
       await message.reply({embeds: [fastembed2], files : [attachment]});
-      await tempmsg.delete().catch(() => {})
+      await tempmsg.delete().catch(() => null)
     } catch (e) {
       console.log(String(e.stack).grey.bgRed)
       return message.reply({embeds : [new MessageEmbed()
@@ -71,7 +71,7 @@ module.exports = {
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

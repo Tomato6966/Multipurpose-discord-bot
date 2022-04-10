@@ -57,14 +57,14 @@ module.exports = {
           .setAuthor(`Meme for: ${user.tag}`, avatar)
           .setColor(es.color)
           .setImage("attachment://wanted.png")
-        ], files : [attachment]}).catch(() => {})
+        ], files : [attachment]}).catch(() => null)
       })
       
   }
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

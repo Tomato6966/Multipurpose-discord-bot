@@ -34,7 +34,7 @@ module.exports = {
         .setTitle(eval(client.la[ls]["cmds"]["fun"]["drake"]["variable2"]))
         .setColor("RED")
         .setDescription(eval(client.la[ls]["cmds"]["fun"]["drake"]["variable3"]))
-      ]}).catch(() => {})
+      ]}).catch(() => null)
       
       //get the memer image
       client.memer.drake(text).then(image => {
@@ -47,14 +47,14 @@ module.exports = {
           .setAuthor(`Meme for: ${message.author.tag}`, message.author.displayAvatarURL())
           .setColor(es.color)
           .setImage("attachment://drake.png")
-        ], files : [attachment]}).catch(() => {})
+        ], files : [attachment]}).catch(() => null)
       })
       
   }
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

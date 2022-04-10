@@ -31,7 +31,7 @@ module.exports = {
       //find the USER
       let user = message.mentions.users.first();
       if(!user && args[0] && args[0].length == 18) {
-        let tmp = await client.users.fetch(args[0]).catch(() => {})
+        let tmp = await client.users.fetch(args[0]).catch(() => null)
         if(tmp) user = tmp;
         if(!tmp) return message.reply({content : eval(client.la[ls]["cmds"]["fun"]["cancer"]["variable2"])})
       }
@@ -57,14 +57,14 @@ module.exports = {
           .setAuthor(`Meme for: ${user.tag}`, avatar)
           .setColor(es.color)          
           .setImage("attachment://cancer.png") 
-        ], files : [attachment]}).catch(() => {})
+        ], files : [attachment]}).catch(() => null)
       })
       
   }
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

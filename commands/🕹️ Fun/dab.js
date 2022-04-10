@@ -31,7 +31,7 @@ module.exports = {
       //find the USER
       let user = message.mentions.users.first();
       if(!user && args[0] && args[0].length == 18) {
-        let tmp = await client.users.fetch(args[0]).catch(() => {})
+        let tmp = await client.users.fetch(args[0]).catch(() => null)
         if(tmp) user = tmp;
         if(!tmp) return message.reply({content : eval(client.la[ls]["cmds"]["fun"]["dab"]["variable2"])})
       }
@@ -49,22 +49,22 @@ module.exports = {
       //get the memer image
       client.memer.dab(avatar).then(image => {
         //make an attachment
-        var attachment = new MessageAttachment(image, "dab?.png");
+        var attachment = new MessageAttachment(image, "dab.png");
         //delete old message
         tempmsg.delete();
         //send new Message
         message.reply({embeds : [tempmsg.embeds[0]
           .setAuthor(`Meme for: ${user.tag}`, avatar)
           .setColor(es.color)
-          .setImage("attachment://dab?.png")
-        ], files : [attachment]}).catch(() => {})
+          .setImage("attachment://dab.png")
+        ], files : [attachment]}).catch(() => null)
       })
       
   }
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO
