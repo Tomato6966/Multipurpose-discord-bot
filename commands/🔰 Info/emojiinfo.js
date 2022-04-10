@@ -26,7 +26,7 @@ module.exports = {
         let url = "https://cdn.discordapp.com/emojis/" + emoji1[1] + ".png?v=1"
         let emoji = message.guild.emojis.cache.find((emj) => emj.name === emoji1[1] || emj.id == emoji1[1]) || await client.cluster.broadcastEval((c, emoji) => 
           c.emojis.cache.find((emj) => emj.name === emoji || emj.id == emoji), { context: emoji1[1]}
-        ).catch(() => {}).then(e => e.filter(Boolean)[0])
+        ).catch(() => null).then(e => e.filter(Boolean)[0])
         if(!emoji) return message.reply(handlemsg(client.la[ls].cmds.info.emojiinfo.error2))
         let authorFetch = "Emoji not fetchable";
         try {
@@ -34,8 +34,7 @@ module.exports = {
         }catch{
 
         }
-        const guild = await client.getGuild(emoji.guildId) || message.guild;
-        console.log(guild)
+        const guild = client.guilds.cache.get(emoji.guildId) || message.guild;
         const checkOrCross = (bool) => bool ? "✅" : "❌" ;
         const embed = new MessageEmbed()
         .setTitle(eval(client.la[ls]["cmds"]["info"]["emojiinfo"]["variable1"]))
@@ -96,7 +95,7 @@ module.exports = {
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

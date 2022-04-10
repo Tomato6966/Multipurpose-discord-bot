@@ -39,7 +39,7 @@ Third Sponsor of This Bot is:
 **Coupon-Code:** \`milrato\` << save **5%**
 `)
 		    .setImage("https://cdn.bero-host.de/img/logo/bero_white.png")
-		    .setFooter(client.getFooter("BERO-HOST",  "https://imgur.com/jXyDEyb?.png"))
+		    .setFooter(client.getFooter("BERO-HOST",  "https://imgur.com/jXyDEyb.png"))
 		
 		let embed2 = new MessageEmbed()
 			.setColor(es.color)
@@ -68,7 +68,7 @@ Third Sponsor of This Bot is:
 }
 /**
   * @INFO
-  * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+  * Bot Coded by Tomato#6966 | https://discord.gg/milrato
   * @INFO
   * Work for Milrato Development | https://milrato.eu
   * @INFO

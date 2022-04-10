@@ -32,7 +32,7 @@ module.exports = {
             .setTitle(handlemsg(client.la[ls].cmds.info.tiktokinfo.title, { name: author.name}))
             .setDescription(handlemsg(client.la[ls].cmds.info.tiktokinfo.description, { nickName: author.nickName, video: author.video, signature: author.signature, fans: author.fans, following: author.following}))
             .setFooter(client.getFooter(`ID: ${author.id_str}`, author.avatar))
-            var allposts = posts.collector.map(p => {
+            var allposts = posts.collector.map(async p => {
                 const Obj = {};
                 Obj.id = p.id;
                 Obj.url = p.webVideoUrl;
@@ -42,17 +42,16 @@ module.exports = {
                 Obj.mentions = p.mentions;
                 Obj.hashtags = p.hashtags;
                 let title = p.text;
-                for(const tag of p.hashtags) title = String(title).toLowerCase().replace(String(tag.name).toLowerCase(), "")
-                for(const mention of p.mentions) title = String(title).toLowerCase().replace(String(mention), "")
+                for await (const tag of p.hashtags) title = String(title).toLowerCase().replace(String(tag.name).toLowerCase(), "")
+                for await (const mention of p.mentions) title = String(title).toLowerCase().replace(String(mention), "")
                 Obj.title = title.split("#").join("");
                 if(title.length <= 1) Obj.title = p.id;
                 return Obj;
             })
-            for(const post of allposts)
-            embed.addField(`**${String(post.title).charAt(0).toUpperCase() + String(post.title).slice(1)}**`, handlemsg(client.la[ls].cmds.info.tiktokinfo.videos, { url: author.url, views: author.views, shares: author.shares, comments: author.comments}))
+            for await (const post of allposts) embed.addField(`**${String(post.title).charAt(0).toUpperCase() + String(post.title).slice(1)}**`, handlemsg(client.la[ls].cmds.info.tiktokinfo.videos, { url: author.url, views: author.views, shares: author.shares, comments: author.comments}))
             message.reply({embeds: [embed]});
         } catch (e) {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey);
+            console.error(e);
             return message.reply({embeds: [new MessageEmbed()
               .setColor(es.wrongcolor)
               .setFooter(client.getFooter(es))
@@ -75,7 +74,7 @@ module.exports = {
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

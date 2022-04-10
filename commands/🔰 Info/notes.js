@@ -515,7 +515,7 @@ module.exports = {
             console.log(String(e).grey)
           }
           }
-      }catch (e){ console.log(e.stack ? String(e.stack).grey : String(e).grey)}
+      }catch (e){ console.error(e)}
     });
     collector.on('end', async collected => {
       if(!edited){
@@ -547,7 +547,7 @@ module.exports = {
 }
 /*
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

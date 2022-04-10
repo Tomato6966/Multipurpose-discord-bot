@@ -61,7 +61,8 @@ module.exports = {
         let themsg = await message.reply(`<a:Loading:833101350623117342> Getting the Fortnite Stats of ${Epic}`)
         const stats = new Canvas.FortniteStats()
         const image = await stats.setToken(
-          process.env.fortnitetracker || config.fortnitetracker)
+          process.env.fortnitetracker || config.fortnitetracker
+          )
           .setUser(Epic)
           .setPlatform(platform.toLowerCase())
           .toAttachment();
@@ -69,8 +70,8 @@ module.exports = {
         let attachment = new Discord.MessageAttachment(image.toBuffer(), "FortniteStats.png");
         themsg.edit({content: `Stats of: \`${Epic}\` on \`${platform}\``, files: [attachment]});
       }catch (e){
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
-        message.channel.send("EPIC INVALID").catch(() => {})
+        console.error(e)
+        message.channel.send("EPIC INVALID").catch(() => null)
       }
     } catch (e) {
       console.log(String(e.stack).grey.bgRed)
@@ -85,7 +86,7 @@ module.exports = {
 }
 /*
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

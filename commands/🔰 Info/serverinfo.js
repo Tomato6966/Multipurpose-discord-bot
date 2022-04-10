@@ -25,8 +25,8 @@ module.exports = {
         }
         return arr.join(", ");
       }
-      message.guild.owner = await message.guild.fetchOwner().then(m => m.user).catch(() => {})
-      await message.guild.members.fetch().catch(() => {});
+      message.guild.owner = await message.guild.fetchOwner().then(m => m.user).catch(() => null)
+      await message.guild.members.fetch().catch(() => null);
       function emojitrimarray(arr, maxLen = 35) {
         if (arr.length > maxLen) {
           const len = arr.length - maxLen;
@@ -139,7 +139,7 @@ module.exports = {
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

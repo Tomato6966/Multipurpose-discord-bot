@@ -18,7 +18,7 @@ module.exports = {
     return message.reply(handlemsg(client.la[ls].cmds.info.enlarge.error1)) 
     if (emoji = emoteRegex.exec(message)) {
       let url = "https://cdn.discordapp.com/emojis/" + emoji[1] + ".png?v=1"
-      let attachment = new Discord.MessageAttachment(url, "emoji?.png")
+      let attachment = new Discord.MessageAttachment(url, "emoji.png")
       message.reply({files: [attachment]});
     }
     else if (emoji = animatedEmoteRegex.exec(message)) {
@@ -33,7 +33,7 @@ module.exports = {
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

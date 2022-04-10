@@ -61,7 +61,7 @@ module.exports = {
                 .addField("**Input Method:**", `\`\`\`${data.InputMethod}\`\`\``)
                 .setFooter(client.getFooter("ID: " + user.id, user.displayAvatarURL({dynamic: true})))
         ]
-      }).catch(() => {})
+      }).catch(() => null)
     } catch (e) {
       console.log(String(e.stack).grey.bgRed)
       return message.reply({embeds: [new MessageEmbed()
@@ -75,7 +75,7 @@ module.exports = {
 }
 /*
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

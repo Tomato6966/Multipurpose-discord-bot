@@ -16,7 +16,7 @@ module.exports = {
     
     try {
       
-      await message.guild.members.fetch().catch(()=>{});
+      await message.guild.members.fetch().catch(() => null);
 
       let invites = await client.invitesdb.all();
 
@@ -85,7 +85,7 @@ module.exports = {
 }
 /*
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

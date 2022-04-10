@@ -29,7 +29,6 @@ module.exports = {
       let json;
       try {
         json = await fetch(url).then(res => res.json())
-        console.log(json)
       } catch (e) {
         return message.reply({content: `${e.message ? e.message : e}`,
           codeBlock: "js"
@@ -63,7 +62,7 @@ module.exports = {
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

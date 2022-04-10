@@ -16,7 +16,7 @@ module.exports = {
     
     
     try {
-      await message.guild.members.fetch().catch(() => {});
+      await message.guild.members.fetch().catch(() => null);
       
         message.reply({embeds: [new Discord.MessageEmbed()
         .setAuthor(client.getAuthor(client.la[ls].cmds.info.membercount.title + " " +message.guild.name, message.guild.iconURL({
@@ -57,7 +57,7 @@ module.exports = {
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

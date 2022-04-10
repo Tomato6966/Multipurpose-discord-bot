@@ -100,7 +100,7 @@ module.exports = {
           }
           return message.reply({embeds: [embed]})
         }
-        if (cmd.name) embed.addField(handlemsg(client.la[ls].cmds.info.help.detail.name), `\`\`\`${cmd.name}\`\`\``);
+        if (cmd.name) embed.addField(handlemsg(client.la[ls].cmds.info.help.detail.name), `\`\`\`${cmd.name} \`\`\``);
         if (cmd.name) embed.setTitle(handlemsg(client.la[ls].cmds.info.help.detail.about, {cmdname: cmd.name}));
         if (cmd.description) embed.addField(handlemsg(client.la[ls].cmds.info.help.detail.desc), `\`\`\`${cmd.description}\`\`\``);
         if (cmd.aliases && cmd.aliases.length > 0 && cmd.aliases[0].length > 1) try {
@@ -283,7 +283,7 @@ but you can also do \`${prefix}setup-SYSTEM\` e.g. \`${prefix}setup-welcome\``)
 ⌚️ **${duration(client.uptime).map(i=> `\`${i}\``).join("︲")} Uptime**
 📶 **\`${Math.floor(client.ws.ping)}ms\` Ping**
 <:online:862306785007632385> **\`${Math.floor(await client.database.ping())}ms\` DB-Ping**
-<:MilratoDevelopment:900389724936609842>  Made by [**Milrato Development**](https://discord.gg/dcdev)`)
+<:MilratoDevelopment:900389724936609842>  Made by [**Milrato Development**](https://discord.gg/milrato)`)
 .addField("How to get help?", `>>> **\` 1. Way \`** *Use the Buttons, to swap the Pages*\n**\` 2. Way \`** *Use the Menu to select all Help Pages, you want to display*\n**\` 3. Way \`** *Watch the Youtube Tutorial*`)
 
         let err = false;
@@ -294,14 +294,13 @@ but you can also do \`${prefix}setup-SYSTEM\` e.g. \`${prefix}setup-welcome\``)
             components: allbuttons
         }).catch(e=>{
           err = true;
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
-          return message.reply(`:x: I couldn't send help? Maybe I am missing the Permission to **EMBED LINKS**`).catch(() => {})
+          return message.reply(`:x: I couldn't send help? Maybe I am missing the Permission to **EMBED LINKS**`).catch(() => null)
         });
         if(err) return;
         var edited = false;
         var embeds = [OverviewEmbed]
         const otherEmbeds = await allotherembeds_eachcategory(true);
-        for(const e of otherEmbeds)
+        for await (const e of otherEmbeds)
           embeds.push(e)        
         let currentPage = 0;
 
@@ -349,7 +348,7 @@ but you can also do \`${prefix}setup-SYSTEM\` e.g. \`${prefix}setup-welcome\``)
               let vembeds = []
               const otherEmbeds = await allotherembeds_eachcategory();
               let theembeds = [OverviewEmbed, ...otherEmbeds];
-              for(const value of b?.values){
+              for await (const value of b?.values){
                 switch (value.toLowerCase()){
                   case "overview": index = 0; break;
                   case "information": index = 1; break;
@@ -380,7 +379,7 @@ but you can also do \`${prefix}setup-SYSTEM\` e.g. \`${prefix}setup-welcome\``)
               });
             }
           }catch (e){
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
             console.log(String(e).italic.italic.grey.dim)
           }
         });
@@ -595,7 +594,7 @@ but you can also do \`${prefix}setup-SYSTEM\` e.g. \`${prefix}setup-welcome\``)
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

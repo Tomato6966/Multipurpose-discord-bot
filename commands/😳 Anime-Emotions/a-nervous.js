@@ -28,13 +28,13 @@ module.exports = {
         .setColor(es.color)
         .setImage(await anime.nervous())
         .setAuthor(`${message.author.username} is nervous` +  message.author.displayAvatarURL({ dynamic: true }))
-    ]}).catch(() => {})
+    ]}).catch(() => null)
       
   }
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

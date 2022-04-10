@@ -28,13 +28,13 @@ module.exports = {
         .setColor(es.color)
         .setImage(await anime.hug())
         .setAuthor(`${message.author.username} hugs${message.mentions.users.first() ? " " + message.mentions.users.first().username : " him-/herself.."}`, message.author.displayAvatarURL({ dynamic: true }))
-    ]}).catch(() => {})
+    ]}).catch(() => null)
       
   }
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

@@ -44,7 +44,7 @@ module.exports = {
         if(guildowner == member.id) embeduserinfo.setDescription(`>>> \`ALL\` --> \`SERVEROWNER\``)
         message.reply({embeds: [embeduserinfo]})
       }catch (e){
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
         //create the EMBED
         const embeduserinfo = new MessageEmbed()
         embeduserinfo.setThumbnail(user.displayAvatarURL({ dynamic: true, size: 512 }))
@@ -69,7 +69,7 @@ module.exports = {
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

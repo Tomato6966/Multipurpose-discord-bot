@@ -32,7 +32,7 @@ module.exports = {
       }
       try {
         let member = message.guild.members.cache.get(user.id);
-        if (!member) await message.guild.members.fetch(user.id).catch(() => {}) || false;
+        if (!member) await message.guild.members.fetch(user.id).catch(() => null) || false;
         if (member && member.avatar) {
           customavatar = member.displayAvatarURL({
             dynamic: true,
@@ -46,7 +46,7 @@ module.exports = {
         let embed = new Discord.MessageEmbed()
           .setAuthor(handlemsg(client.la[ls].cmds.info.avatar.author, {
             usertag: user.tag
-          }), customavatar, "https://discord.gg/dcdev")
+          }), customavatar, "https://discord.gg/milrato")
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .addField("<:arrow:832598861813776394> PNG", `[\`LINK\`](${customavatar})`, true)
           .addField("<:arrow:832598861813776394> JPEG", `[\`LINK\`](${customavatar.replace("png", "jpg").replace("gif", "jpg")})`, true)
@@ -63,7 +63,7 @@ module.exports = {
             usertag: user.tag
           }), user.displayAvatarURL({
             dynamic: true
-          }), "https://discord.gg/dcdev")
+          }), "https://discord.gg/milrato")
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .addField("<:arrow:832598861813776394> PNG", `[\`LINK\`](${user.displayAvatarURL({format: "png"})})`, true)
           .addField("<:arrow:832598861813776394> JPEG", `[\`LINK\`](${user.displayAvatarURL({format: "jpg"})})`, true)
@@ -96,7 +96,7 @@ module.exports = {
 }
 /*
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

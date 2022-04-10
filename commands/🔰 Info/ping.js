@@ -25,7 +25,7 @@ module.exports = {
       ]}).then(async (msg) => {
         let newtime = Math.floor(Math.floor(Date.now() / 10) - oldate);
         const dbping = await client.database.ping();
-        console.log("DB PING RECEIVED");
+        console.log(`[${dbping}ms] | "ping" | DB PING RECEIVED`.brightRed);
         if(newtime < 0) newtime*=-1;
         msg.edit({embeds: [new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
@@ -46,7 +46,7 @@ module.exports = {
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

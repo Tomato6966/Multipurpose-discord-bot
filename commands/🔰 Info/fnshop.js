@@ -24,11 +24,9 @@ module.exports = {
     try {
       let themsg = await message.reply("<a:Loading:833101350623117342> Getting the Shop-Data")
       const shop = new Canvas.FortniteShop();
-      const image = await shop.setToken(
-        process.env.fnbr || config.fnbr 
-        ).setBackground("#23272A").toAttachment();
+      const image = await shop.setToken(process.env.fnbr || config.fnbr).setBackground("#23272A").toAttachment();
       let attachment = new Discord.MessageAttachment(image, "FortniteShop.png");
-      themsg.edit({content: "Todays Fortnite Shop:", files: [attachment]}).catch(()=>{})
+      themsg.edit({content: "Todays Fortnite Shop:", files: [attachment]}).catch(() => null)
     } catch (e) {
       console.log(String(e.stack).grey.bgRed)
       return message.reply({embeds: [new MessageEmbed()
@@ -42,7 +40,7 @@ module.exports = {
 }
 /*
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

@@ -28,13 +28,13 @@ module.exports = {
         .setColor(es.color)
         .setImage(await anime.stare())
         .setAuthor(`${message.author.username} stares${message.mentions.users.first() ? " at " + message.mentions.users.first().username : " at nothing.."}`, message.author.displayAvatarURL({ dynamic: true }))
-    ]}).catch(() => {})
+    ]}).catch(() => null)
       
   }
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

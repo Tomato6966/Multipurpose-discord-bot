@@ -103,7 +103,7 @@ module.exports = {
       //define the embed
       let MenuEmbed = new Discord.MessageEmbed()
       .setColor(es.color)
-      .setAuthor(client.la[ls].cmds.info.botfaq.menuembed.title, client.user.displayAvatarURL(), "https://discord.gg/dcdev")
+      .setAuthor(client.la[ls].cmds.info.botfaq.menuembed.title, client.user.displayAvatarURL(), "https://discord.gg/milrato")
       .setDescription(client.la[ls].cmds.info.botfaq.menuembed.description)
       //send the menu msg
       let menumsg = await message.reply({embeds: [MenuEmbed], components: [Selection]})
@@ -112,7 +112,7 @@ module.exports = {
         let menuoptiondata = menuoptions.find(v=>v.value.substring(0, 25) == interaction?.values[0])
         interaction?.reply({embeds: [new Discord.MessageEmbed()
         .setColor(es.color)
-        .setAuthor(client.la[ls].cmds.info.botfaq.menuembed.title, client.user.displayAvatarURL(), "https://discord.gg/dcdev")
+        .setAuthor(client.la[ls].cmds.info.botfaq.menuembed.title, client.user.displayAvatarURL(), "https://discord.gg/milrato")
         .setDescription(menuoptiondata.replymsg)], ephemeral: true});
       }
       //Event
@@ -130,13 +130,13 @@ module.exports = {
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.erroroccur)
             .setDescription(eval(client.la[ls]["cmds"]["info"]["botfaq"]["variable1"]))
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
     }
   },
 };
 /**
   * @INFO
-  * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+  * Bot Coded by Tomato#6966 | https://discord.gg/milrato
   * @INFO
   * Work for Milrato Development | https://milrato.eu
   * @INFO
