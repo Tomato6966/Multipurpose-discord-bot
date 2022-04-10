@@ -5,11 +5,17 @@ module.exports = async client => {
     module.exports.messageCreate = async (client, message, guild_settings) => {
         if (!message.guild || message.guild.available === false || message.author?.bot) return;
         if(!message.guild || message.guild.available === false) return;
-        await dbEnsure(client.settings, message.guild.id, {
-            ghost_ping_detector: false,
-            ghost_ping_detector_max_time: 10000,
-        })
         let data = guild_settings
+        if(!data.ghost_ping_detector_max_time) {
+            await dbEnsure(client.settings, message.guild.id, {
+                ghost_ping_detector: false,
+                ghost_ping_detector_max_time: 10000,
+            })
+            data = {
+                ghost_ping_detector: false,
+                ghost_ping_detector_max_time: 10000,
+            }
+        }
         if(data.ghost_ping_detector && message.mentions && ((message.mentions.users && message.mentions.users.size > 0)))
         {
             messageIds.set(message.id, Date.now());
@@ -161,7 +167,7 @@ module.exports = async client => {
                             ]});
                         });
                         } catch (e) {
-                        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                        console.error(e);
                         message.channel.send({embeds : [new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
@@ -206,7 +212,7 @@ module.exports = async client => {
                             ]});
                         });
                         } catch (e) {
-                        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                        console.error(e);
                         message.channel.send({embeds :[new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
@@ -215,16 +221,16 @@ module.exports = async client => {
                         ]});
                         }}
                     }
-                    for(const role of warnsettings.roles){
+                    for await (const role of warnsettings.roles){
                     if(role.warncount == warnings.length){
                         if(!message.member.roles.cache.has(role.roleid)){
-                        message.member.roles.add(role.roleid).catch((O)=>{})
+                        message.member.roles.add(role.roleid).catch(() => null)
                         }
                     }
                     }
             }
             let channel = message.guild.channels.cache.get(data.ghost_ping_detector);
-            if(!channel) channel = await message.guild.channels.fetch(data.ghost_ping_detector).catch(()=>{}) || false;
+            if(!channel) channel = await message.guild.channels.fetch(data.ghost_ping_detector).catch(() => null) || false;
             if(!channel) return client.settings.set(message.guild.id, false, "ghost_ping_detector");
             channel.send({embeds: [
                 new MessageEmbed()

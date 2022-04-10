@@ -15,8 +15,9 @@ module.exports = async (client, message, args, type, slashCommand = false, extra
   
   //just visual for the console
   
-  var es = await client.settings.get(message.guild.id+".embed") || ee
-  let ls = await client.settings.get(message.guild.id+".language") || "en";
+  let settings = client.settings.get(message.guild.id);
+  let es = settings.embed || ee
+  let ls = settings.language || "en";
   ee = es
 
   let {
@@ -52,9 +53,9 @@ module.exports = async (client, message, args, type, slashCommand = false, extra
       .setTitle(eval(client.la[ls]["handlers"]["playermanagerjs"]["playermanager"]["variable2"]))
     ]}).catch((e)=>console.log(String(e).grey));
   }
-  if(botchannel && channel.userLimit != 0 && channel.full){
-    if(slashCommand)  return slashCommand.reply({embeds: [new MessageEmbed().setTitle(":x: Your Voice Channel is full!").setColor(es.wrongcolor).setFooter(client.getFooter(es))]}).catch(()=>{});
-    return message.reply({embeds: [new MessageEmbed().setTitle(":x: Your Voice Channel is full!").setColor(es.wrongcolor).setFooter(client.getFooter(es))]}).catch(()=>{});
+  if(!botchannel && channel.userLimit != 0 && channel.full){
+    if(slashCommand)  return slashCommand.reply({embeds: [new MessageEmbed().setTitle(":x: Your Voice Channel is full!").setColor(es.wrongcolor).setFooter(client.getFooter(es))]}).catch(() => null);
+    return message.reply({embeds: [new MessageEmbed().setTitle(":x: Your Voice Channel is full!").setColor(es.wrongcolor).setFooter(client.getFooter(es))]}).catch(() => null);
   }
   if (method[0] === "song")
     require("./playermanagers/song")(client, message, args, type, slashCommand, extras); 
@@ -86,7 +87,7 @@ module.exports = async (client, message, args, type, slashCommand = false, extra
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

@@ -10,10 +10,11 @@ module.exports = (client) => {
    */
   client.invites = {};
   client.checking = {}
+  client.broadCastCache = new Discord.Collection();
   client.commands = new Discord.Collection(); //an collection (like a digital map(database)) for all your commands
   client.aliases = new Discord.Collection(); //an collection for all your command-aliases
   client.slashCommands = new Discord.Collection(); //an collection for all the slash Commands
-  client.categories =  fs.readdirSync("./commands/"); //load the categories asynchronusly
+  client.categories = fs.readdirSync("./commands/"); //load the categories asynchronusly
   client.cooldowns = new Discord.Collection(); //an collection for cooldown commands of each user
   /**
    * @INFO
@@ -704,7 +705,7 @@ module.exports = (client) => {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

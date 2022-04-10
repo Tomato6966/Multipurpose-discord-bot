@@ -35,7 +35,7 @@ async function playlist(client, message, args, type, slashCommand = false) {
       player.set("message", message);
       player.set("playerauthor", message.author?.id);
       player.connect();
-      try{message.react("863876115584385074").catch(() => {});}catch(e){console.log(String(e).grey)}
+      try{message.react("863876115584385074").catch(() => null);}catch(e){console.log(String(e).grey)}
       player.stop();
     }
     try {
@@ -47,20 +47,20 @@ async function playlist(client, message, args, type, slashCommand = false) {
         message: "Searches are not supported with this command. Use   ?play   or   ?search"
       };
     } catch (e) {
-      console.log(e.stack ? String(e.stack).grey : String(e).grey)
+      console.error(e)
       if(slashCommand)
         return slashCommand.reply({ephemeral: true, embeds: [new MessageEmbed()
           .setColor(ee.wrongcolor)
           .setTitle(eval(client.la[ls]["handlers"]["playermanagers"]["playlist"]["variable1"]))
           .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["playlist"]["variable2"]))
-        ]}).catch(() => {});
+        ]}).catch(() => null);
       return message.reply({embeds: [new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setTitle(eval(client.la[ls]["handlers"]["playermanagers"]["playlist"]["variable1"]))
         .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["playlist"]["variable2"]))
-      ]}).catch(() => {}).then(msg => {
+      ]}).catch(() => null).then(msg => {
         setTimeout(()=>{
-          msg.delete().catch(() => {})
+          msg.delete().catch(() => null)
         }, 3000)
       })
     }
@@ -71,14 +71,14 @@ async function playlist(client, message, args, type, slashCommand = false) {
           .setColor(ee.wrongcolor)
           .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
           .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["playlist"]["variable3"]))
-        ]}).catch(() => {})
+        ]}).catch(() => null)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
         .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["playlist"]["variable3"]))
-      ]}).catch(() => {}).then(msg => {
+      ]}).catch(() => null).then(msg => {
         setTimeout(()=>{
-          msg.delete().catch(() => {})
+          msg.delete().catch(() => null)
         }, 3000)
       })
     }
@@ -88,7 +88,7 @@ async function playlist(client, message, args, type, slashCommand = false) {
       player.set("message", message);
       player.set("playerauthor", message.author?.id);
       player.connect();
-      try{message.react("863876115584385074").catch(() => {});}catch(e){console.log(String(e).grey)}
+      try{message.react("863876115584385074").catch(() => null);}catch(e){console.log(String(e).grey)}
       //add track
       player.queue.add(res.tracks);
       //play track
@@ -111,40 +111,42 @@ async function playlist(client, message, args, type, slashCommand = false) {
       .setThumbnail(`https://img.youtube.com/vi/${res.tracks[0].identifier}/mqdefault.jpg`)
       .addField("⌛ Duration: ", `\`${format(res.playlist.duration)}\``, true)
       .addField("🔂 Queue length: ", `\`${player.queue.length} Songs\``, true)
+      .addField(":notes: Music Dashboard :new: ", `[**Check out the :new: Music Dashboard!**](https://milrato.com/dashboard/queue/${player.guild})\n> Live Music View, Live Music Requests, Live Music Control and more!`) 
       
-    if(slashCommand) slashCommand.reply({ephemeral: true, embeds: [playlistembed]}).catch(() => {});
-    else message.reply({embeds: [playlistembed]}).catch(() => {})
-    var musicsettings = await client.musicsettings.get(player.guild+".channel")
-    if(musicsettings && musicsettings.length > 5){
+    if(slashCommand) slashCommand.reply({ephemeral: true, embeds: [playlistembed]}).catch(() => null);
+    else message.reply({embeds: [playlistembed]}).catch(() => null)
+    
+    const musicsettings = await client.musicsettings.get(player.guild)
+    if(musicsettings.channel && musicsettings.channel.length > 5){
       let messageId = musicsettings.message;
-      let guild = client.guilds.cache.get(player.guild);
-      if(!guild) return 
-      let channel = guild.channels.cache.get(musicsettings);
-      if(!channel) return 
-      let message = channel.messages.cache.get(messageId);
-      if(!message) message = await channel.messages.fetch(messageId).catch(()=>{});
-      if(!message) return
-      //edit the message so that it's right!
-      var data = require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
-      message.edit(data).catch(() => {})
-      if(musicsettings == player.textChannel){
-        return;
+      let guild = await client.guilds.cache.get(player.guild)
+      if(guild && messageId) {
+        let channel = guild.channels.cache.get(musicsettings.channel);
+        let message = await channel.messages.fetch(messageId).catch(() => null);
+        if(message) {
+          //edit the message so that it's right!
+          var data = await require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
+          message.edit(data).catch(() => null)
+          if(musicsettings.channel == player.textChannel){
+            return;
+          }
+        }
       }
     }
   } catch (e) {
-    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+    console.error(e)
     
     if(slashCommand)
     return slashCommand.reply({ephemeral: true, embeds: [new MessageEmbed()
       .setColor(ee.wrongcolor)
       .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
-    ]}).catch(() => {})
+    ]}).catch(() => null)
     message.reply({embeds: [new MessageEmbed()
       .setColor(ee.wrongcolor)
       .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
-    ]}).catch(() => {}).then(msg => {
+    ]}).catch(() => null).then(msg => {
       setTimeout(()=>{
-        msg.delete().catch(() => {})
+        msg.delete().catch(() => null)
       }, 3000)
     })
   }

@@ -26,7 +26,7 @@ module.exports = (client) => {
                 }
             }
         });
-    }, null, true, 'America/Los_Angeles');
+    }, null, true, 'Europe/Berlin');
     client.Jobroster.start();
 
     client.on("guildMemberUpdate", async function (oldMember, newMember) {
@@ -57,7 +57,7 @@ module.exports = (client) => {
                             if(d?.rosterchannel?.length > "notvalid".length)
                             {
                                 let rosterroles = d?.rosterroles;
-                                if (rosterroles?.length === 0) continue;
+                                if (!rosterroles || rosterroles?.length === 0) continue;
                                 for (let i = 0; i < rosterroles.length; i++) {
                                     let role = newMember.guild.roles.cache.get(rosterroles[i])
                                     if(!role || role == null || role == undefined || !role.id || role.id == null) continue;
@@ -102,7 +102,7 @@ module.exports = (client) => {
                 }
             }
         } catch (e) {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
         }
     });
 

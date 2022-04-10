@@ -180,7 +180,7 @@ module.exports = async (client) => {
                                         });
                                     });
                                 } catch (e) {
-                                    console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                                    console.error(e);
                                     message.channel.send({
                                         embeds: [new MessageEmbed()
                                             .setColor(es.wrongcolor)
@@ -235,7 +235,7 @@ module.exports = async (client) => {
                                         });
                                     });
                                 } catch (e) {
-                                    console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                                    console.error(e);
                                     message.channel.send({
                                         embeds: [new MessageEmbed()
                                             .setColor(es.wrongcolor)
@@ -256,7 +256,7 @@ module.exports = async (client) => {
                         }
                     }
                     if (message.channel.permissionsFor(message.channel.guild.me).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-                        message.delete().catch((e) => { console.log(e) })
+                        message.delete().catch((e) => { console.error(e) })
                     } else {
                         message.channel.send(":x: **I am missing the MANAGE_MESSAGES Permission!**").then(m => {
                             setTimeout(() => { m.delete().catch(() => { }) }, 3500)

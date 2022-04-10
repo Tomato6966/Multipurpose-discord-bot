@@ -33,7 +33,7 @@ async function playtop(client, message, args, type, slashCommand) {
     player.set("message", message);
     player.set("playerauthor", message.author?.id);
     player.connect();
-    try{message.react("863876115584385074").catch(() => {});}catch(e){console.log(String(e).grey)}
+    try{message.react("863876115584385074").catch(() => null);}catch(e){console.log(String(e).grey)}
     player.stop();
   }
   let res;
@@ -57,14 +57,14 @@ async function playtop(client, message, args, type, slashCommand) {
         .setColor(ee.wrongcolor)
         .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
         .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["playtop"]["variable1"]))
-      ]}).catch(() => {})
+      ]}).catch(() => null)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
         .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["playtop"]["variable1"]))
-      ]}).catch(() => {}).then(msg => {
+      ]}).catch(() => null).then(msg => {
         setTimeout(()=>{
-          msg.delete().catch(() => {})
+          msg.delete().catch(() => null)
         }, 3000)
       })
     }
@@ -76,7 +76,7 @@ async function playtop(client, message, args, type, slashCommand) {
       player.set("playerauthor", message.author?.id);
       //connect
       player.connect();
-      try{message.react("863876115584385074").catch(() => {});}catch(e){console.log(String(e).grey)}
+      try{message.react("863876115584385074").catch(() => null);}catch(e){console.log(String(e).grey)}
       //add track
       player.queue.add(res.tracks[0]);
       //play track
@@ -111,23 +111,25 @@ async function playtop(client, message, args, type, slashCommand) {
       .addField("⌛ Duration: ", `\`${res.tracks[0].isStream ? "LIVE STREAM" : format(res.tracks[0].duration)}\``, true)
       .addField("💯 Song By: ", `\`${res.tracks[0].author}\``, true)
       .addField("🔂 Queue length: ", `\`${player.queue.length} Songs\``, true)
-    if(slashCommand) slashCommand.reply({ephemeral: true, embeds: [playembed]}).catch(() => {});
-    else message.reply({embeds: [playembed]}).catch(() => {});
-    var musicsettings = await client.musicsettings.get(player.guild+".channel")
-    if(musicsettings && musicsettings.length > 5){
+      .addField(":notes: Music Dashboard :new: ", `[**Check out the :new: Music Dashboard!**](https://milrato.com/dashboard/queue/${player.guild})\n> Live Music View, Live Music Requests, Live Music Control and more!`) 
+    if(slashCommand) slashCommand.reply({ephemeral: true, embeds: [playembed]}).catch(() => null);
+    else message.reply({embeds: [playembed]}).catch(() => null);
+    
+    const musicsettings = await client.musicsettings.get(player.guild)
+    if(musicsettings.channel && musicsettings.channel.length > 5){
       let messageId = musicsettings.message;
-      let guild = client.guilds.cache.get(player.guild);
-      if(!guild) return 
-      let channel = guild.channels.cache.get(musicsettings);
-      if(!channel) return 
-      let message = channel.messages.cache.get(messageId);
-      if(!message) message = await channel.messages.fetch(messageId).catch(()=>{});
-      if(!message) return
-      //edit the message so that it's right!
-      var data = require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
-      message.edit(data).catch(() => {})
-      if(musicsettings == player.textChannel){
-        return;
+      let guild = await client.guilds.cache.get(player.guild)
+      if(guild && messageId) {
+        let channel = guild.channels.cache.get(musicsettings.channel);
+        let message = await channel.messages.fetch(messageId).catch(() => null);
+        if(message) {
+          //edit the message so that it's right!
+          var data = await require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
+          message.edit(data).catch(() => null)
+          if(musicsettings.channel == player.textChannel){
+            return;
+          }
+        }
       }
     }
   }
@@ -140,14 +142,14 @@ async function playtop(client, message, args, type, slashCommand) {
           .setColor(ee.wrongcolor)
           .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
           .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["playtop"]["variable3"]))
-        ]}).catch(() => {})
+        ]}).catch(() => null)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
         .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["playtop"]["variable3"]))
-      ]}).catch(() => {}).then(msg => {
+      ]}).catch(() => null).then(msg => {
         setTimeout(()=>{
-          msg.delete().catch(() => {})
+          msg.delete().catch(() => null)
         }, 3000)
       })
     }
@@ -198,12 +200,12 @@ async function playtop(client, message, args, type, slashCommand) {
     //if bot allowed to send embed, do it otherwise pure txt msg
     if (message.guild.me.permissionsIn(message.channel).has("EMBED_LINKS")){
       if(slashCommand)
-        return slashCommand.reply({ephemeral: true, embeds: [playlistembed]}).catch(() => {});
-      message.reply({embeds: [playlistembed]}).catch(() => {});
+        return slashCommand.reply({ephemeral: true, embeds: [playlistembed]}).catch(() => null);
+      message.reply({embeds: [playlistembed]}).catch(() => null);
     } else{
       if(slashCommand)
-        return slashCommand.reply({ephemeral: true, content: [eval(client.la[ls]["handlers"]["playermanagers"]["playtop"]["variable6"])]}).catch(() => {});
-      message.reply({content: [eval(client.la[ls]["handlers"]["playermanagers"]["playtop"]["variable6"])]}).catch(() => {});
+        return slashCommand.reply({ephemeral: true, content: [eval(client.la[ls]["handlers"]["playermanagers"]["playtop"]["variable6"])]}).catch(() => null);
+      message.reply({content: [eval(client.la[ls]["handlers"]["playermanagers"]["playtop"]["variable6"])]}).catch(() => null);
     }
       
   }

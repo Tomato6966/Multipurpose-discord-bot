@@ -192,7 +192,7 @@ module.exports = async (client) => {
                     });
                   });
                 } catch (e) {
-                  console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                  console.error(e);
                   message.channel.send({
                     embeds: [new MessageEmbed()
                       .setColor(es.wrongcolor)
@@ -247,7 +247,7 @@ module.exports = async (client) => {
                     });
                   });
                 } catch (e) {
-                  console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                  console.error(e);
                   message.channel.send({
                     embeds: [new MessageEmbed()
                       .setColor(es.wrongcolor)

@@ -15,13 +15,16 @@ module.exports = async (client) => {
         //if not in the database for some reason use the default prefix
         if (prefix === null) prefix = config.prefix;
         //the prefix can be a Mention of the Bot / The defined Prefix of the Bot
-        const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`);        
-        await dbEnsure(client.keyword, message.guild.id, {
-            commands: []
-        })
+        const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`);       
         var cuc = await client.keyword.get(message.guild.id+".commands")
-        for(const cmd of cuc){
-            for(const string of args){
+        if(!cuc && !Array.isArray(cuc)) {
+            await dbEnsure(client.keyword, message.guild.id, {
+                commands: []
+            })
+            cuc = [];
+        }
+        for await (const cmd of cuc){
+            for await (const string of args){
                 if(string && (String(string).toLowerCase() == (cmd.name.toLowerCase()) || (cmd.aliases.includes(String(string).toLowerCase()))) && cmd.channels.includes(message.channel.id) ){
                     if(!map.has(cmd.name+message.guild.id)){
                         map.set(cmd.name+message.guild.id, true)

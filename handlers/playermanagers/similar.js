@@ -45,22 +45,23 @@ async function similar(client, message, args, type, slashCommand) {
         .addField("⌛ Duration: ", `\`${res.tracks[0].isStream ? "LIVE STREAM" : format(res.tracks[0].duration)}\``, true)
         .addField("💯 Song By: ", `\`${res.tracks[0].author}\``, true)
         .addField("🔂 Queue length: ", `\`${player.queue.length} Songs\``, true)
+        .addField(":notes: Music Dashboard :new: ", `[**Check out the :new: Music Dashboard!**](https://milrato.com/dashboard/queue/${player.guild})\n> Live Music View, Live Music Requests, Live Music Control and more!`) 
       message.reply({embeds: [embed2]})
-      var musicsettings = await client.musicsettings.get(player.guild+".channel")
-      if(musicsettings && musicsettings.length > 5){
+      const musicsettings = await client.musicsettings.get(player.guild)
+      if(musicsettings.channel && musicsettings.channel.length > 5){
         let messageId = musicsettings.message;
-        let guild = client.guilds.cache.get(player.guild);
-        if(!guild) return 
-        let channel = guild.channels.cache.get(musicsettings);
-        if(!channel) return 
-        let message = channel.messages.cache.get(messageId);
-        if(!message) message = await channel.messages.fetch(messageId).catch(()=>{});
-        if(!message) return
-        //edit the message so that it's right!
-        var data = require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
-        message.edit(data).catch(() => {})
-        if(musicsettings == player.textChannel){
-          return;
+        let guild = await client.guilds.cache.get(player.guild)
+        if(guild && messageId) {
+          let channel = guild.channels.cache.get(musicsettings.channel);
+          let message = await channel.messages.fetch(messageId).catch(() => null);
+          if(message) {
+            //edit the message so that it's right!
+            var data = await require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
+            message.edit(data).catch(() => null)
+            if(musicsettings.channel == player.textChannel){
+              return;
+            }
+          }
         }
       }
       return
@@ -123,7 +124,7 @@ async function similar(client, message, args, type, slashCommand) {
           .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["similar"]["variable7"]))
         ]}).then(msg => {
           setTimeout(()=>{
-            msg.delete().catch(() => {})
+            msg.delete().catch(() => null)
           }, 3000)
         })
       if (player.state !== "CONNECTED") {
@@ -133,7 +134,7 @@ async function similar(client, message, args, type, slashCommand) {
         // Connect to the voice channel and add the track to the queue
 
         player.connect();
-        try{message.react("863876115584385074").catch(() => {});}catch(e){console.log(String(e).grey)}
+        try{message.react("863876115584385074").catch(() => null);}catch(e){console.log(String(e).grey)}
         player.queue.add(track);
         player.play();
         player.pause(false);
@@ -146,6 +147,7 @@ async function similar(client, message, args, type, slashCommand) {
           .addField("⌛ Duration: ", `\`${track.isStream ? "LIVE STREAM" : format(track.duration)}\``, true)
           .addField("💯 Song By: ", `\`${track.author}\``, true)
           .addField("🔂 Queue length: ", `\`${player.queue.length} Songs\``, true)
+          .addField(":notes: Music Dashboard :new: ", `[**Check out the :new: Music Dashboard!**](https://milrato.com/dashboard/queue/${player.guild})\n> Live Music View, Live Music Requests, Live Music Control and more!`) 
         message.reply({embeds: [embed]})
       }
       var musicsettings = await client.musicsettings.get(player.guild+".channel")
@@ -156,24 +158,24 @@ async function similar(client, message, args, type, slashCommand) {
         let channel = guild.channels.cache.get(musicsettings);
         if(!channel) return 
         let message = channel.messages.cache.get(messageId);
-        if(!message) message = await channel.messages.fetch(messageId).catch(()=>{});
+        if(!message) message = await channel.messages.fetch(messageId).catch(() => null);
         if(!message) return
         //edit the message so that it's right!
-        var data = require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
-        message.edit(data).catch(() => {})
+        var data = await require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
+        message.edit(data).catch(() => null)
         if(musicsettings == player.textChannel){
           return;
         }
       }
     }
   } catch (e) {
-    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+    console.error(e)
     return message.reply({embeds: [new MessageEmbed()
       .setColor(ee.wrongcolor)
       .setTitle(String("❌ Error | Found nothing for: **`" + player.queue.current.title).substring(0, 256 - 3) + "`**")
     ]}).then(msg => {
       setTimeout(()=>{
-        msg.delete().catch(() => {})
+        msg.delete().catch(() => null)
       }, 3000)
     })
   }

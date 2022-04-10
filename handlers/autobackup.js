@@ -5,12 +5,14 @@ const backup = require("discord-backup");
 const { dbEnsure, dbKeys, dbRemove, delay } = require("./functions")
 //starting the module
 module.exports = async (client) => {
-    //Loop through every setupped guild every single minute and call the dailyfact command
+    // Loop through every single guild at every second day, and create a backup
     client.Jobautobackup = new CronJob('0 0 */2 * *', async function() {
         //get all guilds which are setupped
         const guilds = await dbKeys(client.settings, d => d.data?.autobackup == true);
+        //console.log("AUTO BACKUP", guilds)
         //Loop through all guilds and send a random auto-generated-nsfw setup
-        for(const guildid of guilds.filter(d => client.guilds.cache.has(d))){
+        if(guilds.filter(d => client.guilds.cache.has(d)).length == 0) return true;
+        for await (const guildid of guilds.filter(d => client.guilds.cache.has(d))){
             await autobackup(guildid);
         } 
     }, null, true, 'Europe/Berlin');

@@ -7,8 +7,8 @@ module.exports = (client) => {
                 message
             } = reaction;
             if (user.bot || !message.guild) return;
-            if (message && message.partial) await message.fetch().catch(() => {});
-            if (reaction.partial) await reaction.fetch().catch(() => {});
+            if (message && message.partial) await message.fetch().catch(() => null);
+            if (reaction.partial) await reaction.fetch().catch(() => null);
             if (user.bot) return;
             await dbEnsure(client.reactionrole, reaction.message.guild.id, {
                 reactionroles: []
@@ -17,7 +17,7 @@ module.exports = (client) => {
             if (!reactionsetup || reactionsetup == undefined || reactionsetup == null) return;
             for (let k = 0; k < reactionsetup.length; k++) {
                 if (reaction.message.id === reactionsetup[k].MESSAGE_ID) {
-                    let messagereaction = await reaction.message.guild.members.fetch(user.id).catch(() => {});
+                    let messagereaction = await reaction.message.guild.members.fetch(user.id).catch(() => null);
                     let rr = reactionsetup[k].Parameters;
                     let currrole;
                     for (let j = 0; j < rr.length; j++) {
@@ -28,23 +28,23 @@ module.exports = (client) => {
                                 if (guildRole) {
                                     if (messagereaction.guild.me.roles.highest.rawPosition > guildRole.rawPosition) {
                                         if (!messagereaction.roles.cache.has(rr[j].Role))
-                                            await messagereaction.roles.add(rr[j].Role).catch(() => {});
+                                            await messagereaction.roles.add(rr[j].Role).catch(() => null);
                                     } else {
                                         reaction.message.channel.send("The Role is above my highest Role, I can't give it to you!").then(msg => {
-                                            setTimeout(() => msg.delete().catch(() => {}), 3000)
-                                        }).catch(() => {})
+                                            setTimeout(() => msg.delete().catch(() => null), 3000)
+                                        }).catch(() => null)
                                     }
                                 } else {
                                     reaction.message.channel.send("This Role got deleted, I can't give it to you!").then(msg => {
-                                        setTimeout(() => msg.delete().catch(() => {}), 3000)
-                                    }).catch(() => {})
+                                        setTimeout(() => msg.delete().catch(() => null), 3000)
+                                    }).catch(() => null)
                                 }
                             } catch (error) {
                                 reaction.message.channel.send({
                                     content: `\`\`\`${error.message}\`\`\``,
                                 }).then(msg => {
-                                    setTimeout(() => msg.delete().catch(() => {}), 3000)
-                                }).catch(() => {})
+                                    setTimeout(() => msg.delete().catch(() => null), 3000)
+                                }).catch(() => null)
                             }
                         } else if (reaction.emoji?.name == rr[j].Emoji) {
                             try {
@@ -53,25 +53,25 @@ module.exports = (client) => {
                                 if (guildRole) {
                                     if (messagereaction.guild.me.roles.highest.rawPosition > guildRole.rawPosition) {
                                         if (!messagereaction.roles.cache.has(rr[j].Role))
-                                            await messagereaction.roles.add(rr[j].Role).catch(() => {});
+                                            await messagereaction.roles.add(rr[j].Role).catch(() => null);
                                     } else {
                                         reaction.message.channel.send("The Role is above my highest Role, I can't give it to you!").then(msg => {
-                                            setTimeout(() => msg.delete().catch(() => {}), 3000)
-                                        }).catch(() => {})
+                                            setTimeout(() => msg.delete().catch(() => null), 3000)
+                                        }).catch(() => null)
                                     }
                                 } else {
                                     reaction.message.channel.send("This Role got deleted, I can't give it to you!").then(msg => {
-                                        setTimeout(() => msg.delete().catch(() => {}), 3000)
-                                    }).catch(() => {})
+                                        setTimeout(() => msg.delete().catch(() => null), 3000)
+                                    }).catch(() => null)
                                 }
                             } catch (error) {
                                 reaction.message.channel.send({
                                     content: `\`\`\`${error.message}\`\`\``,
                                 }).then(msg => {
                                     setTimeout(() => {
-                                        msg.delete().catch(() => {});
+                                        msg.delete().catch(() => null);
                                     }, 3000)
-                                }).catch(() => {});
+                                }).catch(() => null);
                             }
                         } else {
                             continue;
@@ -82,7 +82,7 @@ module.exports = (client) => {
                         let rr2 = reactionsetup[k].Parameters;
                         //REMOVE REACTIONS
                         let oldreact = reaction;
-                        await reaction.message.fetch().catch(() => {});
+                        await reaction.message.fetch().catch(() => null);
                         const userReactions = reaction.message.reactions.cache;
                         try {
                             for (const reaction of userReactions.values()) {
@@ -99,16 +99,16 @@ module.exports = (client) => {
                                     if (guildRole) {
                                         if (messagereaction.guild.me.roles.highest.rawPosition > guildRole.rawPosition) {
                                             if (!messagereaction.roles.cache.has(rr[z].Role))
-                                                await messagereaction.roles.remove(rr[z].Role).catch(() => {});
+                                                await messagereaction.roles.remove(rr[z].Role).catch(() => null);
                                         } else {
                                             reaction.message.channel.send("The Role is above my highest Role, I can't remove it to you!").then(msg => {
-                                                setTimeout(() => msg.delete().catch(() => {}), 3000)
-                                            }).catch(() => {})
+                                                setTimeout(() => msg.delete().catch(() => null), 3000)
+                                            }).catch(() => null)
                                         }
                                     } else {
                                         reaction.message.channel.send("This Role got deleted, I can't remove it to you!").then(msg => {
-                                            setTimeout(() => msg.delete().catch(() => {}), 3000)
-                                        }).catch(() => {})
+                                            setTimeout(() => msg.delete().catch(() => null), 3000)
+                                        }).catch(() => null)
                                     }
                                 }
                             } catch (error) {
@@ -116,9 +116,9 @@ module.exports = (client) => {
                                     content: `\`\`\`${error.message}\`\`\``,
                                 }).then(msg => {
                                     setTimeout(() => {
-                                        msg.delete().catch(() => {});
+                                        msg.delete().catch(() => null);
                                     }, 3000)
-                                }).catch(() => {});
+                                }).catch(() => null);
                             }
                         }
                     }
@@ -127,15 +127,15 @@ module.exports = (client) => {
                 }
             }
         } catch (e) {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
         }
     });
 
     //REMOVING ROLES
     client.on("messageReactionRemove", async (reaction, user) => {
         try {
-            if (reaction.message && reaction.message.partial) await reaction.message.fetch().catch(() => {});
-            if (reaction.partial) await reaction.fetch().catch(() => {});
+            if (reaction.message && reaction.message.partial) await reaction.message.fetch().catch(() => null);
+            if (reaction.partial) await reaction.fetch().catch(() => null);
             if (user.bot) return;
             if (!reaction.message.guild) return;
             await dbEnsure(client.reactionrole, reaction.message.guild.id, {
@@ -145,7 +145,7 @@ module.exports = (client) => {
 
             for (let k = 0; k < reactionsetup.length; k++) {
                 if (reaction.message.id === reactionsetup[k].MESSAGE_ID) {
-                    let messagereaction = await reaction.message.guild.members.fetch(user.id).catch(() => {});
+                    let messagereaction = await reaction.message.guild.members.fetch(user.id).catch(() => null);
                     let rr = reactionsetup[k].Parameters;
                     for (let j = 0; j < rr.length; j++) {
                         if (reaction.emoji?.id === rr[j].Emoji) {
@@ -154,25 +154,25 @@ module.exports = (client) => {
                                 if (guildRole) {
                                     if (messagereaction.guild.me.roles.highest.rawPosition > guildRole.rawPosition) {
                                         if (messagereaction.roles.cache.has(rr[j].Role))
-                                            await messagereaction.roles.remove(rr[j].Role).catch(() => {});
+                                            await messagereaction.roles.remove(rr[j].Role).catch(() => null);
                                     } else {
                                         reaction.message.channel.send("The Role is above my highest Role, I can't remove it to you!").then(msg => {
-                                            setTimeout(() => msg.delete().catch(() => {}), 3000)
-                                        }).catch(() => {})
+                                            setTimeout(() => msg.delete().catch(() => null), 3000)
+                                        }).catch(() => null)
                                     }
                                 } else {
                                     reaction.message.channel.send("This Role got deleted, I can't remove it to you!").then(msg => {
-                                        setTimeout(() => msg.delete().catch(() => {}), 3000)
-                                    }).catch(() => {})
+                                        setTimeout(() => msg.delete().catch(() => null), 3000)
+                                    }).catch(() => null)
                                 }
                             } catch (error) {
                                 reaction.message.channel.send({
                                     content: `\`\`\`${error.message}\`\`\``,
                                 }).then(msg => {
                                     setTimeout(() => {
-                                        msg.delete().catch(() => {});
+                                        msg.delete().catch(() => null);
                                     }, 3000)
-                                }).catch(() => {});
+                                }).catch(() => null);
                             }
                         } else if (reaction.emoji?.name === rr[j].Emoji) {
                             try {
@@ -180,25 +180,25 @@ module.exports = (client) => {
                                 if (guildRole) {
                                     if (messagereaction.guild.me.roles.highest.rawPosition > guildRole.rawPosition) {
                                         if (messagereaction.roles.cache.has(rr[j].Role))
-                                            await messagereaction.roles.remove(rr[j].Role).catch(() => {});
+                                            await messagereaction.roles.remove(rr[j].Role).catch(() => null);
                                     } else {
                                         reaction.message.channel.send("The Role is above my highest Role, I can't remove it to you!").then(msg => {
-                                            setTimeout(() => msg.delete().catch(() => {}), 3000)
-                                        }).catch(() => {})
+                                            setTimeout(() => msg.delete().catch(() => null), 3000)
+                                        }).catch(() => null)
                                     }
                                 } else {
                                     reaction.message.channel.send("This Role got deleted, I can't remove it to you!").then(msg => {
-                                        setTimeout(() => msg.delete().catch(() => {}), 3000)
-                                    }).catch(() => {})
+                                        setTimeout(() => msg.delete().catch(() => null), 3000)
+                                    }).catch(() => null)
                                 }
                             } catch (error) {
                                 reaction.message.channel.send({
                                     content: `\`\`\`${error.message}\`\`\``,
                                 }).then(msg => {
                                     setTimeout(() => {
-                                        msg.delete().catch(() => {});
+                                        msg.delete().catch(() => null);
                                     }, 3000)
-                                }).catch(() => {});
+                                }).catch(() => null);
                             }
                         } else {
                             continue;
@@ -207,7 +207,7 @@ module.exports = (client) => {
                 }
             }
         } catch (e) {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
         }
     });
 }

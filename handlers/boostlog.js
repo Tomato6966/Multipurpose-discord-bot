@@ -22,11 +22,11 @@ module.exports = function (client, options) {
     if(settings && settings?.enabled) {
       //if he/she starts boosting    
       if(!oM.premiumSince && nM.premiumSince) {
-        nM.send(settings.message.substring(0, 2000)).catch(() => {});
+        nM.send(settings.message.substring(0, 2000)).catch(() => null);
       }
       //if he/she boosts again
       if(oM.premiumSince && oM.premiumSinceTimestamp != nM.premiumSinceTimestamp) {
-        nM.send(settings.message.substring(0, 2000)).catch(() => {});
+        nM.send(settings.message.substring(0, 2000)).catch(() => null);
       }
     }
 
@@ -34,7 +34,7 @@ module.exports = function (client, options) {
 
     if(settings && settings.log) {
       let boostLogChannel = nM.guild.channels.cache.get(settings.log);
-      if(!boostLogChannel) boostLogChannel = await nM.guild.channels.fetch(settings.log).catch(()=>{}) || false;
+      if(!boostLogChannel) boostLogChannel = await nM.guild.channels.fetch(settings.log).catch(() => null) || false;
       if(!boostLogChannel) return;
       
       let stopBoost = new MessageEmbed()

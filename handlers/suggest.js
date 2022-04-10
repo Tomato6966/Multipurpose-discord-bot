@@ -56,11 +56,11 @@ module.exports = (client) => {
       var url = ``;
       var imagename = `Unknown`;
       var embed = new MessageEmbed()
-        .setThumbnail(message.member.user.displayAvatarURL({ dynamic: true }))
+        .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
         .addField(`:thumbsup: **__Up Votes__**`, `**\`\`\`0 Votes\`\`\`**`, true)
         .addField(`:thumbsdown: **__Down Votes__**`, `**\`\`\`0 Votes\`\`\`**`, true)
         .setColor(es.color)
-        .setAuthor(client.getAuthor(message.author.tag + "' Suggestion", message.member.user.displayAvatarURL({ dynamic: true }), `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot`))
+        .setAuthor(client.getAuthor(message.author.tag + "' Suggestion", message.author.displayAvatarURL({ dynamic: true }), `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot`))
         .setDescription("\n" + message.content + "\n")
         .setFooter(client.getFooter(footertext, message.guild.iconURL({dynamic: true})))
         //.addField(`Status`, `REASON`)
@@ -131,7 +131,7 @@ module.exports = (client) => {
       if(!button.message.guild || !button.message.guild.available || !button.message.channel) return;
       if (button.message.author?.id != client.user.id) return;
       let guild = button.message.guild;
-      let settings = await client.settings.get(guild.id, "suggest");
+      let settings = await client.settings.get(guild.id+".suggest");
       let channel = button.message.channel;
       if (button.customId.startsWith("Suggest_")) {
           if(settings && settings.channel && settings.channel !== channel.id) return;
@@ -146,7 +146,7 @@ module.exports = (client) => {
               //remove the downvote
               if(SuggestionsData.downvoted_ppl.includes(button.user.id)){
                 SuggestionsData.downvotes -= 1;
-                let index = SuggestionsData.downvoted_ppl.findIndex(button.user.id);
+                let index = SuggestionsData.downvoted_ppl.indexOf(button.user.id);
                 if(index > -1) {
                   SuggestionsData.downvoted_ppl.splice(index, 1);
                 }
@@ -162,7 +162,7 @@ module.exports = (client) => {
               //remove the upvote
               if(SuggestionsData.voted_ppl.includes(button.user.id)){
                 SuggestionsData.upvotes -= 1;
-                let index = SuggestionsData.voted_ppl.findIndex(button.user.id);
+                let index = SuggestionsData.voted_ppl.indexOf(button.user.id);
                 if(index > -1) {
                   SuggestionsData.voted_ppl.splice(index, 1);
                 }
@@ -202,7 +202,7 @@ module.exports = (client) => {
           let sdownvotebutton = new MessageButton().setStyle("SECONDARY").setEmoji("❌") .setCustomId("Suggest_downvote").setLabel(String(SuggestionsData.downvotes))
             button.message.edit({embeds: [embed], components: [new MessageActionRow().addComponents([upvotebutton, downvotebutton, whobutton])]}).catch((e)=>{
               button.message.edit({embeds: [embed], components: [new MessageActionRow().addComponents([supvotebutton, sdownvotebutton, whobutton])]}) .catch((e)=>{
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
               })
             })
           button.deferUpdate();

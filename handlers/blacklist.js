@@ -99,7 +99,7 @@ module.exports = async (client) => {
             if (blacklist.whitelistedchannels?.some(r => message.channel.parentId == r || message.channel.id == r)) return
 
             try {
-                for(const blacklistword of blacklistwords){
+                for await (const blacklistword of blacklistwords){
                     if (message.content.toLowerCase().includes(blacklistword)) {
                         if(autowarn.blacklist){
                             await dbEnsure(client.userProfiles, message.author?.id, {
@@ -173,7 +173,7 @@ module.exports = async (client) => {
                                             ]});
                                         });
                                     } catch (e) {
-                                        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                                        console.error(e);
                                         message.channel.send({embeds : [new MessageEmbed()
                                             .setColor(es.wrongcolor)
                                             .setFooter(client.getFooter(es))
@@ -217,7 +217,7 @@ module.exports = async (client) => {
                                             ]});
                                         });
                                     } catch (e) {
-                                        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                                        console.error(e);
                                         message.channel.send({embeds :[new MessageEmbed()
                                             .setColor(es.wrongcolor)
                                             .setFooter(client.getFooter(es))
@@ -226,15 +226,15 @@ module.exports = async (client) => {
                                         ]});
                                     }}
                                 }
-                                for(const role of warnsettings.roles){
+                                for await (const role of warnsettings.roles){
                                     if(role.warncount == warnings.length){
                                         if(!message.member.roles.cache.has(role.roleid)){
-                                        message.member.roles.add(role.roleid).catch((O)=>{})
+                                        message.member.roles.add(role.roleid).catch(() => null)
                                         }
                                     }
                                 }
                         }
-                        await message.delete().catch(e => console.log("PREVENTED A BUG"))
+                        await message.delete().catch(() => null)
 
                         if (!countermap.get(message.author?.id)) countermap.set(message.author?.id, 1)
                         setTimeout(() => {
@@ -256,10 +256,10 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter(es))
                                     .setTitle(eval(client.la[ls]["handlers"]["blacklistjs"]["blacklist"]["variable1"]).replace("MUTED", "TIMEOUTED"))
                                     .setDescription(eval(client.la[ls]["handlers"]["blacklistjs"]["blacklist"]["variable2"]))
-                                ]}).catch(() => {});
+                                ]}).catch(() => null);
                             }).catch(() => {
                                 return message.channel.send(`:x: **I could not timeout ${member.user.tag}**`).then(m => {
-                                    setTimeout(() => { m.delete().catch(() => {}) }, 5000);
+                                    setTimeout(() => { m.delete().catch(() => null) }, 5000);
                                 });
                             });
                             
@@ -270,7 +270,7 @@ module.exports = async (client) => {
                                 .setColor(es.wrongcolor)
                                 .setFooter(client.getFooter(es))
                                 .setTitle(eval(client.la[ls]["handlers"]["blacklistjs"]["blacklist"]["variable5"]))
-                            ]}).then(msg => {setTimeout(()=>{msg.delete().catch(() => {})}, 3000)}).catch(() => {})
+                            ]}).then(msg => {setTimeout(()=>{msg.delete().catch(() => null)}, 3000)}).catch(() => null)
                         }
                     } else {
                         // Do nothing ;)
@@ -284,7 +284,7 @@ module.exports = async (client) => {
                     .setFooter(client.getFooter(es))
                     .setTitle(client.la[ls].common.erroroccur)
                     .setDescription(eval(client.la[ls]["handlers"]["blacklistjs"]["blacklist"]["variable6"]))
-                ]}).catch(() => {});
+                ]}).catch(() => null);
             }
         }catch(e){console.log(String(e).grey)}
     }

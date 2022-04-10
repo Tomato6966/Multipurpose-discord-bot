@@ -34,46 +34,47 @@
  /**********************************************************
   * @param {2} CREATE_THE_DISCORD_BOT_CLIENT with some default settings
   *********************************************************/
- const client = new Discord.Client({
-   fetchAllMembers: false,
-   restTimeOffset: 0,
-   failIfNotExists: false,
-   shards: Cluster.data.SHARD_LIST,        //  A Array of Shard list, which will get spawned
-   shardCount: Cluster.data.TOTAL_SHARDS, // The Number of Total Shards
-   allowedMentions: {
-     parse: ["roles", "users"],
-     repliedUser: false,
-   },
-   partials: ["MESSAGE", "CHANNEL", "REACTION", "GUILD_MEMBER", "USER", "INTERACTION"],
-   intents: [ Discord.Intents.FLAGS.GUILDS,
-     Discord.Intents.FLAGS.GUILD_MEMBERS,
-     Discord.Intents.FLAGS.GUILD_BANS,
-     Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-     Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
-     Discord.Intents.FLAGS.GUILD_WEBHOOKS,
-     Discord.Intents.FLAGS.GUILD_INVITES,
-     Discord.Intents.FLAGS.GUILD_VOICE_STATES,
-     //Discord.Intents.FLAGS.GUILD_PRESENCES,
-     Discord.Intents.FLAGS.GUILD_MESSAGES,
-     Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-     //Discord.Intents.FLAGS.GUILD_MESSAGE_TYPING,
-     Discord.Intents.FLAGS.DIRECT_MESSAGES,
-     Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-     //Discord.Intents.FLAGS.DIRECT_MESSAGE_TYPING
-   ],
-   presence: {
-     activities: [{name: `${config.status.text}`.replace("{prefix}", config.prefix), type: config.status.type, url: config.status.url}],
-     status: "online"
-   }
- });
- 
+const client = new Discord.Client({
+  fetchAllMembers: false,
+  restTimeOffset: 0,
+  failIfNotExists: false,
+  shards: Cluster.data.SHARD_LIST,        //  A Array of Shard list, which will get spawned
+  shardCount: Cluster.data.TOTAL_SHARDS, // The Number of Total Shards
+  allowedMentions: {
+    parse: ["roles", "users"],
+    repliedUser: false,
+  },
+  partials: ["MESSAGE", "CHANNEL", "REACTION", "GUILD_MEMBER", "USER", "INTERACTION"],
+  intents: [ Discord.Intents.FLAGS.GUILDS,
+    Discord.Intents.FLAGS.GUILD_MEMBERS,
+    Discord.Intents.FLAGS.GUILD_BANS,
+    Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+    Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
+    Discord.Intents.FLAGS.GUILD_WEBHOOKS,
+    Discord.Intents.FLAGS.GUILD_INVITES,
+    Discord.Intents.FLAGS.GUILD_VOICE_STATES,
+    Discord.Intents.FLAGS.GUILD_PRESENCES,
+    Discord.Intents.FLAGS.GUILD_MESSAGES,
+    Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    //Discord.Intents.FLAGS.GUILD_MESSAGE_TYPING,
+    Discord.Intents.FLAGS.DIRECT_MESSAGES,
+    Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+    //Discord.Intents.FLAGS.DIRECT_MESSAGE_TYPING
+  ],
+  presence: {
+    activities: [{name: `${config.status.text}`.replace("{prefix}", config.prefix), type: config.status.type, url: config.status.url}],
+    status: "online"
+  }
+});
+const discordModals = require('discord-modals') // Define the discord-modals package!
+discordModals(client); // discord-modals needs your client in order to interact with modals
  
  
  /**********************************************************
   * @param {4} Create_the_client.memer property from Tomato"s Api 
   *********************************************************/
  const Meme = require("memer-api");
- client.memer = new Meme(process.env.memer_api || config.memer_api); // GET a TOKEN HERE: https://discord.gg/Mc2FudJkgP
+ client.memer = new Meme(config.memer_api); // GET a TOKEN HERE: https://discord.gg/Mc2FudJkgP
  
 
 /**********************************************************
@@ -81,7 +82,7 @@
  *********************************************************/
 client.la = { }
 var langs = fs.readdirSync("./languages")
-for(const lang of langs.filter(file => file.endsWith(".json"))){
+for (const lang of langs.filter(file => file.endsWith(".json"))){
   client.la[`${lang.split(".json").join("")}`] = require(`./languages/${lang}`)
 }
 Object.freeze(client.la)
@@ -92,9 +93,9 @@ Object.freeze(client.la)
  /**********************************************************
   * @param {6} Raise_the_Max_Listeners to 0 (default 10)
   *********************************************************/
- client.setMaxListeners(0);
- Events.defaultMaxListeners = 0;
- process.env.UV_THREADPOOL_SIZE = OS.cpus().length;
+client.setMaxListeners(0);
+Events.defaultMaxListeners = 0;
+process.env.UV_THREADPOOL_SIZE = OS.cpus().length;
  
  
  /**********************************************************
@@ -114,16 +115,31 @@ Object.freeze(client.la)
   *********************************************************/
  //those are must haves, they load the dbs, events and commands and important other stuff
 async function requirehandlers(){
-  for(const handler of [
-    "extraevents", "clientvariables", "events", "erelahandler", "command", "loaddb", "slashCommands"
-  ]) 
-    try{ 
-      await require(`./handlers/${handler}`)(client); }catch (e){ console.log(e) }
+  // resolve promise
+  for await (const handler of [
+    "extraevents", 
+    "clientvariables", 
+    "events", 
+    "erelahandler", 
+    "command", 
+    "loaddb", 
+    "slashCommands"
+  ]) {
+    try{
+      await require(`./handlers/${handler}`)(client);
+     }catch (e){ console.error(e) }
+  }
+  //social logs
   [
-    "twitterfeed", /*"twitterfeed2",*/ "livelog", "youtube", "tiktok"
+    "twitterfeed",
+    /* "twitterfeed2", */
+    "livelog", 
+    "youtube", 
+    /* "tiktok" */
   ].forEach(async handler=>{
-    try{ await require(`./social_log/${handler}`)(client); }catch (e){ console.log(e) }
+    try{ await require(`./social_log/${handler}`)(client); }catch (e){ console.error(e) }
   });
+  //handlers
   [
     "aichat",
     "anticaps",
@@ -135,33 +151,33 @@ async function requirehandlers(){
     "antispam",
     "apply",
     "autobackup",
-    "autoembed",
-    "automeme",
-    "autonsfw",
-    "blacklist",
-    "boostlog",
-    "counter",
-    "dailyfact",
-    "epicgamesverification",
-    "ghost_ping_detector",
-    "jointocreate",
-    "joinvc",
-    "keyword",
-    "leave", 
-    "logger", 
-    "membercount",
-    "mute",
+        "autoembed",
+        "automeme",
+        "autonsfw",
+        "blacklist",
+        "boostlog",
+        "counter",
+        "dailyfact",
+        "epicgamesverification",
+        "ghost_ping_detector",
+    "jointocreate",                            // highers the memory
+        "joinvc",
+        "keyword",
+        "leave",
+        "logger",
+        "membercount",
+    "mute",                                     // highers the memory
     "ranking",
     "reactionrole",
     "roster",
-    "suggest", 
-    "ticket", 
+    "suggest",
+    "ticket",
     "ticketevent",
     "timedmessages",
-    "validcode", 
+    "validcode",
     "welcome", 
   ].forEach(handler => {
-    try{ require(`./handlers/${handler}`)(client); }catch (e){ console.log(e) }
+    try{ require(`./handlers/${handler}`)(client); }catch (e){ console.error(e) }
   });
 }
 requirehandlers();
@@ -171,11 +187,15 @@ requirehandlers();
   * @param {9} Login_to_the_Bot
   *********************************************************/
 client.cluster = new Cluster.Client(client); //Init the Client & So we can also access broadcastEval...
-client.login(process.env.token || config.token);
+client.login(config.token);
+
+
+//start the dashboard
+ //require("/path/to/dashboard/index.js")(client);
  
  /**********************************************************
   * @INFO
-  * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+  * Bot Coded by Tomato#6966 | https://discord.gg/milrato
   * @INFO
   * Work for Milrato Development | https://milrato.eu
   * @INFO
@@ -287,8 +307,76 @@ client.on("interactionCreate", (interaction) => {
   }
 });
 
+// for requesting songs over clusters
+client.cluster.on('message', async (message) => {
+  
+  if(message._sRequest && message.songRequest){
+    const { guildId, userId, songRequest } = message;
 
-//start the dashboard if on cluster 0
-if(client.cluster.id == 0) {
-   //require("/home/Milrato-Developers/index.js")(client);
-}
+    const guild = client.guilds.cache.get(guildId);
+    if(!guild) return message.reply({ data: false });
+    const member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
+    if(!member) return message.reply({ data: false })
+    // if member not in a vc
+    if(!member?.voice?.channel?.id) return message.reply({ data: false });
+
+    var player = client.manager.players.get(guildId);
+    //if no node, connect it 
+    if (player && player.node && !player.node.connected) await player.node.connect()
+    //if no player create it
+    if (!player) {
+      player = await client.manager.create({
+        guild: guildId,
+        voiceChannel: member.voice.channel.id,
+        textChannel: null,
+        selfDeafen: true,
+      });
+      if (player && player.node && !player.node.connected) await player.node.connect()
+    }
+    let state = player.state;
+    if (state !== "CONNECTED") {
+      player.set("playerauthor", member.id);
+      player.connect();
+      player.stop();
+    }
+
+    res = await client.manager.search(songRequest, member.user);
+    // Check the load type as this command is not that advanced for basics
+    let data = null;
+    if (res.loadType === "LOAD_FAILED") {
+      throw res.exception;
+    } else if (res.loadType === "PLAYLIST_LOADED") {
+      if(res.tracks[0]) data = res.tracks
+      else data = false;
+    } else {
+      if(res.tracks[0]) data = res.tracks[0];
+      else data = false;
+    }
+    if(data) {
+      //if the player is not connected, then connect and create things
+      if (player.state !== "CONNECTED") {
+        //set the variables
+        player.set("playerauthor", member.id);
+        player.connect();
+        //add track
+        player.queue.add(data);
+        //play track
+        player.play();
+        player.pause(false);
+      } else if (!player.queue || !player.queue.current) {
+        //add track
+        player.queue.add(data);
+        //play track
+        player.play();
+        player.pause(false);
+      }
+      //otherwise
+      else {
+        //add track
+        player.queue.add(data);
+      }
+    }
+    message.reply({ data: true })
+
+  }
+})

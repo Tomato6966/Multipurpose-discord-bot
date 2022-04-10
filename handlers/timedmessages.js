@@ -10,18 +10,22 @@ module.exports = async (client) => {
         //get all guilds which are setupped
         var currentMinute = new Date().getMinutes()
         var currentHour = new Date().getHours();
-        var Days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+        var Days = [ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" ]
         var currentDay = Days[new Date().getDay()];
+        //console.log("TIMED MESSAGES :: get keys".magenta.dim)
         var guilds = await dbKeys(client.settings, v => v.timedmessages 
             && v.timedmessages.length > 0 
             && v.timedmessages.filter(msg => 
                 msg.days.includes(currentDay)
                 && Number(msg.minute) == Number(currentMinute) && Number(msg.hour) == Number(currentHour)).length > 0 
-        );
+        ).then(gs => gs.filter(g => client.guilds.cache.has(g)))
+        //console.log("TIMED MESSAGES :: GUILDS:".magenta.dim, guilds)
         //Loop through all guilds and send a random auto-generated-nsfw setup
-        for(const guildid of guilds){
-            timedmessage(guildid)
+        if(guilds.length == 0) return;
+        for await (const guildid of guilds){
+            await timedmessage(guildid)
         } 
+        return;
     }, null, true, 'Europe/Berlin');
     client.JobTimesMessages.start();
 
@@ -45,8 +49,8 @@ module.exports = async (client) => {
                 msg.days.includes(currentDay)
                 && Number(msg.minute) == Number(currentMinute) && Number(msg.hour) == Number(currentHour));
             if(timedmessages_to_send.length > 0){
-                for(const msg of timedmessages_to_send){
-                    let channel = guild.channels.cache.get(msg.channel) || await guild.channels.fetch(msg.channel).catch(() => {}) || false;
+                for await (const msg of timedmessages_to_send){
+                    let channel = guild.channels.cache.get(msg.channel) || await guild.channels.fetch(msg.channel).catch(() => null) || false;
                     if(!channel) return 
                     if(msg.embed){
                         var es = await client.settings.get(guild.id+".embed") || ee;
@@ -56,14 +60,15 @@ module.exports = async (client) => {
                             .setFooter(client.getFooter(es))
                             .setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
                             .setDescription(msg.content.substring(0, 2000))
-                        ]}).catch((e) => { console.log(e) })
+                        ]}).catch(()=>null)
                     } else {
-                        channel.send({content : msg.content.substring(0, 2000)}).catch(() => {})
+                        channel.send({content : msg.content.substring(0, 2000)}).catch(() => null)
                     }
                 }
             }
         } catch (e){
-            console.log(String(e).grey)
+            console.error(e)
         }
+        return true;
     }
 }

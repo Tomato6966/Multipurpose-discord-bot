@@ -87,7 +87,8 @@ module.exports = async (client) => {
       let autowarn = theSettings.autowarn;
       let antiselfbot = theSettings.antiselfbot;
       let mute_amount = antiselfbot?.mute_amount
-      let member = message.member
+      let member = message.member || message.guild.members.cache.get(message.authorId) || await message.guild.members.fetch(message.authorId).catch(() => null);
+      if(!member) return console.log("NO MEMBER FOUND");
       let warnsettings = theSettings.warnsettings
 
       if (!antiselfbot?.enabled) return
@@ -171,7 +172,7 @@ module.exports = async (client) => {
                   });
                 });
               } catch (e) {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                console.error(e);
                 message.channel.send({
                   embeds: [new MessageEmbed()
                     .setColor(es.wrongcolor)
@@ -226,7 +227,7 @@ module.exports = async (client) => {
                   });
                 });
               } catch (e) {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                console.error(e);
                 message.channel.send({
                   embeds: [new MessageEmbed()
                     .setColor(es.wrongcolor)

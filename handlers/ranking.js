@@ -114,7 +114,7 @@ module.exports = async function (client) {
                     case `voicerank`:
                     case `rank`:
                         try{
-                            await message.guild.members.fetch().catch(() => {});
+                            await message.guild.members.fetch().catch(() => null);
                             let user = await GetUser(message, args)
                             console.log("GETTING RANK")
                             rank(user, "text");
@@ -125,7 +125,7 @@ module.exports = async function (client) {
                     /*case `rankvoice`:
                     case `voicerank`: 
                     try{
-                        await message.guild.members.fetch().catch(() => {});
+                        await message.guild.members.fetch().catch(() => null);
                         let user = await GetUser(message, args)
                         rank(user, "voice");
                     }catch (e){
@@ -277,7 +277,7 @@ module.exports = async function (client) {
     
                 async function addingpoints(toaddpoints, leftpoints) {
                     if (toaddpoints >= leftpoints) {
-                        await client.points.set(`${thekey ? thekey : key}.points`, 0); //set points to 0
+                        await client.points.set(`${thekey ? thekey : key}.points`, 1); //set points to 0
                         await client.points.add(`${thekey ? thekey : key}.level`, 1); //add 1 to level
                         //HARDING UP!
                         const newLevel = await client.points.get(`${thekey ? thekey : key}.level`); //get current NEW level
@@ -306,7 +306,7 @@ module.exports = async function (client) {
                     })
                     let RankRoles = await client.points.get(message.guild.id + ".rankroles");
                     if(RankRoles[Number(newLevel)]){
-                        await message.member.roles.add(RankRoles[Number(newLevel)]).catch(() => {})
+                        await message.member.roles.add(RankRoles[Number(newLevel)]).catch(() => null)
                     }
                 }catch (e){ }
                 let disabled = await client.points.get(message.guild.id + ".disabled");
@@ -346,6 +346,7 @@ module.exports = async function (client) {
                 ctx.font = "80px UbuntuMono";
                 await canvacord.Util.renderEmoji(ctx, `New Level: ${newLevel}`, 475, 290);
                 await canvacord.Util.renderEmoji(ctx, ` New Rank: #${i}`, 475, 380);
+
                 //AVATAR
                 ctx.beginPath();
                 ctx.arc(345/2 + 83.5, 345/2 + 36, 345/2, 0, Math.PI * 2, true); 
@@ -356,17 +357,16 @@ module.exports = async function (client) {
     
                 //get it as a discord attachment
                 const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "ranking-image.png");
-                const channel = await client.points.get(message.guild.id + ".channel");
-                if(!channel) return message.channel.send({content: `${message.author}`, files: [attachment]});
-                try{
-                    let channel = message.guild.channels.cache.get(channel)
-                    if(!channel){
-                        return message.channel.send({content: `${message.author}`, files: [attachment]}).catch(() => {})
-                    }
-                    channel.send({content: `${message.author}`, files: [attachment]});
-    
+                const chID = await client.points.get(message.guild.id + ".channel");
+                if(!chID && message.channel) return message.channel.send({content: `${message.author}`, files: [attachment]}).catch(() => null)
+                try {
+                    let channel = message.guild.channels.cache.get(chID);
+                    if(!channel && message.channel){
+                        return message.channel.send({content: `${message.author}`, files: [attachment]}).catch(() => null)
+                    } 
+                    else if (chanel) channel.send({content: `${message.author}`, files: [attachment]}).catch(() => null)
                 }catch (e){
-                    message.channel.send({content: `${message.author}`, files: [attachment]}).catch(() => {})
+                    message.channel.send({content: `${message.author}`, files: [attachment]}).catch(() => null)
                 }
             }
     
@@ -378,8 +378,15 @@ module.exports = async function (client) {
                 try {
                     let rankuser = the_rankuser || message.author;
                     if (!rankuser) return message.reply(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable14"]));
-                    let rankMember = message.guild.members.cache.get(rankuser.id) || await message.guild.members.fetch(rankuser.id).catch(() => {});
-    
+                    let rankMember = message.guild.members.cache.get(rankuser.id) || await message.guild.members.fetch(rankuser.id).catch(() => null);
+                    const status = rankMember ? rankMember.presence?.status || "offline" : "offline";
+                    const statusimgs = {
+                        "online": "https://cdn.discordapp.com/attachments/886876093418713129/959116532426866748/Online.png",
+                        "offline": "https://cdn.discordapp.com/attachments/886876093418713129/959116533236367410/offline.png",
+                        "idle": "https://cdn.discordapp.com/attachments/886876093418713129/959116532846301284/idle.png",
+                        "dnd": "https://cdn.discordapp.com/attachments/886876093418713129/959116532615639080/dnd.png"
+                    }
+                    
                     const key = `${message.guild.id}_${rankuser.id}`;
                     await databasing(rankuser);
                     let theDbDatas = [["level", "points", "neededpoints"], ["voicelevel", "voicepoints", "neededvoicepoints"]]
@@ -447,11 +454,12 @@ module.exports = async function (client) {
                     /**
                      * GET THE USERBANNER
                      */
+    
                     let banner = null;
                     try {
                         await rankuser.fetch().then(u => u.banner ? banner = rankuser.bannerURL({dynamic: false, format: "png", size: 4096}) : banner = false);
                         if(!banner) await rankMember.fetch().then(u => u.banner ? banner = rankuser.bannerURL({dynamic: false, format: "png", size: 4096}) : banner = false);
-                    }catch(e){console.log(e)}
+                    }catch(e){console.error(e)}
     /*
                     if(banner){
                         const BannerBg = await Canvas.loadImage(banner)
@@ -462,14 +470,14 @@ module.exports = async function (client) {
                      * DRAWING THE BACKGROUND
                      */
                     createRankCard().then(canvas => {
-                        const VoiceTime = rankdata.voicetime ? duration(Number(rankdata.voicetime)).map(i=>`\`${i}\``).join(", ") * 60 * 1000 : "0 Mins"
+                        const VoiceTime = rankdata.voicetime ? duration(Number(rankdata.voicetime * 60 * 1000)).map(i=>`\`${i}\``).join(", ") : "0 Mins"
                         return tempmessage.edit({
                             content: `${tempmessage.content}\n**User's Connected Time:** ${VoiceTime}\n**Note:** *\`You only gain Points, if you leave the Channel!\`*`,
-                            files:[new Discord.MessageAttachment( canvas.toBuffer(), "card.png" )]}).catch(() => {});
+                            files:[new Discord.MessageAttachment( canvas.toBuffer(), "card.png" )]}).catch(() => null);
                     }).catch(e => {
                         return tempmessage.edit({
                             content: `\`\`\`${String(e.message ? e.message : e).substring(0, 990)}\`\`\``,
-                        }).catch(() => {});
+                        }).catch(() => null);
                     })
                     
     
@@ -556,7 +564,7 @@ module.exports = async function (client) {
                                         //NITRO MUST BE ADDED AT THE END
                                         if(member.avatar || banner || rankuser.displayAvatarURL({dynamic:true}).endsWith(".gif")) flags.push("NITRO")
                                         
-                                        for(let i = 0; i< flags.length; i++){
+                                        for (let i = 0; i< flags.length; i++){
                                             const Size = 200;
                                             const spaceBetween = 60;
                                             const x = 635 + i * Size + i * spaceBetween - (flags.length == 1 ? 0 : flags.length == 2 ? 1.5 * Size/2 : 3 * Size/2);
@@ -635,8 +643,8 @@ module.exports = async function (client) {
     
                                 // COLOR BACKGROUND
                                 const grd = ctx.createLinearGradient(AvatarX, AvatarY, AvatarSize, AvatarSize );
-                                grd.addColorStop(0, "#d3357a");
-                                grd.addColorStop(1, "#3a0c7b");
+                                grd.addColorStop(0, "#ff7b00");
+                                grd.addColorStop(1, "#ff9d00");
                                 ctx.lineWidth = 30;
                                 ctx.fillStyle = grd;
                                 ctx.strokeStyle = grd;
@@ -654,7 +662,16 @@ module.exports = async function (client) {
     
                                 //restore ctx
                                 ctx.restore();
-    
+
+                                
+                                /**
+                                 * DRAWING THE STATUS
+                                 */
+                                const StatusSize = 195; StatusX = 867, StatusY = 960;
+                                const statusImg = await Canvas.loadImage(statusimgs[status]);
+                                ctx.drawImage(statusImg, StatusX, StatusY, StatusSize, StatusSize);
+
+
                                 /**
                                  * DRAWING THE USERNAME
                                  */
@@ -688,7 +705,7 @@ module.exports = async function (client) {
                                 const TextRankY = 660;
                                 const VoiceRankX = 1985;
                                 const VoiceRankY = 1755;
-                                ctx.fillStyle = "#1d68ff";
+                                ctx.fillStyle = "#ff9d00";
                                 ctx.font = `bold italic 150px ${Fonts}`;
                                 ctx.fillText(xp_data.text.rank, TextRankX , TextRankY);
                                 ctx.fillText(xp_data.voice.rank, VoiceRankX , VoiceRankY);
@@ -700,13 +717,13 @@ module.exports = async function (client) {
                                 const TextLevelY = 660;
                                 const VoiceLevelX = 3105;
                                 const VoiceLevelY = 1755;
-                                ctx.fillStyle = "#1d68ff";
+                                ctx.fillStyle = "#ff9d00";
                                 ctx.font = `bold italic 150px ${Fonts}`;
                                 ctx.fillText(xp_data.text.cur_level, TextLevelX , TextLevelY);
                                 ctx.fillText(xp_data.voice.cur_level, VoiceLevelX , VoiceLevelY);
     
-                                await DrawProgressionBar("#3a0c7b", "#d3357a", 1550, 850, 2000, 125, xp_data.text.current, xp_data.text.needed, 3475, 835, "TEXT")
-                                await DrawProgressionBar("#3a0c7b", "#d3357a", 1550, 1985, 2000, 125, xp_data.voice.current, xp_data.voice.needed, 3475, 1970, "VOICE")
+                                await DrawProgressionBar("#ff9d00", "#ff7b00", 1550, 850, 2000, 125, xp_data.text.current, xp_data.text.needed, 3475, 835, "TEXT")
+                                await DrawProgressionBar("#ff9d00", "#ff7b00", 1550, 1985, 2000, 125, xp_data.voice.current, xp_data.voice.needed, 3475, 1970, "VOICE")
                                 
                                 async function DrawProgressionBar(LeftColor, RightColor, StartX, StartY, Width, Height, current, Needed, ProgressionRightX, ProgressionRightY, BarDescription){
                                     const bounds = (Height + 5) / 2;
@@ -741,9 +758,10 @@ module.exports = async function (client) {
                                     //draw text
                                     const progressionText = `${current} / ${Needed}`;
                                     const FontSize = Height - Height/6;
-                                    ctx.fillStyle = "#ffffff";
                                     ctx.font = `regular ${FontSize}px ${Fonts}`;
+                                    ctx.fillStyle = "#ffffff";
                                     ctx.fillText(progressionText, ProgressionRightX - ctx.measureText(progressionText).width + (Height/2.5)/2, ProgressionRightY - Height/2 + FontSize/2);
+                                    ctx.fillStyle = "#151723";
                                     ctx.fillText(BarDescription, StartX + Height/2.5, ProgressionRightY - Height/2 + FontSize/2)
                                 }
                                 return res(canvas);
@@ -793,7 +811,7 @@ module.exports = async function (client) {
                             else
                             string += `\`${j}\`. **${data.usertag}**: \`Level: ${data[`${theDbDatas[0]}`]} | Points: ${shortenLargeNumber(data[`${theDbDatas[1]}`], 2)}\`\n`;
                         } catch (e){
-                            console.log(e)
+                            console.error(e)
                         }
                     }
                     embed.setDescription(string.substring(0, 2048))
@@ -805,7 +823,7 @@ module.exports = async function (client) {
             async function leaderboard() {
                 const embeds = await leaderboardembed();
                 if(embeds.length == 1){
-                    return message.channel.send({embeds: embeds}).catch(() => {})
+                    return message.channel.send({embeds: embeds}).catch(() => null)
                 }
                 swap_pages2(client, message, embeds)
             }
@@ -830,7 +848,7 @@ module.exports = async function (client) {
                 var array_amount = [];
                 for (const data of sorted.slice(0, 10)) {
                     try {
-                        var user = await client.users.fetch(data.user).catch(() => {})
+                        var user = await client.users.fetch(data.user).catch(() => null)
                         if(!user) continue;
                         array_usernames.push(user.username)
                         array_discriminator.push(user.discriminator)
@@ -860,7 +878,7 @@ module.exports = async function (client) {
                 ctx.drawImage(bgimg, 0, 0, canvas.width, canvas.height);
                 array_usernames = array_usernames.slice(0, 10);
                 new Promise(async (res, rej)=>{
-                    for(let i = 0; i < array_usernames.length; i++){
+                    for (let i = 0; i < array_usernames.length; i++){
                         try{
                             ctx.save();
                             ctx.font = "75px UbuntuMono";
@@ -934,7 +952,7 @@ module.exports = async function (client) {
                     var array_amount = [];
                     for (const data of sorted.slice(0, 10)) {
                         try {
-                            var user = await client.users.fetch(data.user).catch(() => {})
+                            var user = await client.users.fetch(data.user).catch(() => null)
                             if(!user) continue;
                             array_usernames.push(user.username)
                             array_discriminator.push(user.discriminator)
@@ -960,7 +978,7 @@ module.exports = async function (client) {
                     ctx2.drawImage(bgimg, 0, 0, canvas2.width, canvas2.height);
                     array_usernames = array_usernames.slice(0, 10);
                     new Promise(async (res, rej)=>{
-                        for(let i = 0; i < array_usernames.length; i++){
+                        for (let i = 0; i < array_usernames.length; i++){
                             try{
                                 ctx2.save();
                                 ctx2.font = "75px UbuntuMono";
@@ -1012,8 +1030,8 @@ module.exports = async function (client) {
                         return res(true)
                     }).then(async ()=>{    
                         const attachment2 = new Discord.MessageAttachment(canvas2.toBuffer(), "ranking-image.png");
-                        tempmessage.delete().catch(() => {})
-                        message.channel.send({content:`Top 10 Leaderboard of **${message.guild.name}** Sorted after POINTS\n> **Type:** \`leaderboard all\` to see all Ranks\n*Rank is counted for the \`${type.toUpperCase()}-RANK\`*\n> ${type != "voice" ? `To see the **Voice Leaderboard** type: \`voiceleaderbaord [all]\`` : `To see the **Text Leaderboard** type: \`leaderbaord [all]\``}`, files: [attachment, attachment2]}).catch(() => {});
+                        tempmessage.delete().catch(() => null)
+                        message.channel.send({content:`Top 10 Leaderboard of **${message.guild.name}** Sorted after POINTS\n> **Type:** \`leaderboard all\` to see all Ranks\n*Rank is counted for the \`${type.toUpperCase()}-RANK\`*\n> ${type != "voice" ? `To see the **Voice Leaderboard** type: \`voiceleaderbaord [all]\`` : `To see the **Text Leaderboard** type: \`leaderbaord [all]\``}`, files: [attachment, attachment2]}).catch(() => null);
                     })
                 })
             }
@@ -1093,7 +1111,7 @@ module.exports = async function (client) {
     
                     async function addingpoints(toaddpoints, leftpoints) {
                         if (toaddpoints >= leftpoints) {
-                            await client.points.set(`${key}.points`, 0); //set points to 0
+                            await client.points.set(`${key}.points`, 1); //set points to 0
                             await client.points.add(`${key}.level`, 1); //add 1 to level
                             //HARDING UP!
                             const newLevel = await client.points.get(`${key}.level`); //get current NEW level
@@ -1110,7 +1128,7 @@ module.exports = async function (client) {
                                 .setColor(embedcolor);
                             //send ping and embed message only IF the adding will be completed!
                             if (toaddpoints - leftpoints < newneededPoints)
-                            message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => {});
+                            message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => null);
     
                             addingpoints(toaddpoints - leftpoints, newneededPoints); //Ofc there is still points left to add so... lets do it!
                         } else {
@@ -1152,7 +1170,7 @@ module.exports = async function (client) {
     
                     async function addingpoints(toaddpoints, neededPoints) {
                         if (toaddpoints >= neededPoints) {
-                            await client.points.set(`${key}.points`, 0); //set points to 0
+                            await client.points.set(`${key}.points`, 1); //set points to 0
                             await client.points.inc(`${key}.level`); //add 1 to level
                             //HARDING UP!
                             const newLevel = await client.points.get(`${key}.level`); //get current NEW level
@@ -1169,7 +1187,7 @@ module.exports = async function (client) {
                                 .setDescription(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable44"]))
                                 .setColor(embedcolor);
                             //send ping and embed message
-                                message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => {});
+                                message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => null);
     
                             addingpoints(toaddpoints - neededPoints, newneededPoints); //Ofc there is still points left to add so... lets do it!
                         } else {
@@ -1180,7 +1198,7 @@ module.exports = async function (client) {
                     const embed = new Discord.MessageEmbed()
                         .setColor(embedcolor)
                         .setDescription(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable45"]))
-                    message.channel.send({embeds: [embed]}).catch(() => {});
+                    message.channel.send({embeds: [embed]}).catch(() => null);
                     rank(rankuser); //also sending the rankcard
                 } catch (error) {
                     console.log("RANKING:".underline.red + " :: " + error.stack.toString().grey)
@@ -1237,7 +1255,7 @@ module.exports = async function (client) {
                                 .setColor(embedcolor);
                             //send ping and embed message only IF the removing will be completed!
                             if (amount - removedpoints < neededPoints)
-                                message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => {});
+                                message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => null);
     
                             removingpoints(amount - removedpoints, newneededPoints); //Ofc there is still points left to add so... lets do it!
                         } else {
@@ -1275,7 +1293,7 @@ module.exports = async function (client) {
                     if(Number(args[1]) > 10000) return message.reply(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable60"]))
                     if (Number(args[1]) < 0) args[1] = 0;
                     for (let i = 0; i < Number(args[1]); i++) {
-                        await client.points.set(`${key}.points`, 0); //set points to 0
+                        await client.points.set(`${key}.points`, 1); //set points to 0
                         await client.points.add(`${key}.level`, 1); //add 1 to level
                         //HARDING UP!
                         newLevel = await client.points.get(`${key}.level`); //get current NEW level
@@ -1291,7 +1309,7 @@ module.exports = async function (client) {
                         })))
                         .setDescription(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable61"]))
                         .setColor(embedcolor);
-                        message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => {});
+                        message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => null);
                     rank(rankuser); //also sending the rankcard
                     const sssembed = new Discord.MessageEmbed()
                     .setColor(embedcolor)
@@ -1324,7 +1342,7 @@ module.exports = async function (client) {
                     if(Number(args[1]) > 10000) return message.reply(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable68"]))
     
                     await client.points.set(`${key}.level`, Number(args[1])); //set level to the wanted level
-                    await client.points.set(`${key}.points`, 0); //set the points to 0
+                    await client.points.set(`${key}.points`, 1); //set the points to 0
     
                     let newLevel = await client.points.get(`${key}.level`); //set level to the wanted level
                     let counter = Number(newLevel) / 4;
@@ -1344,7 +1362,7 @@ module.exports = async function (client) {
                         })))
                         .setDescription(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable69"]))
                         .setColor(embedcolor);
-                        message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => {});
+                        message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => null);
                     rank(rankuser); //also sending the rankcard
                     const sssembed = new Discord.MessageEmbed()
                     .setColor(embedcolor)
@@ -1374,7 +1392,7 @@ module.exports = async function (client) {
                     if (!args[1]) return message.reply(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable75"]));
                     if (Number(args[1]) < 0) args[1] = 0;
                     for (let i = 0; i < Number(args[1]); i++) {
-                        await client.points.set(`${key}.points`, 0); //set points to 0
+                        await client.points.set(`${key}.points`, 1); //set points to 0
                         await client.points.subtract(`${key}.level`, 1); //add 1 to level
                         //HARDING UP!
                         newLevel = await client.points.get(`${key}.level`); //get current NEW level
@@ -1398,7 +1416,7 @@ module.exports = async function (client) {
                         })))
                         .setDescription(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable76"]))
                         .setColor(embedcolor);
-                        message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => {});
+                        message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => null);
                     rank(rankuser); //also sending the rankcard
                     const sssembed = new Discord.MessageEmbed()
                     .setColor(embedcolor)
@@ -1426,7 +1444,7 @@ module.exports = async function (client) {
                     await databasing(rankuser);
     
                     await client.points.set(`${key}.level`, 1); //set level to 0
-                    await client.points.set(`${key}.points`, 0); //set the points to 0
+                    await client.points.set(`${key}.points`, 1); //set the points to 0
                     await client.points.set(`${key}.neededpoints`, 400) //set neededpoints to 0 for beeing sure
                     await client.points.set(`${key}.oldmessage`, ""); //set old message to 0
     
@@ -1437,7 +1455,7 @@ module.exports = async function (client) {
                         })))
                         .setDescription(eval(client.la[ls]["handlers"]["rankingjs"]["ranking"]["variable82"]))
                         .setColor(embedcolor);
-                        message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => {});
+                        message.channel.send({content: `${rankuser}`, embeds: [embed]}).catch(() => null);
                     rank(rankuser); //also sending the rankcard
                     const sssembed = new Discord.MessageEmbed()
                     .setColor(embedcolor)
@@ -1472,7 +1490,7 @@ module.exports = async function (client) {
                     const key = `${message.guild.id}_${rankuser.id}`;
                     if(await client.points.has(key)) {
                         await client.points.set(`${key}.level`, 1); //set level to 0
-                        await client.points.set(`${key}.points`, 0); //set the points to 0
+                        await client.points.set(`${key}.points`, 1); //set the points to 0
                         await client.points.set(`${key}.neededpoints`, 400) //set neededpoints to 0 for beeing sure
                         await client.points.set(`${key}.oldmessage`, ""); //set old message to 0
                     }
@@ -1587,7 +1605,7 @@ module.exports = async function (client) {
                             inline: true
                         }
                     ])
-                message.channel.send({embeds: [embed]}).catch(() => {})
+                message.channel.send({embeds: [embed]}).catch(() => null)
             }
     
             }catch(e){
@@ -1597,12 +1615,15 @@ module.exports = async function (client) {
             }
     }
 
-    await dbEnsure(client.points, "Voicerank", {
+    await dbEnsure(client.points, "ranks", {
         voicerank:{}    
     })
     
-    let voiceStates = await client.points.get("Voicerank.voicerank")
-
+    let voiceStates = await client.points.get("ranks")
+    if(typeof voiceStates != "object" || !voiceStates.voicerank) voiceStates = {
+        voicerank: { }
+    };
+    
     client.on("ready", () => {
         setTimeout(async ()=>{
             //For each guild, set the voice state into the db if there are none
@@ -1610,13 +1631,13 @@ module.exports = async function (client) {
                 let guild = client.guilds.cache.get(g.id)
                 if(guild && guild.voiceStates) {
                     guild.voiceStates.cache.map(voiceState => voiceState.id).forEach(id=>{
-                        if(!voiceStates[id]){
-                            voiceStates[id] = new Date();
+                        if(!voiceStates.voicerank[id]){
+                            voiceStates.voicerank[id] = new Date();
                         }
                     })
                 }
             })
-            await client.points.set("Voicerank.voicerank", voiceStates)
+            await client.points.set("ranks", voiceStates)
         }, 1500)
     })
 
@@ -1626,14 +1647,16 @@ module.exports = async function (client) {
       var { id } = oldState // This is the user"s ID
       if (!oldState.channel) {
         // The user has joined a voice channel
-        voiceStates[id] = new Date()
-        voiceStates = await client.points.set("Voicerank.voicerank", voiceStates)
-        voiceStates = await client.points.get("Voicerank.voicerank")
+        voiceStates.voicerank[id] = new Date()
+        voiceStates = await client.points.get("ranks")
+        if(typeof voiceStates != "object" || !voiceStates.voicerank) voiceStates = {
+            voicerank: { }
+        };
       } 
       // The User has left a voice Channel
       else if (!newState.channel) {
         var now = new Date();
-        var joined = voiceStates[id] || new Date();
+        var joined = voiceStates.voicerank[id] || new Date();
         var connectedTime = now.getTime() - joined.getTime();
         //Grant Coints!
         if(connectedTime > 60000){
@@ -1697,9 +1720,12 @@ module.exports = async function (client) {
         }
         //try to remove him from the db
         try{
-            delete voiceStates[id]; 
-            voiceStates = await client.points.set("Voicerank.voicerank", voiceStates)
-            voiceStates = await client.points.get("Voicerank.voicerank")
+            delete voiceStates.voicerank[id]; 
+            await client.points.set("ranks", voiceStates)
+            voiceStates = await client.points.get("ranks")
+            if(typeof voiceStates != "object" || !voiceStates.voicerank) voiceStates = {
+                voicerank: { }
+            };
         }catch (e){
             
         }
@@ -1711,8 +1737,7 @@ module.exports = async function (client) {
 function shortenLargeNumber(num, digits) {
     var units = ["k", "M", "G", "T", "P", "E", "Z", "Y"],
         decimal;
-
-    for(var i=units.length-1; i>=0; i--) {
+    for (var i=units.length-1; i>=0; i--) {
         decimal = Math.pow(1000, i+1);
 
         if(num <= -decimal || num >= decimal) {

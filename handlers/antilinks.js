@@ -105,7 +105,7 @@ module.exports = async (client) => {
             if (((adminroles && adminroles.length > 0) && [...message.member.roles.cache.values()].length > 0 && message.member.roles.cache?.some(r => adminroles?.includes(r ? r.id : r))) || message.guild.ownerId == message.author?.id || message.member?.permissions?.has("ADMINISTRATOR")) return;
             if (!antisettings?.enabled) return
             // If it's a ticket return
-            if (await client.isTicket(message.channel.id)) return console.log("IT'S A TICKET");
+            if (await client.isTicket(message.channel.id)) return
             // if It's a whitelisted Channel
             if (antisettings?.whitelistedchannels?.some(r => message.channel.parentId == r || message.channel.id == r)) return
 
@@ -114,6 +114,228 @@ module.exports = async (client) => {
 
                 try {
                     if (!message.content) return;
+                    
+                    const antireg = /((([(https)(http)]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
+                    if (antireg.test(message.content) === true) {
+                        const usedLinks = message.content.match(antireg).map(d => d.slice(0));
+                        // console.log(usedLinks, !usedLinks.some(link => isAllowedUrl(link, antisettings)), !usedLinks.find(link => isAllowedUrl(link, antisettings)))
+                        
+                        if(!usedLinks.some(link => !isAllowedUrl(link, antisettings))) {
+                            
+
+                            if (antisettings.whitelistedchannels.some(r => message.channel.parentId == r || message.channel.id == r)) return;
+                            if (message.content.includes("```")) {
+                                try {
+                                    message.author.send(message.content.substring(0, 2000)).catch((e) => {
+                                        console.log(String(e))
+                                    })
+                                    message.author.send(`It seems like you sent a code in ${message.channel} **${message.guild.name}**, but it contains a Link, which isn't allowed!`).catch((e) => {
+                                        console.log(String(e))
+                                    })
+                                } catch (e) {
+                                    console.log(String(e))
+                                }
+                            }
+                            if (autowarn.antilinks) {
+                                await dbEnsure(client.userProfiles, message.author?.id, {
+                                    id: message.author?.id,
+                                    guild: message.guild.id,
+                                    totalActions: 0,
+                                    warnings: [],
+                                    kicks: []
+                                });
+                                const newActionId = await client.modActions.stats().then(d => client.getUniqueID(d.count));
+                                await client.modActions.set(newActionId, {
+                                    user: message.author?.id,
+                                    guild: message.guild.id,
+                                    type: 'warning',
+                                    moderator: message.author?.id,
+                                    reason: "Antilinks Autowarn",
+                                    when: new Date().toLocaleString(`de`),
+                                    oldhighesrole: message.member.roles ? message.member.roles.highest : `Had No Roles`,
+                                    oldthumburl: message.author.displayAvatarURL({
+                                        dynamic: true
+                                    })
+                                });
+                                // Push the action to the user's warnings
+                                await client.userProfiles.push(message.author?.id + '.warnings', newActionId);
+                                await client.userProfiles.add(message.author?.id + '.totalActions', 1);
+                                await client.stats.push(message.guild.id + message.author?.id + ".warn", new Date().getTime());
+                                const warnIDs = await client.userProfiles.get(message.author?.id + '.warnings')
+                                const modActions = await client.modActions.all();
+                                const warnData = warnIDs.map(id => modActions.find(d => d.ID == id)?.data);
+                                let warnings = warnData.filter(v => v.guild == message.guild.id);
+                                message.channel.send({
+                                    embeds: [
+                                        new MessageEmbed().setAuthor(client.getAuthor(message.author.tag, message.member.displayAvatarURL({ dynamic: true })))
+                                            .setColor("ORANGE").setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({ dynamic: true })))
+                                            .setDescription(`> <@${message.author?.id}> **received an autogenerated Warn - \`antilinks\`**!\n\n> **He now has \`${warnings.length} Warnings\`**`)
+                                    ]
+                                });
+                                if (warnsettings.kick && warnsettings.kick == warnings.length) {
+                                    if (!message.member.kickable)
+                                        message.channel.send({
+                                            embeds: [new MessageEmbed()
+                                                .setColor(es.wrongcolor)
+                                                .setFooter(client.getFooter(es))
+                                                .setTitle(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable8"]))
+                                            ]
+                                        });
+                                    else {
+                                        try {
+                                            message.member.send({
+                                                embeds: [new MessageEmbed()
+                                                    .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
+                                                    .setFooter(client.getFooter(es))
+                                                    .setTitle(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable9"]))
+                                                    .setDescription(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable10"]))
+                                                ]
+                                            });
+                                        } catch {
+                                            return message.channel.send({
+                                                embeds: [new MessageEmbed()
+                                                    .setColor(es.wrongcolor)
+                                                    .setFooter(client.getFooter(es))
+                                                    .setTitle(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable11"]))
+                                                    .setDescription(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable12"]))
+                                                ]
+                                            });
+                                        }
+                                        try {
+                                            message.member.kick({
+                                                reason: `Reached ${warnings.length} Warnings`
+                                            }).then(async () => {
+                                                message.channel.send({
+                                                    embeds: [new MessageEmbed()
+                                                        .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
+                                                        .setFooter(client.getFooter(es))
+                                                        .setTitle(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable13"]))
+                                                        .setDescription(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable14"]))
+                                                    ]
+                                                });
+                                            });
+                                        } catch (e) {
+                                            console.error(e);
+                                            message.channel.send({
+                                                embeds: [new MessageEmbed()
+                                                    .setColor(es.wrongcolor)
+                                                    .setFooter(client.getFooter(es))
+                                                    .setTitle(client.la[ls].common.erroroccur)
+                                                    .setDescription(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable15"]))
+                                                ]
+                                            });
+                                        }
+                                    }
+
+                                }
+                                if (warnsettings.ban && warnsettings.ban == warnings.length) {
+                                    if (!message.member.bannable)
+                                        message.channel.send({
+                                            embeds: [new MessageEmbed()
+                                                .setColor(es.wrongcolor)
+                                                .setFooter(client.getFooter(es))
+                                                .setTitle(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable16"]))
+                                            ]
+                                        });
+                                    else {
+                                        try {
+                                            message.member.send({
+                                                embeds: [new MessageEmbed()
+                                                    .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
+                                                    .setFooter(client.getFooter(es))
+                                                    .setTitle(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable17"]))
+                                                ]
+                                            });
+                                        } catch {
+                                            message.channel.send({
+                                                embeds: [new MessageEmbed()
+                                                    .setColor(es.wrongcolor)
+                                                    .setFooter(client.getFooter(es))
+                                                    .setTitle(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable18"]))
+                                                    .setDescription(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable19"]))
+                                                ]
+                                            });
+                                        }
+                                        try {
+                                            message.member.ban({
+                                                reason: `Reached ${warnings.length} Warnings`
+                                            }).then(async () => {
+                                                message.channel.send({
+                                                    embeds: [new MessageEmbed()
+                                                        .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
+                                                        .setFooter(client.getFooter(es))
+                                                        .setTitle(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable20"]))
+                                                        .setDescription(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable21"]))
+                                                    ]
+                                                });
+                                            });
+                                        } catch (e) {
+                                            console.error(e);
+                                            message.channel.send({
+                                                embeds: [new MessageEmbed()
+                                                    .setColor(es.wrongcolor)
+                                                    .setFooter(client.getFooter(es))
+                                                    .setTitle(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable22"]))
+                                                    .setDescription(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable23"]))
+                                                ]
+                                            });
+                                        }
+                                    }
+                                }
+                                for (const role of warnsettings.roles) {
+                                    if (role.warncount == warnings.length) {
+                                        if (!message.member.roles.cache.has(role.roleid)) {
+                                            message.member.roles.add(role.roleid).catch((O) => { })
+                                        }
+                                    }
+                                }
+                            }
+                            await message.delete().catch(() => null)
+                            
+                            if (!countermap.get(message.author?.id)) countermap.set(message.author?.id, 1)
+                            setTimeout(() => {
+                                countermap.set(message.author?.id, Number(countermap.get(message.author?.id)) - 1)
+                                if (Number(countermap.get(message.author?.id)) < 1) countermap.set(message.author?.id, 1)
+                            }, 15000)
+                            countermap.set(message.author?.id, Number(countermap.get(message.author?.id)) + 1)
+
+
+
+                            if (Number(countermap.get(message.author?.id)) > mute_amount) {
+                                let time = 10 * 60 * 1000; let mutetime = time;
+                                let reason = "Sending too many Links in a Short Time";
+
+                                member.timeout(mutetime, reason).then(async () => {
+                                    message.channel.send({
+                                        embeds: [new MessageEmbed()
+                                            .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
+                                            .setFooter(client.getFooter(es))
+                                            .setTitle(eval(client.la[ls]["handlers"]["antilinksjs"]["antilinks"]["variable1"]).replace("MUTED", "TIMEOUTED"))
+                                            .setDescription(eval(client.la[ls]["handlers"]["antilinksjs"]["antilinks"]["variable2"]))
+                                        ]
+                                    }).catch(() => { });
+                                }).catch(() => {
+                                    return message.channel.send(`:x: **I could not timeout ${member.user.tag}**`).then(m => {
+                                        setTimeout(() => { m.delete().catch(() => { }) }, 5000);
+                                    });
+                                });
+
+                                countermap.set(message.author?.id, 1)
+                            } else {
+                                await message.channel.send({
+                                    embeds: [new MessageEmbed()
+                                        .setColor(es.wrongcolor)
+                                        .setFooter(client.getFooter(es))
+                                        .setTitle(eval(client.la[ls]["handlers"]["antilinksjs"]["antilinks"]["variable5"]))
+                                    ]
+                                }).then(msg => setTimeout(() => {
+                                    msg.delete().catch(() => { })
+                                }, 3000)).catch(() => { });
+                            }
+                            return;
+                        }
+                    } 
+                    return;
                     for (let arg of message.content.toLowerCase().split(" ")) {
                         if (isValidURL(arg) && isAllowedUrl(arg, antisettings)) {
 
@@ -210,7 +432,7 @@ module.exports = async (client) => {
                                                 });
                                             });
                                         } catch (e) {
-                                            console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                                            console.error(e);
                                             message.channel.send({
                                                 embeds: [new MessageEmbed()
                                                     .setColor(es.wrongcolor)
@@ -265,7 +487,7 @@ module.exports = async (client) => {
                                                 });
                                             });
                                         } catch (e) {
-                                            console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                                            console.error(e);
                                             message.channel.send({
                                                 embeds: [new MessageEmbed()
                                                     .setColor(es.wrongcolor)
@@ -285,8 +507,8 @@ module.exports = async (client) => {
                                     }
                                 }
                             }
-                            await message.delete().catch(e => console.log("PREVENTED A BUG"))
-
+                            await message.delete().catch(() => null)
+                            
                             if (!countermap.get(message.author?.id)) countermap.set(message.author?.id, 1)
                             setTimeout(() => {
                                 countermap.set(message.author?.id, Number(countermap.get(message.author?.id)) - 1)

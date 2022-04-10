@@ -14,7 +14,7 @@ module.exports = async client => {
         let es = guildSettings?.embed || ee;
         let set = guildSettings?.autoembed
         if(!set) return 
-        for(const ch of set){
+        for await (const ch of set){
             try{
                 var channel = message.guild.channels.cache.get(ch)
                 if(!channel || channel == null || channel == undefined || !channel.name || channel.name == null || channel.name == undefined) channel = await message.guild.channels.fetch(ch);
@@ -41,7 +41,7 @@ module.exports = async client => {
                     if(oldEmbed.thumbnail) try{embed.setThumbnail(oldEmbed.thumbnail.url)}catch{}
                     if(oldEmbed.url) embed.setURL(oldEmbed.url)
                     if(oldEmbed.fields[0]){
-                        for(let i = 0; i<= oldEmbed.fields.length; i++){
+                        for (let i = 0; i<= oldEmbed.fields.length; i++){
                             if(oldEmbed.fields[i]) embed.addField(oldEmbed.fields[i].name, oldEmbed.fields[i].value)
                         }
                     }

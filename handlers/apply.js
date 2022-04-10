@@ -6,6 +6,8 @@ const Discord = require(`discord.js`);
 const antimap = new Map()
 const cooldown = new Set();
 const { MessageButton, MessageActionRow, Permissions } = require('discord.js')
+const { Modal, TextInputComponent, showModal } = require('discord-modals') // Modal and TextInputComponent class
+
 
 const Buttons = {
   acceptbutton: new MessageButton().setStyle('SUCCESS').setEmoji(`✅`).setCustomId(`Apply_accept`).setLabel(`Accept`),
@@ -31,45 +33,47 @@ module.exports = async (client) => {
   const applySystemAmount = 100;
 
 
-  const axios = require('axios');
-
   //define the apply system variable
   async function ApplySystem({ guild, channel, user, message, interaction, es, ls, preindex = false }) {
     let index = preindex ? preindex : false;
     const rawData = await client.apply.all();
     if(!index) {
-      let d = client.apply
       let rawIds = rawData.map(x => x?.ID ? x.ID : null).filter(Boolean);
       if(rawIds.includes(guild.id)) {
         let dData = rawData.find(d => d.ID == guild.id)?.data;
-        for(let i = 1; i<=applySystemAmount; i++) {
+        for (let i = 1; i<=applySystemAmount; i++) {
           let pre = `apply${i}`;
-          if(dData && dData[`${pre}`] && message.id === dData[`${pre}`][`message_id`] && channel.id === dData[`${pre}`][`channel_id`]) index = i;
+          if(!dData) break;
+          if(!dData[pre]) continue;
+          if(message.id === dData[pre][`message_id`] && (channel.id === dData[pre][`channel_id`] || message.channelId === dData[pre][`channel_id`])) {
+            index = i;
+            break;
+          }
         }
       }
     }
     if(!index) {
-      if(interaction?.token && !interaction.replied) return interaction?.reply({ephemeral: true, content: `:x: Could not find the Database for your Application!`}).catch(() => {});
-      else return interaction?.editReply({ephemeral: true, content: `:x: Could not find the Database for your Application!`}).catch(() => {});
+      if(!interaction?.replied) return interaction?.reply({ephemeral: true, content: `:x: Could not find the Database for your Application!`}).catch(() => null);
+      else return interaction?.editReply({ephemeral: true, content: `:x: Could not find the Database for your Application!`}).catch(() => null);
     }
     
-    if(interaction?.token && !interaction.replied) await interaction.reply({ephemeral: true, content: `Found the DB and now creating the APPLICATION ...`}).catch(() => {});
-    else await interaction.editReply({ephemeral: true, content: `Found the DB and now creating the APPLICATION ...`}).catch(() => {});
     let applyname = `apply${index}`;
     let applytickets = `applytickets${index}`; 
     let ticketsetupapply = `ticket-setup-apply-${index}`; 
     let pre = `apply${index}`;
     console.log("APPLY DB NUMBER: ".green, index);
+    var applyDbData = rawData.find(d => d.ID == guild.id)?.data?.[pre] || await apply_db.get(`${message.guild.id}.${pre}`);
     let apply_db = client.apply
     let buttonRow1 = new MessageActionRow().addComponents([Buttons.acceptbutton, Buttons.declinebutton, Buttons.ticketbutton]);
     let buttonRow2 = new MessageActionRow().addComponents([Buttons.emoji1button, Buttons.emoji2button, Buttons.emoji3button, Buttons.emoji4button, Buttons.emoji5button]);
     let allbuttons = [buttonRow1, buttonRow2];
-
+    if(!interaction?.replied && (!applyDbData.applytype || applyDbData.applytype !== "modal")) await interaction.reply({ephemeral: true, content: `Found the DB and now creating the APPLICATION ...`}).catch(() => null);
+    
     //
     try {
       //COOLDOWN SYSTEM
-      if (cooldown.has(user.id)) {
-        return interaction?.editReply({embeds: [new Discord.MessageEmbed()
+      if (cooldown.has(user.id) && user.id != "442355791412854784") {
+        return interaction?.reply({embeds: [new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable1`]))
@@ -83,17 +87,16 @@ module.exports = async (client) => {
       }
       var originaluser = user;
       var originalchannel = message.channel;
-      var applyDbData = rawData.find(d => d.ID == guild.id)?.data?.[pre] || await apply_db.get(`${message.guild.id}.${pre}`);
-
+      
       var channel_tosend = guild.channels.cache.get(applyDbData.f_channel_id);
       if (!channel_tosend) return 
       
       if (!antimap.has(user.id)) antimap.set(user.id)
-      else {
+      else if(user.id != "442355791412854784") {
         let e = {
           message: "You are on cooldown"
         }
-        return interaction?.editReply({
+        if(!interaction?.replied) return interaction?.reply({
           content: `${user}`, 
           embeds: [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
@@ -102,56 +105,120 @@ module.exports = async (client) => {
             .setDescription(eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable6`]))
           ], 
           ephemeral: true
-        }).catch(() => {});
+        }).catch(() => null);
+        else return interaction?.editReply({
+          content: `${user}`, 
+          embeds: [new Discord.MessageEmbed()
+            .setColor(es.wrongcolor)
+            .setFooter(client.getFooter(es))
+            .setTitle(eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable5`]))
+            .setDescription(eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable6`]))
+          ], 
+          ephemeral: true
+        }).catch(() => null);
       }
 
       var answers = [];
       var counter = 0;
       var url = ``;
       var Questions = applyDbData.QUESTIONS
-      
-      /*
-      // MODAL
-      if(Questions.length <= 5) {
-        await axios({
-          method: 'POST',
-          url: `https://discord.com/api/interactions/${interaction.id}/${interaction.token}/callback`,
-          headers: {
-            Authorization: `Bot ${client.token}`,
-          },
-          data: {
-            type: 9,
-            data: {
-              title: `${message.embeds[0].title}`,
-              custom_id: `application_${user.id}`,
-              components: [
-                {
-                  type: 1,
-                  components: 
-                    Questions.map((question, index) => {
-                      return {
-                        value: `${Object.values(question).join(" ")}`.substring(0, 50),
-                        type: 4,
-                        placeholder: `Answer ...`,
-                        custom_id: `Question_${index}`.substring(0, 25),
-                        label: `${Object.values(question).join(" ")}`.substring(0, 25),
-                        style: 1,
-                        min_length: 2,
-                        max_length: 400,
-                        required : true,
-                      }
-                    })
-                },
-              ],
-            },
-          },
+      // if it's a modal
+      if(applyDbData.applytype && applyDbData.applytype == "modal") {
+        const modal = new Modal() // We create a Modal
+        .setCustomId(`modal-apply-${originaluser.id}`)
+        .setTitle(`Apply for ${guild.name}`)
+        .addComponents(Questions.map( (Question, index) => {
+          return new TextInputComponent()
+            .setCustomId(`modalquestion_${index}`)
+            .setLabel(`${Object.values(Question)[0].content}`.substring(0, 45))
+            .setStyle(`${Object.values(Question)[0].modalquestion?.toUpperCase()}`)
+            .setMinLength(Object.values(Question)[0].minlength)
+            .setMaxLength(Object.values(Question)[0].maxlength)
+            .setPlaceholder('Write your Answer here..')
+            .setRequired(true)
+          })
+        );
+        showModal(modal, {
+          client: client, // Client to show the Modal through the Discord API.
+          interaction: interaction // Show the modal with interaction data.
         })
-      }
-      */
+        client.on('modalSubmit', async (modal) => {
+          if(modal.customId === `modal-apply-${originaluser.id}` && client.cluster.ids.map(d => d.id).includes(modal.guild.shard.id)){
+            const answers = []
+            Object.values(Questions).forEach( (Question, index) => {
+              const response = modal.getTextInputValue(`modalquestion_${index}`)
+              answers.push(response);
+            });
+            var embed = new Discord.MessageEmbed().setFooter(client.getFooter(es))
+              .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes(`http://`) || es.footericon.includes(`https://`)) ? es.footericon : client.user.displayAvatarURL() : null)
+              .setTitle(eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable13`])) //${user.tag} -
+              .setDescription(eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable14`]))
+              .setFooter(client.getFooter(originaluser.id, originaluser.displayAvatarURL({
+                dynamic: true
+              })))
+              .setThumbnail(originaluser.displayAvatarURL({
+                dynamic: true
+              }))
+              .setTimestamp()
 
+            //for each question add a field
+            for (var i = 0; i < Questions.length; i++) {
+              try {
+                let qu = Object.values(Questions[i])[0].content;
+                if (qu.length > 100) qu = String(Object.values(Questions[i])[0].content).substring(0, 100) + ` ...`
+                embed.addField((`**` + Object.keys(Questions[i])[0] + `. |** ` + qu).substring(0, 256), `>>> ` + String(answers[i]).substring(0, 1024))
+              } catch (e) {
+                console.error(e)
+                /* */
+              }
+            }
+
+
+            //send the embed into the channel
+            channel_tosend.send({embeds: [embed], components: allbuttons}).then(async thmsg => {
+              //set the message to the database
+              var obj = { };
+              obj[pre] = { temp: originaluser.id }
+              await apply_db.set(thmsg.id, obj);
+              //react with each emoji of all reactions
+              await modal.deferReply({ ephemeral: true })
+              modal.followUp({content: "Successfully sent your application!", ephemeral: true});
+            }).catch(async e => {
+              console.error(e);
+              await modal.deferReply({ ephemeral: true })
+              modal.followUp({content: "Could not send your application! Something went wrong...", ephemeral: true});
+            })
+            //then try catch
+            try {
+              //find the role from the database
+              var roleid =applyDbData.TEMP_ROLE;
+              if (roleid) {
+                if (roleid.length == 18) {
+                  //find the member from the reaction event
+                  var member = message.guild.members.cache.get(originaluser.id);
+                  //find the role
+                  var role = await message.guild.roles.cache.get(roleid);
+                  if (!role) return channel_tosend.send(eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable16`]))
+                  if (!member) return channel_tosend.send(eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable17`]))
+                  //add the role
+                  member.roles.add(role.id).catch((e)=>{channel_tosend.send(`I am Missing Permissions to grant the Role\n` + e.message)});
+                }
+              }
+
+            } catch (e) {
+              console.error(e)
+              channel_tosend.send(`I am Missing Permissions to grant the TEMPROLE\n` + e.message)
+              /* */
+            }
+          }  
+        });
+        return;
+      }
+      
       var current_question = Object.values(Questions[counter]).join(` `)
 
-      interaction?.editReply({content: `Starting the Application in your **Direct Messages!**`, ephemeral: true}).catch(() => {});
+      if(!interaction.replied) await interaction?.reply({content: `Starting the Application in your **Direct Messages!**`, ephemeral: true}).catch(() => null);
+      else await interaction?.editReply({content: `Starting the Application in your **Direct Messages!**`, ephemeral: true}).catch(() => null);
       //ask the current (first) Question from the Database
       ask_question(current_question);
 
@@ -261,9 +328,9 @@ module.exports = async (client) => {
                     .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes(`http://`) || es.footericon.includes(`https://`)) ? es.footericon : client.user.displayAvatarURL() : null)
                     .setTitle(eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable13`])) //${user.tag} -
                     .setDescription(eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable14`]))
-                    .setFooter(originaluser.id, originaluser.displayAvatarURL({
+                    .setFooter(client.getFooter(originaluser.id, originaluser.displayAvatarURL({
                       dynamic: true
-                    }))
+                    })))
                     .setThumbnail(originaluser.displayAvatarURL({
                       dynamic: true
                     }))
@@ -273,10 +340,10 @@ module.exports = async (client) => {
                   for (var i = 0; i < Questions.length; i++) {
                     try {
                       let qu = Object.values(Questions[i]);
-                      if (qu.length > 100) qu = String(Object.values(Questions[i])).substr(0, 100) + ` ...`
-                      embed.addField((`**` + Object.keys(Questions[i]) + `. |** ` + qu).substr(0, 256), `>>> ` + String(answers[i]).substr(0, 1000))
+                      if (qu.length > 100) qu = String(Object.values(Questions[i])).substring(0, 100) + ` ...`
+                      embed.addField((`**` + Object.keys(Questions[i]) + `. |** ` + qu).substring(0, 256), `>>> ` + String(answers[i]).substring(0, 1000))
                     } catch (e) {
-                      console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                      console.error(e)
                       /* */
                     }
                   }
@@ -286,7 +353,9 @@ module.exports = async (client) => {
                   
                   channel_tosend.send({embeds: [embed], components: allbuttons}).then(async thmsg => {
                     //set the message to the database
-                      await apply_db.set(thmsg.id+`.${pre}.temp`, originaluser.id);
+                    var obj = { };
+                    obj[pre] = { temp: originaluser.id }
+                    await apply_db.set(thmsg.id, obj);
                     //react with each emoji of all reactions
                   });
                   // `Producing Code` (May take some time)
@@ -315,7 +384,7 @@ module.exports = async (client) => {
                     }
 
                   } catch (e) {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     channel_tosend.send(`I am Missing Permissions to grant the TEMPROLE\n` + e.message)
                     /* */
                   }
@@ -332,7 +401,7 @@ module.exports = async (client) => {
                   ]})
                 }
               }).catch(e => {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
                 antimap.delete(originaluser.id)
                 originaluser.send({embeds: [new Discord.MessageEmbed()
                   .setColor(es.wrongcolor)
@@ -357,8 +426,8 @@ module.exports = async (client) => {
           for (var i = 0; i < Questions.length; i++) {
             try {
               let qu = Object.values(Questions[i]);
-              if (qu.length > 100) qu = String(Object.values(Questions[i])).substr(0, 100) + ` ...`
-              embed.addField((`**` + Object.keys(Questions[i]) + `. |** ` + qu).substr(0, 256), `>>> ` + String(answers[i]).substr(0, 1000))
+              if (qu.length > 100) qu = String(Object.values(Questions[i])).substring(0, 100) + ` ...`
+              embed.addField((`**` + Object.keys(Questions[i]) + `. |** ` + qu).substring(0, 256), `>>> ` + String(answers[i]).substring(0, 1000))
             } catch {
               /* */
             }
@@ -367,7 +436,9 @@ module.exports = async (client) => {
           //send the embed into the channel
           let thhmsg = await channel_tosend.send({ embeds: [embed], components: allbuttons })
           //set the message to the database
-          apply_db.set(thhmsg.id+`.${pre}.temp`, originaluser.id);
+          var obj = { };
+          obj[pre] = { temp: originaluser.id }
+          await apply_db.set(thhmsg.id, obj);
           //react with each emoji of all reactions            
 
           // `Producing Code` (May take some time)
@@ -395,7 +466,7 @@ module.exports = async (client) => {
             }
 
           } catch (e) {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
             channel_tosend.send(eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable25`]))
             /* */
           }
@@ -415,7 +486,7 @@ module.exports = async (client) => {
           url.indexOf(`jpg`, url.length - `jpg`.length /*or 3*/ ) !== -1;
       }
     } catch (e) {
-      console.log(e.stack ? String(e.stack).grey : String(e).grey)
+      console.error(e)
       message.reply({embeds: [new Discord.MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -456,14 +527,15 @@ module.exports = async (client) => {
     const ls = guildSettings.language
     if (interaction?.customId.startsWith(`Apply_`)) {
         let index = false;
-        let d = client.apply
         const rawData = await client.apply.all();
-        let rawIds = rawData.map(x => x?.ID ? x.ID : null).filter(Boolean);
-        if(rawIds.includes(guild.id)) {
-          let dData = rawData.find(d => d.ID == guild.id)?.data
-          for(let i = 1; i<=applySystemAmount; i++) {
+        let dData = rawData.find(d => d.ID == guild.id)?.data
+        let mData = rawData.find(d => d.ID == message.id)?.data
+        if(dData) {
+          for (let i = 1; i<=applySystemAmount; i++) {
             let pre = `apply${i}`;
-            if(rawIds.includes(message.id) && d.has(message.id, pre) && channel.id === dData[`${pre}`][`f_channel_id`]) index = i;
+            if(!mData || !mData[pre]) continue;
+            if(!dData[pre]) continue;
+            if(channel.id === dData[pre][`f_channel_id`]) index = i;
           }
         }
         if(!index) {
@@ -485,7 +557,7 @@ module.exports = async (client) => {
         applyMsgData = applyMsgData?.[pre];
         try {
           //fetch the message from the data
-          const targetMessage = await message.channel.messages.fetch(message.id, false, true).catch(() => {})
+          const targetMessage = await message.channel.messages.fetch(message.id, false, true).catch(() => null)
   
           //if no message found, return an error
           if (!targetMessage)
@@ -521,7 +593,7 @@ module.exports = async (client) => {
           const embed = new Discord.MessageEmbed()
             .setFooter(client.getFooter(es))
             .setTitle(oldEmbed.title)
-            .setDescription(`${oldEmbed.description ? `${oldEmbed.description}\n`: ``} Edited by: <@${interaction?.user.id}> | ${emoji[interaction?.customId]}`.substr(0, 2048))
+            .setDescription(`${oldEmbed.description ? `${oldEmbed.description}\n`: ``} Edited by: <@${interaction?.user.id}> | ${emoji[interaction?.customId]}`.substring(0, 2048))
   
           //for each data in it from before hand
           if (oldEmbed.fields[0]) {
@@ -543,7 +615,7 @@ module.exports = async (client) => {
             embed.setColor(`GREEN`)
             
             //EDIT THE EMBED
-            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => {}).then(async msg=>{
+            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => null).then(async msg=>{
               apply_db.set(msg.id+`.${pre}.Apply`, {
                 id: msg.id,
                 user: interaction?.user.id,
@@ -561,7 +633,7 @@ module.exports = async (client) => {
               .setDescription(applyDbData.accept)
   
             //GET THE USER FROM THE DATABASE
-            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => {});
+            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => null);
             if(!usert) return interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable31`]), ephemeral: true});
             //try to remove all roles after that continue?
             await rome_old_roles(message, usert, applyDbData, pre);
@@ -569,12 +641,12 @@ module.exports = async (client) => {
             //send the user the approve message
             usert.send({embeds: [approve]}).catch(e => {
               interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable32`]), ephemeral: true});
-              console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              console.error(e);
             }).then(()=>{
-              if(interaction.replied) {
-                interaction.editReply({content: `👍`, ephemeral: true}).catch(() => {});
+              if(interaction?.replied) {
+                interaction.editReply({content: `👍`, ephemeral: true}).catch(() => null);
               }
-              interaction?.reply({content: `👍`, ephemeral: true}).catch(() => {});
+              interaction?.reply({content: `👍`, ephemeral: true}).catch(() => null);
             })
             //TRY CATCH --- ADDING ROLE
             try {
@@ -601,7 +673,7 @@ module.exports = async (client) => {
           //if the reaction is for deny
           if (interaction?.customId === `Apply_deny`) {
             embed.setColor(es.wrongcolor)
-            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => {}).then(async msg=>{
+            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => null).then(async msg=>{
               apply_db.set(msg.id, {
                 id: msg.id,
                 user: interaction?.user.id,
@@ -616,7 +688,7 @@ module.exports = async (client) => {
                 dynamic: true
               })))
               
-            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => {});
+            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => null);
             
             if(!usert) return interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable31`]),ephemeral:  true});
 
@@ -624,7 +696,7 @@ module.exports = async (client) => {
               interaction?.reply({content: `👍`, ephemeral: true})
             }).catch(e => {
               if(e) {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                console.error(e);
                 interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable35`]),ephemeral:  true});
               }
             })
@@ -639,7 +711,7 @@ module.exports = async (client) => {
             embed.setColor(`ORANGE`)
   
             //EDIT THE EMBED
-            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => {}).then(async msg=>{
+            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => null).then(async msg=>{
               apply_db.set(msg.id, {
                 id: msg.id,
                 user: interaction?.user.id,
@@ -648,9 +720,9 @@ module.exports = async (client) => {
             })
   
             //GET THE USER FROM THE DATABASE
-            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => {});
+            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => null);
             if(!usert)  {
-              if(interaction.replied) interaction.channel.send({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable31`]),ephemeral:  true});
+              if(interaction?.replied) interaction.channel.send({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable31`]),ephemeral:  true});
               else interaction.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable31`]),ephemeral:  true});
               return;
             }
@@ -660,7 +732,7 @@ module.exports = async (client) => {
   
             //TRY CATCH --- ADDING ROLE
             try {
-              message.guild.channels.create(`Ticket-${usert.username}`.substr(0, 32), {
+              message.guild.channels.create(`Ticket-${usert.username}`.substring(0, 32), {
                   type: 'text',
                   topic: `Just Delete this channel, if not needed there is no delete/close command!`,
                   permissionOverwrites: [{
@@ -684,11 +756,11 @@ module.exports = async (client) => {
                         channel.permissionOverwrites.edit(usert.id, {
                           VIEW_CHANNEL: true,
                           SEND_MESSAGES: true
-                        }).catch(() => {})
+                        }).catch(() => null)
                         channel.permissionOverwrites.edit(interaction?.user.id, {
                           VIEW_CHANNEL: true,
                           SEND_MESSAGES: true
-                        }).catch(() => {})
+                        }).catch(() => null)
                       }
                     }catch{
   
@@ -759,7 +831,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
                     //send the user the approve message
                     usert.send({embeds: [approve]}).catch(e => {
                       interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable39`]),ephemeral:  true});
-                      console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                      console.error(e);
                     }).then(()=>{
                       interaction?.reply({content: `👍`, ephemeral: true})
                     })
@@ -785,7 +857,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             embed.setColor(`#54eeff`)
   
             //EDIT THE EMBED
-            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => {}).then(async msg=>{
+            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => null).then(async msg=>{
               apply_db.set(msg.id+`.${pre}.Apply`, {
                 id: msg.id,
                 user: interaction?.user.id,
@@ -809,7 +881,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             }
   
             //GET THE USER FROM THE DATABASE
-            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => {});
+            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => null);
   
             if(!usert) return interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable31`]),ephemeral:  true});
             //try to remove all roles after that continue?
@@ -818,7 +890,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             //send the user the approve message
             usert.send({embeds: [approve]}).catch(e => {
               interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable42`]),ephemeral:  true});
-              console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              console.error(e);
             }).then(()=>{
               interaction?.reply({content: `👍`, ephemeral: true})
             })
@@ -853,7 +925,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             embed.setColor(`#54cfff`)
   
             //EDIT THE EMBED
-            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => {}).then(async msg=>{
+            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => null).then(async msg=>{
               apply_db.set(msg.id+`.${pre}.Apply`, {
                 id: msg.id,
                 user: interaction?.user.id,
@@ -877,7 +949,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             }
   
             //GET THE USER FROM THE DATABASE
-            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => {});
+            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => null);
             if(!usert) return interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable31`]),ephemeral:  true});
   
             //try to remove all roles after that continue?
@@ -886,7 +958,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             //send the user the approve message
             usert.send({embeds: [approve]}).catch(e => {
               interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable45`]),ephemeral:  true});
-              console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              console.error(e);
             }).then(()=>{
               interaction?.reply({content: `👍`, ephemeral: true})
             })
@@ -920,7 +992,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             embed.setColor(`#549bff`)
   
             //EDIT THE EMBED
-            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => {}).then(async msg=>{
+            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => null).then(async msg=>{
               apply_db.set(msg.id+`.${pre}.Apply`, {
                 id: msg.id,
                 user: interaction?.user.id,
@@ -944,7 +1016,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             }
   
             //GET THE USER FROM THE DATABASE
-            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => {});
+            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => null);
             if(!usert) return interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable31`]),ephemeral:  true});
   
             //try to remove all roles after that continue?
@@ -953,7 +1025,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             //send the user the approve message
             usert.send({embeds: [approve]}).catch(e => {
               interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable48`]),ephemeral:  true});
-              console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              console.error(e);
             }).then(()=>{
               interaction?.reply({content: `👍`, ephemeral: true})
             })
@@ -986,7 +1058,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             embed.setColor(`#6254ff`)
   
             //EDIT THE EMBED
-            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => {}).then(async msg=>{
+            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => null).then(async msg=>{
               apply_db.set(msg.id+`.${pre}.Apply`, {
                 id: msg.id,
                 user: interaction?.user.id,
@@ -1010,7 +1082,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             }
   
             //GET THE USER FROM THE DATABASE
-            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => {});
+            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => null);
             if(!usert) return interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable31`]),ephemeral:  true});
   
             //try to remove all roles after that continue?
@@ -1019,7 +1091,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             //send the user the approve message
             usert.send({embeds: [approve]}).catch(e => {
               interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable51`]),ephemeral:  true});
-              console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              console.error(e);
             }).then(()=>{
               interaction?.reply({content: `👍`, ephemeral: true})
             })
@@ -1052,7 +1124,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             embed.setColor(`#1705e6`)
   
             //EDIT THE EMBED
-            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => {}).then(async msg=>{
+            targetMessage.edit({embeds: [embed], components: allbuttons_d}).catch(() => null).then(async msg=>{
               apply_db.set(msg.id+`.${pre}.Apply`, {
                 id: msg.id,
                 user: interaction?.user.id,
@@ -1076,7 +1148,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             }
   
             //GET THE USER FROM THE DATABASE
-            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => {});
+            var usert = await client.users.fetch(applyMsgData?.temp).catch(() => null);
             if(!usert) return interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable31`]),ephemeral:  true});
   
             //try to remove all roles after that continue?
@@ -1085,7 +1157,7 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
             //send the user the approve message
             usert.send({embeds: [approve]}).catch(e => {
               interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable54`]),ephemeral:  true});
-              console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              console.error(e);
             }).then(()=>{
               interaction?.reply({content: `👍`, ephemeral: true})
             })
@@ -1110,10 +1182,10 @@ You can also type: ${client.settings.get(channel.guild.id, `prefix`)}ticket!`, m
               })
             }
           }
-          try{ if(!interaction.replied) interaction?.deferUpdate().catch(() => {}) }catch{ }
+          try{ if(!interaction?.replied) interaction?.deferUpdate().catch(() => null) }catch{ }
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
-          if(interaction.replied) {
+          console.error(e)
+          if(interaction?.replied) {
             interaction?.channel.send({embeds: [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
               .setFooter(client.getFooter(es))

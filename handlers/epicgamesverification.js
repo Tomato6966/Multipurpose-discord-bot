@@ -46,7 +46,7 @@ module.exports = async client => {
                 ]
             });
         } else {
-            await user.fetch().catch(() => {});
+            await user.fetch().catch(() => null);
             //else force Create it!  
             user.send({
                 content: `:question: **Select your Platform**\n> Where do you play on?`,
@@ -83,24 +83,24 @@ module.exports = async client => {
                     )
                 ]
             }).then(async msg => {
-                await msg.fetch().catch(() => {});
+                await msg.fetch().catch(() => null);
                 await interaction.reply({
                     content: "👍 **Check your DIRECT Messages! And answer my Questions**",
                     ephemeral: true,
                 })
-                let Platform = await msg.channel.awaitMessageComponent({ filter: (i) => i.user.id === user.id && i.customId == "Platform", time: 120_000, max: 1, errors: ['time'] }).then(i => {i.deferUpdate().catch(()=>{}); return i.values[0]}).catch(() => {}) || false;
+                let Platform = await msg.channel.awaitMessageComponent({ filter: (i) => i.user.id === user.id && i.customId == "Platform", time: 120_000, max: 1, errors: ['time'] }).then(i => {i.deferUpdate().catch(() => null); return i.values[0]}).catch(() => null) || false;
                 if(!Platform) {
                     return user.send(":x: Cancelled, due to no reaction in under 2 Minutes!")
                 }
                 user.send(`:question: **What is your EPIC GAMES Username?**\n> Make sure to send just the Username and send it 1:1 as it is \`Epicgames.com\``)
-                let Username = await msg.channel.awaitMessages({ filter: (m) => m.author.id === user.id, time: 120_000, max: 1, errors: ['time'] }).then(c => c.first()?.content).catch(() => {}) || false;
+                let Username = await msg.channel.awaitMessages({ filter: (m) => m.author.id === user.id, time: 120_000, max: 1, errors: ['time'] }).then(c => c.first()?.content).catch(() => null) || false;
                 if(!Username) {
                     return user.send(":x: Cancelled, due to not sending the Username in under 2 Minutes!")
                 }
                 let others = await client.epicgamesDB.all().then(d => d.find(d => d?.data?.guild && d?.data?.guild == guildId && d?.data?.epic && d?.data?.epic == Username)?.data);
                 if(others && others.length > 0) return user.send(`:x: **Someone with the User-ID: \`${others.user}\` Linked their Account with this Epic Games Name!**`) 
                 let fortniteClient = new fortnite("e032828b-886d-4ed6-9aa1-0e2e725592a8");
-                let tdata = await fortniteClient.user(Username, Platform == "others" ? "pc" : Platform).catch(() => {}) || false;
+                let tdata = await fortniteClient.user(Username, Platform == "others" ? "pc" : Platform).catch(() => null) || false;
                 if(!tdata || tdata.code === 404) {
                     return user.send(":x: Could not find your Epic Games Account, please try again and make sure you send the right name!")
                 }
@@ -141,15 +141,15 @@ module.exports = async client => {
                         )
                     ]
                 }).then(async msg => {
-                    let InputMethod = await msg.channel.awaitMessageComponent({ filter: (i) => i.user.id === user.id && i.customId == "InputMethod", time: 120_000, max: 1, errors: ['time'] }).then(i => {i.deferUpdate().catch(()=>{}); return i.values[0]}).catch(() => {}) || false;
+                    let InputMethod = await msg.channel.awaitMessageComponent({ filter: (i) => i.user.id === user.id && i.customId == "InputMethod", time: 120_000, max: 1, errors: ['time'] }).then(i => {i.deferUpdate().catch(() => null); return i.values[0]}).catch(() => null) || false;
                     if(!InputMethod) {
                         await client.epicgamesDB.set(user.id+".InputMethod", "others");
                         user.send("Set the Default Input Method due to no reaction in under 2 Minutes!");
                     } else {
                         await client.epicgamesDB.set(user.id+".InputMethod", InputMethod);
                     }
-                    user.send("✋ **Successfully Linked your Account!**").catch(() => {});
-                    let logChannel = guild.channels.cache.get(guilddata.logChannel) || await guild.channels.fetch(guilddata.logChannel).catch(() => {}) || false
+                    user.send("✋ **Successfully Linked your Account!**").catch(() => null);
+                    let logChannel = guild.channels.cache.get(guilddata.logChannel) || await guild.channels.fetch(guilddata.logChannel).catch(() => null) || false
                     if(guilddata.logChannel && guilddata.logChannel.length > 5 && logChannel && logChannel.id) { 
                         logChannel.send({
                             embeds: [
@@ -161,11 +161,11 @@ module.exports = async client => {
                                     .addField("**Input Method:**", `\`\`\`${InputMethod}\`\`\``)
                                     .setFooter(client.getFooter("ID: " + user.id, user.displayAvatarURL({dynamic: true})))
                             ]
-                        }).catch(() => {})
+                        }).catch(() => null)
                     }
                 })
             }).catch((e) => {
-                console.log(e)
+                console.error(e)
                 interaction.reply({
                     content: "❌ **I can't dm you... Please enable your DMS first!**",
                     ephemeral: true,

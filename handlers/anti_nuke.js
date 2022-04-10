@@ -259,7 +259,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable2"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable3"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -283,7 +283,7 @@ module.exports = async (client) => {
                                     .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                     .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable2"]))
                                     .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable3"]))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                             return;
                         } catch (e) {
@@ -293,6 +293,7 @@ module.exports = async (client) => {
                     }
                     return;
                 })
+                if(!AuditData) return;
                 let AddedUserID = AuditData.executor.id;
                 let LogTimeString = AuditData.createdTimestamp.toString();
 
@@ -310,7 +311,7 @@ module.exports = async (client) => {
                                     .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                     .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable5"]))
                                     .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable6"]))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                             return;
                         } catch (e) {
@@ -335,7 +336,7 @@ module.exports = async (client) => {
                                         .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                             dynamic: true
                                         })))
-                                    ]}).catch(() => {})
+                                    ]}).catch(() => null)
                                 }
                             } catch (e) {
                                 console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -357,7 +358,7 @@ module.exports = async (client) => {
                                         .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                             dynamic: true
                                         })))
-                                    ]}).catch(() => {})
+                                    ]}).catch(() => null)
                                 }
                             } catch (e) {
                                 console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -379,7 +380,7 @@ module.exports = async (client) => {
                                         .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                             dynamic: true
                                         })))
-                                    ]}).catch(() => {})
+                                    ]}).catch(() => null)
                                 }
                             } catch (e) {
                                 console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -401,7 +402,7 @@ module.exports = async (client) => {
                                         .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                             dynamic: true
                                         })))
-                                    ]}).catch(() => {})
+                                    ]}).catch(() => null)
                                 }
                             } catch (e) {
                                 console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -424,7 +425,7 @@ module.exports = async (client) => {
                                         .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                             dynamic: true
                                         })))
-                                    ]}).catch(() => {})
+                                    ]}).catch(() => null)
                                 }
                             } catch (e) {
                                 console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -446,7 +447,7 @@ module.exports = async (client) => {
                                         .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                             dynamic: true
                                         })))
-                                    ]}).catch(() => {})
+                                    ]}).catch(() => null)
                                 }
                             } catch (e) {
                                 console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -492,7 +493,7 @@ module.exports = async (client) => {
                                                         dynamic: true
                                                     }))
                                                     .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable13"]))
-                                                ]}).catch(() => {})
+                                                ]}).catch(() => null)
                                             }
                                         } catch (e) {
                                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -516,7 +517,7 @@ module.exports = async (client) => {
                                                         dynamic: true
                                                     }))
                                                     .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable14"]))
-                                                ]}).catch(() => {})
+                                                ]}).catch(() => null)
                                             }
                                         } catch (e) {
                                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -561,14 +562,14 @@ module.exports = async (client) => {
                                                 .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                     dynamic: true
                                                 })))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
                                     }
                                 }
                                 console.log(`Removed roles of ${member.user.tag} | ${member.user.id}`)
-                            }).catch(() => {})
+                            }).catch(() => null)
                         }
                         //Kick Member punishment 4
                         if (AddedMember.kickable && data.antibot.punishment.member.kick.enabled &&
@@ -618,7 +619,7 @@ module.exports = async (client) => {
                                                         dynamic: true
                                                     }))
                                                     .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable16"]))
-                                                ]}).catch(() => {})
+                                                ]}).catch(() => null)
                                             }
                                         } catch (e) {
                                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -642,7 +643,7 @@ module.exports = async (client) => {
                                                         dynamic: true
                                                     }))
                                                     .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable17"]))
-                                                ]}).catch(() => {})
+                                                ]}).catch(() => null)
                                             }
                                         } catch (e) {
                                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -672,7 +673,7 @@ module.exports = async (client) => {
                                                 .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                     dynamic: true
                                                 })))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -712,7 +713,7 @@ module.exports = async (client) => {
                                                         dynamic: true
                                                     }))
                                                     .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable19"]))
-                                                ]}).catch(() => {})
+                                                ]}).catch(() => null)
                                             }
                                         } catch (e) {
                                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -736,7 +737,7 @@ module.exports = async (client) => {
                                                         dynamic: true
                                                     }))
                                                     .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable20"]))
-                                                ]}).catch(() => {})
+                                                ]}).catch(() => null)
                                             }
                                         } catch (e) {
                                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -772,7 +773,7 @@ module.exports = async (client) => {
                                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                         dynamic: true
                                                     })))
-                                                ]}).catch(() => {})
+                                                ]}).catch(() => null)
                                             }
                                         } catch (e) {
                                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -814,7 +815,7 @@ module.exports = async (client) => {
                             .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                             .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable2"]))
                             .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable3"]))
-                        ]}).catch(() => {})
+                        ]}).catch(() => null)
                     }
                     return;
                 } catch (e) {
@@ -838,7 +839,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable23"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable24"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -867,7 +868,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable26"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable27"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -893,7 +894,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -916,7 +917,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -939,7 +940,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -961,7 +962,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -984,7 +985,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1006,7 +1007,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1065,14 +1066,14 @@ module.exports = async (client) => {
                                             .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                 dynamic: true
                                             })))
-                                        ]}).catch(() => {})
+                                        ]}).catch(() => null)
                                     }
                                 } catch (e) {
                                     console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
                                 }
                             }
                             console.log(`Removed roles of ${member.user.tag} | ${member.user.id}`)
-                        }).catch(() => {})
+                        }).catch(() => null)
                     }
                     //Kick Member punishment 4
                     if (AddedMember.kickable && data.antideleteuser.punishment.member.kick.enabled &&
@@ -1124,7 +1125,7 @@ module.exports = async (client) => {
                                             .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                 dynamic: true
                                             })))
-                                        ]}).catch(() => {})
+                                        ]}).catch(() => null)
                                     }
                                 } catch (e) {
                                     console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1170,7 +1171,7 @@ module.exports = async (client) => {
                                                 .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                     dynamic: true
                                                 })))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1210,7 +1211,7 @@ module.exports = async (client) => {
                             .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                             .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable2"]))
                             .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable3"]))
-                        ]}).catch(() => {})
+                        ]}).catch(() => null)
                     }
                     return;
                 } catch (e) {
@@ -1235,7 +1236,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable38"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable39"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -1264,7 +1265,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable41"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable42"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -1290,7 +1291,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1313,7 +1314,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1336,7 +1337,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1358,7 +1359,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1380,7 +1381,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1402,7 +1403,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1461,14 +1462,14 @@ module.exports = async (client) => {
                                             .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                 dynamic: true
                                             })))
-                                        ]}).catch(() => {})
+                                        ]}).catch(() => null)
                                     }
                                 } catch (e) {
                                     console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
                                 }
                             }
                             console.log(`ANTI BAN - Removed roles of ${member.user.tag} | ${member.user.id}`)
-                        }).catch(() => {})
+                        }).catch(() => null)
                     }
                     //Kick Member punishment 4
                     if (AddedMember.kickable && data.antideleteuser.punishment.member.kick.enabled &&
@@ -1520,7 +1521,7 @@ module.exports = async (client) => {
                                             .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                 dynamic: true
                                             })))
-                                        ]}).catch(() => {})
+                                        ]}).catch(() => null)
                                     }
                                 } catch (e) {
                                     console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1566,7 +1567,7 @@ module.exports = async (client) => {
                                                 .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                     dynamic: true
                                                 })))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1639,7 +1640,7 @@ module.exports = async (client) => {
                             .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                             .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable2"]))
                             .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable3"]))
-                        ]}).catch(() => {})
+                        ]}).catch(() => null)
                     }
                     return;
                 } catch (e) {
@@ -1664,7 +1665,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable53"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable54"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -1674,6 +1675,7 @@ module.exports = async (client) => {
                 }
                 return;
             })
+            if(!AuditData) return;
             let AddedUserID = AuditData.executor.id;
             let LogTimeString = AuditData.createdTimestamp.toString();
 
@@ -1692,7 +1694,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable56"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable57"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -1718,7 +1720,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1741,7 +1743,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1764,7 +1766,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1786,7 +1788,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1808,7 +1810,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1830,7 +1832,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1873,7 +1875,7 @@ module.exports = async (client) => {
                                                 .setColor("GREEN")
                                                 .setAuthor(`ANTI CHANNEL-CREATE - I Delete: ${channel.name}`, "https://cdn.discordapp.com/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png")
                                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable64"]))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1912,14 +1914,14 @@ module.exports = async (client) => {
                                             .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                 dynamic: true
                                             })))
-                                        ]}).catch(() => {})
+                                        ]}).catch(() => null)
                                     }
                                 } catch (e) {
                                     console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
                                 }
                             }
                             console.log(`ANTI CHANNEL CREATE - Removed roles of ${member.user.tag} | ${member.user.id}`)
-                        }).catch(() => {})
+                        }).catch(() => null)
                     }
                     //Kick Member punishment 4
                     if (AddedMember.kickable && data.antichannelcreate.punishment.member.kick.enabled &&
@@ -1965,7 +1967,7 @@ module.exports = async (client) => {
                                                 .setColor("GREEN")
                                                 .setAuthor(`ANTI CHANNEL-CREATE - I Delete: ${channel.name}`, "https://cdn.discordapp.com/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png")
                                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable66"]))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -1993,7 +1995,7 @@ module.exports = async (client) => {
                                             .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                 dynamic: true
                                             })))
-                                        ]}).catch(() => {})
+                                        ]}).catch(() => null)
                                     }
                                 } catch (e) {
                                     console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2029,7 +2031,7 @@ module.exports = async (client) => {
                                                 .setColor("GREEN")
                                                 .setAuthor(`ANTI CHANNEL-CREATE - I Delete: ${channel.name}`, "https://cdn.discordapp.com/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png")
                                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable68"]))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2060,7 +2062,7 @@ module.exports = async (client) => {
                                                 .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                     dynamic: true
                                                 })))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2102,7 +2104,7 @@ module.exports = async (client) => {
                             .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                             .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable2"]))
                             .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable3"]))
-                        ]}).catch(() => {})
+                        ]}).catch(() => null)
                     }
                     return;
                 } catch (e) {
@@ -2127,7 +2129,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable71"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable72"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -2137,6 +2139,7 @@ module.exports = async (client) => {
                 }
                 return;
             })
+            if(!AuditData) return;
             let AddedUserID = AuditData.executor.id;
             let LogTimeString = AuditData.createdTimestamp.toString();
 
@@ -2155,7 +2158,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable74"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable75"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -2181,7 +2184,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2204,7 +2207,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2227,7 +2230,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2249,7 +2252,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2271,7 +2274,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2293,7 +2296,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2350,14 +2353,14 @@ module.exports = async (client) => {
                                             .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                 dynamic: true
                                             })))
-                                        ]}).catch(() => {})
+                                        ]}).catch(() => null)
                                     }
                                 } catch (e) {
                                     console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
                                 }
                             }
                             console.log(`ANTI CHANNEL DELETE - Removed roles of ${member.user.tag} | ${member.user.id}`)
-                        }).catch(() => {})
+                        }).catch(() => null)
                     }
                     //Kick Member punishment 4
                     if (AddedMember.kickable && data.antichanneldelete.punishment.member.kick.enabled &&
@@ -2406,7 +2409,7 @@ module.exports = async (client) => {
                                             .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                 dynamic: true
                                             })))
-                                        ]}).catch(() => {})
+                                        ]}).catch(() => null)
                                     }
                                 } catch (e) {
                                     console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2448,7 +2451,7 @@ module.exports = async (client) => {
                                                 .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                     dynamic: true
                                                 })))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2487,7 +2490,7 @@ module.exports = async (client) => {
                             .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                             .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable2"]))
                             .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable3"]))
-                        ]}).catch(() => {})
+                        ]}).catch(() => null)
                     }
                     return;
                 } catch (e) {
@@ -2512,7 +2515,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable86"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable87"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -2522,6 +2525,7 @@ module.exports = async (client) => {
                 }
                 return;
             })
+            if(!AuditData) return;
             let AddedUserID = AuditData.executor.id;
             let LogTimeString = AuditData.createdTimestamp.toString();
 
@@ -2540,7 +2544,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable89"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable90"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -2566,7 +2570,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2589,7 +2593,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2612,7 +2616,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2634,7 +2638,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2656,7 +2660,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2678,7 +2682,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2720,7 +2724,7 @@ module.exports = async (client) => {
                                                 .setColor("GREEN")
                                                 .setAuthor(`ANTI ROLE CREATE - I Deleted: ${role.name}`, "https://cdn.discordapp.com/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png")
                                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable97"]))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2759,14 +2763,14 @@ module.exports = async (client) => {
                                             .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                 dynamic: true
                                             })))
-                                        ]}).catch(() => {})
+                                        ]}).catch(() => null)
                                     }
                                 } catch (e) {
                                     console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
                                 }
                             }
                             console.log(`ANTI Role Create - Removed roles of ${member.user.tag} | ${member.user.id}`)
-                        }).catch(() => {})
+                        }).catch(() => null)
                     }
                     //Kick Member punishment 4
                     if (AddedMember.kickable && data.anticreaterole.punishment.member.kick.enabled &&
@@ -2812,7 +2816,7 @@ module.exports = async (client) => {
                                                 .setColor("GREEN")
                                                 .setAuthor(`ANTI ROLE CREATE - I Deleted: ${role.name}`, "https://cdn.discordapp.com/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png")
                                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable99"]))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2840,7 +2844,7 @@ module.exports = async (client) => {
                                             .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                 dynamic: true
                                             })))
-                                        ]}).catch(() => {})
+                                        ]}).catch(() => null)
                                     }
                                 } catch (e) {
                                     console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2876,7 +2880,7 @@ module.exports = async (client) => {
                                                 .setColor("GREEN")
                                                 .setAuthor(`ANTI ROLE CREATE - I Deleted: ${role.name}`, "https://cdn.discordapp.com/attachments/820695790170275871/869657327941324860/PS7lwz7HwAAAABJRU5ErkJggg.png")
                                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable101"]))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2907,7 +2911,7 @@ module.exports = async (client) => {
                                                 .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                     dynamic: true
                                                 })))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -2946,7 +2950,7 @@ module.exports = async (client) => {
                             .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                             .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable2"]))
                             .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable3"]))
-                        ]}).catch(() => {})
+                        ]}).catch(() => null)
                     }
                     return;
                 } catch (e) {
@@ -2971,7 +2975,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable104"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable105"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -2981,6 +2985,7 @@ module.exports = async (client) => {
                 }
                 return;
             })
+            if(!AuditData) return;
             let AddedUserID = AuditData.executor.id;
             let LogTimeString = AuditData.createdTimestamp.toString();
 
@@ -2999,7 +3004,7 @@ module.exports = async (client) => {
                                 .setAuthor(client.getAuthor('This is a Warn',  'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/facebook/65/warning-sign_26a0.png'))
                                 .setTitle(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable107"]))
                                 .setDescription(eval(client.la[ls]["handlers"]["antinukejs"]["anti_nuke"]["variable108"]))
-                            ]}).catch(() => {})
+                            ]}).catch(() => null)
                         }
                         return;
                     } catch (e) {
@@ -3025,7 +3030,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -3048,7 +3053,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -3071,7 +3076,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -3093,7 +3098,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -3116,7 +3121,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -3138,7 +3143,7 @@ module.exports = async (client) => {
                                     .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                         dynamic: true
                                     })))
-                                ]}).catch(() => {})
+                                ]}).catch(() => null)
                             }
                         } catch (e) {
                             console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -3195,14 +3200,14 @@ module.exports = async (client) => {
                                             .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                 dynamic: true
                                             })))
-                                        ]}).catch(() => {})
+                                        ]}).catch(() => null)
                                     }
                                 } catch (e) {
                                     console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
                                 }
                             }
                             console.log(`ANTI Role DELETE - Removed roles of ${member.user.tag} | ${member.user.id}`)
-                        }).catch(() => {})
+                        }).catch(() => null)
                     }
                     //Kick Member punishment 4
                     if (AddedMember.kickable && data.antideleterole.punishment.member.kick.enabled &&
@@ -3251,7 +3256,7 @@ module.exports = async (client) => {
                                             .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                 dynamic: true
                                             })))
-                                        ]}).catch(() => {})
+                                        ]}).catch(() => null)
                                     }
                                 } catch (e) {
                                     console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)
@@ -3293,7 +3298,7 @@ module.exports = async (client) => {
                                                 .setFooter(client.getFooter("ID: " + AddedUserID, AddedMember.user.displayAvatarURL({
                                                     dynamic: true
                                                 })))
-                                            ]}).catch(() => {})
+                                            ]}).catch(() => null)
                                         }
                                     } catch (e) {
                                         console.log("ANTI-NUKE SYSTEM - ERROR-CATCHER".dim.cyan, e.stack ? String(e.stack).grey.grey : String(e).grey.grey)

@@ -63,19 +63,19 @@ module.exports = async (client) => {
       if(leaves < 0) leaves *= -1;
       if(invites < 0) invites *= -1;
       let realinvites = invites - fake - leaves;
-      let invitedby = member.guild.members.cache.get(leftInviterData.id) || await member.guild.members.fetch(leftInviterData.id).catch(()=>{}) || false;
+      let invitedby = member.guild.members.cache.get(leftInviterData.id) || await member.guild.members.fetch(leftInviterData.id).catch(() => null) || false;
       invitemessage = `Was Invited by ${invitedby && invitedby.tag ? `**${invitedby.tag}**` : `<@${leftInviterData.id}>`}\n<:Like:857334024087011378> **${realinvites} Invite${realinvites == 1 ? "" : "s"}**\n[<:joines:866356465299488809> ${invites} Joins | <:leaves:866356598356049930> ${leaves} Leaves | <:no:833101993668771842> ${fake} Fakes]`;
     } else {
       if(memberData.joinData.type == "vanity"){
         try{
-          let res = await member.guild.fetchVanityData().catch(() => {});
+          let res = await member.guild.fetchVanityData().catch(() => null);
           if(res){
             invitemessage = `Invited by a **[Vanity URL](https://discord.gg/${res.code})** with \`${res.uses} Uses\``
           } else {
             invitemessage = `Invited by a **Vanity Link!**`;
           }
         }catch (e){
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
           invitemessage = `Invited by a **Vanity Link!**`;
         }
       } else {
@@ -113,7 +113,7 @@ module.exports = async (client) => {
     async function msg_withoutimg(member) {
       let leavechannel = leave.channel;
       if (!leavechannel) return;
-      let channel = await client.channels.fetch(leavechannel).catch(() => {})
+      let channel = await client.channels.fetch(leavechannel).catch(() => null)
       if (!channel) return;
 
       //define the leave embed
@@ -170,7 +170,7 @@ module.exports = async (client) => {
     async function msg_withimg(member) {
       let leavechannel = leave.channel;
       if (!leavechannel) return;
-      let channel = await client.channels.fetch(leavechannel).catch(() => {})
+      let channel = await client.channels.fetch(leavechannel).catch(() => null)
       if (!channel) return;
 
       //define the leave embed
@@ -311,7 +311,7 @@ module.exports = async (client) => {
       try {
         let leavechannel = leave.channel;
         if (!leavechannel) return;
-        let channel = await client.channels.fetch(leavechannel).catch(() => {})
+        let channel = await client.channels.fetch(leavechannel).catch(() => null)
         if (!channel) return;
         //define the leave embed
         const leaveembed = new Discord.MessageEmbed()
@@ -428,7 +428,7 @@ module.exports = async (client) => {
         }).catch(e => console.log("This catch prevents a crash"))
         //member roles add on leave every single role
       } catch (e) {
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
       }
     }
   }

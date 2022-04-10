@@ -13,7 +13,8 @@ const moment = require("moment")
 const fs = require('fs')
 const {
     dbEnsure,
-    databasing,
+    dbRemove,
+    dbKeys,
     delay,
     create_transcript,
     GetUser,
@@ -39,17 +40,19 @@ module.exports = async (client) => {
         const temptype = interaction?.customId.replace("ticket_", "")
         const buttonuser = user;
         
-        const member = guild.members.cache.get(user.id) || await guild.members.fetch(user.id).catch(() => {});
-        
-        const ls = await client.settings.get(guild.id+".language") || "en";
-        const es = await client.settings.get(guild.id+".embed") || ee;
+        const member = guild.members.cache.get(user.id) || await guild.members.fetch(user.id).catch(() => null);
+        const guild_settings = await client.settings.get(guild.id);
+        const ls = guild_settings.language || "en";
+        const es = guild_settings.embed || ee;
 
-        if (!member) return interaction?.reply(eval(client.la[ls]["handlers"]["ticketeventjs"]["ticketevent"]["variable2"]))
+        if (!member) return interaction?.reply({
+            ephemeral: true,
+            content: eval(client.la[ls]["handlers"]["ticketeventjs"]["ticketevent"]["variable2"])})
 
-        const prefix = await client.settings.get(interaction?.guild.id+".prefix") || config.prefix
-        const adminroles = await client.settings.get(guild.id+".adminroles")
-        const cmdroles = await client.settings.get(guild.id+".cmdadminroles.ticket")
-        const cmdroles2 = await client.settings.get(guild.id+".cmdadminroles.close")
+        const prefix = guild_settings.prefix || config.prefix
+        const adminroles = guild_settings.adminroles || [];
+        const cmdroles = guild_settings.cmdadminroles?.ticket || [];
+        const cmdroles2 = guild_settings.cmdadminroles?.close || [];
         try {
             for (const r of cmdroles2) cmdrole.push(r)
         } catch {}
@@ -60,7 +63,6 @@ module.exports = async (client) => {
             }
             return 
         }
-        interaction?.deferUpdate();
         const Ticketdata = await client.setups.get(channel.id+".ticketdata");
         let ticketSystemNumber = String(Ticketdata.type).split("-");
         ticketSystemNumber = ticketSystemNumber[ticketSystemNumber.length - 1];
@@ -69,15 +71,14 @@ module.exports = async (client) => {
         let closedParent = ticket?.closedParent;
         if(String(Ticketdata.type).includes("menu") && Ticketdata.menutickettype && Ticketdata.menutickettype > 0) {
             
-            const theDB = client.menuticket
-            const settings = theDB.get(guild.id, `menuticket${Ticketdata.menutickettype}`);
+            const settings = await client.menuticket.get(`${guild.id}.menuticket${Ticketdata.menutickettype}`);
             let adminRoles = settings.access;
             if(Ticketdata.menuticketIndex !== undefined) {
-                const data = settings.data[Ticketdata.menuticketIndex];
-                if(data.access) {
-                    console.log("BEFORE:", adminRoles)
-                    adminRoles = [...adminRoles, ...data.access];
-                    console.log("AFTER:", adminRoles)
+                if(settings.data) {
+                    const data = settings.data[Ticketdata.menuticketIndex];
+                    if(data.access) {
+                        adminRoles = [...adminRoles, ...data.access];
+                    }
                 }
             }
             closedParent = settings.closedParent
@@ -92,10 +93,10 @@ module.exports = async (client) => {
                     cmdrole.push(` | <@${r}>`)
                 } else {
                     try {
-                        await dbRemove(client.settings+`.cmdadminroles.ticket`, guild.id, r)
+                        dbRemove(client.settings, `${guild.id}.cmdadminroles.ticket`, r)
                     } catch {}
                     try {
-                        await dbRemove(client.settings+`.cmdadminroles.close`, guild.id, r)
+                        dbRemove(client.settings, `${guild.id}.cmdadminroles.ticket`, r)
                     } catch {}
                 }
             }
@@ -105,7 +106,8 @@ module.exports = async (client) => {
         if (temptype == "close") {
             let data = await client.setups.get(channel.id+".ticketdata");
             if (data.state === "closed") {
-                return channel.send({
+                return interaction.reply({
+                    ephemeral: true,
                     content: `<@${buttonuser.id}>`,
                     embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["handlers"]["ticketeventjs"]["ticketevent"]["variable5"]))
@@ -114,6 +116,7 @@ module.exports = async (client) => {
                 })
             }
             let button_ticket_verify = new MessageButton().setStyle('SUCCESS').setCustomId('ticket_verify').setLabel("Verify this Step").setEmoji("833101995723194437")
+            interaction.deferUpdate().catch(() => null);
             channel.send({
                 content: `<@${buttonuser.id}>`,
                 embeds: [new Discord.MessageEmbed()
@@ -139,15 +142,13 @@ module.exports = async (client) => {
                                 .setColor(es.color)
                             ],
                             components: [new MessageActionRow().addComponents(button_ticket_verify.setDisabled(true))]
-                        }).catch((e) => {
-                            console.log(String(e).grey)
-                        });
+                        }).catch(() => null);
     
                         let index = String(data.type).slice(-1);
-                        if (data.type.includes("apply")) {
+                        if (data.type?.includes("apply")) {
                             await dbRemove(client.setups, "TICKETS"+`.applytickets${index}`, data.user);
                             await dbRemove(client.setups, "TICKETS"+`.applytickets${index}`, data.channel);
-                        } else if (data.type.includes("menu")) {
+                        } else if (data.type?.includes("menu")) {
                             await dbRemove(client.setups, "TICKETS"+`.menutickets${index}`, data.user);
                             await dbRemove(client.setups, "TICKETS"+`.menutickets${index}`, data.channel);
                         }  else {
@@ -162,21 +163,21 @@ module.exports = async (client) => {
                             if(ticketCh && ticketCh.type == "GUILD_CATEGORY") {
                                 if(ticketCh.children.size < 50) {
                                     await msg.channel.setParent(ticketCh.id, { lockPermissions: false }).catch(async(e) => {
-                                        await msg.channel.send(`Can't move to: ${ticketCh.name} (\`${ticketCh.id}\`) because an Error occurred:\n> \`\`\`${String(e.message ? e.message : e).substring(0, 100)}\`\`\``).catch(() => {});
+                                        await msg.channel.send(`Can't move to: ${ticketCh.name} (\`${ticketCh.id}\`) because an Error occurred:\n> \`\`\`${String(e.message ? e.message : e).substring(0, 100)}\`\`\``).catch(() => null);
                                     })
                                 } else {
-                                    await msg.channel.send(`Ticket Category ${ticketCh.name} (\`${ticketCh.id}\`) is full, can't move!`).catch(() => {});
+                                    await msg.channel.send(`Ticket Category ${ticketCh.name} (\`${ticketCh.id}\`) is full, can't move!`).catch(() => null);
                                 }
                             } else {
-                                await msg.channel.send(`Could not find ${closedParent} as a parent`).catch(() => {});
+                                await msg.channel.send(`Could not find ${closedParent} as a parent`).catch(() => null);
                             }
                         }
 
-                        if(msg.channel.permissionsFor(msg.channel.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
+                        if(msg.channel.permissionsFor(msg.channel.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS) && data?.user){
                             await msg.channel.permissionOverwrites.edit(data.user, {
                                 SEND_MESSAGES: false,
                                 VIEW_CHANNEL: false,
-                            });
+                            }).catch(() => {});
                         }
                         msg.channel.send({
                             content: `<@${buttonuser.id}>`,
@@ -190,14 +191,14 @@ module.exports = async (client) => {
                                 .setFooter(client.getFooter(es))
                             ]
                         })
-                        try { msg.channel.setName(String(msg.channel.name).replace("ticket", "closed").substring(0, 32)).catch((e)=>{console.log(e)}); } catch (e) { console.log(e) }
+                        try { msg.channel.setName(String(msg.channel.name).replace("ticket", "closed").substring(0, 32)).catch(() => null) } catch (e) { console.error(e) }
                        
-                        let adminlog = await client.settings.get(guild.id+`.adminlog`);
+                        let adminlog = await client.settings.get(`${guild.id}.adminlog`);
                         if (adminlog != "no") {
                             let message = msg; //NEEDED FOR THE EVALUATION!
                             try {
                                 var adminchannel = guild.channels.cache.get(adminlog)
-                                if (!adminchannel) return client.settings.set(guild.id+`.adminlog`, "no");
+                                if (!adminchannel) return client.settings.set(`${guild.id}.adminlog`, "no");
                                 adminchannel.send({
                                     embeds: [new MessageEmbed()
                                         .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
@@ -211,7 +212,7 @@ module.exports = async (client) => {
                                     ]
                                 })
                             } catch (e) {
-                                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                                console.error(e)
                             }
                         }
                     } else {
@@ -223,9 +224,7 @@ module.exports = async (client) => {
                                 .setColor(es.wrongcolor)
                             ],
                             components: [new MessageActionRow().addComponents(button_ticket_verify.setDisabled(true))]
-                        }).catch((e) => {
-                            console.log(String(e).grey)
-                        });
+                        }).catch(() => null);
                     }
                 });
                 let endedembed = new Discord.MessageEmbed()
@@ -238,18 +237,17 @@ module.exports = async (client) => {
                             content: `<@${buttonuser.id}>`,
                             embeds: [endedembed],
                             components: [new MessageActionRow().addComponents(button_ticket_verify.setDisabled(true).setLabel("FAILED TO VERIFY").setEmoji("833101993668771842").setStyle('DANGER'))]
-                        }).catch((e) => {
-                            console.log(String(e).grey)
-                        });
+                        }).catch(() => null);
                     }
                 });
             })
         } else if (temptype == "delete") {
             let ticketspecific = [];
+            if(!theadminroles) theadminroles = []
             if(theadminroles.length == 0) {
                 ticketspecific = ["No Ticket Specific Roles/Users specified"];
             } else {
-                for(const a of theadminroles) {
+                for await (const a of theadminroles) {
                     if(message.guild.roles.cache.has(a)) {
                         ticketspecific.push(`<@&${a}>`);
                     } else if(message.guild.members.cache.has(a)){
@@ -258,8 +256,9 @@ module.exports = async (client) => {
                 }
             }
             if (([...member.roles.cache.values()] && !member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(interaction?.user.id) && ([...member.roles.cache.values()] && !member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(guild.ownerId, config.ownerid).includes(interaction?.user.id) && !member.permissions.has("ADMINISTRATOR") && !member.roles.cache.some(r => theadminroles.includes(r ? r.id : r))&& !theadminroles.includes(member.id)) {
-                return channel.send({
+                return interaction.reply({
                     content: `<@${buttonuser.id}>`,
+                    ephemeral: true,
                     embeds: [new MessageEmbed()
                         .setColor(es.wrongcolor)
                         .setFooter(client.getFooter(es))
@@ -269,6 +268,7 @@ module.exports = async (client) => {
                     ]
                 });
             }
+            interaction.deferUpdate().catch(() => null);
             let button_ticket_verify = new MessageButton().setStyle('SUCCESS').setCustomId('ticket_verify').setLabel("Verify this Step").setEmoji("833101995723194437")
             let msg = await channel.send({
                 content: `<@${buttonuser.id}>`,
@@ -288,16 +288,14 @@ module.exports = async (client) => {
                 //page forward
                 if (b?.customId == "ticket_verify") {
                     edited = true;
-                    b.update({
+                    msg.edit({
                         content: `<@${buttonuser.id}>`,
                         embeds: [new Discord.MessageEmbed()
                             .setTitle("Verified!")
                             .setColor(es.color)
                         ],
                         components: [new MessageActionRow().addComponents(button_ticket_verify.setDisabled(true))]
-                    }).catch((e) => {
-                        console.log(String(e).grey)
-                    });
+                    }).catch(() => null);
                     let data = await client.setups.get(msg.channel.id+".ticketdata");
 
                     let index = String(data.type).slice(-1);
@@ -325,7 +323,7 @@ module.exports = async (client) => {
                                 let messageCollection = new Collection(); //make a new collection
                                 let channelMessages = await channel.messages.fetch({ //fetch the last 100 messages
                                     limit: 100
-                                }).catch(() => {}); //catch any error
+                                }).catch(() => null); //catch any error
                                 messageCollection = messageCollection.concat(channelMessages); //add them to the Collection
                                 let tomanymsgs = 1; //some calculation for the messagelimit
                                 if (Number(msglimit) === 0) msglimit = 100; //if its 0 set it to 100
@@ -338,7 +336,7 @@ module.exports = async (client) => {
                                     channelMessages = await channel.messages.fetch({
                                         limit: 100,
                                         before: lastMessageId
-                                    }).catch(() => {}); //Fetch again, 100 messages above the already fetched messages
+                                    }).catch(() => null); //Fetch again, 100 messages above the already fetched messages
                                     if (channelMessages) //if its true
                                         messageCollection = messageCollection.concat(channelMessages); //add them to the collection
                                 }
@@ -364,21 +362,21 @@ module.exports = async (client) => {
                                         await logChannel.send({
                                             content: `<@${buttonuser.id}>`,
                                             embeds: [sendembed]
-                                        }).catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                                        }).catch(()=>null)
                                         await logChannel.send({
                                             files: [attachment]
-                                        }).catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
-                                        //await tmmpmsg.delete().catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                                        }).catch(()=>null)
+                                        //await tmmpmsg.delete().catch(()=>null)
                                         await fs.unlinkSync(path)
                                     } catch (error) { //if the file is to big to be sent, then catch it!
-                                        console.log(error)
+                                        console.error(error)
                                     }
                                 }).catch(e => {
-                                    console.log(String(e).grey)
+                                    console.error(e)
                                 })
                             }
                         } catch (e){
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                         }
                     }
 
@@ -391,17 +389,15 @@ module.exports = async (client) => {
                         ]
                     })
                     setTimeout(() => {
-                        msg.channel.delete().catch((e) => {
-                            console.log(String(e).grey)
-                        });
+                        msg.channel.delete().catch(() => null);
                     }, 3500)
 
-                    let adminlog = await client.settings.get(guild.id+`.adminlog`);
+                    let adminlog = await client.settings.get(`${guild.id}.adminlog`);
                     if (adminlog != "no") {
                         let message = msg; //NEEDED FOR THE EVALUATION!
                         try {
                             var adminchannel = guild.channels.cache.get(adminlog)
-                            if (!adminchannel) return client.settings.set(guild.id+`.adminlog`, "no");
+                            if (!adminchannel) return client.settings.set(`${guild.id}.adminlog`, "no");
                             adminchannel.send({
                                 embeds: [new MessageEmbed()
                                     .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
@@ -415,21 +411,19 @@ module.exports = async (client) => {
                                 ]
                             })
                         } catch (e) {
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                         }
                     }
                 } else {
                     edited = true;
-                    b.update({
+                    msg.edit({
                         content: `<@${buttonuser.id}>`,
                         embeds: [new Discord.MessageEmbed()
                             .setTitle("Cancelled!")
                             .setColor(es.wrongcolor)
                         ],
                         components: [new MessageActionRow().addComponents(button_ticket_verify.setDisabled(true))]
-                    }).catch((e) => {
-                        console.log(String(e).grey)
-                    });
+                    }).catch(() => null);
                   }
             });
             let endedembed = new Discord.MessageEmbed()
@@ -442,9 +436,7 @@ module.exports = async (client) => {
                         content: `<@${buttonuser.id}>`,
                         embeds: [endedembed],
                         components: [new MessageActionRow().addComponents(button_ticket_verify.setDisabled(true).setLabel("FAILED TO VERIFY").setEmoji("833101993668771842").setStyle('DANGER'))]
-                    }).catch((e) => {
-                        console.log(String(e).grey)
-                    });
+                    }).catch(() => null);
                 }
             });
         } else if (temptype == "log" || temptype == "transcript") {
@@ -454,7 +446,7 @@ module.exports = async (client) => {
             let messageCollection = new Collection(); //make a new collection
             let channelMessages = await channel.messages.fetch({ //fetch the last 100 messages
                 limit: 100
-            }).catch(() => {}); //catch any error
+            }).catch(() => null); //catch any error
             messageCollection = messageCollection.concat(channelMessages); //add them to the Collection
             let tomanymsgs = 1; //some calculation for the messagelimit
             if (Number(msglimit) === 0) msglimit = 100; //if its 0 set it to 100
@@ -467,7 +459,7 @@ module.exports = async (client) => {
                 channelMessages = await channel.messages.fetch({
                     limit: 100,
                     before: lastMessageId
-                }).catch(() => {}) //Fetch again, 100 messages above the already fetched messages
+                }).catch(() => null) //Fetch again, 100 messages above the already fetched messages
                 if (channelMessages) //if its true
                     messageCollection = messageCollection.concat(channelMessages); //add them to the collection
             }
@@ -497,13 +489,13 @@ module.exports = async (client) => {
                     await channel.send({
                         files: [attachment]
                     })
-                    //await tmmpmsg.delete().catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                    //await tmmpmsg.delete().catch(()=>null)
                     await fs.unlinkSync(path)
-                    let adminlog = await client.settings.get(guild.id+`.adminlog`);
+                    let adminlog = await client.settings.get(`${guild.id}.adminlog`);
                     if (adminlog != "no") {
                         try {
                             var adminchannel = guild.channels.cache.get(adminlog)
-                            if (!adminchannel) return client.settings.set(guild.id+`.adminlog`, "no");
+                            if (!adminchannel) return client.settings.set(`${guild.id}.adminlog`, "no");
                             adminchannel.send({
                                 embeds: [new MessageEmbed()
                                     .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
@@ -517,11 +509,11 @@ module.exports = async (client) => {
                                 ]
                             })
                         } catch (e) {
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                         }
                     }
                 } catch (error) { //if the file is to big to be sent, then catch it!
-                    console.log(error)
+                    console.error(error)
                     channel.send({
                         content: `<@${buttonuser.id}>`,
                         embeds: [new MessageEmbed().setAuthor("ERROR! Transcript is to big, to be sent into the Channel!", user.displayAvatarURL({
@@ -530,11 +522,12 @@ module.exports = async (client) => {
                     })
                 }
             }).catch(e => {
-                console.log(String(e).grey)
+                console.error(e)
             })
         } else if (temptype == "user") {
             if (([...member.roles.cache.values()] && !member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(interaction?.user.id) && ([...member.roles.cache.values()] && !member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(guild.ownerId, config.ownerid).includes(interaction?.user.id) && !member.permissions.has("ADMINISTRATOR") && !member.roles.cache.some(r => theadminroles.includes(r ? r.id : r))) {
-                return channel.send({
+                return interaction.reply({
+                    ephemeral: true,
                     content: `<@${buttonuser.id}>`,
                     embeds: [new MessageEmbed()
                         .setColor(es.wrongcolor)
@@ -544,6 +537,7 @@ module.exports = async (client) => {
                     ]
                 });
             }
+            interaction.deferUpdate().catch(() => null);
             channel.send({
                 content: `<@${buttonuser.id}>`,
                 embeds: [new Discord.MessageEmbed()
@@ -604,11 +598,11 @@ module.exports = async (client) => {
                                                     .setTitle(eval(client.la[ls]["handlers"]["ticketeventjs"]["ticketevent"]["variable35"]))
                                                 ]
                                             })
-                                            let adminlog = await client.settings.get(guild.id+`.adminlog`);
+                                            let adminlog = await client.settings.get(`${guild.id}.adminlog`);
                                             if (adminlog != "no") {
                                                 try {
                                                     var adminchannel = guild.channels.cache.get(adminlog)
-                                                    if (!adminchannel) return client.settings.set(guild.id+`.adminlog`, "no");
+                                                    if (!adminchannel) return client.settings.set(`${guild.id}.adminlog`, "no");
                                                     adminchannel.send({
                                                         embeds: [new MessageEmbed()
                                                             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
@@ -622,7 +616,7 @@ module.exports = async (client) => {
                                                         ]
                                                     })
                                                 } catch (e) {
-                                                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                                                    console.error(e)
                                                 }
                                             }
                                         })
@@ -680,11 +674,11 @@ module.exports = async (client) => {
                                     .setTitle(eval(client.la[ls]["handlers"]["ticketeventjs"]["ticketevent"]["variable44"]))
                                 ]
                             })
-                            let adminlog = await client.settings.get(guild.id+`.adminlog`);
+                            let adminlog = await client.settings.get(`${guild.id}.adminlog`);
                             if (adminlog != "no") {
                                 try {
                                     var adminchannel = guild.channels.cache.get(adminlog)
-                                    if (!adminchannel) return client.settings.set(guild.id+`.adminlog`, "no");
+                                    if (!adminchannel) return client.settings.set(`${guild.id}.adminlog`, "no");
                                     adminchannel.send({
                                         embeds: [new MessageEmbed()
                                             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
@@ -698,7 +692,7 @@ module.exports = async (client) => {
                                         ]
                                     })
                                 } catch (e) {
-                                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                                    console.error(e)
                                 }
                             }
                         }).catch(e => {
@@ -711,7 +705,7 @@ module.exports = async (client) => {
                                 ]
                             });
                         }).catch(e => {
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                             return channel.send({
                                 content: `<@${buttonuser.id}>`,
                                 embeds: [new Discord.MessageEmbed()
@@ -724,7 +718,7 @@ module.exports = async (client) => {
                         })
                     }
                 }).catch(e => {
-                    console.log(String(e).grey)
+                    console.error(e)
                 })
             })
         } else if (temptype == "role") {
@@ -739,6 +733,7 @@ module.exports = async (client) => {
                     ]
                 });
             }
+            interaction.deferUpdate().catch(() => null);
             channel.send({
                 content: `<@${buttonuser.id}>`,
                 embeds: [new Discord.MessageEmbed()
@@ -798,11 +793,11 @@ module.exports = async (client) => {
                                                     .setTitle(eval(client.la[ls]["handlers"]["ticketeventjs"]["ticketevent"]["variable54"]))
                                                 ]
                                             })
-                                            let adminlog = await client.settings.get(guild.id+`.adminlog`);
+                                            let adminlog = await client.settings.get(`${guild.id}.adminlog`);
                                             if (adminlog != "no") {
                                                 try {
                                                     var adminchannel = guild.channels.cache.get(adminlog)
-                                                    if (!adminchannel) return client.settings.set(guild.id+`.adminlog`, "no");
+                                                    if (!adminchannel) return client.settings.set(`${guild.id}.adminlog`, "no");
                                                     adminchannel.send({
                                                         embeds: [new MessageEmbed()
                                                             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
@@ -816,7 +811,7 @@ module.exports = async (client) => {
                                                         ]
                                                     })
                                                 } catch (e) {
-                                                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                                                    console.error(e)
                                                 }
                                             }
                                         })
@@ -872,11 +867,11 @@ module.exports = async (client) => {
                                         .setTitle(eval(client.la[ls]["handlers"]["ticketeventjs"]["ticketevent"]["variable63"]))
                                     ]
                                 })
-                                let adminlog = await client.settings.get(guild.id+`.adminlog`);
+                                let adminlog = await client.settings.get(`${guild.id}.adminlog`);
                                 if (adminlog != "no") {
                                     try {
                                         var adminchannel = guild.channels.cache.get(adminlog)
-                                        if (!adminchannel) return client.settings.set(guild.id+`.adminlog`, "no");
+                                        if (!adminchannel) return client.settings.set(`${guild.id}.adminlog`, "no");
                                         adminchannel.send({
                                             embeds: [new MessageEmbed()
                                                 .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
@@ -890,7 +885,7 @@ module.exports = async (client) => {
                                             ]
                                         })
                                     } catch (e) {
-                                        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                                        console.error(e)
                                     }
                                 }
                             })
@@ -906,7 +901,7 @@ module.exports = async (client) => {
                             });
                     }
                 }).catch(e => {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     return channel.send({
                         content: `<@${buttonuser.id}>`,
                         embeds: [new Discord.MessageEmbed()
@@ -920,7 +915,8 @@ module.exports = async (client) => {
             })
         } else if (temptype == "claim") {
             if (([...member.roles.cache.values()] && !member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(interaction?.user.id) && ([...member.roles.cache.values()] && !member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(guild.ownerId, config.ownerid).includes(interaction?.user.id) && !member.permissions.has("ADMINISTRATOR") && !member.roles.cache.some(r => theadminroles.includes(r ? r.id : r))) {
-                return channel.send({
+                return interaction.reply({
+                    ephemeral: true,
                     content: `<@${buttonuser.id}>`,
                     embeds: [new MessageEmbed()
                         .setColor(es.wrongcolor)
@@ -930,6 +926,7 @@ module.exports = async (client) => {
                     ]
                 });
             }
+            interaction.deferUpdate().catch(() => null);
             let data = await client.setups.get(channel.id+".ticketdata");
             if(!channel.permissionsFor(member).has(Discord.Permissions.FLAGS.SEND_MESSAGES)){
                 if(!channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
@@ -941,7 +938,7 @@ module.exports = async (client) => {
                     return interaction?.reply({ephemeral: true, content: ":x: **Can't change the Permissions of you!**"});
                 });
             }
-            message.edit({content: message.content, embeds: [message.embeds[0]], components: message.components}).catch(e => {console.log(e.stack ? String(e.stack).grey : String(e).grey)});
+            message.edit({content: message.content, embeds: [message.embeds[0]], components: message.components}).catch(e => {console.error(e)});
             let messageClaim = "";
             if(String(Ticketdata.type).includes("menu")) {
                 messageClaim = client[`menuticket${Ticketdata.menutickettype}`].get(guild.id, "claim.messageClaim")
@@ -955,7 +952,7 @@ module.exports = async (client) => {
                         .setAuthor(member.user.tag, member.displayAvatarURL({dynamic: true}))
                         .setDescription(messageClaim.replace(/\{claimer\}/ig, `${member.user}`).replace(/\{user\}/ig, `<@${data.user}>`))
                 ]
-            }).catch(e => {console.log(e.stack ? String(e.stack).grey : String(e).grey)});
+            }).catch(e => {console.error(e)});
         
         }
     });
@@ -970,7 +967,7 @@ module.exports = async (client) => {
             let rawData = await d.all();
             let guildData = rawData.find(d => d.ID == guild.id)?.data;
             if(!guildData) return;
-            for(let i = 1; i<=100; i++) {
+            for (let i = 1; i<=100; i++) {
                 let pre = `menuticket${i}`;
                 if(guildData?.[pre]?.messageId === message.id && (channelId === guildData?.[pre]?.channelId || message.channelId === guildData?.[pre]?.channelId)) DBindex = i;
             }
@@ -978,12 +975,13 @@ module.exports = async (client) => {
                 if(interaction.placeholder) {
                     if(!interaction.placeholder.includes("Menu-Apply System!")) return
                 }
-                if(interaction.replied) return interaction?.editReply(":x: Could not find the Database for your Application!");
+                if(interaction?.replied) return interaction?.editReply(":x: Could not find the Database for your Application!");
                 else return
             }
             let pre = `menuticket${DBindex}`;
             let theDB = client.menuticket
-            await dbEnsure(theDB+"."+pre, message.guild.id, {
+            const obj = {};
+            obj[pre] = {
                 messageId: "",
                 channelId: "",
                 claim: {
@@ -1002,7 +1000,8 @@ module.exports = async (client) => {
                     }
                   */
                 ]
-            });
+            }
+            await dbEnsure(theDB, message.guild.id, obj);
             let settings = await theDB.get(guild.id+"."+pre);
             if(message.id == settings.messageId && (channelId == settings.channelId || message.channelId == settings.channelId)){
                let index = settings.data.findIndex(v => v.value == values[0]);
@@ -1016,8 +1015,8 @@ module.exports = async (client) => {
                 let ticketspath = `menutickets${index}`; 
                 let idpath = `menuticketid${index}`; 
                 let tickettypepath = `menu-ticket-setup-${index}`; 
-  
-                await dbEnsure(client.setups+"."+systempath, guild.id, {
+                const obj = {};
+                obj[systempath] = {
                     enabled: false,
                     guildid: guild.id,
                     messageid: "",
@@ -1025,7 +1024,8 @@ module.exports = async (client) => {
                     parentid: "",
                     message: "Hey {user}, thanks for opening an ticket! Someone will help you soon!",
                     adminroles: []
-                });
+                }
+                await dbEnsure(client.setups, guild.id,obj);
                 let tickets = await client.setups.get("TICKETS."+ticketspath);
                 if (tickets && tickets.includes(user.id)) {
                     try {
@@ -1067,20 +1067,20 @@ module.exports = async (client) => {
                     if(cat){
                         if(cat.type == "GUILD_CATEGORY"){
                         if(cat.children.size < 50){
-                            await ch.setParent(String(cat.id)).catch(() => {});
+                            await ch.setParent(String(cat.id)).catch(() => null);
                         }
                         }
                     } else {
                         if(ch.parent){
                         if(ch.parent.children.size < 50){
-                            await ch.setParent(String(ch.parent.id), {lockPermissions: false}).catch(() => {});
+                            await ch.setParent(String(ch.parent.id), {lockPermissions: false}).catch(() => null);
                         }
                         }
                     }
                 } catch (e){
                     if(ch.parent){
                         if(ch.parent.children.size < 50){
-                        await ch.setParent(String(ch.parent.id), {lockPermissions: false}).catch(() => {});
+                        await ch.setParent(String(ch.parent.id), {lockPermissions: false}).catch(() => null);
                         }
                     }
                 }
@@ -1092,7 +1092,7 @@ module.exports = async (client) => {
                         EMBED_LINKS: false,
                         ADD_REACTIONS: false,
                         ATTACH_FILES: false
-                    }).catch(() => {});
+                    }).catch(() => null);
                 } else {
                     var cat = guild.channels.cache.get(settings.data[index].category)
                     if(!cat) {
@@ -1102,7 +1102,7 @@ module.exports = async (client) => {
                             EMBED_LINKS: false,
                             ADD_REACTIONS: false,
                             ATTACH_FILES: false
-                        }).catch(() => {});
+                        }).catch(() => null);
                     }
                 }
 
@@ -1112,19 +1112,19 @@ module.exports = async (client) => {
                     EMBED_LINKS: true,
                     ADD_REACTIONS: true,
                     ATTACH_FILES: true
-                }).catch(() => {});
+                }).catch(() => null);
                
 
-                await message.guild.members.fetch().catch(() => {});
+                await message.guild.members.fetch().catch(() => null);
                 let realaccess = [];
-                for(const a of settings.access) {
+                for await (const a of settings.access) {
                     if(message.guild.roles.cache.has(a)) {
                         realaccess.push(a);
                     } else if(message.guild.members.cache.has(a)){
                         realaccess.push(a);
                     }
                 }
-                for(const a of realaccess) {
+                for await (const a of realaccess) {
                     if(a == ch.guild.id) continue;
                     await ch.permissionOverwrites.create(a, {
                         SEND_MESSAGES: true,
@@ -1132,11 +1132,11 @@ module.exports = async (client) => {
                         EMBED_LINKS: true,
                         ADD_REACTIONS: true,
                         ATTACH_FILES: true
-                    }).catch(() => {});
+                    }).catch(() => null);
                 }
                 if(settings.claim.enabled){
                     let ids = ch.permissionOverwrites.cache.filter(p => p.type == "role" && !p.deny.toArray().includes("SEND_MESSAGES")).map(d => d.id);
-                    for(const id of ids){
+                    for await (const id of ids){
                         if(id == ch.guild.id) continue;
                         await ch.permissionOverwrites.edit(id, {
                             SEND_MESSAGES: false,
@@ -1148,7 +1148,8 @@ module.exports = async (client) => {
                         await delay(client.ws.ping)
                     }
                 }
-                let es = await client.settings.get(guild.id+".embed") || ee
+                let guild_settings = await client.settings.get(message.guild.id)
+                let es = guild_settings?.embed || ee
                 await client.setups.push("TICKETS."+ticketspath, user.id);
                 await client.setups.push("TICKETS."+ticketspath, ch.id);
                 await client.setups.set(user.id+"."+idpath, ch.id);
@@ -1164,7 +1165,7 @@ module.exports = async (client) => {
                 });
             
                 let extrastring = "";
-                for(const a of realaccess){
+                for await (const a of realaccess){
                     if(message.guild.roles.cache.has(a)) {
                         extrastring += ` | <@&${a}>`
                     } else if(message.guild.members.cache.has(a)){
@@ -1174,17 +1175,17 @@ module.exports = async (client) => {
                 
                 var ticketembed = new MessageEmbed()
                     .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-                    .setFooter(client.getFooter(`To close/manage this ticket react with the buttons\nYou can also type: ${await client.settings.get(guild.id+".prefix") || config.prefix}ticket`, es.footericon))
+                    .setFooter(client.getFooter(`To close/manage this ticket react with the buttons\nYou can also type: ${guild_settings.prefix || config.prefix}ticket`, es.footericon))
                     .setAuthor(client.getAuthor(`Ticket for: ${user.tag}`, user.displayAvatarURL({
                     dynamic: true
-                    }), "https://discord.gg/dcdev"))
+                    }), "https://discord.gg/milrato"))
                     .setDescription(replyMsg.replace(/\{user\}/igu, `${user}`).substring(0, 2000))
                 var ticketembeds = [ticketembed]
                 if(settings.claim.enabled){
                     var claimEmbed = new MessageEmbed()
                     .setColor("ORANGE").setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
                     .setFooter(client.getFooter(es))
-                    .setAuthor(client.getAuthor(`A Staff Member will claim the Ticket soon!`, "https://cdn.discordapp.com/emojis/833101350623117342.gif?size=44", "https://discord.gg/dcdev"))
+                    .setAuthor(client.getAuthor(`A Staff Member will claim the Ticket soon!`, "https://cdn.discordapp.com/emojis/833101350623117342.gif?size=44", "https://discord.gg/milrato"))
                     .setDescription(settings.claim.messageOpen.replace(/\{user\}/igu, `${user}`).substring(0, 2000))
                     ticketembeds.push(claimEmbed)
                 }
@@ -1206,26 +1207,18 @@ module.exports = async (client) => {
                             content: `<@${user.id}>${extrastring}`,
                             embeds: ticketembeds,
                             components: allbuttons
-                        }).catch((O) => {
-                            console.log(String(O).grey)
-                        }).then(msg => {
+                        }).catch(()=>null).then(msg => {
                             if(msg.channel.permissionsFor(msg.guild.me).has(Permissions.FLAGS.MANAGE_MESSAGES)){
-                                msg.pin().catch((O) => {
-                                    console.log(String(O).grey)
-                                })
+                                msg.pin().catch(()=>null)
                             }
                         })
                     } else {
                         await ch.send({
                             content: `<@${user.id}>${extrastring}\n${ticketembeds[0].description}`.substring(0, 2000),
                             components: allbuttons
-                        }).catch((O) => {
-                            console.log(String(O).grey)
-                        }).then(msg => {
+                        }).catch(()=>null).then(msg => {
                             if(msg.channel.permissionsFor(msg.guild.me).has(Permissions.FLAGS.MANAGE_MESSAGES)){
-                                msg.pin().catch((O) => {
-                                    console.log(String(O).grey)
-                                })
+                                msg.pin().catch(()=>null)
                             }
                         })
                     }
@@ -1246,7 +1239,7 @@ module.exports = async (client) => {
             let rawData = await d.all();
             let guildData = rawData.find(d => d.ID == guild.id)?.data;
             if(!guildData) return;
-            for(let i = 1; i<=100; i++) {
+            for (let i = 1; i<=100; i++) {
                 let pre = `autosupport${i}`;
                 if(guildData?.[pre]?.messageId === message.id && (channelId === guildData?.[pre]?.channelId || message.channelId === guildData?.[pre]?.channelId)) DBindex = i;
             }
@@ -1254,12 +1247,13 @@ module.exports = async (client) => {
                 if(interaction.placeholder) {
                     if(!interaction.placeholder.includes("Menu-Apply System!")) return
                 }
-                if(interaction.replied) return interaction?.editReply(":x: Could not find the Database for your Application!");
+                if(interaction?.replied) return interaction?.editReply(":x: Could not find the Database for your Application!");
                 else return
             }
             let theDB = client.autosupport
             let pre = `autosupport${DBindex}`;
-            await dbEnsure(theDB+"."+pre, guild.id, {
+            const obj = {};
+            obj[pre] = {
                 messageId: "",
                 channelId: "",
                 data: [ //all menus in there
@@ -1272,9 +1266,10 @@ module.exports = async (client) => {
                         }
                     */
                 ],
-            });
-            let settings =await  theDB.get(guild.id+"."+pre);
-            let es = await client.settings.get(guild.id+".embed") || ee
+            }
+            await dbEnsure(theDB, guild.id, obj);
+            let settings = await theDB.get(`${guild.id}.${pre}`);
+            let es = await client.settings.get(`${guild.id}.embed`) || ee
             if(message.id == settings.messageId && (channelId == settings.channelId || message.channelId == settings.channelId)){
                 let index = settings.data.findIndex(v => v.value == values[0]);
                 if(index < 0) {
@@ -1307,7 +1302,7 @@ module.exports = async (client) => {
             let rawData = await d.all();
             let guildData = rawData.find(d => d.ID == guild.id)?.data;
             if(!guildData) return;
-            for(let i = 1; i<=100; i++) {
+            for (let i = 1; i<=100; i++) {
                 let pre = `menuapply${i}`;
                 if(guildData?.[pre]?.messageId === message.id && (channelId === guildData?.[pre]?.channelId || message.channelId === guildData?.[pre]?.channelId)) DBindex = i;
             }
@@ -1315,12 +1310,13 @@ module.exports = async (client) => {
                 if(interaction.placeholder) {
                     if(!interaction.placeholder.includes("Menu-Apply System!")) return
                 }
-                if(interaction.replied) return interaction?.editReply(":x: Could not find the Database for your Application!");
+                if(interaction?.replied) return interaction?.editReply(":x: Could not find the Database for your Application!");
                 else return
             }
             let pre = `menuapply${DBindex}`;
             let theDB = client.menuapply
-            await dbEnsure(theDB+"."+pre, guild.id, {
+            const obj = {};
+            obj[pre] = {
                 messageId: "",
                 channelId: "",
                 data: [ //all menus in there
@@ -1332,9 +1328,11 @@ module.exports = async (client) => {
                         }
                     */
                 ],
-            });
-            const es = await client.settings.get(guild.id+".embed") || ee
-            const ls = await client.settings.get(guild.id+".language") || "en";
+            };
+            await dbEnsure(theDB, guild.id, obj);
+            let guild_settings = await client.settings.get(guild.id)
+            const es = guild_settings.embed || ee
+            const ls = guild_settings.language || "en";
             const settings = await theDB.get(guild.id+"."+pre);
             const index = settings.data.findIndex(v => v.value == values[0]);
             if(index < 0) {

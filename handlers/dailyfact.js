@@ -14,7 +14,7 @@ module.exports = async (client) => {
         //get all guilds which are setupped
         const guilds = await dbKeys(client.settings, d => d.data?.dailyfact && d.data?.dailyfact != "no");
         //Loop through all guilds and send a random auto-generated-nsfw setup
-        for(const guildid of guilds.filter(d => client.guilds.cache.has(d))){
+        for await (const guildid of guilds.filter(d => client.guilds.cache.has(d))){
             dailyfact(guildid)
         }
     }, null, true, 'Europe/Berlin');
@@ -36,14 +36,14 @@ module.exports = async (client) => {
             if(!set || set == "no") return
             //try to fetch the channel if no channel found throw error and return
             try{
-                channel = await client.channels.fetch(set).catch(() => {})
+                channel = await client.channels.fetch(set).catch(() => null)
                 if(!channel || channel == null || channel == undefined || !channel.name || channel.name == null || channel.name == undefined) throw "Channel not found"
             }catch (e){
                 return;
             }
             let owo;
             owo = await neko.sfw.fact();
-            channel.send( "***〔📢〕Daily Fact***\n>>> " + owo.fact).catch(() => {});
+            channel.send( "***〔📢〕Daily Fact***\n>>> " + owo.fact).catch(() => null);
         } catch (e){
             console.log(String(e).grey)
         }

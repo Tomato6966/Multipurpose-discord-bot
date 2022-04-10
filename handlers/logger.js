@@ -225,7 +225,7 @@ module.exports = (c) => {
         }
         let text = `${roleremoved ? `❌ ROLE REMOVED: \n${roleremoved}` : ""}${roleadded ? `✅ ROLE ADDED:\n${roleadded}` : ""}`
         send_log(c,
-          oldMember.guild,
+          newMember.guild,
           `${roleadded ? "GREEN" : "RED"}`,
           "Member ROLES Changed",
           `Member: ${newMember.user}\nUser: \`${oldMember.user.tag}\`\n\n${text}`,
@@ -263,7 +263,7 @@ module.exports = (c) => {
         if (oldMessage.channel.type !== "GUILD_TEXT") return
         if (newMessage.channel.type !== "GUILD_TEXT") return
         if (oldMessage.content === newMessage.content) return
-        send_log(c, oldMessage.guild,
+        send_log(c, newMessage.guild,
           "YELLOW",
           "Message UPDATED", 
           ` **Author:** <@${newMessage.author.id}> - *${newMessage.author.tag}*\n**Date:** ${newMessage.createdAt}\n**Channel:** <#${newMessage.channel?.id}> - *${newMessage.channel?.name}*\n**Orignal Message:**\n\`\`\`\n${oldMessage.content ? oldMessage.content.replace(/`/g, "'") : "UNKNOWN CONTENT"}\n\`\`\`\n**Updated Message :**\n\`\`\`\n${newMessage.content ? newMessage.content.replace(/`/g, "'") : "UNKNOWN CONTENT"}\n\`\`\``,
@@ -389,8 +389,8 @@ module.exports = (c) => {
 
 async function send_log(c, guild, color, title, description, thumb, fieldt, fieldv, fieldt2, fieldv2) {
   try {
-    if(!c) return console.log("client undefined", c)
-    if(!guild || guild.available == false) return console.log("NO GUILD");
+    if(!c) return
+    if(!guild || guild.available === false) return
     let icon = null; 
     try{
       icon = guild ? guild.iconURL({ format: "png" }) : c.user?.displayAvatarURL() || c.user?.displayAvatarURL();
@@ -418,9 +418,10 @@ async function send_log(c, guild, color, title, description, thumb, fieldt, fiel
     //GET THE CHANNEL
     let loggersettings = await c.settings.get(guild?.id+".logger")
     if (!loggersettings || loggersettings.channel === "no") return;
-    const logger = await c.channels.fetch(loggersettings.channel).catch(console.error)
-    if (!logger) throw new SyntaxError("CHANNEL NOT FOUND")
-    return logger.send({embeds: [LogEmbed]}).catch(() => {})
+    const logger = await guild?.channels.fetch(loggersettings.channel).catch(()=>null) || await c.channels.fetch(loggersettings.channel).catch(()=>null)
+    if (!logger || !logger.type) return // throw new SyntaxError(`CHANNEL ${loggersettings.channel} NOT FOUND ON THIS SHARD`)
+    try {logger.send({embeds: [LogEmbed]}).catch(() => null)}catch{}
+    return;
   } catch (e) {
     console.error(e)
   }

@@ -3,13 +3,14 @@ const config = require(`${process.cwd()}/botconfig/config.json`)
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 var {
-    MessageEmbed, MessageAttachment, User, Permissions
+    MessageEmbed, MessageAttachment, User, Permissions, CommandInteractionOptionResolver
 } = require(`discord.js`);
 const { databasing, dbEnsure } = require(`./functions`)
 const fetch = require("node-fetch")
 
 module.exports = async (client) => {
     // CMD
+    
     module.exports.messageCreate = (client, message, guild_settings, setups) => {
         AICHAT(client, message, guild_settings, setups);
         AFK_SYSTEM_Ping(client, message, guild_settings, setups);
@@ -19,9 +20,12 @@ module.exports = async (client) => {
     // Ai Chat System
     async function AICHAT(client, message, guild_settings, setups) {
         try{
-            let chatbot = guild_settings;
+            if(!message.guild) return;
+            let chatbot = guild_settings.aichat;
             if(!chatbot || chatbot == "no") return;
             if(message.channel.id == chatbot){
+                if(message.author.id == client.user.id) return;
+                if(message.author.bot) return message.reply(":x: I don't talk with **BOTS**!")
               if(message.attachments.size > 0)
               {
                   const attachment = new MessageAttachment("https://cdn.discordapp.com/attachments/816645188461264896/826736269509525524/I_CANNOT_READ_FILES.png")
@@ -31,10 +35,10 @@ module.exports = async (client) => {
                 fetch(`http://api.brainshop.ai/get?bid=153861&key=0ZjvbPWKAxJvcJ96&uid=1&msg=${encodeURIComponent(message)}`)
                 .then(res => res.json())
                 .then(data => {
-                  message.channel.send({content: data.cnt}).catch(() => {})
+                  message.channel.send({content: data.cnt}).catch(() => null)
                 });
               }catch (e){
-                message.channel.send({content: "<:no:833101993668771842> AI CHAT API IS DOWN"}).catch(() => {})
+                message.channel.send({content: "<:no:833101993668771842> AI CHAT API IS DOWN"}).catch(() => null)
               }
             }
         }catch(e){console.log(String(e).grey)}
@@ -42,16 +46,16 @@ module.exports = async (client) => {
     // AFK SYSTEM
     async function AFK_SYSTEM_Ping(client, message, guild_settings, setups) {
         try{
-            for(const user of [...message.mentions.users.values()]){
+            for await (const user of [...message.mentions.users.values()]){
                 let d = await client.afkDB.get(message.guild.id + user.id)
                 if(d){
                     await message.reply({content: `<:Crying:867724032316407828> **${user.tag}** went AFK <t:${Math.floor(d.stamp / 1000)}:R>!${d.message && d.message.length > 1 ? `\n\n__His Message__\n>>> ${String(d.message).substring(0, 1800).split(`@`).join(`\`@\``)}` : "" }`}).then(msg=>{
                         setTimeout(()=>{
                             try{
-                                msg.delete().catch(() => {});
+                                msg.delete().catch(() => null);
                             }catch{  }
                         }, 5000)
-                    }).catch(() => {})
+                    }).catch(() => null)
                 }
             }
         }catch(e){
@@ -61,13 +65,14 @@ module.exports = async (client) => {
     // AFK SYSTEM
     async function AFK_SYSTEM_Come_back(client, message, guild_settings, setups) {
         try{
+            if(!setups) return;
             let d = await client.afkDB.get(message.guild.id + message.author?.id)
             if(message.content && !message.content.toLowerCase().startsWith("[afk]") && d){
                 if(d && Math.floor(d.stamp / 10000) == Math.floor(Date.now() / 10000)) return 
                 await message.reply({content: `:tada: Welcome back **${message.author.username}!** :tada:\n> You went <t:${Math.floor(d.stamp / 1000)}:R> Afk`}).then(msg=>{
-                    setTimeout(()=>{ msg.delete().catch(() => {}) }, 5000)
-                }).catch(() => {})
-                await client.afkDB.delete(message.guild.id + message.author?.id)
+                    setTimeout(()=>{ msg.delete().catch(() => null) }, 5000)
+                }).catch(() => null)
+                await client.afkDB.set(message.guild.id + message.author?.id, null)
             }
         }catch(e){
             console.log(String(e).grey)
@@ -81,6 +86,7 @@ module.exports = async (client) => {
     let T_ = null; // for the timeout - resetting 
 
     async function AUTO_DELETE(client, message, guild_settings, setups) {
+        if(!setups) return;
         let chs = setups.autodelete || [];
         if(chs && chs.some(ch => ch?.id == message.channel.id) && message.channel.type == "GUILD_TEXT"){
             const key = message.channel.id;

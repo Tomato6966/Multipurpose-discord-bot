@@ -10,24 +10,24 @@ module.exports = async client => {
  //function that will run the checks
 
  client.Joblivelog = new CronJob('0 1,9,17,23,29,35,41,47,53,59 * * * *', async function() {
-    console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} ::  Checking Accounts - ${moment().format(`LLLL`)}`.magenta)
+    //console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} ::  Checking Accounts - ${moment().format(`LLLL`)}`.magenta)
     var guilds = await client.social_log.all().then(d => {
         return d.filter(d => d?.data?.twitch?.channels?.length > 0 && d?.data?.twitch.channelId?.length > 1).map(v => v.data.twitch)
     })
     if(!guilds) return;
-    for(const g of guilds){
+    for await (const g of guilds){
       var guild = client.guilds.cache.get(g.DiscordServerId);
       if(!guild) continue;
       getStreams(guild);
       await delay(1500);
     }
     return true;
- }, null, true, 'America/Los_Angeles');
+ }, null, true, 'Europe/Berlin');
 
  //update the authorization key every hour
  client.Joblivelog2 = new CronJob('0 * * * *', async function() {
    UpdateAuthConfig();
- }, null, true, 'America/Los_Angeles');
+ }, null, true, 'Europe/Berlin');
 
  client.on('ready', async () => {
      client.Joblivelog.start();
@@ -48,19 +48,19 @@ module.exports = async client => {
      }
    })
    const tempData = await client.social_log.get(guild.id+ `.twitch`)
-   if(!tempData.channels) return console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  NO TWITCH DATA (TW-CHANNELS)`.magenta)
+   if(!tempData.channels) return //console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  NO TWITCH DATA (TW-CHANNELS)`.magenta)
    if(!tempData.channelId || tempData.channelId == undefined || tempData.channelId.length != 18) return console.log(`NO TWITCH DATA (DCCHANNEL)`.magenta)
    tempData.channels.map(async function (chan, i) {
-       if (!chan.ChannelName) return console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  NO CHANNEL NAME FOUND :C`.magenta);
-       let member = await guild.members.fetch(chan.DISCORD_USER_ID).catch(() => {});;
-       if(!member) return console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  MEMBER NOT FOUND!`.magenta)
+       if (!chan.ChannelName) return //console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  NO CHANNEL NAME FOUND :C`.magenta);
+       let member = await guild.members.fetch(chan.DISCORD_USER_ID).catch(() => null);;
+       if(!member) return //console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  MEMBER NOT FOUND!`.magenta)
        
        let StreamData = await getStreamData(chan.ChannelName, process.env.twitch_clientID || config.twitch_clientID, config.authToken);
-       if(!StreamData) return console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  No Stream Data`.magenta)
+       if(!StreamData) return //console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  No Stream Data`.magenta)
        if(!StreamData.data || StreamData.data.length == 0)  {
          if(tempData.roleID_GIVE && guild.roles.cache.has(tempData.roleID_GIVE) && member.roles.cache.has(tempData.roleID_GIVE))
            member.roles.remove(tempData.roleID_GIVE).catch(e=>console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  REMOVE ROLE | prevented bug`.gray)); 
-         return console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  NO STREAM DATA AKA RETURN`.magenta);
+         return //console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  NO STREAM DATA AKA RETURN`.magenta);
        }
 
        StreamData = StreamData.data[0]
@@ -68,16 +68,16 @@ module.exports = async client => {
        //ADD / REMOVE ROLE
        if(chan.DISCORD_USER_ID) {  
          if(StreamData.type.toLowerCase() === `live` && tempData.roleID_GIVE && guild.roles.cache.has(tempData.roleID_GIVE)) { 
-            member.roles.add(tempData.roleID_GIVE).catch(e=>console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  ADD ROLE | prevented bug`.gray))
+            member.roles.add(tempData.roleID_GIVE).catch(e=>console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  ADD ROLE | prevented bug`.gray, e))
          }
          else if(tempData.roleID_GIVE && guild.roles.cache.has(tempData.roleID_GIVE) && member.roles.cache.has(tempData.roleID_GIVE)){
-           member.roles.remove(tempData.roleID_GIVE).catch(e=>console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  REMOVE ROLE | prevented bug`.gray))
+           member.roles.remove(tempData.roleID_GIVE).catch(e=console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  REMOVE ROLE | prevented bug`.gray, e))
          }
        }
        
        //get the channel data for the thumbnail image
        const ChannelData = await getChannelData(chan.ChannelName, process.env.twitch_clientID || config.twitch_clientID, config.authToken)
-       if (!ChannelData) return console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  NO TWITCH CHANNEL DATA INFORMATION FOUND`.magenta)
+       if (!ChannelData) return //console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  NO TWITCH CHANNEL DATA INFORMATION FOUND`.magenta)
        
 
        //structure for the embed
@@ -104,11 +104,11 @@ module.exports = async client => {
                  ch.send({content: `<@&${tempData.roleID_PING}>`}).then(msg=>msg.delete().catch(e=>console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  Prevented delete bug`.gray))).catch(e=>console.log(`prevented send bug role`.gray))
                }
                client.social_log.set(ch.guild.id+`.twitch`, tempDat)
-               console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  NOTIFICATION SENT: https://www.twitch.tv/${StreamData.user_login}`.magenta)
+               //console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  NOTIFICATION SENT: https://www.twitch.tv/${StreamData.user_login}`.magenta)
                //fs.writeFileSync('./social_log/streamconfig.json', JSON.stringify(tempData, null, 3))
-           }).catch(e=>{console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  Prevented send bug embed`.gray)})
+           }).catch(e=>{console.log(` [TWITCH] | ${moment().format("ddd DD-MM-YYYY HH:mm:ss.SSSS")} | ${guild.name} ::  Prevented send bug embed`.gray, e)})
          }
-       }).catch(() => {});
+       }).catch(() => null);
    })
  }
 

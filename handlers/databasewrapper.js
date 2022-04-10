@@ -86,11 +86,13 @@ const DatabaseClass = class extends Tinyfy.TypedEmitter {
         })
     }
     async get(key) {
-        key == "748088208427974676" ? console.log("RECEIVED GET", key, this.model.collection.name) : null
         var RawData = null;
-        if(this.cache.has(key)) RawData = this.cache.get(key); 
+        if(this.cache.has(key)) {
+            RawData = this.cache.get(key);
+            key == "748088208427974676" ? console.log(`${"GET".blue} ${String(this.cache.has(key)).green} for the Key: ${String(key).green} in ${String(this.model.collection.name).green}`.dim) : null
+        }
         else {
-            key == "748088208427974676" ? console.log("FETCHING DATA", key, this.model.collection.name) : null
+            key == "748088208427974676" ? console.log(`${"FETCH-DB".blue} ${String(this.cache.has(key)).green} for the Key: ${String(key).green} in ${String(this.model.collection.name).green}`.dim) : null
             RawData = await this.getRaw(key)
             this.cache.set(key, RawData); 
         }
@@ -101,8 +103,10 @@ const DatabaseClass = class extends Tinyfy.TypedEmitter {
         return await this.get(key)
     }
     async set(t, e, n = -1) {
-        if(!t || t.length == 0) console.log("NO T", t)
-        if(this.cache.has(t)) this.cache.delete(t); 
+        if(this.cache.has(t)) {
+            t == "748088208427974676" ? console.log(`${"DELETE".blue} Cache for ${String(t).green} in ${String(this.model.collection.name).green} [db.set()]`.dim) : null;
+            this.cache.delete(t);
+        }
         if (this.__readyCheck(), t.includes(".")) {
             const r = UtilClass.getKeyMetadata(t);
             const o = await this.model.findOne({
@@ -161,7 +165,10 @@ const DatabaseClass = class extends Tinyfy.TypedEmitter {
         if (n.data !== null && typeof n.data != "object") throw new Error("CANNOT_TARGET_NON_OBJECT");
         let r = Object.assign({}, n.data);
         
-        if(this.cache.has(t)) this.cache.delete(t); 
+        if(this.cache.has(t)) {
+            key == "748088208427974676" ? console.log(`${"DELETE".blue} Cache for ${String(t).green} in ${String(this.model.collection.name).green} [db.delete()]`.dim) : null
+            this.cache.delete(t);
+        }
         return lodash.unset(r, e.target), await n.updateOne({
             $set: {
                 data: r
@@ -176,8 +183,12 @@ const DatabaseClass = class extends Tinyfy.TypedEmitter {
         return await this.model.estimatedDocumentCount()
     }
     async ping() {
-        let t = Date.now(), pingkey = "SOMETHING_RANDOM_FOR_GETTING_PING";
-        return await this.get(pingkey), this.cache.has(pingkey) ? this.cache.delete(pingkey) : null, Date.now() - t
+        let t = Date.now(), pingkey = "SOMETHING_RANDOM_FOR_PING";
+        await this.get(pingkey)
+        if(this.cache.has(pingkey)) {
+            this.cache.delete(pingkey);
+        }
+        return Date.now() - t
     }
     async instantiateChild(t, e) {
         return await new d(e || this.url, {

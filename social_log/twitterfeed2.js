@@ -3,6 +3,7 @@ const Twit = require('twit')
 const { databasing, delay } = require('../handlers/functions');
 
 module.exports = async (client) => {
+  return true;
 }
 async function create_twit(client){/*
       //ensure the db for each guild
@@ -21,7 +22,7 @@ async function create_twit(client){/*
         timeout_ms: twitconfig.timeout_ms, 
         strictSSL: twitconfig.strictSSL, 
       })
-      for(const user of userids){
+      for await (const user of userids){
         await T.get('search/tweets', { q: `from:${user}`, count: 1 }, function(err, data, response) {
           if(err) return console.log(err)
           //define some twitter only variables
