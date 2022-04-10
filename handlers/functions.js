@@ -25,12 +25,10 @@ module.exports = {
   create_transcript,
   databasing,
   simple_databasing,
-  reset_DB,
   change_status,
   check_voice_channels,
   check_created_voice_channels,
   create_join_to_create_Channel,
-  getMember,
   shuffle,
   formatDate,
   delay,
@@ -43,6 +41,7 @@ module.exports = {
   swap_pages,
   swap_pages2,
   swap_pages2_interaction,
+  swap_pages_data,
   escapeRegex,
   autoplay,
   arrayMove,
@@ -108,8 +107,8 @@ async function dbRemove(db, key, filter) {
       }
       if (!Array.isArray(Data)) return res(null)
       // allow db.remove(key, d); and: db.remove(key, data => data.foo == "bar") 
-      const FindFunction = _.isFunction(filter) ? filter : (v) => filter === v;
-      const DataIndex = Data.findIndex(FindFunction);
+      const Findfunction = _.isFunction(filter) ? filter : (v) => filter === v;
+      const DataIndex = Data.findIndex(Findfunction);
       // If index found, remove it
       if (DataIndex > -1) {
         Data.splice(DataIndex, 1);
@@ -128,7 +127,7 @@ async function check_if_dj(client, member, song) {
   if (!roleid || roleid.length == 0 || String(roleid) == "") return false;
   var isdj = false;
   var spliced = false
-  for(const djRole of roleid){
+  for await (const djRole of roleid){
     if (!member.guild.roles.cache.get(djRole)) {
       const index = roleid.indexOf(djRole)
       if(index > -1) {
@@ -150,7 +149,7 @@ async function check_if_dj(client, member, song) {
 
 function handlemsg(txt, options) {
   let text = String(txt);
-  for(const option in options){ 
+  for (const option in options){ 
     var toreplace = new RegExp(`{${option.toLowerCase()}}`,"ig");
     text = text.replace(toreplace, options[option]);
   }
@@ -209,7 +208,7 @@ function parseMilliseconds(milliseconds) {
 function isValidURL(string) {
   const args = string.split(" ");
   let url;
-  for(const arg of args){
+  for (const arg of args){
     try {
       url = new URL(arg);
       url = url.protocol === "http:" || url.protocol === "https:";
@@ -220,7 +219,7 @@ function isValidURL(string) {
   }
   return url;
 };
-function GetUser(message, arg){
+async function GetUser(message, arg){
   var errormessage = "<:no:833101993668771842> I failed finding that User...";
   return new Promise(async (resolve, reject) => {
     var args = arg, client = message.client;
@@ -228,13 +227,13 @@ function GetUser(message, arg){
     if(!args || args == null || args == undefined) args = message.content.trim().split(/ +/).slice(1);
     let user = message.mentions.users.first();
     if(!user && args[0] && args[0].length == 18) {
-      user = await client.getUser(args[0]).catch(() => {});
+      user = await client.getUser(args[0]).catch(() => null);
       if(!user) return reject(errormessage)
       return resolve(user);
     }
     /**
      * @INFO
-     * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+     * Bot Coded by Tomato#6966 | https://discord.gg/milrato
      * @INFO
      * Work for Milrato Development | https://milrato.eu
      * @INFO
@@ -253,7 +252,7 @@ function GetUser(message, arg){
         if(!user || user == null || !user.id) return reject(errormessage)
       }
       
-      user = await client.getUser(user.user.i).catch(() => {});
+      user = await client.getUser(user.user.i).catch(() => null);
       return resolve(user);
     }
     else {
@@ -262,7 +261,7 @@ function GetUser(message, arg){
     }
   })
 }
-function GetRole(message, arg){
+async function GetRole(message, arg){
   var errormessage = "<:no:833101993668771842> I failed finding that Role...";
   return new Promise(async (resolve, reject) => {
     var args = arg, client = message.client;
@@ -289,7 +288,7 @@ function GetRole(message, arg){
   })
 }
 
-function GetGlobalUser(message, arg){
+async function GetGlobalUser(message, arg){
   var errormessage = "<:no:833101993668771842> I failed finding that User...";
   return new Promise(async (resolve, reject) => {
     var args = arg, client = message.client;
@@ -297,16 +296,16 @@ function GetGlobalUser(message, arg){
     if(!args || args == null || args == undefined) args = message.content.trim().split(/ +/).slice(1);
     let user = message.mentions.users.first();
     if(!user && args[0] && args[0].length == 18) {
-      user = await client.getUser(args[0]).catch(() => {})
+      user = await client.getUser(args[0]).catch(() => null)
       if(!user) return reject(errormessage)
       return resolve(user);
     }
     else if(!user && args[0]){
       let alluser = [], allmembers = [];
       var guilds = [...client.guilds.cache.values()];
-      for(const g of guilds){
+      for await (const g of guilds){
         var members = g.members.cache.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
-        for(const m of members) { alluser.push(m.user.tag); allmembers.push(m); }
+        for await (const m of members) { alluser.push(m.user.tag); allmembers.push(m); }
       }
       user = alluser.find(user => user.startsWith(args.join(" ").toLowerCase()))
       user = allmembers.find(me => String(me.user.tag).toLowerCase() == user)
@@ -315,7 +314,7 @@ function GetGlobalUser(message, arg){
         user = allmembers.find(me => String(me.displayName + "#" + me.user.discriminator).toLowerCase() == user)
         if(!user || user == null || !user.id) return reject(errormessage)
       }
-      user = await client.getUser(user.user.i).catch(() => {});
+      user = await client.getUser(user.user.i).catch(() => null);
       if(!user) return reject(errormessage)
       return resolve(user);
     }
@@ -328,7 +327,7 @@ function GetGlobalUser(message, arg){
 
 
 /**
- * function edit_Roster_msg
+ * async function edit_Roster_msg
  * @param {*} client | The Discord Bot Client
  * @param {*} guild | The Guild to edit the Message at
  * @param {*} the_roster_db | the Database of the Roster
@@ -337,7 +336,7 @@ function GetGlobalUser(message, arg){
 async function edit_Roster_msg(client, guild, the_roster_db, pre) {
   try{
     //fetch all guild members
-    await guild.members.fetch().catch(() => {});
+    await guild.members.fetch().catch(() => null);
     //get the roster data
     let es = await client.settings.get(guild.id+".embed")
     let ls = await client.settings.get(guild.id+".language")
@@ -361,9 +360,9 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
     if(data.rostermessage.length < 5) 
       return //console.log("Roster Message not valid | :: | " + data.rostermessage);
     //fetch the message from the channel
-    let message = channel.messages.cache.get(data.rostermessage) || await channel.messages.fetch(data.rostermessage).catch(() => {}) || false;
+    let message = channel.messages.cache.get(data.rostermessage) || await channel.messages.fetch(data.rostermessage).catch(() => null) || false;
     //if the message is undefined, then send the message ;)
-    if (!message || message == null || !message.id || message.id == null) return send_roster(client, guild);
+    if (!message || message == null || !message.id || message.id == null) return send_roster_msg(client, guild, the_roster_db, pre);
     //define a variable for the total break of the loop later
     let totalbreak = false;
     //define the embed
@@ -378,7 +377,7 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
     //loop through every single role
     for (let j = 0; j < rosterroles.length; j++) {  
       //get the role
-      let role = await guild.roles.fetch(rosterroles[j]).catch(() => {})
+      let role = await guild.roles.fetch(rosterroles[j]).catch(() => null)
       //if no valid role skip
       if(!role || role == undefined || !role.members || role.members == undefined) continue;  
       //if the embed is too big break
@@ -481,7 +480,7 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
         }
         /**
          * @INFO
-         * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+         * Bot Coded by Tomato#6966 | https://discord.gg/milrato
          * @INFO
          * Work for Milrato Development | https://milrato.eu
          * @INFO
@@ -666,7 +665,7 @@ async function send_roster_msg(client, guild, the_roster_db, pre) {
   let guildData = await the_roster_db.get(guild.id);
   if(!guildData || !guildData[pre]) return;
   if (guildData[pre].rosterchannel == "notvalid") return;
-  let channel = await client.channels.fetch(guildData[pre].rosterchannel).catch(() => {});
+  let channel = await client.channels.fetch(guildData[pre].rosterchannel).catch(() => null);
   //define the embed
   let rosterembed = new Discord.MessageEmbed()
     .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
@@ -681,7 +680,7 @@ async function send_roster_msg(client, guild, the_roster_db, pre) {
   }
   for (let i = 0; i < rosterroles.length; i++) {
     //get the role
-    let role = await guild.roles.fetch(rosterroles[i]).catch(() => {})
+    let role = await guild.roles.fetch(rosterroles[i]).catch(() => null)
     //if no valid role skip
     if(!role || role == undefined || !role.members || role.members == undefined) continue;  
     //if the embed is too big break
@@ -744,7 +743,7 @@ async function create_transcript_buffer(Messages, Channel, Guild){
         `<meta charset="utf-8" />` + 
         `<meta name="viewport" content="width=device-width" />` + 
         `<style>mark{background-color: #202225;color:#F3F3F3;}@font-face{font-family:Whitney;src:url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/whitney-300.woff);font-weight:300}@font-face{font-family:Whitney;src:url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/whitney-400.woff);font-weight:400}@font-face{font-family:Whitney;src:url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/whitney-500.woff);font-weight:500}@font-face{font-family:Whitney;src:url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/whitney-600.woff);font-weight:600}@font-face{font-family:Whitney;src:url(https://cdn.jsdelivr.net/gh/mahtoid/DiscordUtils@master/whitney-700.woff);font-weight:700}body{font-family:Whitney,"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:17px}a{text-decoration:none}a:hover{text-decoration:underline}img{object-fit:contain}.markdown{max-width:100%;line-height:1.3;overflow-wrap:break-word}.preserve-whitespace{white-space:pre-wrap}.spoiler{display:inline-block}.spoiler--hidden{cursor:pointer}.spoiler-text{border-radius:3px}.spoiler--hidden .spoiler-text{color:transparent}.spoiler--hidden .spoiler-text::selection{color:transparent}.spoiler-image{position:relative;overflow:hidden;border-radius:3px}.spoiler--hidden .spoiler-image{box-shadow:0 0 1px 1px rgba(0,0,0,.1)}.spoiler--hidden .spoiler-image *{filter:blur(44px)}.spoiler--hidden .spoiler-image:after{content:"SPOILER";color:#dcddde;background-color:rgba(0,0,0,.6);position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:600;padding:100%;border-radius:20px;letter-spacing:.05em;font-size:.9em}.spoiler--hidden:hover .spoiler-image:after{color:#fff;background-color:rgba(0,0,0,.9)}blockquote{margin:.1em 0;padding-left:.6em;border-left:4px solid;border-radius:3px}.pre{font-family:Consolas,"Courier New",Courier,monospace}.pre--multiline{margin-top:.25em;padding:.5em;border:2px solid;border-radius:5px}.pre--inline{padding:2px;border-radius:3px;font-size:.85em}.mention{border-radius:3px;padding:0 2px;color:#dee0fc;background:rgba(88,101,242,.3);font-weight:500}.mention:hover{background:rgba(88,101,242,.6)}.emoji{width:1.25em;height:1.25em;margin:0 .06em;vertical-align:-.4em}.emoji--small{width:1em;height:1em}.emoji--large{width:2.8em;height:2.8em}.chatlog{max-width:100%}.message-group{display:grid;margin:0 .6em;padding:.9em 0;border-top:1px solid;grid-template-columns:auto 1fr}.reference-symbol{grid-column:1;border-style:solid;border-width:2px 0 0 2px;border-radius:8px 0 0 0;margin-left:16px;margin-top:8px}.attachment-icon{float:left;height:100%;margin-right:10px}.reference{display:flex;grid-column:2;margin-left:1.2em;margin-bottom:.25em;font-size:.875em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;align-items:center}.reference-av{border-radius:50%;height:16px;width:16px;margin-right:.25em}.reference-name{margin-right:.25em;font-weight:600}.reference-link{flex-grow:1;overflow:hidden;text-overflow:ellipsis}.reference-link:hover{text-decoration:none}.reference-content>*{display:inline}.reference-edited-tst{margin-left:.25em;font-size:.8em}.ath-av-container{grid-column:1;width:40px;height:40px}.ath-av{border-radius:50%;height:40px;width:40px}.messages{grid-column:2;margin-left:1.2em;min-width:50%}.messages .bot-tag{top:-.2em}.ath-name{font-weight:500}.tst{margin-left:.3em;font-size:.75em}.message{padding:.1em .3em;margin:0 -.3em;background-color:transparent;transition:background-color 1s ease}.content{font-size:.95em;word-wrap:break-word}.edited-tst{margin-left:.15em;font-size:.8em}.attachment{margin-top:.3em}.attachment-thumbnail{vertical-align:top;max-width:45vw;max-height:225px;border-radius:3px}.attachment-container{height:40px;width:100%;max-width:520px;padding:10px;border:1px solid;border-radius:3px;overflow:hidden;background-color:#2f3136;border-color:#292b2f}.attachment-icon{float:left;height:100%;margin-right:10px}.attachment-filesize{color:#72767d;font-size:12px}.attachment-filename{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.embed{display:flex;margin-top:.3em;max-width:520px}.embed-color-pill{flex-shrink:0;width:.25em;border-top-left-radius:3px;border-bottom-left-radius:3px}.embed-content-container{display:flex;flex-direction:column;padding:.5em .6em;border:1px solid;border-top-right-radius:3px;border-bottom-right-radius:3px}.embed-content{display:flex;width:100%}.embed-text{flex:1}.embed-ath{display:flex;margin-bottom:.3em;align-items:center}.embed-ath-icon{margin-right:.5em;width:20px;height:20px;border-radius:50%}.embed-ath-name{font-size:.875em;font-weight:600}.embed-title{margin-bottom:.2em;font-size:.875em;font-weight:600}.embed-description{font-weight:500;font-size:.85em}.embed-fields{display:flex;flex-wrap:wrap}.embed-field{flex:0;min-width:100%;max-width:506px;padding-top:.6em;font-size:.875em}.embed-field--inline{flex:1;flex-basis:auto;min-width:150px}.embed-field-name{margin-bottom:.2em;font-weight:600}.embed-field-value{font-weight:500}.embed-thumbnail{flex:0;margin-left:1.2em;max-width:80px;max-height:80px;border-radius:3px}.embed-image-container{margin-top:.6em}.embed-image{max-width:500px;max-height:400px;border-radius:3px}.embed-footer{margin-top:.6em}.embed-footer-icon{margin-right:.2em;width:20px;height:20px;border-radius:50%;vertical-align:middle}.embed-footer-text{display:inline;font-size:.75em;font-weight:500}.reactions{display:flex}.reaction{display:flex;align-items:center;margin:.35em .1em .1em .1em;padding:.2em .35em;border-radius:8px}.reaction-count{min-width:9px;margin-left:.35em;font-size:.875em}.bot-tag{position:relative;margin-left:.3em;margin-right:.3em;padding:.05em .3em;border-radius:3px;vertical-align:middle;line-height:1.3;background:#7289da;color:#fff;font-size:.625em;font-weight:500}.postamble{margin:1.4em .3em .6em .3em;padding:1em;border-top:1px solid}body{background-color:#36393e;color:#dcddde}a{color:#0096cf}.spoiler-text{background-color:rgba(255,255,255,.1)}.spoiler--hidden .spoiler-text{background-color:#202225}.spoiler--hidden:hover .spoiler-text{background-color:rgba(32,34,37,.8)}.quote{border-color:#4f545c}.pre{background-color:#2f3136!important}.pre--multiline{border-color:#282b30!important;color:#b9bbbe!important}.preamble__entry{color:#fff}.message-group{border-color:rgba(255,255,255,.1)}.reference-symbol{border-color:#4f545c}.reference-icon{width:20px;display:inline-block;vertical-align:bottom}.reference{color:#b5b6b8}.reference-link{color:#b5b6b8}.reference-link:hover{color:#fff}.reference-edited-tst{color:rgba(255,255,255,.2)}.ath-name{color:#fff}.tst{color:rgba(255,255,255,.2)}.message--highlighted{background-color:rgba(114,137,218,.2)!important}.message--pinned{background-color:rgba(249,168,37,.05)}.edited-tst{color:rgba(255,255,255,.2)}.embed-color-pill--default{background-color:#4f545c}.embed-content-container{background-color:rgba(46,48,54,.3);border-color:rgba(46,48,54,.6)}.embed-ath-name{color:#fff}.embed-ath-name-link{color:#fff}.embed-title{color:#fff}.embed-description{color:rgba(255,255,255,.6)}.embed-field-name{color:#fff}.embed-field-value{color:rgba(255,255,255,.6)}.embed-footer{color:rgba(255,255,255,.6)}.reaction{background-color:rgba(255,255,255,.05)}.reaction-count{color:rgba(255,255,255,.3)}.info{display:flex;max-width:100%;margin:0 5px 10px 5px}.guild-icon-container{flex:0}.guild-icon{max-width:88px;max-height:88px}.metadata{flex:1;margin-left:10px}.guild-name{font-size:1.2em}.channel-name{font-size:1em}.channel-topic{margin-top:2px}.channel-message-count{margin-top:2px}.channel-timezone{margin-top:2px;font-size:.9em}.channel-date-range{margin-top:2px}</style>` +
-        `<script>function scrollToMessage(e,t){var o=document.getElementById("message-"+t);null!=o&&(e.preventDefault(),o.classList.add("message--highlighted"),window.scrollTo({top:o.getBoundingClientRect().top-document.body.getBoundingClientRect().top-window.innerHeight/2,behavior:"smooth"}),window.setTimeout(function(){o.classList.remove("message--highlighted")},2e3))}function scrollToMessage(e,t){var o=document.getElementById("message-"+t);o&&(e.preventDefault(),o.classList.add("message--highlighted"),window.scrollTo({top:o.getBoundingClientRect().top-document.body.getBoundingClientRect().top-window.innerHeight/2,behavior:"smooth"}),window.setTimeout(function(){o.classList.remove("message--highlighted")},2e3))}function showSpoiler(e,t){t&&t.classList.contains("spoiler--hidden")&&(e.preventDefault(),t.classList.remove("spoiler--hidden"))}</script>` + 
+        `<script>async function scrollToMessage(e,t){var o=document.getElementById("message-"+t);null!=o&&(e.preventDefault(),o.classList.add("message--highlighted"),window.scrollTo({top:o.getBoundingClientRect().top-document.body.getBoundingClientRect().top-window.innerHeight/2,behavior:"smooth"}),window.setTimeout(function(){o.classList.remove("message--highlighted")},2e3))}async function scrollToMessage(e,t){var o=document.getElementById("message-"+t);o&&(e.preventDefault(),o.classList.add("message--highlighted"),window.scrollTo({top:o.getBoundingClientRect().top-document.body.getBoundingClientRect().top-window.innerHeight/2,behavior:"smooth"}),window.setTimeout(function(){o.classList.remove("message--highlighted")},2e3))}async function showSpoiler(e,t){t&&t.classList.contains("spoiler--hidden")&&(e.preventDefault(),t.classList.remove("spoiler--hidden"))}</script>` + 
         `<script>document.addEventListener('DOMContentLoaded', () => {document.querySelectorAll('.pre--multiline').forEach((block) => {hljs.highlightBlock(block);});});</script>` + 
         `</head>`;
         let messagesArray = []
@@ -789,9 +788,8 @@ async function create_transcript_buffer(Messages, Channel, Guild){
                   }
                   if(msg.embeds[0].fields && msg.embeds[0].fields.length > 0){
                     subcontent += `<div class="embed-fields">`
-                    for(let i = 0; i < msg.embeds[0].fields.length; i++){
-                        subcontent += `<div class="embed-field ${msg.embeds[0].fields[i].inline ? `embed-field--inline` : ``}">`
-                        const field = msg.embeds[0].fields[i]
+                    for await (let field of msg.embeds[0].fields) {
+                        subcontent += `<div class="embed-field ${field.inline ? `embed-field--inline` : ``}">`
                         if(field.key){
                           subcontent += `<div class="embed-field-name">${markdowntohtml(String(field.key).replace(/\n/ig, "<br/>"))}</div>`;
                         }
@@ -820,7 +818,7 @@ async function create_transcript_buffer(Messages, Channel, Guild){
               }
               if (msg.reactions && msg.reactions.cache.size > 0){
                 subcontent += `<div class="reactions">`
-                for(const reaction of msg.reactions.cache.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966)){                      
+                for await (const reaction of msg.reactions.cache.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966)){                      
                   subcontent += `<div class=reaction>${reaction.emoji?.url ? `<img class="emoji emoji--small" src="${reaction.emoji?.url}" alt="${"<" + reaction.emoji?.animated ? "a" : "" + ":" + reaction.emoji?.name + ":" + reaction.emoji?.id + ">"}">` : reaction.emoji?.name.toString()}<span class="reaction-count">${reaction.count}</span></div>`
                 }
                 subcontent += `</div>`
@@ -852,10 +850,10 @@ async function create_transcript_buffer(Messages, Channel, Guild){
         fs.writeFileSync(`${process.cwd()}/${Channel.name}.html`, baseHTML); //write everything in the docx file
         resolve(`${process.cwd()}/${Channel.name}.html`);
         return;
-        function markdowntohtml(tomarkdown){
+        async function markdowntohtml(tomarkdown){
           mentionReplace(tomarkdown.split(" "));
-          function mentionReplace(splitted){
-            for(arg of splitted){
+          async function mentionReplace(splitted){
+            for await (arg of splitted){
               const memberatches = arg.match(/<@!?(\d+)>/);
               const rolematches = arg.match(/<@&(\d+)>/);
               const channelmatches = arg.match(/<#(\d+)>/);
@@ -941,7 +939,7 @@ async function create_transcript_buffer(Messages, Channel, Guild){
               type: INLINE,
             },
           ];
-          function parse(string) {
+          async function parse(string) {
             output = "\n" + string + "\n";
             parseMap.forEach(function(p) {
               output = output.replace(p.pattern, function() {
@@ -949,13 +947,13 @@ async function create_transcript_buffer(Messages, Channel, Guild){
               });
             });
             output = clean(output);
-            output = output.trim();
-            output = output.replace(/[\n]{1,}/g, "\n");
-            return output;
+            output = output?.trim();
+            output = output?.replace(/[\n]{1,}/g, "\n");
+            return output || "\n" + string?.trim().replace(/[\n]{1,}/g, "\n") + "\n";
           }
-          function replace(matchList, replacement, type) {
+          async function replace(matchList, replacement, type) {
             var i, $$;
-            for(i in matchList) {
+            for (i in matchList) {
               if(!matchList.hasOwnProperty(i)) {
                 continue;
               }
@@ -967,7 +965,7 @@ async function create_transcript_buffer(Messages, Channel, Guild){
             }
             return replacement;
           }
-          function clean(string) {
+          async function clean(string) {
             var cleaningRuleArray = [
               {
                 match: /<\/([uo]l)>\s*<\1>/g,
@@ -994,19 +992,6 @@ async function create_transcript_buffer(Messages, Channel, Guild){
     })          
 }
 
-
-function getMember(message, toFind = "") {
-    toFind = toFind.toLowerCase();
-    let target = message.guild.members.cache.get(toFind);
-    if (!target && message.mentions.members) target = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first();
-    if (!target && toFind) {
-      target = message.guild.members.cache.find((member) => {
-        return member.displayName.toLowerCase().includes(toFind) || member.user.tag.toLowerCase().includes(toFind);
-      });
-    }
-    if (!target) target = message.member;
-    return target;
-}
 
 function shuffle(a) {
   try {
@@ -1093,22 +1078,7 @@ function duration(duration, useMilli = false) {
     }
 }
 
-
-async function promptMessage(message, author, time, validReactions) {
-  try {
-    time *= 1000;
-    for (const reaction of validReactions) await message.react(reaction);
-    const filter = (reaction, user) => validReactions.includes(reaction.emoji?.name) && user.id === author.id;
-    return message.awaitReactions({filter, 
-      max: 1,
-      time: time
-    }).then((collected) => collected.first() && collected.first().emoji?.name);
-  } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
-  }
-}
-
-function delay(delayInms) {
+async function delay(delayInms) {
   try {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -1136,51 +1106,41 @@ function getRandomNum(min, max) {
   }
 }
 
-function createBar(player) {
-  try {
+function createBar(player, style = 1) {
+
+  const TotalDuration = player?.queue?.current?.duration || 1; // get the duration somehow
+  const currentPosition = player?.position || 0; // get the current position somehow
+  const size = 25;
+  const current = TotalDuration !== 0 ? currentPosition : TotalDuration;
+
+  if(style == 1 ) {
     const full = "▰";
     const empty = "▱"
-    const size = "▰▰▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱".length;
     if (!player.queue.current) return `**[${full}${empty.repeat(size - 1)}]**\n**NaN / NaN**`;
-    const percent = player.queue.current.duration == 0 ? null : Math.floor(player.position / player.queue.current.duration * 100)
+    const percent = TotalDuration == 0 ? null : Math.floor(currentPosition / TotalDuration * 100)
     const fullBars = Math.round(size * (percent / 100));
-    const emptyBars = size - fullBars;
-    return `**${full.repeat(fullBars)}${empty.repeat(emptyBars)}**\n***${format(player.position).split("|")[0].trim()} / ${(player.queue.current.duration==0?" ◉ LIVE":format(player.queue.current.duration).split("|")[0].trim())}***`
-    /*
-    let size = 25;
-    let line = "▬";
-    //player.queue.current.duration == 0 ? player.position : player.queue.current.duration, player.position, 25, "▬", "🔷")
-    let current = player.queue.current.duration !== 0 ? player.position : player.queue.current.duration;
-    let total = player.queue.current.duration;
-
+    return `**${full.repeat(fullBars)}${empty.repeat(size - fullBars)}**\n***${format(currentPosition).split("|")[0].trim()} / ${(TotalDuration==0?" ◉ LIVE":format(TotalDuration).split("|")[0].trim())}***`
+  } else {
+    const line = "▬";
     let slider = "🔷";
-    let bar = current > total ? [line.repeat(size / 2 * 2), (current / total) * 100] : [line.repeat(Math.round(size / 2 * (current / total))).replace(/.$/, slider) + line.repeat(size - Math.round(size * (current / total)) + 1), current / total];
-    if (!String(bar).includes("🔷")) return `**[${"🔷"}${line.repeat(size - 1)}]**\n**00:00:00 / ${(player.queue.current.duration==0?" ◉ LIVE":format(player.queue.current.duration).split("|")[0].trim())}**`;
-    return `**[${bar[0]}]**\n**${(format(player.position).split("|")[0].trim())+" / "+(player.queue.current.duration==0?" ◉ LIVE":format(player.queue.current.duration).split("|")[0].trim())}**`;
-  */} catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    let bar = current > TotalDuration ? [line.repeat(size / 2 * 2), (current / TotalDuration) * 100] : [line.repeat(Math.round(size / 2 * (current / TotalDuration))).replace(/.$/, slider) + line.repeat(size - Math.round(size * (current / TotalDuration)) + 1), current / TotalDuration];
+    if (!String(bar).includes("🔷")) return `**[${"🔷"}${line.repeat(size - 1)}]**\n**00:00:00 / ${(TotalDuration==0?" ◉ LIVE":format(TotalDuration).split("|")[0].trim())}**`;
+    return `**[${bar[0]}]**\n**${(format(currentPosition).split("|")[0].trim())+" / "+(TotalDuration==0?" ◉ LIVE":format(TotalDuration).split("|")[0].trim())}**`;
   }
 }
 
 function format(millis) {
-  try {
-    var s = Math.floor((millis / 1000) % 60);
-    var m = Math.floor((millis / (1000 * 60)) % 60);
-    var h = Math.floor((millis / (1000 * 60* 60)) % 24); 
-    h = h < 10 ? "0" + h : h;
-    m = m < 10 ? "0" + m : m;
-    s = s < 10 ? "0" + s : s;
-    return h + ":" + m + ":" + s + " | " +  Math.floor((millis / 1000)) + " Seconds"
-  } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
-  }
+  var s = Math.floor((millis / 1000) % 60);
+  var m = Math.floor((millis / (1000 * 60)) % 60);
+  var h = Math.floor((millis / (1000 * 60* 60)) % 24); 
+  h = h < 10 ? "0" + h : h;
+  m = m < 10 ? "0" + m : m;
+  s = s < 10 ? "0" + s : s;
+  return h + ":" + m + ":" + s + " | " +  Math.floor((millis / 1000)) + " Seconds"
 }
 
-function stations(client, prefix, message) {
-  let es = client.settings.get(message.guild.id, "embed");
-  let ls = client.settings.get(message.guild.id, "language");
-  
-
+async function stations(client, prefix, message) {
+  let es = await client.settings.get(message.guild.id+".embed");
   try {
     const reyfm_iloveradio_embed = new MessageEmbed().setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es)).setTitle("Pick your Station, by typing in the right `INDEX` Number!").setDescription(`Example: \`${prefix}radio 11\``);
     const stationsembed = new MessageEmbed().setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es)).setTitle("Pick your Station, by typing in the right `INDEX` Number!").setDescription(`Example: \`${prefix}radio 44\``);
@@ -1337,10 +1297,7 @@ function stations(client, prefix, message) {
     beforeindex+=radios.OTHERS.request.length;
     stationsembed4.setDescription(`${requests}`);
     embeds.push(stationsembed4)
-    require("./functions").swap_pages2(client, message, embeds);
-    let amount = 0;
-    
-
+    return require("./functions").swap_pages2(client, message, embeds);
   } catch (e) {
     console.log(String(e.stack).grey.bgRed)
   }
@@ -1371,7 +1328,7 @@ async function autoplay(client, player, type) {
         .setTitle(eval(client.la[ls]["handlers"]["functionsjs"]["functions"]["variable7"]))
         .setDescription(config.settings.LeaveOnEmpty_Queue.enabled && type != "skip" ? `I'll leave the Channel: \`${client.channels.cache.get(player.voiceChannel).name}\` in: \`${ms(config.settings.LeaveOnEmpty_Queue.time_delay, { long: true })}\`, If the Queue stays Empty! ` : eval(client.la[ls]["handlers"]["functionsjs"]["functions"]["variable9"]))
         .setColor(es.wrongcolor).setFooter(client.getFooter(es));
-      client.channels.cache.get(player.textChannel).send({embeds: [embed]}).catch(e => console.log("THIS IS TO PREVENT A CRASH"))
+      client.channels.cache.get(player.textChannel).send({embeds: [embed]}).catch(() => null)
       if (config.settings.LeaveOnEmpty_Queue.enabled && type != "skip") {
         return setTimeout(() => {
           try {
@@ -1392,18 +1349,18 @@ async function autoplay(client, player, type) {
               } catch {}
               client.channels.cache
                 .get(player.textChannel)
-                .send({embeds: [embed]}).catch(e => console.log("THIS IS TO PREVENT A CRASH"))
+                .send({embeds: [embed]}).catch(() => null)
               try {
                 client.channels.cache
                   .get(player.textChannel)
                   .messages.fetch(player.get("playermessage")).then(async msg => {
                     try {
                       await delay(7500)
-                      msg.delete().catch(() => {});
+                      msg.delete().catch(() => null);
                     } catch {
                       /* */
                     }
-                  }).catch(() => {});
+                  }).catch(() => null);
               } catch (e) {
                 console.log(String(e.stack).grey.yellow);
               }
@@ -1417,7 +1374,7 @@ async function autoplay(client, player, type) {
         player.destroy();
       }
     }
-    player.queue.add(response.filter(r => r.identifier != previoustrack.identifier).tracks[Math.floor(Math.random() * Math.floor(response.tracks.length))]);
+    player.queue.add(response.tracks.filter(r => r.identifier != previoustrack.identifier)[Math.floor(Math.random() * Math.floor(response.tracks.length))]);
     return player.play();
   } catch (e) {
     console.log(String(e.stack).grey.bgRed)
@@ -1463,7 +1420,7 @@ async function swap_pages(client, message, description, TITLE) {
   let cmduser = message.author;
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO
@@ -1509,8 +1466,8 @@ async function swap_pages(client, message, description, TITLE) {
   if (embeds.length === 0) return message.channel.send({embeds: [new MessageEmbed()
   .setTitle(`${emoji?.msg.ERROR} No Content added to the SWAP PAGES Function`)
   .setColor(es.wrongcolor).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-  .setFooter(client.getFooter(es))]}).catch(e => console.log("THIS IS TO PREVENT A CRASH"))
-  if (embeds.length === 1) return message.channel.send({embeds: [embeds[0]]}).catch(e => console.log("THIS IS TO PREVENT A CRASH"))
+  .setFooter(client.getFooter(es))]}).catch(() => null)
+  if (embeds.length === 1) return message.channel.send({embeds: [embeds[0]]}).catch(() => null)
 
   let button_back = new MessageButton().setStyle('SUCCESS').setCustomId('1').setEmoji("833802907509719130").setLabel("Back")
   let button_home = new MessageButton().setStyle('DANGER').setCustomId('2').setEmoji("🏠").setLabel("Home")
@@ -1536,11 +1493,11 @@ async function swap_pages(client, message, description, TITLE) {
           //b?.reply("***Swapping a PAGE FORWARD***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage !== 0) {
               currentPage -= 1
-              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
               await b?.deferUpdate();
             } else {
                 currentPage = embeds.length - 1
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
                 await b?.deferUpdate();
             }
         }
@@ -1549,7 +1506,7 @@ async function swap_pages(client, message, description, TITLE) {
           collector.resetTimer();
           //b?.reply("***Going Back home***, *please wait 2 Seconds for the next Input*", true)
             currentPage = 0;
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
             await b?.deferUpdate();
         } 
         //go forward
@@ -1558,34 +1515,145 @@ async function swap_pages(client, message, description, TITLE) {
           //b?.reply("***Swapping a PAGE BACK***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage < embeds.length - 1) {
                 currentPage++;
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
                 await b?.deferUpdate();
             } else {
                 currentPage = 0
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
                 await b?.deferUpdate();
             }
         
         } 
         //go forward
         else if(b?.customId == "stop"){
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => {});
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
             await b?.deferUpdate();
             collector.stop("stopped");
         }
   });
   collector.on("end", (reason) => {
     if(reason != "stopped"){
-      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => {});
+      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
     }
   })
 
 
 }
-async function swap_pages2(client, message, embeds) {
+async function swap_pages_data(client, message, description, TITLE, T_cmd = "Unkown") {
+  let cmduser = message.author;
+  let currentPage = 0;
+  //GET ALL EMBEDS
+  let embeds = [];
+  //if input is an array
+  if (Array.isArray(description)) {
+    try {
+      let k = 20;
+      for (let i = 0; i < description.length; i += 20) {
+        const current = description.slice(i, k);
+        k += 20;
+        const embed = new MessageEmbed()
+          .setDescription("```"+current.join("\n")+"```").setTitle(TITLE).setColor("BLURPLE").setFooter({text: `Executed: ${T_cmd}`})
+        embeds.push(embed);
+      }
+      embeds;
+    } catch (e){console.error(e)}
+  } else {
+    try {
+      let k = 2000;
+      for (let i = 0; i < description.length; i += 2000) {
+        const current = description.slice(i, k);
+        k += 2000;
+        const embed = new MessageEmbed()
+          .setDescription("```"+current+"```")
+          .setTitle(TITLE)
+          .setColor("BLURPLE").setFooter({text: `Executed: ${T_cmd}`})
+        embeds.push(embed);
+      }
+      embeds;
+    } catch (e){console.error(e)}
+  }
+  if (embeds.length === 0) return message.channel.send({embeds: [new MessageEmbed()
+  .setTitle(`${emoji?.msg.ERROR} No Content added to the SWAP PAGES Function`)
+  .setColor("RED")]}).catch(() => null)
+  if (embeds.length === 1) return message.channel.send({embeds: [embeds[0]]}).catch(() => null)
+
+  let button_back = new MessageButton().setStyle('SUCCESS').setCustomId('1').setEmoji("833802907509719130").setLabel("Back")
+  let button_home = new MessageButton().setStyle('DANGER').setCustomId('2').setEmoji("🏠").setLabel("Home")
+  let button_forward = new MessageButton().setStyle('SUCCESS').setCustomId('3').setEmoji('832598861813776394').setLabel("Forward")
+  let button_blank = new MessageButton().setStyle('SECONDARY').setCustomId('button_blank').setLabel("\u200b").setDisabled();
+  let button_stop = new MessageButton().setStyle('DANGER').setCustomId('stop').setEmoji("🛑").setLabel("Stop")
+  const allbuttons = [new MessageActionRow().addComponents([button_back, button_home, button_forward, button_blank, button_stop])]
+  //Send message with buttons
+  let swapmsg = await message.channel.send({   
+      embeds: [embeds[0]], 
+      components: allbuttons
+  });
+  //create a collector for the thinggy
+  const collector = swapmsg.createMessageComponentCollector({filter: (i) => i?.isButton() && i?.user && i?.user.id == cmduser.id && i?.message.author?.id == client.user.id, time: 180e3 }); //collector for 5 seconds
+  //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
+  collector.on('collect', async b => {
+      if(b?.user.id !== message.author?.id)
+        return b?.reply({content: `<:no:833101993668771842> **Only the one who typed the cmd is allowed to react!**`, ephemeral: true})
+        //page forward
+        if(b?.customId == "1") {
+          collector.resetTimer();
+          //b?.reply("***Swapping a PAGE FORWARD***, *please wait 2 Seconds for the next Input*", true)
+            if (currentPage !== 0) {
+              currentPage -= 1
+              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+              await b?.deferUpdate();
+            } else {
+                currentPage = embeds.length - 1
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await b?.deferUpdate();
+            }
+        }
+        //go home
+        else if(b?.customId == "2"){
+          collector.resetTimer();
+          //b?.reply("***Going Back home***, *please wait 2 Seconds for the next Input*", true)
+            currentPage = 0;
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+            await b?.deferUpdate();
+        } 
+        //go forward
+        else if(b?.customId == "3"){
+          collector.resetTimer();
+          //b?.reply("***Swapping a PAGE BACK***, *please wait 2 Seconds for the next Input*", true)
+            if (currentPage < embeds.length - 1) {
+                currentPage++;
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await b?.deferUpdate();
+            } else {
+                currentPage = 0
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await b?.deferUpdate();
+            }
+        
+        } 
+        //go forward
+        else if(b?.customId == "stop"){
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
+            await b?.deferUpdate();
+            collector.stop("stopped");
+        }
+  });
+  collector.on("end", (reason) => {
+    if(reason != "stopped"){
+      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
+    }
+  })
+
+
+}
+async function swap_pages2(client, message, embeds, tempmsg = false) {
   let currentPage = 0;
   let cmduser = message.author;
-  if (embeds.length === 1) return message.channel.send({embeds: [embeds[0]]}).catch(e => console.log("THIS IS TO PREVENT A CRASH"))
+  if (embeds.length === 1) {
+    if(tempmsg) tempmsg.edit({embeds: [embeds[0]]}).catch(() => null)
+    else message.channel.send({embeds: [embeds[0]]}).catch(() => null)
+    return
+  }
   let button_back = new MessageButton().setStyle('SUCCESS').setCustomId('1').setEmoji("833802907509719130").setLabel("Back")
   let button_home = new MessageButton().setStyle('DANGER').setCustomId('2').setEmoji("🏠").setLabel("Home")
   let button_forward = new MessageButton().setStyle('SUCCESS').setCustomId('3').setEmoji('832598861813776394').setLabel("Forward")
@@ -1594,11 +1662,18 @@ async function swap_pages2(client, message, embeds) {
   const allbuttons = [new MessageActionRow().addComponents([button_back, button_home, button_forward, button_blank, button_stop])]
   let prefix = await client.settings.get(message.guild.id+".prefix");
   //Send message with buttons
-  let swapmsg = await message.channel.send({   
+  let swapmsg;
+  
+  if(tempmsg) swapmsg = await tempmsg.edit({
       content: `***Click on the __Buttons__ to swap the Pages***`,
       embeds: [embeds[0]], 
       components: allbuttons
-  });
+    }).catch(() => null)
+  else swapmsg = await message.channel.send({   
+      content: `***Click on the __Buttons__ to swap the Pages***`,
+      embeds: [embeds[0]], 
+      components: allbuttons
+    });
   //create a collector for the thinggy
   const collector = swapmsg.createMessageComponentCollector({filter: (i) => i?.isButton() && i?.user && i?.user.id == cmduser.id && i?.message.author?.id == client.user.id, time: 180e3 }); //collector for 5 seconds
   //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
@@ -1611,11 +1686,11 @@ async function swap_pages2(client, message, embeds) {
           //b?.reply("***Swapping a PAGE FORWARD***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage !== 0) {
               currentPage -= 1
-              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
               await b?.deferUpdate();
             } else {
                 currentPage = embeds.length - 1
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
                 await b?.deferUpdate();
             }
         }
@@ -1624,7 +1699,7 @@ async function swap_pages2(client, message, embeds) {
           collector.resetTimer();
           //b?.reply("***Going Back home***, *please wait 2 Seconds for the next Input*", true)
             currentPage = 0;
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
             await b?.deferUpdate();
         } 
         //go forward
@@ -1633,25 +1708,25 @@ async function swap_pages2(client, message, embeds) {
           //b?.reply("***Swapping a PAGE BACK***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage < embeds.length - 1) {
                 currentPage++;
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
                 await b?.deferUpdate();
             } else {
                 currentPage = 0
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
                 await b?.deferUpdate();
             }
         
         } 
         //go forward
         else if(b?.customId == "stop"){
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => {});
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
             await b?.deferUpdate();
             collector.stop("stopped");
         }
   });
   collector.on("end", (reason) => {
     if(reason != "stopped"){
-      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => {});
+      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
     }
   })
 
@@ -1666,14 +1741,14 @@ function getDisabledComponents (MessageComponents) {
 async function swap_pages2_interaction(client, interaction, embeds) {
   let currentPage = 0;
   let cmduser = interaction?.member.user;
-  if (embeds.length === 1) return interaction?.reply({ephemeral: true, embeds: [embeds[0]]}).catch(e => console.log("THIS IS TO PREVENT A CRASH"))
+  if (embeds.length === 1) return interaction?.reply({ephemeral: true, embeds: [embeds[0]]}).catch(() => null)
   let button_back = new MessageButton().setStyle('SUCCESS').setCustomId('1').setEmoji("833802907509719130").setLabel("Back")
   let button_home = new MessageButton().setStyle('DANGER').setCustomId('2').setEmoji("🏠").setLabel("Home")
   let button_forward = new MessageButton().setStyle('SUCCESS').setCustomId('3').setEmoji('832598861813776394').setLabel("Forward")
   let button_blank = new MessageButton().setStyle('SECONDARY').setCustomId('button_blank').setLabel("\u200b").setDisabled();
   let button_stop = new MessageButton().setStyle('DANGER').setCustomId('stop').setEmoji("🛑").setLabel("Stop")
   const allbuttons = [new MessageActionRow().addComponents([button_back, button_home, button_forward, button_blank, button_stop])]
-  let prefix = client.settings.get(interaction?.member.guild.id, "prefix");
+  let prefix = await client.settings.get(interaction?.member.guild.id+".prefix");
   //Send message with buttons
   let swapmsg = await interaction?.reply({   
       content: `***Click on the __Buttons__ to swap the Pages***`,
@@ -1693,11 +1768,11 @@ async function swap_pages2_interaction(client, interaction, embeds) {
           //b?.reply("***Swapping a PAGE FORWARD***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage !== 0) {
               currentPage -= 1
-              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
               await b?.deferUpdate();
             } else {
                 currentPage = embeds.length - 1
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
                 await b?.deferUpdate();
             }
         }
@@ -1706,7 +1781,7 @@ async function swap_pages2_interaction(client, interaction, embeds) {
           collector.resetTimer();
           //b?.reply("***Going Back home***, *please wait 2 Seconds for the next Input*", true)
             currentPage = 0;
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
             await b?.deferUpdate();
         } 
         //go forward
@@ -1715,25 +1790,25 @@ async function swap_pages2_interaction(client, interaction, embeds) {
           //b?.reply("***Swapping a PAGE BACK***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage < embeds.length - 1) {
                 currentPage++;
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
                 await b?.deferUpdate();
             } else {
                 currentPage = 0
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => {});
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
                 await b?.deferUpdate();
             }
         
         } 
         //go forward
         else if(b?.customId == "stop"){
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => {});
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
             await b?.deferUpdate();
             collector.stop("stopped");
         }
   });
   collector.on("end", (reason) => {
     if(reason != "stopped"){
-      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => {});
+      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
     }
   })
 
@@ -1752,7 +1827,7 @@ async function databasing(client, guildid, userid) {
         })
         /**
          * @INFO
-         * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+         * Bot Coded by Tomato#6966 | https://discord.gg/milrato
          * @INFO
          * Work for Milrato Development | https://milrato.eu
          * @INFO
@@ -1812,7 +1887,7 @@ async function databasing(client, guildid, userid) {
             enabled: true
           }
         }
-        for(let i = 0; i<=100;i++){
+        for (let i = 0; i<=100;i++){
           ensureData[`ticketsystem${i}`] = {
             enabled: false,
             guildid: guildid,
@@ -1869,7 +1944,7 @@ async function databasing(client, guildid, userid) {
 
   /**
    * @INFO
-   * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+   * Bot Coded by Tomato#6966 | https://discord.gg/milrato
    * @INFO
    * Work for Milrato Development | https://milrato.eu
    * @INFO
@@ -1997,7 +2072,7 @@ async function databasing(client, guildid, userid) {
             enabled: false,
             whitelistedchannels: [],
             whitelistedlinks: [
-              "discord.gg/dcdev",
+              "discord.gg/milrato",
               "discord.gg/djs",],
             mute_amount: 2,
           },
@@ -2139,24 +2214,6 @@ async function databasing(client, guildid, userid) {
   })
 }
 
-function reset_DB(guildid, client) {
-  client.settings.set(guildid, {
-    prefix: ".",
-    channel: "",
-    channelname: "{user}' Room",
-    guild: guildid,
-  });
-  client.settings2.set(guildid, {
-    channel: "",
-    channelname: "{user}' Channel",
-    guild: guildid,
-  });
-  client.settings3.set(guildid, {
-    channel: "",
-    channelname: "{user}' Lounge",
-    guild: guildid,
-  });
-}
 
 function change_status(client) {
   try {
@@ -2173,14 +2230,13 @@ function change_status(client) {
 }
 // Check if there is a setup-jointocreate vc with members in it to create temp channels
 async function check_voice_channels(client) {
-  console.log("CHECK_VOICE_CHANNELS")
   let rawData = await client.jtcsettings.all()
   const guilds = [...client.guilds.cache.values()]
   .filter(g => rawData.find(d => d.ID == g.id)?.data && typeof rawData.find(d => d.ID == g.id)?.data == "object")
   .filter(g => Object.entries(rawData.find(d => d.ID == g.id)?.data).filter(([key, value]) => value && value.channel && value.channel.length > 6).length > 0);
-  if(!guilds || guilds.length == 0) return console.log(" CHECK SETUPPED :: NO GUILDS")
-  for(const guild of guilds) {
-    for(const [key, value] of Object.entries(rawData.find(d => d.ID == guild.id)?.data).filter(([key, value]) => value && value.channel && value.channel.length > 6)) {
+  if(!guilds || guilds.length == 0) return 
+  for await (const guild of guilds) {
+    for await (const [key, value] of Object.entries(rawData.find(d => d.ID == guild.id)?.data).filter(([key, value]) => value && value.channel && value.channel.length > 6)) {
        
       let channel = guild.channels.cache.find(ch => ch.type == "GUILD_VOICE" && value.channel == ch.id)
       if(!channel) continue;
@@ -2188,8 +2244,8 @@ async function check_voice_channels(client) {
       try{
         let members = channel.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
         if (!members || members.length == 0) continue;
-        for(const member of members) {
-          let themember = await guild.members.fetch(member).catch(() => {});
+        for await (const member of members) {
+          let themember = await guild.members.fetch(member).catch(() => null);
           if(!themember) continue;
           create_join_to_create_Channel(client, themember.voice, key);
         }
@@ -2203,21 +2259,20 @@ async function check_voice_channels(client) {
 }
 
 async function check_created_voice_channels(client) {
-  console.log("CHECK_CREATED_VOICE_CHANNELS")
   let map = await client.jointocreatemap.all();
-  for(const guild of [...client.guilds.cache.values()].filter(g => g.channels && g.channels.cache.size > 0)) {
+  for await (const guild of [...client.guilds.cache.values()].filter(g => g.channels && g.channels.cache?.size > 0)) {
     try {
       const vcs = guild.channels.cache.filter(ch => ch.type == "GUILD_VOICE")
         .filter(vc => vc.members.size <= 0)
         .filter(ch => ch.id == map.find(d => d.ID == `tempvoicechannel_${ch.guild.id}_${ch.id}`)?.data).map(d => d)
       if(!vcs || vcs.length == 0) continue;
-      for(const vc of vcs) {
+      for await (const vc of vcs) {
         try{
           console.log(`CHECK CREATED :: CHECKMEMBERS ${vc.name}`)
           await client.jointocreatemap.delete(`tempvoicechannel_${vc.guild.id}_${vc.id}`);
           await client.jointocreatemap.delete(`owner_${vc.guild.id}_${vc.id}`);
           //move user
-          if(vc.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
+          if(vc?.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
             vc.delete().catch(e => console.error(e) )
             console.log(`Deleted the Channel: ${vc.name} in: ${vc.guild ? vc.guild.name : "undefined"} DUE TO EMPTYNESS`.strikethrough.brightRed)
             continue;
@@ -2253,7 +2308,7 @@ async function create_join_to_create_Channel(client, voiceState, prekey) {
           channel.type === "GUILD_TEXT" &&
           channel.permissionsFor(guild.me).has("SEND_MESSAGES")
         );
-        channel.send(eval(client.la[ls]["handlers"]["functionsjs"]["functions"]["variable11"])).catch(e => console.log("THIS IS TO PREVENT A CRASH"))
+        channel.send(eval(client.la[ls]["handlers"]["functionsjs"]["functions"]["variable11"])).catch(() => null)
       } catch {}
     }
     return;
@@ -2297,21 +2352,21 @@ async function create_join_to_create_Channel(client, voiceState, prekey) {
       await client.jointocreatemap.set(`owner_${vc.guild.id}_${vc.id}`, voiceState.id);
       await client.jointocreatemap.set(`tempvoicechannel_${vc.guild.id}_${vc.id}`, vc.id);
       //move user
-      if(vc.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MOVE_MEMBERS) && voiceState.channel.permissionsFor(voiceState.guild.me).has(Permissions.FLAGS.MOVE_MEMBERS)){
+      if(vc?.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MOVE_MEMBERS) && voiceState.channel.permissionsFor(voiceState.guild.me).has(Permissions.FLAGS.MOVE_MEMBERS)){
         await voiceState.setChannel(vc);
       }
       /*//move to parent
-      if(vc.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
+      if(vc?.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
         await vc.setParent(voiceState.channel.parent)
       }*/
       //add permissions
-      if(vc.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
+      if(vc?.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
         await vc.permissionOverwrites.edit(voiceState.id, {
           MANAGE_CHANNELS: true,
           VIEW_CHANNEL: true,
           MANAGE_ROLES: true,
           CONNECT: true,
-        }).catch(() => {});
+        }).catch(() => null);
       }
     })
   
@@ -2323,7 +2378,7 @@ async function create_transcript(message, client, msglimit) {
   let messageCollection = new Collection(); //make a new collection
   let channelMessages = await message.channel.messages.fetch({ //fetch the last 100 messages
     limit: 100
-  }).catch(() => {}); //catch any error
+  }).catch(() => null); //catch any error
   messageCollection = messageCollection.concat(channelMessages); //add them to the Collection
   let tomanymsgs = 1; //some calculation for the messagelimit
   if (Number(msglimit) === 0) msglimit = 100; //if its 0 set it to 100
@@ -2336,79 +2391,125 @@ async function create_transcript(message, client, msglimit) {
     channelMessages = await message.channel.messages.fetch({
       limit: 100,
       before: lastMessageId
-    }).catch(() => {}); //Fetch again, 100 messages above the already fetched messages
+    }).catch(() => null); //Fetch again, 100 messages above the already fetched messages
     if (channelMessages) //if its true
       messageCollection = messageCollection.concat(channelMessages); //add them to the collection
   }
   let msgs = messageCollection.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).reverse(); //reverse the array to have it listed like the discord chat
-  message.channel.send({files: [await create_transcript_buffer(msgs, message.channel, message.guild)]}).catch(()=>{});
+  message.channel.send({files: [await create_transcript_buffer(msgs, message.channel, message.guild)]}).catch(() => null);
 }
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO
  * Please mention him / Milrato Development, when using this Code!
  * @INFO
  */
-const updateCache = async (db) => {
-  return new Promise(async (resolve, reject) => {
-      const rawData = await db.all().catch(console.error);
-      if(rawData) {
-          const ALLDB = new Collection();
-          if(rawData && Object.keys(rawData).length > 0 ) {
-              for(const d of rawData) {
-                let DB_key = d.ID;
-                if(!DB_key) continue;
-                let DB_Data = rawData.find(x => x.ID == DB_key)?.data;
-                if(!DB_Data) continue;
-                // if it's a object, change it to a collection (MAP) so you can use db.get()
-                if(typeof DB_Data == "object") {
-                  const DB = new Collection();
-                  for(const [key, value] of Object.entries(DB_Data)) DB.set(key, value); // add the collection entries
-                  DB_Data = DB; // change it to the collection;
-                }
-                ALLDB.set(DB_key, DB_Data) // set it in the COLLECTION, so you can do quickMongoDb.cache.get(guildId)
-              }
-          }
-          module.exports.cache = ALLDB;
-          resolve(ALLDB);
-          return 
-      }
-  })
-}
 //usage: await dbEnsure(QuickMongoDatabase, "key", { foo: "bar", data: ...Data });
-async function dbEnsure(db, key, data) {
+async function dbEnsure(db, key, data, debug = false) {
   return new Promise(async (res) => {
-    if(db) {
-      const dd = await db.get(key);
-      if(!dd) {
-        await db.set(key, data);
-        await delay(5); // minimum 1 ms so we use 5
-        res(true);
-      } else {
-        if(typeof dd == "object") {
-          let changed = false;
-          for(const [Okey, value] of Object.entries(data)) {
-            const Ddd = dd[Okey]
-            if(!Ddd) {
-              dd[Okey] = value;
-              changed = true;
-            } else {
-            }
-          }
-          if(changed) {
-            await db.set(key, dd);
-            await delay(5); // minimum 1 ms so we use 5
-          }
-          res(true);
-        } else {
-          console.log("Not an OBJECT".bgRed)
-          res(false);
+    const extraDelay = 5; //ms
+    
+    try {
+      debug ? console.log(``) : null;
+      if(db) {
+        let path = null;
+        if(key.includes(".")) {
+          path = key.split(".").slice(1).join(".")
+          key = key.split(".")[0];
         }
+        if(_.isNil(data)) {
+          return rej("No default value provided")
+        }
+        const masterData = await db.get(key) || {};
+        // if there is a path do this
+        if(!_.isNil(path)) {
+          // dbEnsure(db, key, {}); // Make sure there is an object
+          if(_.has(masterData, path)) {
+            const pathData =  _.get(masterData, path)
+            const newPathData = checkObjectDeep(pathData, data);
+            // something has changed
+            if(newPathData) {
+              _.set(masterData, path, newPathData);
+              await db.set(key, masterData);
+              await delay(extraDelay);
+            } 
+            return res(true);
+          }
+          _.set(masterData, path, data)
+          await db.set(key, masterData);
+          await delay(extraDelay);
+          return res(true);
+        }
+        // if its not an object
+        if(!_.isObject(masterData)) {
+          debug ? console.log("Masterdata not an object") : null;
+          return res(true);
+        }
+        
+        const newData = checkObjectDeep(masterData, data);
+        // something has changed
+        if(newData) {
+          Object.assign(masterData, newData);
+          await db.set(key, masterData);
+          await delay(extraDelay);
+        } 
+        
+        return res(true); 
+       
+
+        function checkObjectDeep(dd, data) {
+          let changed = false;
+          // Layer 1
+          for (const [Okey_1, value_1] of Object.entries(data)) {
+            debug && !dd[Okey_1] ? console.log(dd[Okey_1]) : null;
+            if(!dd[Okey_1] && dd[Okey_1] === undefined) {
+              debug ? console.log(`Does not include ${Okey_1} for the value: ${value_1}`) : null;
+              dd[Okey_1] = value_1; changed = true;
+            } else if(value_1 && typeof value_1 == "object") {
+              // Layer 2
+              for (const [Okey_2, value_2] of Object.entries(value_1)) {
+                if(!dd[Okey_1][Okey_2] && dd[Okey_1][Okey_2] === undefined) {
+                  debug ? console.log(`Does not include ${Okey_1}.${Okey_2} for the value: ${value_2}`) : null;
+                  dd[Okey_1][Okey_2] = value_2; changed = true;
+                } else if(value_2 && typeof value_2 == "object")  {
+                  // Layer 3
+                  for (const [Okey_3, value_3] of Object.entries(value_2)) {
+                    if(!dd[Okey_1][Okey_2][Okey_3] && dd[Okey_1][Okey_2][Okey_3] === undefined) {
+                      debug ? console.log(`Does not include ${Okey_1}.${Okey_2}.${Okey_3} for the value: ${value_3}`) : null;
+                      dd[Okey_1][Okey_2][Okey_3] = value_3; changed = true;
+                    } else if(value_3 === "object") {
+                      // Layer 4
+                      for (const [Okey_4, value_4] of Object.entries(value_3)) {
+                        if(!dd[Okey_1][Okey_2][Okey_3][Okey_4] && dd[Okey_1][Okey_2][Okey_3][Okey_4] === undefined) {
+                          debug ? console.log(`Does not include ${Okey_1}.${Okey_2}.${Okey_3}.${Okey_4} for the value: ${value_4}`) : null;
+                          dd[Okey_1][Okey_2][Okey_3][Okey_4] = value_4; changed = true;
+                        } else if(value_4 === "object") {
+                          continue;
+                        } else continue; 
+                      }
+                      // End of layer 4
+                    } else continue; 
+                  }
+                  // End of layer 3
+                } else continue;
+              }
+              // End of layer 2
+            } else continue;
+          }
+          if(changed) return dd;
+          else return false;
+        }
+
+      } else {
+        console.error(`DB_ENSURE ERROR, no db provided`)
+        res(true);
       }
-    } else {
+      
+    } catch (e) {
+      console.error("DB_ENSURE ERROR", key, e)
       res(true);
     }
   })
@@ -2617,8 +2718,8 @@ async function ensure_economy_user(client, guildid, userid){
     if(data.black_market.boost.time !== 0 && (86400000 * 2) - (Date.now() - data.black_market.boost.time) <= 0)
     {
       console.log(`Reset Multiplier from Black Market for: ${userid} | TIME: ${(86400000 * 2) - (Date.now() - data.black_market.boost.time)}`)
-      await client.economy.set(`${guildid}_${userid}`, 1, "black_market.boost.multiplier");
-      await client.economy.set(`${guildid}_${userid}`, 0, "black_market.boost.time");
+      await client.economy.set(`${guildid}_${userid}.black_market.boost.multiplier`, 1);
+      await client.economy.set(`${guildid}_${userid}.black_market.boost.`, 0);
     }  
       
 }
@@ -2662,7 +2763,7 @@ async function getLatestVideos(ChannelLink) {
               OBJ.pubDate = v.pubDate
               OBJ.author = v.author
               OBJ.id = v.link.split("watch?v=")[1] || v.id,
-                  OBJ.isoDate = v.isoDate
+              OBJ.isoDate = v.isoDate
               return OBJ;
           })
           let tLastVideos = content.sort((a, b) => {
@@ -2768,7 +2869,7 @@ const channelInfo = (url, options = {}) => __awaiter(void 0, void 0, void 0, fun
     }
     /**
      * @INFO
-     * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+     * Bot Coded by Tomato#6966 | https://discord.gg/milrato
      * @INFO
      * Work for Milrato Development | https://milrato.eu
      * @INFO
