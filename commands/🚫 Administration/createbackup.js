@@ -3,7 +3,7 @@ const {MessageEmbed, Permissions} = require("discord.js");
 const config = require(`../../botconfig/config.json`)
 const ms = require("ms");
 const {
-    databasing
+    databasing, dbEnsure
 } = require(`../../handlers/functions`);
 const backup = require("discord-backup");
 module.exports = {
@@ -51,7 +51,7 @@ module.exports = {
                 .setTitle(eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable1"]))
                 .setDescription(eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable2"]))
             ]});
-        client.backupDB.ensure(message.guild.id, {
+        await dbEnsure(client.backupDB, message.guild.id, {
             backups: [ ]
         })
         message.channel.send({
@@ -67,19 +67,19 @@ module.exports = {
             collector.on('collect', button => {
                 if (button?.user.id === cmduser.id) {
                     collector.stop();
-                    button?.reply({content: `<a:Loading:833101350623117342> **Now saving the Backup!**\nThis could take up to 2 Minutes (belongs to your data amount)`}).catch(() => {})
+                    button?.reply({content: `<a:Loading:833101350623117342> **Now saving the Backup!**\nThis could take up to 2 Minutes (belongs to your data amount)`}).catch(() => null)
                     // Create the backup
                     backup.create(message.guild, {
                         maxMessagesPerChannel: 10,
                         jsonSave: false,
                         saveImages: "base64",
                         jsonBeautify: true
-                    }).then((backupData) => {
-                        let backups = client.backupDB.get(message.guild.id, "backups")
+                    }).then(async (backupData) => {
+                        let backups = await client.backupDB.get(message.guild.id+".backups")
                         backups.push(backupData);
                         backups = backups.sort((a,b)=>b?.createdTimestamp - a.createdTimestamp)
                         if(backups.length > 5) backups = backups.slice(0, 5);
-                        client.backupDB.set(message.guild.id, backups, "backups")
+                        await client.backupDB.set(message.guild.id+".backups",backups)
                         // And send informations to the backup owner
                         message.author.send(`<a:yes:833101995723194437> **Backup successfully created.**\n\n**To Load it type:**\n> \`${prefix}loadbackup ${message.guild.id} 1\` ... note 1 is the latest backup, the higher the number the older (5 is the highest) \`${prefix}listbackups ${message.guild.id}\`!\n\n> *Have you tried: \`${prefix}setup-autobackup\`, to enable auto backups?*`).catch(e=>{
                             message.channel.send(`<a:yes:833101995723194437> **Backup successfully created.**\n\n**To Load it type:**\n> \`${prefix}loadbackup ${message.guild.id} 1\` ... note 1is the latest backup, the higher the number the older (5 is the highest) \`${prefix}listbackups ${message.guild.id}\`!\n\n> *Have you tried: \`${prefix}setup-autobackup\`, to enable auto backups?*`);
@@ -87,13 +87,13 @@ module.exports = {
                             message.channel.send(`<a:yes:833101995723194437> **Backup successfully created.** The backup ID was sent in dm!\n\n> *Have you tried: \`${prefix}setup-autobackup\`, to enable auto backups?*`);
                         })
                     }).catch(e=>{
-                        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                        console.error(e)
                     })
                 }
             });
             //Once the Collections ended edit the menu message
             collector.on('end', collected => {
-                msg.edit({components: [], content: msg.content}).catch(() => {})
+                msg.edit({components: [], content: msg.content}).catch(() => null)
             });
         })
 
@@ -110,7 +110,7 @@ module.exports = {
                 .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
               ]})
             }catch (e){
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             }
           } 
     }

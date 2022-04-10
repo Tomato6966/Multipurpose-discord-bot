@@ -15,14 +15,13 @@ const {
     description: "Get the last Deleted Message from a Channel",
     type: "server",
     run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
-      console.log("TEST")
-      
+
       try {
         let adminroles = GuildSettings?.adminroles || [];
         let cmdroles = GuildSettings?.cmdadminroles?.snipe || [];
         var cmdrole = []
           if(cmdroles.length > 0){
-            for(const r of cmdroles){
+            for await (const r of cmdroles){
               if(message.guild.roles.cache.get(r)){
                 cmdrole.push(` | <@&${r}>`)
               }
@@ -48,7 +47,7 @@ const {
           ]});
         var channel = message.mentions.channels.first() || message.channel;
         
-        const snipes = client.snipes.get(channel.id)
+        const snipes = await client.snipes.get(channel.id)
         if(!snipes) return message.reply(":x: There is no Deleted Message");
         const snipe = args[0] && !isNaN(args[0]) ? Number(args[0]) - 1 : 0;
         const targetSnipe = snipes[snipe];
@@ -76,7 +75,7 @@ const {
               .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
              ]} )
           }catch (e){
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
           }
         } 
         

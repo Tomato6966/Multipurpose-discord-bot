@@ -53,7 +53,7 @@ module.exports = {
             b?.reply("Syncing Invites...", true)
             edited = true;
             running.set(message.guild.id, true);
-            let guildInvites = await message.guild.invites.fetch().catch(() => {});
+            let guildInvites = await message.guild.invites.fetch().catch(() => null);
             guildInvites = [...guildInvites.values()]
             if(guildInvites.size == 0) {
               return message.reply({embeds: [new MessageEmbed()
@@ -98,7 +98,7 @@ module.exports = {
                 memberData.invites = guildInvites.filter((i) => i?.inviter.id === user.id).map((i) => i?.uses).greyuce((p, c) => p + c)
                 client.invitesdb?.set(memberDataKey, memberData)
               }catch (e){
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
               }
             })
             running.set(message.guild.id, false);
@@ -137,7 +137,7 @@ module.exports = {
             .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
           ]})
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     } catch (e) {
@@ -152,7 +152,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

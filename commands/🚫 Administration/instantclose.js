@@ -29,7 +29,7 @@ module.exports = {
      
       var cmdrole = []
         if(cmdroles.length > 0){
-          for(const r of cmdroles){
+          for await (const r of cmdroles){
             if(message.guild.roles.cache.get(r)){
               cmdrole.push(` | <@&${r}>`)
             }
@@ -130,13 +130,13 @@ module.exports = {
                     if(ticketCh && ticketCh.type == "GUILD_CATEGORY") {
                         if(ticketCh.children.size < 50) {
                             await msg.channel.setParent(ticketCh.id, { lockPermissions: false }).catch(async (e) => {
-                                await msg.channel.send(`Can't move to: ${ticketCh.name} (\`${ticketCh.id}\`) because an Error occurred:\n> \`\`\`${String(e.message ? e.message : e).substring(0, 100)}\`\`\``).catch(() => {});
+                                await msg.channel.send(`Can't move to: ${ticketCh.name} (\`${ticketCh.id}\`) because an Error occurred:\n> \`\`\`${String(e.message ? e.message : e).substring(0, 100)}\`\`\``).catch(() => null);
                             })
                         } else {
-                            await msg.channel.send(`Ticket Category ${ticketCh.name} (\`${ticketCh.id}\`) is full, can't move!`).catch(() => {});
+                            await msg.channel.send(`Ticket Category ${ticketCh.name} (\`${ticketCh.id}\`) is full, can't move!`).catch(() => null);
                         }
                     } else {
-                        await msg.channel.send(`Could not find ${closedParent} as a parent`).catch(() => {});
+                        await msg.channel.send(`Could not find ${closedParent} as a parent`).catch(() => null);
                     }
                   } 
 
@@ -158,7 +158,7 @@ module.exports = {
                           .setFooter(client.getFooter(es))
                       ]
                   })
-                  try { msg.channel.setName(String(msg.channel.name).replace("ticket", "closed").substring(0, 32)).catch((e)=>{console.log(e)}); } catch (e) { console.log(e) }
+                  try { msg.channel.setName(String(msg.channel.name).replace("ticket", "closed").substring(0, 32)).catch((e)=>{console.error(e)}); } catch (e) { console.error(e) }
                   if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
                       let message = msg; //NEEDED FOR THE EVALUATION!
                       try {
@@ -177,7 +177,7 @@ module.exports = {
                               ]
                           })
                       } catch (e) {
-                          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                          console.error(e)
                       }
                   }
               } else {

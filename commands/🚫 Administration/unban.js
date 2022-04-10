@@ -36,7 +36,7 @@ module.exports = {
           .setDescription(`Usage: \`${prefix}unban <ID>\`\nExample: \`${prefix}unban ${message.author?.id}\``)
         ]});
       
-      let bans = await message.guild.bans.fetch().catch(() => {});
+      let bans = await message.guild.bans.fetch().catch(() => null);
       if (!bans.map(b=>b?.user.id).includes(args[0]))
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
@@ -54,7 +54,7 @@ module.exports = {
           .setDescription(`Type: \`${prefix}listbans\` to see all ${bans.size - 1} Bans!`)
         ]});
       } catch (e){
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -74,7 +74,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

@@ -20,7 +20,7 @@ module.exports = {
     
 
     try {
-      await message.guild.members.fetch().catch(() => {});
+      await message.guild.members.fetch().catch(() => null);
       let adminroles = GuildSettings?.adminroles || [];
       let cmdroles = GuildSettings?.cmdadminroles?.lockchannel || [];
       var cmdrole = []
@@ -62,19 +62,19 @@ module.exports = {
       if(channel.permissionOverwrites.cache.size < 1){
         if((users && users.length > 0) || (roles && roles.length > 0)){
           if(users && users.length > 0){
-            for(const user of users) {
+            for await (const user of users) {
               await channel.permissionOverwrites.edit(user, { 
                 SEND_MESSAGE: false,
                 ADD_REACTIONS: false
-              }).catch(() => {})
+              }).catch(() => null)
             }
           }
           if(roles && roles.length > 0){
-            for(const role of roles) {
+            for await (const role of roles) {
               await channel.permissionOverwrites.edit(role, { 
                 SEND_MESSAGE: false,
                 ADD_REACTIONS: false
-              }).catch(() => {})
+              }).catch(() => null)
             }
           }
           message.reply({embeds :[new MessageEmbed()
@@ -96,7 +96,7 @@ module.exports = {
       } else {
         if((users && users.length > 0) || (roles && roles.length > 0)){
           if(users && users.length > 0){
-            for(const user of users) {
+            for await (const user of users) {
               await channel.permissionOverwrites.edit(user, { 
                 SEND_MESSAGES: false,
                 ADD_REACTIONS: false
@@ -104,7 +104,7 @@ module.exports = {
             }
           }
           if(roles && roles.length > 0){
-            for(const role of roles) {
+            for await (const role of roles) {
               await channel.permissionOverwrites.edit(role, { 
                 SEND_MESSAGES: false,
                 ADD_REACTIONS: false
@@ -176,7 +176,7 @@ module.exports = {
             .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
             ] })
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     } catch (e) {
@@ -191,7 +191,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

@@ -21,7 +21,7 @@ module.exports = {
       //find the USER
       let warnmember = message.mentions.users.first();
       if(!warnmember && args[0] && args[0].length == 18) {
-        let tmp = await client.users.fetch(args[0]).catch(() => {})
+        let tmp = await client.users.fetch(args[0]).catch(() => null)
         if(tmp) warnmember = tmp;
         if(!tmp) return message.reply(eval(client.la[ls]["cmds"]["administration"]["warnings"]["variable1"]))
       }
@@ -99,12 +99,12 @@ module.exports = {
               .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
             ]})
           }catch (e){
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
           }
         } 
 
       } catch (e) {
-        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+        console.error(e);
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -124,7 +124,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

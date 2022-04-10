@@ -3,7 +3,7 @@ const {MessageEmbed, Permissions} = require("discord.js");
 const config = require(`../../botconfig/config.json`)
 const ms = require("ms");
 const {
-    databasing
+    databasing, dbEnsure
 } = require(`../../handlers/functions`);
 const backup = require("discord-backup");
 module.exports = {
@@ -16,21 +16,12 @@ module.exports = {
     cooldown: 120,
     run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-        let server = client.guilds.cache.get(args[0]);
+        let server = await client.getGuildData(args[0]);
         if(!server) return message.reply(`<:no:833101993668771842> **You forgot to add from which Server i should load the Backup in here**\n> Type: \`${prefix}loadbackup <ServerId> <BackupId>\``)
-        if(!server.me.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)){
-            return message.reply(`<:no:833101993668771842> **I am missing the ADMINISTRATOR Permission in ${server.name}!**`)
+        if(message.guild.me && !message.guild.me.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)){
+            return message.reply(`<:no:833101993668771842> **I am missing the ADMINISTRATOR Permission in ${message.guild.name}!**`)
         }
-        if(!message.guild.me.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)){
-            return message.reply(`<:no:833101993668771842> **I am missing the ADMINISTRATOR Permission in ${server.name}!**`)
-        }
-        let owner = await server.fetchOwner().catch(e=>{
-            return message.reply("Could not get owner of target guild")
-        })
-        let owner2 = await message.guild.fetchOwner().catch(e=>{
-            return message.reply("Could not get owner of this guild")
-        })
-        if(owner.id != cmduser.id || owner2.id != cmduser.id) {
+        if(server.ownerId != cmduser.id || message.guild.ownerId != cmduser.id) {
             return message.reply(`<:no:833101993668771842> **You need to be Owner in both Servers!**`)
         }
         
@@ -60,10 +51,10 @@ module.exports = {
                 .setTitle(eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable1"]))
                 .setDescription(eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable2"]))
             ]});
-        client.backupDB.ensure(server.id, {
+        await dbEnsure(client.backupDB, server.id, {
             backups: [ ]
         })
-        let backups = client.backupDB.get(server.id, "backups")
+        let backups = await client.backupDB.get(server.id+".backups")
         if(!backups || backups.length == 0) {
             return message.reply(`<:no:833101993668771842> **There are no Backups in ${server.name}**\nCreate one with: \`${prefix}createbackup\``)
         }
@@ -90,7 +81,7 @@ module.exports = {
             collector.on('collect', button => {
                 if (button?.user.id === cmduser.id) {
                     collector.stop();
-                    button?.reply({content: `<a:Loading:833101350623117342> Now loading the Backup from \`${server.name}\` to \`${message.guild.name}\`!`}).catch(() => {})
+                    button?.reply({content: `<a:Loading:833101350623117342> Now loading the Backup from \`${server.name}\` to \`${message.guild.name}\`!`}).catch(() => null)
                     // Create the backup
                     backup.load(backupData, message.guild, {
                         clearGuildBeforeRestore: true
@@ -99,7 +90,7 @@ module.exports = {
             });
             //Once the Collections ended edit the menu message
             collector.on('end', collected => {
-                msg.edit({components: [], content: msg.content}).catch(() => {})
+                msg.edit({components: [], content: msg.content}).catch(() => null)
             });
         })
 
@@ -117,7 +108,7 @@ module.exports = {
                 .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
               ]})
             }catch (e){
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             }
           } 
     }

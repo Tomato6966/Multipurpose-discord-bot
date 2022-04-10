@@ -31,7 +31,7 @@ module.exports = {
         return message.reply({content : eval(client.la[ls]["cmds"]["administration"]["close"]["variable2"])})
       var cmdrole = []
         if(cmdroles.length > 0){
-          for(const r of cmdroles){
+          for await (const r of cmdroles){
             if(message.guild.roles.cache.get(r)){
               cmdrole.push(` | <@&${r}>`)
             }

@@ -28,7 +28,7 @@ module.exports = {
         try{for (const r of cmdroles2) cmdroles.push(r)}catch{}
         var cmdrole = []
         if(cmdroles.length > 0){
-          for(const r of cmdroles){
+          for await (const r of cmdroles){
             if(message.guild.roles.cache.get(r)){
               cmdrole.push(` | <@&${r}>`)
             }
@@ -123,7 +123,7 @@ module.exports = {
                             let messageCollection = new Collection(); //make a new collection
                             let channelMessages = await channel.messages.fetch({ //fetch the last 100 messages
                                 limit: 100
-                            }).catch(() => {}); //catch any error
+                            }).catch(() => null); //catch any error
                             messageCollection = messageCollection.concat(channelMessages); //add them to the Collection
                             let tomanymsgs = 1; //some calculation for the messagelimit
                             if (Number(msglimit) === 0) msglimit = 100; //if its 0 set it to 100
@@ -136,7 +136,7 @@ module.exports = {
                                 channelMessages = await channel.messages.fetch({
                                     limit: 100,
                                     before: lastMessageId
-                                }).catch(() => {}); //Fetch again, 100 messages above the already fetched messages
+                                }).catch(() => null); //Fetch again, 100 messages above the already fetched messages
                                 if (channelMessages) //if its true
                                     messageCollection = messageCollection.concat(channelMessages); //add them to the collection
                             }
@@ -162,11 +162,11 @@ module.exports = {
                                     await logChannel.send({
                                         content: `<@${buttonuser.id}>`,
                                         embeds: [sendembed]
-                                    }).catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                                    }).catch(e=>console.error(e))
                                     await logChannel.send({
                                         files: [attachment]
-                                    }).catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
-                                    //await tmmpmsg.delete().catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                                    }).catch(e=>console.error(e))
+                                    //await tmmpmsg.delete().catch(e=>console.error(e))
                                     await fs.unlinkSync(path)
                                 } catch (error) { //if the file is to big to be sent, then catch it!
                                     console.log(error)
@@ -176,7 +176,7 @@ module.exports = {
                             })
                         }
                     } catch (e){
-                        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                        console.error(e)
                     }
                 }
 
@@ -212,7 +212,7 @@ module.exports = {
                             ]
                         })
                     } catch (e) {
-                        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                        console.error(e)
                     }
                 }
             } else {

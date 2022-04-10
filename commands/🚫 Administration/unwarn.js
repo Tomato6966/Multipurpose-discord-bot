@@ -22,7 +22,7 @@ module.exports = {
       let cmdroles = GuildSettings?.cmdadminroles?.unwarn || [];
       var cmdrole = []
         if(cmdroles.length > 0){
-          for(const r of cmdroles){
+          for await (const r of cmdroles){
             if(message.guild.roles.cache.get(r)){
               cmdrole.push(` | <@&${r}>`)
             }
@@ -104,7 +104,7 @@ module.exports = {
         let warning = warnData[parseInt(args[1])]
         let warned_by = message.guild.members.cache.get(warning.moderator) ? message.guild.members.cache.get(warning.moderator).user.tag : warning.moderator;
         let warned_at = warning.when;
-        let warned_in = await client.getGuild(warning.guild).then(g => g.name) || warning.guild;
+        let warned_in = await client.getGuildData(warning.guild).then(g => g.name) || warning.guild;
 
         warnmember.send({embeds : [new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
@@ -141,11 +141,11 @@ module.exports = {
               .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
              ]} )
           }catch (e){
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
           }
         } 
       } catch (e) {
-        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+        console.error(e);
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -165,7 +165,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

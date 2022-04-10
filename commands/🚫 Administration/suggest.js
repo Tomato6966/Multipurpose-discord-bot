@@ -22,7 +22,7 @@ module.exports = {
           let cmdroles = GuildSettings?.cmdadminroles?.suggest || [];
           var cmdrole = []
             if(cmdroles.length > 0){
-              for(const r of cmdroles){
+              for await (const r of cmdroles){
                 if(message.guild.roles.cache.get(r)){
                   cmdrole.push(` | <@&${r}>`)
                 }
@@ -211,7 +211,7 @@ module.exports = {
               let SuggestionsData = await client.settings.get(targetMessage.id);
               if(!SuggestionsData) return message.reply(":x: **Could not find DB Data about this Suggestion**");
               let member = message.guild.members.cache.get(SuggestionsData.user);
-              if(!member) member = await message.guild.members.fetch(SuggestionsData.user).catch(() => {});
+              if(!member) member = await message.guild.members.fetch(SuggestionsData.user).catch(() => null);
               if(member){
                 member.send({content: `Your Suggestion in **${message.guild.name}** got an Status Update!\n> https://discord.com/channels/${message.guild.id}/${channel.id}/${targetMessage.id}`,embeds: [embed]})
               }
@@ -229,11 +229,11 @@ module.exports = {
                   .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
                 ]})
               }catch (e){
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
               }
             } 
         } catch (e) {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey);
+            console.error(e);
             return message.reply({embeds  :[new MessageEmbed()
                 .setColor(es.wrongcolor)
                 .setFooter(client.getFooter(es))

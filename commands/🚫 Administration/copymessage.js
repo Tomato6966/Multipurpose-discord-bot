@@ -23,7 +23,7 @@ module.exports = {
       let cmdroles = GuildSettings?.cmdadminroles?.copymessage || [];
       var cmdrole = []
         if(cmdroles.length > 0){
-          for(const r of cmdroles){
+          for await (const r of cmdroles){
             if(message.guild.roles.cache.get(r)){
               cmdrole.push(` | <@&${r}>`)
             }
@@ -108,7 +108,7 @@ module.exports = {
             .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
           ]})
         }catch (e){
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       } 
 

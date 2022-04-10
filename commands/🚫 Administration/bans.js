@@ -52,7 +52,7 @@ module.exports = {
             .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable2"]))
             .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable3"]))
           ]});
-      let allbans = await message.guild.bans.fetch().catch(() => {}).then(bans => bans.map(ban => `**${ban.user.username}**#${ban.user.discriminator} (\`${ban.user.id}\`)\n**Reason**:\n> ${ban.reason ? ban.reason : "No Reason"}\n`)); 
+      let allbans = await message.guild.bans.fetch().catch(() => null).then(bans => bans.map(ban => `**${ban.user.username}**#${ban.user.discriminator} (\`${ban.user.id}\`)\n**Reason**:\n> ${ban.reason ? ban.reason : "No Reason"}\n`)); 
       swap_pages(client, message, allbans, `🔨 All Bans of **${message.guild.name}**`);      
     } catch (e) {
       console.log(String(e.stack).grey.bgRed)
@@ -66,7 +66,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

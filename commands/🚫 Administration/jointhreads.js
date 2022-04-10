@@ -54,7 +54,7 @@ module.exports = {
           .setFooter(client.getFooter(es))
           .setTitle(`<:no:833101993668771842> **There are no open Threads in this Server**`)
         ]}); 
-      for(const channel of channels)
+      for await (const channel of channels)
         await channel.join()
       message.reply({embeds :[new MessageEmbed()
         .setColor(es.color)
@@ -76,7 +76,7 @@ module.exports = {
             .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
            ] })
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     } catch (e) {
@@ -91,7 +91,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

@@ -22,7 +22,7 @@ module.exports = {
       let cmdroles = GuildSettings?.cmdadminroles?.poll || [];
       var cmdrole = []
         if(cmdroles.length > 0){
-          for(const r of cmdroles){
+          for await (const r of cmdroles){
             if(message.guild.roles.cache.get(r)){
               cmdrole.push(` | <@&${r}>`)
             }
@@ -78,7 +78,7 @@ module.exports = {
                         msg.channel.awaitMessages({filter: m=>m.author.id === cmduser.id, max: 1, time: 30000, errors: ["time"]}).then(async collected => {
                           channel.send({embeds :[new MessageEmbed()
                             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-                            .setAuthor(`${message.guild.name} | POLL`, "https://images-ext-2.discordapp.net/external/QlX0Eh3_sIiPWIz9Xg_dgN4cwpvne8_ipgDGS43jDGc/https/emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/281/clipboard_1f4cb?.png", "https://discord.gg/fA8VGa4V")
+                            .setAuthor(`${message.guild.name} | POLL`, "https://images-ext-2.discordapp.net/external/QlX0Eh3_sIiPWIz9Xg_dgN4cwpvne8_ipgDGS43jDGc/https/emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/281/clipboard_1f4cb.png", "https://discord.gg/fA8VGa4V")
                             .setFooter(client.getFooter(`by: ${message.author.username}`, message.author.displayAvatarURL({dynamic: true})))
                             .setDescription(collected.first().content)
                           ]}).then(msg=>{
@@ -97,7 +97,7 @@ module.exports = {
                         msg.channel.awaitMessages({filter: m=>m.author.id === cmduser.id, max: 1, time: 30000, errors: ["time"]}).then(async collected => {
                           channel.send({embeds : [new MessageEmbed()
                             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-                            .setAuthor(`${message.guild.name} | POLL`, "https://images-ext-2.discordapp.net/external/QlX0Eh3_sIiPWIz9Xg_dgN4cwpvne8_ipgDGS43jDGc/https/emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/281/clipboard_1f4cb?.png", "https://discord.gg/fA8VGa4V")
+                            .setAuthor(`${message.guild.name} | POLL`, "https://images-ext-2.discordapp.net/external/QlX0Eh3_sIiPWIz9Xg_dgN4cwpvne8_ipgDGS43jDGc/https/emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/281/clipboard_1f4cb.png", "https://discord.gg/fA8VGa4V")
                             .setFooter(client.getFooter(`by: ${message.author.username}`, message.author.displayAvatarURL({dynamic: true})))
                             .setDescription(collected.first().content)
                           ]}).then(msg=>{
@@ -141,15 +141,15 @@ module.exports = {
                         msg.channel.awaitMessages({filter: m=>m.author.id === cmduser.id, max: 1, time: 30000, errors: ["time"]}).then(async collected => {
                           const embed = new MessageEmbed()
                           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-                          .setAuthor(`${message.guild.name} | POLL`, "https://images-ext-2.discordapp.net/external/QlX0Eh3_sIiPWIz9Xg_dgN4cwpvne8_ipgDGS43jDGc/https/emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/281/clipboard_1f4cb?.png", "https://discord.gg/fA8VGa4V")
+                          .setAuthor(`${message.guild.name} | POLL`, "https://images-ext-2.discordapp.net/external/QlX0Eh3_sIiPWIz9Xg_dgN4cwpvne8_ipgDGS43jDGc/https/emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/281/clipboard_1f4cb.png", "https://discord.gg/fA8VGa4V")
                           .setFooter(client.getFooter(`by: ${message.author.username}`, message.author.displayAvatarURL({dynamic: true})))
                           if(collected.first().content.toLowerCase() != "no") embed.setDescription(collected.first().content)
                           
-                          for(let i = 0; i< emojicontent.length; i++){
+                          for (let i = 0; i< emojicontent.length; i++){
                             embed.addField(emojis[i] +" :", emojicontent[i])
                           }
                           channel.send({embeds: [embed]}).then(msg=>{
-                            for(let i = 0; i < emojicounter; i++){
+                            for (let i = 0; i < emojicounter; i++){
                               msg.react(emojis[i])
                             }
                           })
@@ -157,13 +157,13 @@ module.exports = {
                       }).catch(e=>{
                         const embed = new MessageEmbed()
                           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-                          .setAuthor(`${message.guild.name} | POLL`, "https://images-ext-2.discordapp.net/external/QlX0Eh3_sIiPWIz9Xg_dgN4cwpvne8_ipgDGS43jDGc/https/emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/281/clipboard_1f4cb?.png", "https://discord.gg/fA8VGa4V")
+                          .setAuthor(`${message.guild.name} | POLL`, "https://images-ext-2.discordapp.net/external/QlX0Eh3_sIiPWIz9Xg_dgN4cwpvne8_ipgDGS43jDGc/https/emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/281/clipboard_1f4cb.png", "https://discord.gg/fA8VGa4V")
                           .setFooter(client.getFooter(`by: ${message.author.username}`, message.author.displayAvatarURL({dynamic: true})))
-                          for(let i = 0; i< emojicontent.length; i++){
+                          for (let i = 0; i< emojicontent.length; i++){
                             embed.addField(emojis[i] +" :", emojicontent[i])
                           }
                           channel.send({embeds: [embed]}).then(msg=>{
-                            for(let i = 0; i < emojicounter; i++){
+                            for (let i = 0; i < emojicounter; i++){
                               msg.react(emojis[i])
                             }
                           })
@@ -185,7 +185,7 @@ module.exports = {
         message.delete().catch(e => console.log("Couldn't delete msg, this is a catch to prevent crash"))
         message.channel.send({embeds : [new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-          .setAuthor(`${message.guild.name} | POLL`, "https://images-ext-2.discordapp.net/external/QlX0Eh3_sIiPWIz9Xg_dgN4cwpvne8_ipgDGS43jDGc/https/emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/281/clipboard_1f4cb?.png", "https://discord.gg/fA8VGa4V")
+          .setAuthor(`${message.guild.name} | POLL`, "https://images-ext-2.discordapp.net/external/QlX0Eh3_sIiPWIz9Xg_dgN4cwpvne8_ipgDGS43jDGc/https/emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/281/clipboard_1f4cb.png", "https://discord.gg/fA8VGa4V")
           .setFooter(client.getFooter(`by: ${message.author.username}`, message.author.displayAvatarURL({dynamic: true})))
           .setDescription(args.join(" "))
         ]}).then(msg=>{
@@ -208,7 +208,7 @@ module.exports = {
             .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
           ]})
         }catch (e){
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       } 
     } catch (e) {

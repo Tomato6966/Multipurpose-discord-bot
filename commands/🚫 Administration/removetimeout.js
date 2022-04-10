@@ -46,15 +46,15 @@ module.exports = {
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable2"]))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable3"]))
-        ]}).catch(()=>{});
-      let kickmember = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0] ? args[0] : ``) || await message.guild.members.fetch(args[0] ? args[0] : ``).catch(() => {}) || false;
+        ]}).catch(() => null);
+      let kickmember = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0] ? args[0] : ``) || await message.guild.members.fetch(args[0] ? args[0] : ``).catch(() => null) || false;
       if (!kickmember) 
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable4"]))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable5"]))
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
       if(!kickmember.communicationDisabledUntilTimestamp) return message.reply(":x: **This User is not timeouted!**");
       
       let time = 0;
@@ -68,14 +68,14 @@ module.exports = {
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable6"]))
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
 
       if (!kickmember.manageable)
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(":x: **I am not able to manage this User**")
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
       try{
         if(!kickmember.user.bot){
           kickmember.user.send({embeds : [new MessageEmbed()
@@ -83,18 +83,18 @@ module.exports = {
             .setFooter(client.getFooter(es))
             .setTitle(`Your Timeout got removed by \`${message.author.tag}\``)
           ]}).catch((e)=>{
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
            
           });
         }
       } catch (e){
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
         message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable10"]))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable11"]))
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
       }
       try {
         kickmember.timeout(time).then(async () => {
@@ -103,7 +103,7 @@ module.exports = {
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
             .setFooter(client.getFooter(es))
             .setTitle(`**${kickmember.user.tag}'s** Timeout got removed by \`${message.author.tag}\` `)
-          ]}).catch((e)=>{console.log(e)})
+          ]}).catch((e)=>{console.error(e)})
           if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
             try {
               var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
@@ -119,12 +119,12 @@ module.exports = {
                 .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
               ]})
             } catch (e) {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             }
           }
         });
       } catch (e) {
-        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+        console.error(e);
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -144,7 +144,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

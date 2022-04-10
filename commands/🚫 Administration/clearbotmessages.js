@@ -75,7 +75,7 @@ module.exports = {
           messageCollection = messageCollection.concat(channelMessages.filter(msg => msg.author.id == client.user.id)); //add them to the collection
       }
       let msgs = messageCollection.map(_ => _)
-      for(let i = 0; i < msgs.length; i+=100)
+      for (let i = 0; i < msgs.length; i+=100)
         await message.channel.bulkDelete(msgs.slice(i, i+100))
 
       await message.reply({embeds : [new MessageEmbed()
@@ -101,11 +101,11 @@ module.exports = {
             .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
         ]})
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     } catch (e) {
-      console.log(e.stack ? String(e.stack).grey : String(e).grey);
+      console.error(e);
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

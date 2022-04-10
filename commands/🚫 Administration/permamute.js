@@ -88,7 +88,7 @@ module.exports = {
           },
           reason: `This role got created, to mute Members!`
         }).catch((e) => {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey);
+          console.error(e);
           message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
@@ -112,11 +112,11 @@ module.exports = {
               ADD_REACTIONS: false,
               CONNECT: false,
               SPEAK: false
-            }).catch(() => {})
+            }).catch(() => null)
             await delay(1500);
           }
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey);
+          console.error(e);
         }
       });
       //try to add him the role
@@ -149,7 +149,7 @@ module.exports = {
         .setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["administration"]["permamute"]["variable12"]))
         .setDescription(eval(client.la[ls]["cmds"]["administration"]["permamute"]["variable13"]))
-    ]}).catch((_) => {})
+    ]}).catch(() => null)
       
       if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
         try {
@@ -166,7 +166,7 @@ module.exports = {
             .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
            ]} )
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     } catch (e) {
@@ -181,7 +181,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

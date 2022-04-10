@@ -51,16 +51,16 @@ module.exports = {
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable2"]))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable3"]))
-        ]}).catch(()=>{});
-      let kickmember = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0] ? args[0] : ``) || await message.guild.members.fetch(args[0] ? args[0] : ``).catch(() => {}) || false;
+        ]}).catch(() => null);
+      let kickmember = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0] ? args[0] : ``) || await message.guild.members.fetch(args[0] ? args[0] : ``).catch(() => null) || false;
       if (!kickmember) 
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable4"]))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable5"])+ `\n\n>**Try this**: \`${prefix}idban [USERID]\``)
-        ]}).catch(()=>{});
-      if(!message.member || message.member.roles ||!message.member.roles.highest) await message.member.fetch().catch(() => {});
+        ]}).catch(() => null);
+      if(!message.member || message.member.roles ||!message.member.roles.highest) await message.member.fetch().catch(() => null);
       let days;
       if (!isNaN(args[1])) days = Number(args[1]);
       else days = 0;
@@ -80,14 +80,14 @@ module.exports = {
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable6"]))
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
 
       if (!kickmember.bannable)
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable7"]))
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
       try{
         if(!kickmember.user.bot){
           kickmember.user.send({embeds : [new MessageEmbed()
@@ -96,22 +96,22 @@ module.exports = {
             .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable8"]))
             .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable9"]))
           ]}).catch((e)=>{
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
             message.reply({embeds :[new MessageEmbed()
               .setColor(es.wrongcolor)
               .setFooter(client.getFooter(es))
               .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable10"]))
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable11"]))
-            ]}).catch(()=>{});});
+            ]}).catch(() => null);});
         }
       } catch (e){
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
         message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable10"]))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable11"]))
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
       }
       try {
         kickmember.ban({
@@ -125,7 +125,7 @@ module.exports = {
             .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable12"]))
             .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable13"]))
             .setImage("https://i.imgur.com/O3DHIA5.gif")
-          ]}).catch((e)=>{console.log(e)})
+          ]}).catch((e)=>{console.error(e)})
           if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
             try {
               var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
@@ -141,12 +141,12 @@ module.exports = {
                 .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
               ]})
             } catch (e) {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             }
           }
         });
       } catch (e) {
-        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+        console.error(e);
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -166,7 +166,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

@@ -45,7 +45,7 @@ module.exports = {
           member.send({embeds : [new MessageEmbed()
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
             .setFooter(client.getFooter(es))
-            .setAuthor(`Message from: ${message.author.username}`, message.author.displayAvatarURL({dynamic:true}), "https://discord.gg/dcdev")
+            .setAuthor(`Message from: ${message.author.username}`, message.author.displayAvatarURL({dynamic:true}), "https://discord.gg/milrato")
             .setDescription(args.slice(1).join(" ").substring(0, 2048))
           ]})
           message.reply({embeds : [new MessageEmbed()
@@ -62,7 +62,7 @@ module.exports = {
         }
       }
       else if(role){
-        await message.guild.members.fetch().catch(() => {});
+        await message.guild.members.fetch().catch(() => null);
         if (!args[1])
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
@@ -85,16 +85,16 @@ module.exports = {
         await message.reply({embeds :[new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setFooter(client.getFooter(es))
-          .setAuthor(`Dming ${members.length} Members...`, "https://images-ext-1.discordapp.net/external/ANU162U1fDdmQhim_BcbQ3lf4dLaIQl7p0HcqzD5wJA/https/cdn.discordapp.com/emojis/756773010123522058.gif", "https://discord.gg/dcdev")
+          .setAuthor(`Dming ${members.length} Members...`, "https://images-ext-1.discordapp.net/external/ANU162U1fDdmQhim_BcbQ3lf4dLaIQl7p0HcqzD5wJA/https/cdn.discordapp.com/emojis/756773010123522058.gif", "https://discord.gg/milrato")
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["dm"]["variable12"]))
         ]});
-        for(const member of members) {
+        for await (const member of members) {
           try{
             var failedd = false
             await member.send({embeds : [new MessageEmbed()
               .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
               .setFooter(client.getFooter(es))
-              .setAuthor(`Message from: ${message.author.username}`, message.author.displayAvatarURL({dynamic:true}), "https://discord.gg/dcdev")
+              .setAuthor(`Message from: ${message.author.username}`, message.author.displayAvatarURL({dynamic:true}), "https://discord.gg/milrato")
               .setDescription(args.slice(1).join(" ").substring(0, 2048))
             ]}).catch(e=>{
               failedd = true
@@ -137,7 +137,7 @@ module.exports = {
             .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
           ]})
         }catch (e){
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       } 
     } catch (e) {

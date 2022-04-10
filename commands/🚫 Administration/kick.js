@@ -28,7 +28,7 @@ module.exports = {
       let cmdroles = GuildSettings?.cmdadminroles?.kick || [];
       var cmdrole = []
         if(cmdroles.length > 0){
-          for(const r of cmdroles){
+          for await (const r of cmdroles){
             if(message.guild.roles.cache.get(r)){
               cmdrole.push(` | <@&${r}>`)
             }
@@ -52,7 +52,7 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["kick"]["variable2"]))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["kick"]["variable3"]))
         ]});
-      let kickmember = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0] ? args[0] : ``) || await message.guild.members.fetch(args[0] ? args[0] : ``).catch(() => {}) || false;
+      let kickmember = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0] ? args[0] : ``) || await message.guild.members.fetch(args[0] ? args[0] : ``).catch(() => null) || false;
       if (!kickmember)
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
@@ -92,7 +92,7 @@ module.exports = {
             ]});
           }
         } catch (e){
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
@@ -124,12 +124,12 @@ module.exports = {
                 .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
               ]})
             }catch (e){
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             }
           } 
         });
       } catch (e) {
-        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+        console.error(e);
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))

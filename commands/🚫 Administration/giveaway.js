@@ -94,7 +94,7 @@ module.exports = {
                 var collected = await message.channel.awaitMessages({filter: m=>m.author.id == originalowner,  max: 1, time: 60e3, errors: ['time'] })
                 gargs = collected.first().content.split("+");
                 giveawayDuration = 0;
-                for(const a of gargs){
+                for await (const a of gargs){
                     giveawayDuration += ms(a.split(" ").join(""))
                 }
                 if(!giveawayDuration || isNaN(giveawayDuration)) throw { message: "You added a not valid Time!" };
@@ -403,7 +403,7 @@ module.exports = {
             if (!args[0]) {
                 return message.reply({content : `:x: The right usage of this Command is: \`${prefix}giveaway winner <GiveawayId>\` ... note that GiveawayId is the MessageId of the (Embed) Giveaway-Message`});
             }
-            let giveaway = client.giveawayDB.find((g) => g.messageId === args[0]);
+            let giveaway = client.giveawayDB.all().then(d => d.find((g) => g.data.messageId === args[0])?.data);
 
             if (!giveaway) {
                 return message.reply({content : ":x: Could not find Data of this Giveaway"});
@@ -454,7 +454,7 @@ module.exports = {
                 .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
               ]})
             }catch (e){
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             }
           } 
     }

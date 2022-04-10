@@ -60,7 +60,7 @@ module.exports = {
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable5"]))
         ]});
 
-      if(!message.member || message.member.roles ||!message.member.roles.highest) await message.member.fetch().catch(() => {});
+      if(!message.member || message.member.roles ||!message.member.roles.highest) await message.member.fetch().catch(() => null);
       args.shift();
       if (member.roles.highest.position >= message.member.roles.highest.position)
         return message.reply({embeds : [new MessageEmbed()
@@ -98,7 +98,7 @@ module.exports = {
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(":x: **I am not able to manage this User**")
-          ]}).catch(()=>{});
+          ]}).catch(() => null);
 
         args.shift();
 
@@ -126,7 +126,7 @@ module.exports = {
               .setFooter(client.getFooter(es))
               .setTitle(String(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable14"])).replace("MUTED", "TIMEOUTED"))
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable15"]))
-            ]}).catch((_) => {})
+            ]}).catch(() => null)
             //increase the Mod Stats
             await client.stats.push(message.guild.id + message.author?.id+".mute", new Date().getTime());
             //Send information to the MUTE - MEMBER
@@ -136,11 +136,11 @@ module.exports = {
               .setFooter(client.getFooter(es))
               .setTitle(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable16"]))
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable17"]))
-            ]}).catch((_) => {})
+            ]}).catch(() => null)
         }).catch((e) => {
-            console.log(e)
+            console.error(e)
             return message.reply(`:x: **I could not timeout ${member.user.tag}**`).then(m => {
-                setTimeout(() => { m.delete().catch(() => {}) }, 5000);
+                setTimeout(() => { m.delete().catch(() => null) }, 5000);
             });
         });
 
@@ -157,7 +157,7 @@ module.exports = {
             args.shift();
             let reason = args.join(` `);
             await member.roles.add(mutedRole).catch(e=>{
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             })
             //send Information in the Chat
             message.reply({
@@ -176,7 +176,7 @@ module.exports = {
               .setFooter(client.getFooter(es))
               .setTitle(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable16"]))
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable17"]))
-            ]}).catch((_) => {})
+            ]}).catch(() => null)
             //Add the Member to the Mute DB
             await client.mutes.push("MUTES.MUTES", {
               timestamp: Date.now(),
@@ -204,11 +204,11 @@ module.exports = {
                     ADD_REACTIONS: false,
                     CONNECT: false,
                     SPEAK: false
-                  }).catch(() => {})
+                  }).catch(() => null)
                   await delay(1500);
                 }
               } catch (e) {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                console.error(e);
               }
             });
           }catch(e){
@@ -238,7 +238,7 @@ module.exports = {
           try {
             
             await member.roles.add(mutedRole).catch(e=>{
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             })
             if (!mutetime || mutetime === undefined) {
               return message.reply({
@@ -275,7 +275,7 @@ module.exports = {
               .setFooter(client.getFooter(es))
               .setTitle(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable22"]))
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable23"]))
-            )}).catch((_) => {})
+            )}).catch(() => null)
   
             await message.guild.channels.cache
               .filter(c => c.permissionOverwrites)
@@ -291,11 +291,11 @@ module.exports = {
                     ADD_REACTIONS: false,
                     CONNECT: false,
                     SPEAK: false
-                  }).catch(() => {})
+                  }).catch(() => null)
                   await delay(1500);
                 }
               } catch (e) {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                console.error(e);
               }
             });
           } catch (e) {
@@ -328,7 +328,7 @@ module.exports = {
             .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
         ]})
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     } catch (e) {
@@ -343,7 +343,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

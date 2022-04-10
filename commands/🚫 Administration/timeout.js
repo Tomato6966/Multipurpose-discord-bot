@@ -45,16 +45,16 @@ module.exports = {
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable2"]))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable3"]))
-        ]}).catch(()=>{});
-      let kickmember = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0] ? args[0] : ``) || await message.guild.members.fetch(args[0] ? args[0] : ``).catch(() => {}) || false;
+        ]}).catch(() => null);
+      let kickmember = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0] ? args[0] : ``) || await message.guild.members.fetch(args[0] ? args[0] : ``).catch(() => null) || false;
       if (!kickmember) 
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable4"]))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable5"]))
-        ]}).catch(()=>{});
-      if(!message.member || message.member.roles ||!message.member.roles.highest) await message.member.fetch().catch(() => {});
+        ]}).catch(() => null);
+      if(!message.member || message.member.roles ||!message.member.roles.highest) await message.member.fetch().catch(() => null);
       if(kickmember.communicationDisabledUntilTimestamp) return message.reply(":x: **This User is already timeouted!**");
       let time = 0;
       if(!args[1]) return message.reply(`:x: **No time added!**\nTry something like this:\n> \`${prefix}timeout ${kickmember.id} 1h+15min Stop spamming!\``)
@@ -62,7 +62,7 @@ module.exports = {
       if(timeargs[0].includes("+")) {
         timeargs = timeargs[0].split("+");
       }
-      for(const a of timeargs.filter(Boolean)){
+      for await (const a of timeargs.filter(Boolean)){
         time += ms(a)
       }
       if(!time || isNaN(time)) return message.reply(`:x: **You added a invalid time!**\nTry something like this:\n> \`${prefix}timeout ${kickmember.id} 1h+15min Stop spamming!\``)
@@ -80,14 +80,14 @@ module.exports = {
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable6"]))
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
 
       if (!kickmember.manageable)
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(":x: **I am not able to manage this User**")
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
       try{
         if(!kickmember.user.bot){
           kickmember.user.send({embeds : [new MessageEmbed()
@@ -96,17 +96,17 @@ module.exports = {
             .setTitle(`You got timeouted by \`${message.author.tag}\` for ${duration(time).map(t => `\`${t}\``).join(" ")}`)
             .setDescription(`Reason:\n>>> ${reason}`.substring(0, 2048))
           ]}).catch((e)=>{
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
           });
         }
       } catch (e){
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
         message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable10"]))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable11"]))
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
       }
       try {
         kickmember.timeout(time, reason).then(async () => {
@@ -116,7 +116,7 @@ module.exports = {
             .setFooter(client.getFooter(es))
             .setTitle(`**${kickmember.user.tag}** got timeouted by \`${message.author.tag}\` for ${duration(time).map(t => `\`${t}\``).join(" ")}`)
             .setDescription(`Reason:\n>>> ${reason}`.substring(0, 2048))
-          ]}).catch((e)=>{console.log(e)})
+          ]}).catch((e)=>{console.error(e)})
           if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
             try {
               var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
@@ -132,12 +132,12 @@ module.exports = {
                 .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
               ]})
             } catch (e) {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             }
           }
         });
       } catch (e) {
-        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+        console.error(e);
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -157,7 +157,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

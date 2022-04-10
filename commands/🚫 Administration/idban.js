@@ -51,14 +51,14 @@ module.exports = {
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable2"]))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable3"]))
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
       if (!args[0]) 
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle("❌ Invalid Command Usage")
           .setDescription(`Usage: \`${prefix}idban <USER-ID>\`\nExample: \`${prefix}idban 917827695453286410\``)
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
       let banuser = args[0];
       let reason = args[1] ? args.slice(1).join(", ") : false;
       message.guild.members.ban(banuser, {
@@ -68,13 +68,13 @@ module.exports = {
         .setColor(es.color)
         .setFooter(client.getFooter(es))
         .setTitle(`✅ Banned ${ban.tag || `Unkown User with id: \`${banuser}\``}`)
-        .setDescription(`**Reason**: ${reason ? reason : "No Reason"}`)]}).catch(()=>{});
+        .setDescription(`**Reason**: ${reason ? reason : "No Reason"}`)]}).catch(() => null);
       }).catch(e => {
         return message.reply({ embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(`❌ Could not ban ${banuser}`)
-          .setDescription(`\`\`\`${String(e.message ? e.message : e).substring(0, 2000)}\`\`\``)]}).catch(()=>{});
+          .setDescription(`\`\`\`${String(e.message ? e.message : e).substring(0, 2000)}\`\`\``)]}).catch(() => null);
       })
 
     } catch (e) {
@@ -89,7 +89,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO

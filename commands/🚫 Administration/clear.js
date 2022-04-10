@@ -72,12 +72,12 @@ module.exports = {
               channelMessages = await message.channel.messages.fetch({
               limit: 100,
               before: lastMessageId
-              }).catch(() => {}) //Fetch again, 100 messages above the already fetched messages
+              }).catch(() => null) //Fetch again, 100 messages above the already fetched messages
               if (channelMessages) //if its true
               messageCollection = messageCollection.concat(channelMessages.filter(msg => msg.author?.bot)); //add them to the collection
           }}
           let msgs = messageCollection.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966)
-          for(let i = 0; i < msgs.length; i+=100)
+          for (let i = 0; i < msgs.length; i+=100)
             await message.channel.bulkDelete(msgs.slice(i, i+100))
     
           await message.reply({embeds : [new MessageEmbed()
@@ -95,7 +95,7 @@ module.exports = {
           let messageCollection = new Collection(); //make a new collection
           let channelMessages = await message.channel.messages.fetch({ //fetch the last 100 messages
               limit: 100
-          }).catch(() => {}) //catch any error
+          }).catch(() => null) //catch any error
           messageCollection = messageCollection.concat(channelMessages.filter(msg => msg.author.id == user.id)); //add them to the Collection
           let tomanymsgs = 1; //some calculation for the messagelimit
           let messagelimit = 250 / 100; //devide it by 100 to get a counter
@@ -112,12 +112,12 @@ module.exports = {
               channelMessages = await message.channel.messages.fetch({
               limit: 100,
               before: lastMessageId
-              }).catch(() => {}) //Fetch again, 100 messages above the already fetched messages
+              }).catch(() => null) //Fetch again, 100 messages above the already fetched messages
               if (channelMessages) //if its true
               messageCollection = messageCollection.concat(channelMessages.filter(msg => msg.author.id == user.id)); //add them to the collection
           }}
           let msgs = messageCollection.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966)
-          for(let i = 0; i < msgs.length; i+=100)
+          for (let i = 0; i < msgs.length; i+=100)
             await message.channel.bulkDelete(msgs.slice(i, i+100))
     
           await message.reply({embeds : [new MessageEmbed()
@@ -131,15 +131,15 @@ module.exports = {
           }, 5000));
         }
       }else{
-        await message.delete().catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
+        await message.delete().catch(e=>console.error(e))
         clearamount = Number(args[0]);
         if (clearamount >= 1 && clearamount <= 100) {
-          await message.channel.bulkDelete(clearamount).catch(() => {});
+          await message.channel.bulkDelete(clearamount).catch(() => null);
         } else {
           let limit = clearamount > 1000 ? 1000 : clearamount;
           for (let i = 100; i <= limit; i += 100) {
             try {
-              await message.channel.bulkDelete(100).catch(() => {});
+              await message.channel.bulkDelete(100).catch(() => null);
             } catch {}
             await delay(1500);
           }
@@ -149,7 +149,7 @@ module.exports = {
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["clear"]["variable13"]))
         ]}).then(msg => setTimeout(()=>{try { 
-          msg.delete().catch(() => {})
+          msg.delete().catch(() => null)
         } catch {} 
         }, 5000));
       }
@@ -168,16 +168,16 @@ module.exports = {
             .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
           ]})
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     } catch (e) {
-      console.log(e.stack ? String(e.stack).grey : String(e).grey);
+      console.error(e);
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)
         .setDescription(eval(client.la[ls]["cmds"]["administration"]["clear"]["variable17"]))
-      ]}).catch(() => {});
+      ]}).catch(() => null);
     }
   }
 }

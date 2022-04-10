@@ -24,7 +24,7 @@ module.exports = {
       let cmdroles = GuildSettings?.cmdadminroles?.embedbuilder || [];
       var cmdrole = []
         if(cmdroles.length > 0){
-          for(const r of cmdroles){
+          for await (const r of cmdroles){
             if(message.guild.roles.cache.get(r)){
               cmdrole.push(` | <@&${r}>`)
             }
@@ -201,7 +201,7 @@ let embedEditing = async(button) => {
         button?.message.edit({content :`Canceling...` ,components:null}) 
 
         setTimeout(async() => {
-            let message = await button?.channel.messages.fetch(button?.message.id).catch(() => {})
+            let message = await button?.channel.messages.fetch(button?.message.id).catch(() => null)
             message.delete();
         }, 3000)
 
@@ -209,7 +209,7 @@ let embedEditing = async(button) => {
     }
 
     if(id == `save`) {
-        let messageToDelete = await button?.channel.messages.fetch(button?.message.id).catch(() => {});
+        let messageToDelete = await button?.channel.messages.fetch(button?.message.id).catch(() => null);
 
         messageToDelete.delete();
           embedToBuild = Object.keys(embedToBuild).reduce((object, key) => {
@@ -245,7 +245,7 @@ let embedEditing = async(button) => {
           .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
         ]})
       }catch (e){
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
       }
     } 
       

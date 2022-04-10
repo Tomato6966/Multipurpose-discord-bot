@@ -139,7 +139,7 @@ module.exports = {
         if(menu?.values[0] == "Cancel") return menu?.reply({content : eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable4"])})
         await menu?.reply({embeds : [new MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.la[ls].cmds.info.botfaq.menuembed.title, client.user.displayAvatarURL(), "https://discord.gg/dcdev")
+          .setAuthor(client.la[ls].cmds.info.botfaq.menuembed.title, client.user.displayAvatarURL(), "https://discord.gg/milrato")
           .setDescription(menuoptiondata.replymsg)]})
           await message.channel.awaitMessages({filter: m=>m.author.id == cmduser.id, max: 1, time: 60e3, errors: ["time"]}).then(collected=>{
           let AddNumber = collected.first().content;
@@ -181,7 +181,7 @@ module.exports = {
           } = memberData;
           realinvites = invites - fake - leaves;
           message.reply({embeds : [new MessageEmbed()
-            .setAuthor(`New Invites of: ${user.tag}`, user.displayAvatarURL({dynamic: true}), "https://discord.gg/dcdev")
+            .setAuthor(`New Invites of: ${user.tag}`, user.displayAvatarURL({dynamic: true}), "https://discord.gg/milrato")
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
             .addField("\u200b", `<:Like:857334024087011378> ${user} _**has invited __${realinvites} Member${realinvites != 1 ? "s": ""}__**_!`)
             .addField(eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variablex_6"]),eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable6"]))
@@ -215,7 +215,7 @@ module.exports = {
             .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
           ]})
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     } catch (e) {
@@ -230,7 +230,7 @@ module.exports = {
 };
 /**
  * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/dcdev
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO
  * Work for Milrato Development | https://milrato.eu
  * @INFO
