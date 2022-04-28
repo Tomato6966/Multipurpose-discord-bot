@@ -395,7 +395,7 @@ module.exports = {
                                 url = collected.first().content;
                                 client.settings.set(message.guild.id, "no", "leave.custom")
                                 client.settings.set(message.guild.id, url, "leave.background")
-                                return reaction.message.reply({embeds: [new Discord.MessageEmbed()
+                                return message.reply({embeds: [new Discord.MessageEmbed()
                                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-leave"]["variable28"]))
                                   .setColor(es.color)
                                   .setDescription(`I will be using ${client.settings.get(message.guild.id, "leave.custom") === "no" ? "an Auto generated Image with User Data": "Your defined, custom Image" }\n\nIf Someone joins this Server, a message **with an image** will be sent into ${message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) ? message.guild.channels.cache.get(client.settings.get(message.guild.id, "leave.channel")) : "NO CHANNEL DEFINED YET"}`.substring(0, 2048))
