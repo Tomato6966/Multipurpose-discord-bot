@@ -1,12 +1,12 @@
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   duration, nFormatter, handlemsg
-} = require(`${process.cwd()}/handlers/functions`)
+} = require(`../../handlers/functions`)
 const moment = require("moment")
 const fs = require('fs')
 module.exports = {
@@ -16,15 +16,15 @@ module.exports = {
   usage: "commandcount",
   description: "Shows the Amount of Commands",
   type: "bot",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+    
     
     try {
       
       let tempmsg = await message.reply({embeds: [new MessageEmbed()
         .setColor(es.color)
-        .setFooter("It could take up to 30 Seconds ...", client.user.displayAvatarURL())
-        .setAuthor(handlemsg(client.la[ls].cmds.info.commandcount.tempmsg), "https://cdn.discordapp.com/emojis/756773010123522058.gif", "https://discord.gg/milrato")
+        .setFooter(client.getFooter("It could take up to 30 Seconds ...", client.user.displayAvatarURL()))
+        .setAuthor(client.getAuthor(handlemsg(client.la[ls].cmds.info.commandcount.tempmsg), "https://cdn.discordapp.com/emojis/756773010123522058.gif", "http://discord.gg/7PdChsBGKd"))
       ]})
       let lines = 0
       let letters = 0
@@ -44,7 +44,7 @@ module.exports = {
         });
         return results;
       }
-      for(const source of walk(process.cwd())){
+      for await (const source of walk(process.cwd())){
         try{
           let data = await fs.readFileSync(source, 'utf8')
           letters += await data.length;
@@ -71,12 +71,4 @@ module.exports = {
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

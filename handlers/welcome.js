@@ -17,7 +17,7 @@ const ee = require(`${process.cwd()}/botconfig/embed.json`);
 const {
   delay,
   duration,
-  simple_databasing
+  dbEnsure
 } = require(`./functions`);
 const {
   Captcha
@@ -28,22 +28,27 @@ const Fonts = "Genta, UbuntuMono, `DM Sans`, STIXGeneral, AppleSymbol, Arial, Ar
 const wideFonts = "`DM Sans`, STIXGeneral, AppleSymbol, Arial, ArialUnicode";
 let invitemessage = "\u200b";
 //Start the module
-module.exports = client => {
+module.exports = async (client) => {
 
   client.fetched = false;
   client.invitations = {};
-  
+
   /**
    * FETCH THE INVITES OF ALL GUILDS
    */
   client.on("ready", async () => {
+    console.log(`FETCHING ${[...client.guilds.cache.values()].length} GUILDS`)
     for(const guild of [...client.guilds.cache.values()]){
-      let fetchedInvites = null;
-      if (guild.me.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD)) {
-        await guild.invites.fetch().catch(() => {});
+      try{
+        let fetchedInvites = null;
+        if (guild.me.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD)) {
+          await guild.invites.fetch().catch(() => {});
+        }
+        fetchedInvites = generateInvitesCache(guild.invites.cache);
+        client.invitations[guild.id] = fetchedInvites;
+      }catch(e){
+        console.error(e)
       }
-      fetchedInvites = await generateInvitesCache(guild.invites.cache);
-      client.invitations[guild.id] = fetchedInvites;
     }
     client.fetched = true;
   })
@@ -56,7 +61,7 @@ module.exports = client => {
       if (guild.me.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD)) {
         await guild.invites.fetch().catch(() => {});
       }
-      fetchedInvites = await generateInvitesCache(guild.invites.cache);
+      fetchedInvites = generateInvitesCache(guild.invites.cache);
       client.invitations[guild.id] = fetchedInvites;
   })
 
@@ -101,40 +106,67 @@ module.exports = client => {
    * if a User leaves, remove him from the db
    * Done in: ./leave.js
    */
-  
+
 
   /**
    * WELCOMING + Register the Invites etc.
    */
   client.on("guildMemberAdd", async mem => {
     if (!mem.guild || mem.user.bot) return; //if not finished yet return
-    simple_databasing(client, mem.guild.id, mem.id)
-    let ls = client.settings.get(mem.guild.id, "language");
-    let es = client.settings.get(mem.guild.id, "embed");
+    await dbEnsure(client.settings, mem.guild.id, {
+      welcome: {
+        captcha: false,
+        roles: [],
+        channel: "nochannel",
+        secondchannel: "nochannel",
+        secondmsg: ":wave: {user} **Welcome to our Server!** :v:",
+        image: true,
+        custom: "no",
+        background: "transparent",
+        frame: true,
+        framecolor: "white",
+        pb: true,
+        invite: true,
+        discriminator: true,
+        membercount: true,
+        servername: true,
+        msg: "{user} Welcome to this Server",
+        dm: false,
+        imagedm: false,
+        customdm: "no",
+        backgrounddm: "transparent",
+        framedm: true,
+        framecolordm: "white",
+        pbdm: true,
+        invitedm: true,
+        discriminatordm: true,
+        membercountdm: true,
+        servernamedm: true,
+        dm_msg: "{user} Welcome to this Server"
+      }
+    })
+    let theSettings = await client.settings.get(mem.guild.id);
+    if(!theSettings) return console.log("NO SETTINGS FOUND FOR: ", mem.guild.id);
+    let ls = theSettings.language
+    let es = theSettings.embed
     welcome(mem);
     async function welcome(member) {
       if (!client.fetched) {
         if(client.invitations[mem.guild.id]){
           console.log("NOT FETCHED ALL SERVERS, but this one did")
         } else {
-          console.log("NOT FETCHED YET PLS WAIT! Retrying in 5 Seconds...");
           setTimeout(() => {
             welcome(member);
           }, 5_000)
           return;
         }
       }
-      if(!client.isReady()) {
-        setTimeout(() => {
-          welcome(member);
-        }, 5_000); //try in 5 secs again
-        return; 
-      }
       // Fetch guild and member data from the db
-      EnsureInviteDB(member.guild, member.user)
+      await EnsureInviteDB(member.guild, member.user)
 
-      let memberData = client.invitesdb.find(v => v.id == member.id && v.guildId == member.guild.id && v.bot == member.user.bot);
-      let memberDataKey = client.invitesdb.findKey(v => v.id == member.id && v.guildId == member.guild.id && v.bot == member.user.bot);
+      let allData = await client.invitesdb.all();
+      let memberData = allData.find(v => v.data?.id == member.id && v.data?.guildId == member.guild.id && v.data?.bot == member.user.bot)?.data || {};
+      let memberDataKey = allData.find(v => v.data?.id == member.id && v.data?.guildId == member.guild.id && v.data?.bot == member.user.bot)?.ID || `${member.guild.id + member.id}`;
       /* Find who is the inviter */
       let invite = null;
       let vanity = false; //if a vanity invite
@@ -161,7 +193,7 @@ module.exports = client => {
         const guildInvites = generateInvitesCache(member.guild.invites.cache);
         //get the old GUild INvites
         const oldGuildInvites = client.invitations[member.guild.id];
-        
+
         if (guildInvites && oldGuildInvites) {
           // Update the cache
           client.invitations[member.guild.id] = guildInvites;
@@ -207,11 +239,12 @@ module.exports = client => {
       //if there is an inviter, ensure the database
       if (inviter) {
         //ensure him in the database
-        EnsureInviteDB(member.guild, inviter)
+        await EnsureInviteDB(member.guild, inviter)
         //get the inviterData
-        const inviterData = inviter ? client.invitesdb.find(v => v.id == inviter.id && v.guildId == member.guild.id) : null;
-        const inviterDataKey = client.invitesdb.findKey(v => v.id == inviter.id && v.guildId == member.guild.id && v.bot == inviter.bot)
-          //make sure that the inviter Data is an array 
+        const inviterData = inviter ? allData.find(v => v.data?.id == inviter.id && v.data?.guildId == member.guild.id)?.data : null;
+        const inviterDataKey = allData.find(v => v.data?.id == inviter.id && v.data?.guildId == member.guild.id && v.data?.bot == inviter.bot)?.ID || null
+        if(inviterData){
+        //make sure that the inviter Data is an array 
           if(!inviterData.left || !Array.isArray(inviterData.left)) {
             inviterData.left = [];
           }
@@ -237,8 +270,10 @@ module.exports = client => {
           // We increase the number of regular invitations
           inviterData.invites++;
           //update the database
-          client.invitesdb.set(inviterDataKey, inviterData)
+          await client.invitesdb.set(inviterDataKey, inviterData)
         }
+
+      }  
 
       /**
        * @INFO CHANGE THE MEMBERDATA TO WHOM INVITED HIM
@@ -264,20 +299,20 @@ module.exports = client => {
         }
       }
       //update the database for the MEMBER
-      client.invitesdb.set(memberDataKey, memberData)
-      
+      await client.invitesdb.set(memberDataKey, memberData)
+
       if (invite && inviter) {
         //get the new memberdata
         let {
           invites,
           fake,
           leaves
-         } = client.invitesdb.get(member.guild.id + inviter.id);
+         } = await client.invitesdb.get(member.guild.id + inviter.id);
         if(fake < 0) fake *= -1;
         if(leaves < 0) leaves *= -1;
         if(invites < 0) invites *= -1;
         let realinvites = invites - fake - leaves;
-        invitemessage = `Invited by ${inviter.tag ? `**${inviter.tag}**` : `<@${inviter.id}>`}\n<:Like:857334024087011378> **${realinvites} Invite${realinvites == 1 ? "" : "s"}**\n[<:joines:866356465299488809> ${invites} Joins | <:leaves:866356598356049930> ${leaves} Leaves | <:no:833101993668771842> ${fake} Fakes]`;
+        invitemessage = `Invited by ${inviter.tag ? `**${inviter.tag}**` : `<@${inviter.id}>`}\n🌐 **${realinvites} Invite${realinvites == 1 ? "" : "s"}**\n[✔️ ${invites} Joins | ❌ ${leaves} Leaves | <:no:833101993668771842> ${fake} Fakes]`;
       } 
       else if(invite){
         invitemessage = `Invited by an **Unknown Member**`
@@ -300,8 +335,8 @@ module.exports = client => {
       } else {
         invitemessage = "\u200b"
       }
-      if (client.settings.get(member.guild.id, "welcome.captcha") && !member.user.bot) {
-       const captcha = new Captcha();
+      if (theSettings.welcome.captcha && !member.user.bot) {
+        const captcha = new Captcha();
         captcha.async = false //Sync
         captcha.addDecoy(); //Add decoy text on captcha canvas.
         captcha.drawTrace(); //draw trace lines on captcha canvas.
@@ -660,7 +695,7 @@ module.exports = client => {
       }
     }
     async function message(member) {
-      let welcome = client.settings.get(member.guild.id, "welcome");
+      let welcome = theSettings.welcome
       if(welcome && welcome.secondchannel !== "nochannel"){
         let themessage = String(welcome.secondmsg);
         if(!themessage || themessage.length == 0) themessage = ":wave: {user} **Welcome to our Server!** :v:";
@@ -702,7 +737,7 @@ module.exports = client => {
 
 
       async function msg_withoutimg(member) {
-        let welcomechannel = client.settings.get(member.guild.id, "welcome.channel");
+        let welcomechannel = theSettings.welcome.channel;
         if (!welcomechannel) return;
         let channel = await client.channels.fetch(welcomechannel).catch(() => {})
         if (!channel) return;
@@ -713,9 +748,9 @@ module.exports = client => {
           .setTimestamp()
           .setFooter({text: `ID: ${member.user.id}`, iconURL: `${member.user.displayAvatarURL({ dynamic: true })}`})
           .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable7"]))
-          .setDescription(client.settings.get(member.guild.id, "welcome.msg").replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
+          .setDescription(theSettings.welcome.msg.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
           .addField(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variablex_8"]), eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable8"]))
-        
+
           //send the welcome embed to there
           if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.SEND_MESSAGES)){
             if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.EMBED_LINKS)){
@@ -729,7 +764,7 @@ module.exports = client => {
               }).catch(() => {});
             }
           }
-        
+
       }
       async function dm_msg_withoutimg(member) {
         //define the welcome embed
@@ -738,8 +773,8 @@ module.exports = client => {
           .setTimestamp()
           .setFooter({text: `ID: ${member.user.id}`, iconURL: `${member.user.displayAvatarURL({ dynamic: true })}`})
           .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable9"]))
-          .setDescription(client.settings.get(member.guild.id, "welcome.dm_msg").replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
-          if(client.settings.get(member.guild.id, "welcome.invitedm")) welcomeembed.addField("\u200b", `${invitemessage}`)
+          .setDescription(theSettings.welcome.dm_msg.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
+          if(theSettings.welcome.invitedm) welcomeembed.addField("\u200b", `${invitemessage}`)
           //send the welcome embed to there
         member.user.send({
           content: `<@${member.user.id}>`,
@@ -755,9 +790,9 @@ module.exports = client => {
           .setTimestamp()
           .setFooter({text: `ID: ${member.user.id}`, iconURL: `${member.user.displayAvatarURL({ dynamic: true })}`})
           .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable10"]))
-          .setDescription(client.settings.get(member.guild.id, "welcome.dm_msg").replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
-          .setImage(client.settings.get(member.guild.id, "welcome.customdm"))
-          if(client.settings.get(member.guild.id, "welcome.invitedm")) welcomeembed.addField("\u200b", `${invitemessage}`)
+          .setDescription(theSettings.welcome.dm_msg.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
+          .setImage(theSettings.welcome.customdm)
+          if(theSettings.welcome.invitedm) welcomeembed.addField("\u200b", `${invitemessage}`)
           //send the welcome embed to there
         member.user.send({
           content: `<@${member.user.id}>`,
@@ -765,7 +800,7 @@ module.exports = client => {
         }).catch(() => {});
       }
       async function msg_withimg(member) {
-        let welcomechannel = client.settings.get(member.guild.id, "welcome.channel");
+        let welcomechannel = theSettings.welcome.channel;
         if (!welcomechannel) return;
         let channel = await client.channels.fetch(welcomechannel).catch(() => {})
         if (!channel) return;
@@ -776,9 +811,9 @@ module.exports = client => {
           .setTimestamp()
           .setFooter({text: `ID: ${member.user.id}`, iconURL: `${member.user.displayAvatarURL({ dynamic: true })}`})
           .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable11"]))
-          .setDescription(client.settings.get(member.guild.id, "welcome.msg").replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
-          .setImage(client.settings.get(member.guild.id, "welcome.custom"))
-          if(client.settings.get(member.guild.id, "welcome.invite")) welcomeembed.addField("\u200b", `${invitemessage}`)
+          .setDescription(theSettings.welcome.msg.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
+          .setImage(theSettings.welcome.custom)
+          if(theSettings.welcome.invite) welcomeembed.addField("\u200b", `${invitemessage}`)
           //send the welcome embed to there
         if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.SEND_MESSAGES)){
           if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.EMBED_LINKS)){
@@ -802,16 +837,16 @@ module.exports = client => {
             .setTimestamp()
             .setFooter({text: `ID: ${member.user.id}`, iconURL: `${member.user.displayAvatarURL({ dynamic: true })}`})
           .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable12"]))
-            .setDescription(client.settings.get(member.guild.id, "welcome.dm_msg").replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
-          if(client.settings.get(member.guild.id, "welcome.invitedm")) welcomeembed.addField("\u200b", `${invitemessage}`)
+            .setDescription(theSettings.welcome.dm_msg.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
+          if(theSettings.welcome.invitedm) welcomeembed.addField("\u200b", `${invitemessage}`)
         //member roles add on welcome every single role
           const canvas = Canvas.createCanvas(1772, 633);
           //make it "2D"
           const ctx = canvas.getContext(`2d`);
 
-          if (client.settings.get(member.guild.id, "welcome.backgrounddm") !== "transparent") {
+          if (theSettings.welcome.backgrounddm !== "transparent") {
             try {
-              const bgimg = await Canvas.loadImage(client.settings.get(member.guild.id, "welcome.backgrounddm"));
+              const bgimg = await Canvas.loadImage(theSettings.welcome.backgrounddm);
               ctx.drawImage(bgimg, 0, 0, canvas.width, canvas.height);
             } catch {}
           } else {
@@ -827,30 +862,30 @@ module.exports = client => {
             } catch {}
           }
 
-          if (client.settings.get(member.guild.id, "welcome.framedm")) {
+          if (theSettings.welcome.framedm) {
             let background;
-            var framecolor = client.settings.get(member.guild.id, "welcome.framecolordm").toUpperCase();
+            var framecolor = theSettings.welcome.framecolordm.toUpperCase();
             if (framecolor == "WHITE") framecolor = "#FFFFF9";
-            if (client.settings.get(member.guild.id, "welcome.discriminatordm") && client.settings.get(member.guild.id, "welcome.servernamedm"))
+            if (theSettings.welcome.discriminatordm && theSettings.welcome.servernamedm)
               background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome3frame.png`);
 
-            else if (client.settings.get(member.guild.id, "welcome.discriminatordm"))
+            else if (theSettings.welcome.discriminatordm)
               background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome2frame_unten.png`);
 
-            else if (client.settings.get(member.guild.id, "welcome.servernamedm"))
+            else if (theSettings.welcome.servernamedm)
               background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome2frame_oben.png`);
 
             else
               background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1frame.png`);
 
             ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-            if (client.settings.get(member.guild.id, "welcome.pbdm")) {
+            if (theSettings.welcome.pbdm) {
               background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1framepb.png`);
               ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
             }
           }
 
-          var fillcolors = client.settings.get(member.guild.id, "welcome.framecolordm").toUpperCase();
+          var fillcolors = theSettings.welcome.framecolordm.toUpperCase();
           if (fillcolors == "WHITE") framecolor = "#FFFFF9";
           ctx.fillStyle = fillcolors.toLowerCase();
 
@@ -871,19 +906,19 @@ module.exports = client => {
 
           ctx.font = `bold 50px ${wideFonts}`;
           //define the Discriminator Tag
-          if (client.settings.get(member.guild.id, "welcome.discriminatordm")) {
+          if (theSettings.welcome.discriminatordm) {
             await canvacord.Util.renderEmoji(ctx, `#${member.user.discriminator}`, 750, canvas.height / 2 + 125);
           }
           //define the Member count
-          if (client.settings.get(member.guild.id, "welcome.membercountdm")) {
+          if (theSettings.welcome.membercountdm) {
             await canvacord.Util.renderEmoji(ctx, `Member #${member.guild.memberCount}`, 750, canvas.height / 2 + 200);
           }
           //get the Guild Name
-          if (client.settings.get(member.guild.id, "welcome.servernamedm")) {
+          if (theSettings.welcome.servernamedm) {
             await canvacord.Util.renderEmoji(ctx, `${member.guild.name}`, 700, canvas.height / 2 - 150);
           }
 
-          if (client.settings.get(member.guild.id, "welcome.pbdm")) {
+          if (theSettings.welcome.pbdm) {
             //create a circular "mask"
             ctx.beginPath();
             ctx.arc(315, canvas.height / 2, 250, 0, Math.PI * 2, true); //position of img
@@ -910,7 +945,7 @@ module.exports = client => {
       }
       async function msg_autoimg(member) {
         try {
-          let welcomechannel = client.settings.get(member.guild.id, "welcome.channel");
+          let welcomechannel = theSettings.welcome.channel;
           if (!welcomechannel) return
           let channel = await client.channels.fetch(welcomechannel).catch(() => {})
           if (!channel) return 
@@ -920,17 +955,17 @@ module.exports = client => {
             .setTimestamp()
             .setFooter({text: `ID: ${member.user.id}`, iconURL: `${member.user.displayAvatarURL({ dynamic: true })}`})
             .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable13"]))
-            .setDescription(client.settings.get(member.guild.id, "welcome.msg").replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
-            if(client.settings.get(member.guild.id, "welcome.invite")) welcomeembed.addField("\u200b", `${invitemessage}`)
+            .setDescription(theSettings.welcome.msg.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
+            if(theSettings.welcome.invite) welcomeembed.addField("\u200b", `${invitemessage}`)
             try {
             //member roles add on welcome every single role
             const canvas = Canvas.createCanvas(1772, 633);
             //make it "2D"
             const ctx = canvas.getContext(`2d`);
 
-            if (client.settings.get(member.guild.id, "welcome.background") !== "transparent") {
+            if (theSettings.welcome.background !== "transparent") {
               try {
-                const bgimg = await Canvas.loadImage(client.settings.get(member.guild.id, "welcome.background"));
+                const bgimg = await Canvas.loadImage(theSettings.welcome.background);
                 ctx.drawImage(bgimg, 0, 0, canvas.width, canvas.height);
               } catch {}
             } else {
@@ -947,17 +982,17 @@ module.exports = client => {
             }
 
 
-            if (client.settings.get(member.guild.id, "welcome.frame")) {
+            if (theSettings.welcome.frame) {
               let background;
-              var framecolor = client.settings.get(member.guild.id, "welcome.framecolor").toUpperCase();
+              var framecolor = theSettings.welcome.framecolor.toUpperCase();
               if (framecolor == "WHITE") framecolor = "#FFFFF9";
-              if (client.settings.get(member.guild.id, "welcome.discriminator") && client.settings.get(member.guild.id, "welcome.servername"))
+              if (theSettings.welcome.discriminator && theSettings.welcome.servername)
                 background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome3frame.png`);
 
-              else if (client.settings.get(member.guild.id, "welcome.discriminator"))
+              else if (theSettings.welcome.discriminator)
                 background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome2frame_unten.png`);
 
-              else if (client.settings.get(member.guild.id, "welcome.servername"))
+              else if (theSettings.welcome.servername)
                 background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome2frame_oben.png`);
 
               else
@@ -965,13 +1000,13 @@ module.exports = client => {
 
               ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-              if (client.settings.get(member.guild.id, "welcome.pb")) {
+              if (theSettings.welcome.pb) {
                 background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1framepb.png`);
                 ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
               }
             }
 
-            var fillcolor = client.settings.get(member.guild.id, "welcome.framecolor").toUpperCase();
+            var fillcolor = theSettings.welcome.framecolor.toUpperCase();
             if (fillcolor == "WHITE") framecolor = "#FFFFF9";
             ctx.fillStyle = fillcolor.toLowerCase();
 
@@ -990,20 +1025,20 @@ module.exports = client => {
 
             ctx.font = `bold 50px ${wideFonts}`;
             //define the Discriminator Tag
-            if (client.settings.get(member.guild.id, "welcome.discriminator")) {
+            if (theSettings.welcome.discriminator) {
               await canvacord.Util.renderEmoji(ctx, `#${member.user.discriminator}`, 750, canvas.height / 2 + 125);
             }
             //define the Member count
-            if (client.settings.get(member.guild.id, "welcome.membercount")) {
+            if (theSettings.welcome.membercount) {
               await canvacord.Util.renderEmoji(ctx, `Member #${member.guild.memberCount}`, 750, canvas.height / 2 + 200);
             }
             //get the Guild Name
-            if (client.settings.get(member.guild.id, "welcome.servername")) {
+            if (theSettings.welcome.servernam) {
               await canvacord.Util.renderEmoji(ctx, `${member.guild.name}`, 700, canvas.height / 2 - 150);
             }
 
 
-            if (client.settings.get(member.guild.id, "welcome.pb")) {
+            if (theSettings.welcome.pb) {
               //create a circular "mask"
               ctx.beginPath();
               ctx.arc(315, canvas.height / 2, 250, 0, Math.PI * 2, true); //position of img
@@ -1048,7 +1083,7 @@ module.exports = client => {
     }
 
     function add_roles(member) {
-      let roles = client.settings.get(member.guild.id, "welcome.roles")
+      let roles = theSettings.welcome.roles
       if (roles && roles.length > 0) {
         for (const role of roles) {
           try {
@@ -1059,14 +1094,14 @@ module.exports = client => {
       }
     }
   })
-  
+
 
   /**
    * ANTI-NEW-ACCOUNT Detector
    */
   client.on("guildMemberAdd", async member => {
     if(!member.guild || member.user.bot) return;
-    client.settings.ensure(member.guild.id, {
+    await dbEnsure(await client.settings, member.guild.id, {
       antinewaccount: {
         enabled: false,
         delay: ms("2 days"),
@@ -1075,14 +1110,15 @@ module.exports = client => {
       } 
     });
     //Return if account system is disabled
-    if(!client.settings.get(member.guild.id, "antinewaccount.enabled")) return; 
+    let newAccount = await client.settings.get(member.guild.id);
+    if(!newAccount || !newAccount.antinewaccount || !newAccount.antinewaccount.enabled) return; 
     //get the ms time of the account creationj
     const createdAccount = new Date(member.user.createdAt).getTime(); 
-    const newaccount_delay = client.settings.get(member.guild.id, "antinewaccount.delay");
+    const newaccount_delay = newAccount.antinewaccount.delay;
     //return if account is old enough
     if(newaccount_delay < Date.now() - createdAccount) return;
-    const extramessage = client.settings.get(member.guild.id, "antinewaccount.extra_message");
-    const action = client.settings.get(member.guild.id, "antinewaccount.action");
+    const extramessage = newAccount.antinewaccount.extra_message;
+    const action = newAccount.antinewaccount.action;
     if(action == "ban") {
       await member.send({
         embeds: [
@@ -1116,7 +1152,7 @@ module.exports = client => {
    */
   client.on("guildMemberAdd", async member => {
     if(!member.guild || member.user.bot) return;
-    client.settings.ensure(member.guild.id, {
+    await dbEnsure(client.settings, member.guild.id, {
       joinlist: {
         username_contain: [/*
           {
@@ -1134,11 +1170,11 @@ module.exports = client => {
       }
     });
 
-    const joinlist = client.settings.get(member.guild.id, "joinlist");
-    
+    const joinlist = await client.settings.get(member.guild.id+ ".joinlist");
+    if(!joinlist) return;
     let inthere = false;
     let notInthere = false;
-    
+
     if(!member.user.avatarURL() && joinlist.noavatar.filter(d => d.data == "enable").length > 0) {
       const reason = '`User not having an Avatar (joinlist)`'
       const datas = joinlist.noavatar.filter(d => d.data == "enable");
@@ -1237,13 +1273,13 @@ module.exports = client => {
   /**
    * INCREASE THE MESSAGECOUNTER 
    */
-  client.on("messageCreate", message => {
-    if(message.guild && message.author.id){
+  client.on("messageCreate", async message => {
+    if(message.guild && message.author?.id){
       // Fetch guild and member data from the db
-      client.invitesdb.ensure(message.guild.id + message.author.id, {
+      await dbEnsure(client.invitesdb, message.guild.id + message.author?.id, {
         messagesCount: 0,
       });
-      client.invitesdb.inc(message.guild.id + message.author.id, "messagesCount")
+      await client.invitesdb.add(message.guild.id + message.author?.id+ ".messagesCount", 1)
     }
   })
 
@@ -1299,8 +1335,8 @@ module.exports = client => {
     }
     return true;
   };
-  function EnsureInviteDB(guild, user) {
-    client.invitesdb.ensure(guild.id + user.id, {
+  async function EnsureInviteDB(guild, user) {
+    await dbEnsure(client.invitesdb, guild.id + user.id, {
       /* REQUIRED */
       id: user.id, // Discord ID of the user
       guildId: guild.id,
@@ -1320,5 +1356,6 @@ module.exports = client => {
       /* BOT */
       bot: user.bot
     });
+    return true;
   }
-}
+} 

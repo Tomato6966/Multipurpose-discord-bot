@@ -2,13 +2,13 @@ const Discord = require("discord.js");
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   GetUser,
   GetGlobalUser, handlemsg
-} = require(`${process.cwd()}/handlers/functions`)
+} = require(`../../handlers/functions`)
 const fetch = require("node-fetch")
 module.exports = {
   name: "connectioninfo",
@@ -17,10 +17,8 @@ module.exports = {
   description: "Get Information of your Connection",
   usage: "connectioninfo",
   type: "user",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    let es = client.settings.get(message.guild.id, "embed");
-    let ls = client.settings.get(message.guild.id, "language")
-    
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+
 		try {
       var user;
       if(args[0]){
@@ -32,26 +30,26 @@ module.exports = {
             user = await GetUser(message, args)
           }
         } catch (e){
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
           return message.reply(client.la[ls].common.usernotfound)
         }
       } else{
         user = message.author;
       }
-      let member = message.guild.members.cache.get(user.id) || await message.guild.members.fetch(user.id).catch(() => {}) || false;
+      let member = message.guild.members.cache.get(user.id) || await message.guild.members.fetch(user.id).catch(() => null) || false;
       
       if(!member) return message.reply(":x: **This User is not a Member of this Guild!**")
-      if(!member.voice || !member.voice.channel) return message.reply(":x: **This User is not Connected to a Voicechannel!**")
+      if(!member.voice || !member.voice.channel) return message.reply(":x: **This User is not Connected to a Voicechannel in this Guild!**")
       
 
       const embed = new Discord.MessageEmbed()
         .setTitle(`Connection Info of: \`${user.tag}\``)
-        .addField('<:arrow:832598861813776394> **Channel**', `> **${member.voice.channel.name}** ${member.voice.channel}`, true)
-        .addField('<:arrow:832598861813776394> **Channel-ID**', `> \`${member.voice.channel.id}\``, true)
-        .addField('<:arrow:832598861813776394> **Members in there**', `> \`${member.voice.channel.members.size} total Members\``, true)
-        .addField('<:arrow:832598861813776394> **Full Channel?**', `> ${member.voice.channel.full ? "✅" : "❌"}`, true)
-        .addField('<:arrow:832598861813776394> **Bitrate**', `> ${member.voice.channel.bitrate}`, true)
-        .addField('<:arrow:832598861813776394> **User join limit**', `> \`${member.voice.channel.userLimit != 0 ? member.voice.channel.userLimit : "No limit!"}\``, true)
+        .addField('<a:arrow:943027097348227073> **Channel**', `> **${member.voice.channel.name}** ${member.voice.channel}`, true)
+        .addField('<a:arrow:943027097348227073> **Channel-ID**', `> \`${member.voice.channel.id}\``, true)
+        .addField('<a:arrow:943027097348227073> **Members in there**', `> \`${member.voice.channel.members.size} total Members\``, true)
+        .addField('<a:arrow:943027097348227073> **Full Channel?**', `> ${member.voice.channel.full ? "✅" : "❌"}`, true)
+        .addField('<a:arrow:943027097348227073> **Bitrate**', `> ${member.voice.channel.bitrate}`, true)
+        .addField('<a:arrow:943027097348227073> **User join limit**', `> \`${member.voice.channel.userLimit != 0 ? member.voice.channel.userLimit : "No limit!"}\``, true)
       
       message.reply({
         embeds: [embed]
@@ -67,12 +65,4 @@ module.exports = {
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

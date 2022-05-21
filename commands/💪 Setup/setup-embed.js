@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-embed",
@@ -18,9 +18,10 @@ module.exports = {
   description: "Change the Look of your Embeds (Color, Image, Thumbnail, ...)",
   memberpermissions: ["ADMINISTRATOR"],
   type: "info",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")    
+  run: async (client, message, args, cmduser, text, prefix, player, Tes, Tls, GuildSettings) => {
+    let es = Tes;
+    let ls = Tls;
+        
     try {
         var timeouterror = false;
         let row = new MessageActionRow()
@@ -37,7 +38,7 @@ module.exports = {
         ]})
         //Create the collector
         const collector = tempmsg.createMessageComponentCollector({ 
-          filter: i => i?.isButton() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isButton() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
@@ -73,12 +74,12 @@ module.exports = {
                 .addField(`**Current Color:**`, `>>> \`${es.color}\``)
                 .setFooter(client.getFooter(es))]
               })
-              await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+              await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                   max: 1,
                   time: 90000,
                   errors: ["time"]
                 })
-                .then(collected => {
+                .then(async collected => {
                   var color = collected.first().content;
                   if (!color) return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-embed"]["variable7"]))
@@ -96,8 +97,8 @@ module.exports = {
                     }catch (e){
                       return message.reply({embeds: [new MessageEmbed().setColor("RED").setTitle(":x: INVALID COLOR ADDED").setDescription(`\`\`\`${String(e.message ? e.message : e).substring(0, 2000)}\`\`\``)]})
                     }
-                    client.settings.set(message.guild.id, color ,"embed.color")
-                    es = client.settings.get(message.guild.id, "embed")
+                    await client.settings.set(message.guild.id+".embed.color", color)
+                    es = await client.settings.get(message.guild.id+".embed")
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-embed"]["variable11"]))
                       .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
@@ -130,12 +131,12 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-embed"]["variable16"]))
                 .setFooter(client.getFooter(es))]
               })
-              await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+              await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                   max: 1,
                   time: 90000,
                   errors: ["time"]
                 })
-                .then(collected => {
+                .then(async collected => {
                   var url = collected.first().content;
                   function attachIsImage(msgAttach) {
                     url = msgAttach.url;
@@ -148,8 +149,8 @@ module.exports = {
                   if (collected.first().attachments.size > 0) {
                     if (collected.first().attachments.every(attachIsImage)) {
                       try {
-                        client.settings.set(message.guild.id, url ,"embed.footericon")
-                        es = client.settings.get(message.guild.id, "embed")
+                        await client.settings.set(message.guild.id+".embed.footericon", url)
+                        es = await client.settings.get(message.guild.id+".embed")
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-embed"]["variable17"]))
                           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
@@ -178,8 +179,8 @@ module.exports = {
                       ]});
                     } else {
                       try {
-                        client.settings.set(message.guild.id, url ,"embed.footericon")
-                        es = client.settings.get(message.guild.id, "embed")
+                        await client.settings.set(message.guild.id+".embed.footericon", url)
+                        es = await client.settings.get(message.guild.id+".embed")
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-embed"]["variable22"]))
                           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
@@ -212,18 +213,18 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-embed"]["variable27"]))
                 .setFooter(client.getFooter(es))]
               })
-              await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+              await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                   max: 1,
                   time: 90000,
                   errors: ["time"]
                 })
-                .then(collected => {
+                .then(async collected => {
                   var text = collected.first().content;
                   try {
-                    client.settings.set(message.guild.id, text, "embed.footertext")
-                    es = client.settings.get(message.guild.id, "embed")
+                    await client.settings.set(message.guild.id+".embed.footertext", text)
+                    es = await client.settings.get(message.guild.id+".embed")
                     return message.reply({embeds: [new Discord.MessageEmbed()
-                      .setTitle(`<a:yes:833101995723194437> The new Embed Footer Text is:`.substring(0, 256))
+                      .setTitle(`:white_check_mark: The new Embed Footer Text is:`.substring(0, 256))
                       .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
                       .setDescription(es.footertext)
                       .setFooter(client.getFooter(es))
@@ -249,8 +250,8 @@ module.exports = {
                 ]});
             } else if (button?.customId == "4") {
               try {
-                client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "embed.thumb") ,"embed.thumb")
-                es = client.settings.get(message.guild.id, "embed")
+                await client.settings.set(message.guild.id+".embed.thumb", !es?.thumb)
+                es = await client.settings.get(message.guild.id+".embed")
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-embed"]["variable31"]))
                   .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-embed"]["variable32"]))
@@ -267,11 +268,11 @@ module.exports = {
               }
             } 
           }
-          else button?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else button?.reply({content: `:x: You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          tempmsg.edit({embeds: [tempmsg.embeds[0].setDescription(`~~${tempmsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().customId ? `<a:yes:833101995723194437> **Selected the \`${collected.first().customId}\`. Button**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          tempmsg.edit({embeds: [tempmsg.embeds[0].setDescription(`~~${tempmsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().customId ? `:white_check_mark: **Selected the \`${collected.first().customId}\`. Button**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
   
     } catch (e) {
@@ -284,12 +285,4 @@ module.exports = {
     }
   },
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

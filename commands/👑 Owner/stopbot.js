@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing, isValidURL
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure, isValidURL
+} = require(`../../handlers/functions`);
 module.exports = {
   name: "stopbot",
   category: "👑 Owner",
@@ -16,10 +16,10 @@ module.exports = {
   usage: "stopbot",
   type: "bot",
   description: "Stops the Bot, to set it OFFLINE",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!config.ownerIDS.some(r => r.includes(message.author.id)))
+    
+    if (!config.ownerIDS.some(r => r.includes(message.author?.id)))
       return message.channel.send({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["owner"]["stopbot"]["variable1"]))
@@ -27,10 +27,10 @@ module.exports = {
       ]});
     try {
       let clientapp = client.application ? await client.application.fetch().catch(e=>false) : false;
-      let guild = client.guilds.cache.get("773668217163218944")
-      return message.reply({content : `**<:no:833101993668771842> THIS COMMAND IS DISABLED, go to discord.gg/milrato and <#840332764603351101> to get it restarted!**\n\n\n> **Path:**
+      let guild = client.guilds.cache.get("880881865114935296")
+      return message.reply({content : `**:x: THIS COMMAND IS DISABLED, go to dsc.gg/banditcamp and <#840332764603351101> to get it restarted!**\n\n\n> **Path:**
 \`\`\`yml
-${process.cwd()}
+../..
 \`\`\`
 > **Server:**
 \`\`\`yml
@@ -56,7 +56,7 @@ ${clientapp.description ? clientapp.description : "❌ NO DESCRIPTION YET!"}
       : ""}
       `});
 
-      require("child_process").exec(`pm2 stop index.js CLANBOT_${process.cwd().split(require("path").sep).pop()}`, (error, stdout, stderr) => {
+      require("child_process").exec(`pm2 stop Erry`, (error, stdout, stderr) => {
         if (error) {
           console.error(`exec error: ${error}`);
           message.reply({content : eval(client.la[ls]["cmds"]["owner"]["stopbot"]["variable4"])})
@@ -73,12 +73,3 @@ ${clientapp.description ? clientapp.description : "❌ NO DESCRIPTION YET!"}
     }
   },
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */

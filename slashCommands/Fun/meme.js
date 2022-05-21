@@ -24,8 +24,8 @@ module.exports = {
   type: "user",
   description: "*Image cmd in the style:* " + path.parse(__filename).name,
   run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
-
-    if (!client.settings.get(message.guild.id, "FUN")) {
+    let GuildSettings = client.settings.get(`${interaction.guild.id}`)
+    if (GuildSettings.FUN === false) {
       return interaction?.reply({
         embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
@@ -47,12 +47,4 @@ module.exports = {
     });
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

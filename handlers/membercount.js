@@ -1,53 +1,32 @@
 var CronJob = require('cron').CronJob;
-const { delay } = require(`./functions`)
+const { delay, dbKeys, dbEnsure } = require(`./functions`)
 module.exports = function (client, options) {
 
 
   //Loop through every setupped guild every 1 Hour and call membercount
   client.Jobmembercount = new CronJob('0 0 * * * *', async function() {
     //get all guilds which are setupped
-    var guilds = client.setups.filter(v => {
-      if(v.membercount){
+    var guilds = await dbKeys(client.setups, v => {
+      if(v.data && v.data.membercount){
         let returnvalue = false;
-        for(let i = 1; i <= 25; i++){
-          if(v.membercount[`channel${i}`] && v.membercount[`channel${i}`].length > 5)
-            returnvalue = true;
+        for (let i = 1; i <= 25; i++){
+          if(v.data.membercount[`channel${i}`] && v.data.membercount[`channel${i}`].length > 5) returnvalue = true;
         }
         return returnvalue;
       } else {
         return false;
       }
-    }).keyArray();
+    }) || [];
     var logguilds = guilds;
     console.log(JSON.stringify(logguilds.map(guild => `${guild}`)).italic.yellow + " MEMBERCOUNTER ALL GUILDS")
     //Loop through all guilds and send a random auto-generated-nsfw setup
-    for(const guildid of guilds){
+    for await (const guildid of guilds.filter(g => client.guilds.cache.has(g))){
         memberCount(guildid)
         await delay(1000);
     }
-  }, null, true, 'America/Los_Angeles');
+  }, null, true, 'Europe/Berlin');
 
   client.on("ready", async () => {
-    //get all guilds which are setupped
-    var guilds = client.setups.filter(v => {
-      if(v.membercount){
-        let returnvalue = false;
-        for(let i = 1; i <= 25; i++){
-          if(v.membercount[`channel${i}`] && v.membercount[`channel${i}`].length > 5)
-            returnvalue = true;
-        }
-        return returnvalue;
-      } else {
-        return false;
-      }
-    }).keyArray();
-    var logguilds = guilds;
-    console.log(JSON.stringify(logguilds.map(guild => `${guild}`)).italic.yellow + " MEMBERCOUNTER ALL GUILDS")
-    //Loop through all guilds and send a random auto-generated-nsfw setup
-    for(const guildid of guilds){
-        memberCount(guildid)
-        await delay(1000);
-    }
     client.Jobmembercount.start();
   })
 
@@ -55,22 +34,22 @@ module.exports = function (client, options) {
   async function memberCount(guildid){
     //ensure the database
     let ensureobject = { }
-    for(let i = 1; i <= 25; i++){
+    for (let i = 1; i <= 25; i++){
       ensureobject[`channel${i}`] = "no";
       ensureobject[`message${i}`] = "🗣 Members: {member}";
     }
-    client.setups.ensure(guildid, ensureobject, "membercount");
+    await dbEnsure(client.setups, guildid+".membercount", ensureobject);
     //get the Guild
     var guild = client.guilds.cache.get(guildid)
     //if no guild, return
     if(!guild) return
     //get all guilds
-    await guild.members.fetch().catch(() => {});
+    await guild.members.fetch().catch(() => null);
     //get the settings 
-    let set = client.setups.get(guild.id, "membercount");
+    let set = await client.setups.get(guild.id+".membercount");
     //If no settings found, or defined on "no" return
     if(!set) return
-    for(let i = 1; i <= 25; i++){
+    for (let i = 1; i <= 25; i++){
       if(set[`channel${i}`] && set[`channel${i}`].length == 18){
         if(await Channel(set[`channel${i}`], set[`message${i}`])){
           await delay(1000 * 60 * 6)
@@ -83,7 +62,7 @@ module.exports = function (client, options) {
       var channel;
       //try to fetch the channel if no channel found throw error and return
       try{
-          channel = await client.channels.fetch(chId).catch(() => {})
+          channel = await client.channels.fetch(chId).catch(() => null)
           if(!channel || channel == null || channel == undefined || !channel.name || channel.name == null || channel.name == undefined) return;
           let newname = String(channelName)
             
@@ -131,13 +110,13 @@ module.exports = function (client, options) {
           .replace(/{openthreads}/i, guild.channels.cache.filter(ch=>ch.isThread() && !ch.deleted && !ch.archived).size)
           .replace(/{archivedthreads}/i, guild.channels.cache.filter(ch=>ch.isThread() && !ch.deleted && ch.archived).size)
           if(channel.name != newname){
-            channel.setName(newname).catch(() => {})
+            channel.setName(newname).catch(() => null)
             return true;
           } else {
             return false;
           }
       }catch (e){
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
       }
     }
   }

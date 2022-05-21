@@ -2,12 +2,12 @@ const Discord = require("discord.js");
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
-  swap_pages
-} = require(`${process.cwd()}/handlers/functions`)
+  swap_pages, dbEnsure
+} = require(`../../handlers/functions`)
 const moment = require("moment");
 module.exports = {
   name: "latestquotes",
@@ -16,24 +16,24 @@ module.exports = {
   description: "Shows the latest Quotes which are saved on this User/you",
   usage: "latestquotes [@USER]",
   type: "user",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       //"HELLO"
       var member = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.member;
       var user = member ? member.user : message.author;
-      if(user.id != message.author.id) {
+      if(user.id != message.author?.id) {
         args.shift();
       }
-      client.afkDB.ensure(user.id, {
+      await dbEnsure(client.afkDB, user.id, {
         quotes: [
           /*
           { by: "id", text: "", image: null, at: Date.now(), }
           */
         ]
       })
-      let data = client.afkDB.get(user.id, "quotes")
+      let data = await client.afkDB.get(user.id + ".quotes")
       if(args[0] && !isNaN(args[0])){
         if(Number(args[0]) < 0 || Number(args[0]) > data.length - 1 || !data[Number(args[0])] || !data[Number(args[0])].text){
           return message.reply(`:x: **Invalid Quote ID!**\n> Use one between \`0\` and \`${data.length - 1}\``)
@@ -68,12 +68,4 @@ module.exports = {
     }
   }
 }
-/*
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

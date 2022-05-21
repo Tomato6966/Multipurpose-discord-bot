@@ -8,16 +8,16 @@ const { swap_pages, handlemsg } = require(`${process.cwd()}/handlers/functions`)
 module.exports = {
   name: "serverinfo",
   description: "Shows info about a server",
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     //things u can directly access in an interaction!
     const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;
     
     try {
       function trimArray(arr, maxLen = 25) {
-        if (arr.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length > maxLen) {
-          const len = arr.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).length - maxLen;
-          arr = arr.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966).sort((a, b) => b?.rawPosition - a.rawPosition).slice(0, maxLen);
+        if (arr.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length > maxLen) {
+          const len = arr.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - maxLen;
+          arr = arr.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).sort((a, b) => b?.rawPosition - a.rawPosition).slice(0, maxLen);
           arr.map(role => `<@&${role.id}>`)
           arr.push(`${len} more...`);
         }
@@ -47,7 +47,7 @@ module.exports = {
         interaction?.reply({ephemeral: true, embeds: [new Discord.MessageEmbed()
         .setAuthor(client.la[ls].cmds.info.serverinfo.author + " " +  message.guild.name, message.guild.iconURL({
           dynamic: true
-        }), "https://discord.com/api/oauth2/authorize?client_id=734513783338434591&permissions=8&scope=bot%20applications.commands")
+        }), "https://discord.com/api/oauth2/authorize?client_id=924922244436750406&permissions=8&scope=bot%20applications.commands")
         .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
         .addField(client.la[ls].cmds.info.serverinfo.field1, `${message.guild.owner}\n\`${message.guild.owner.tag}\``, true)
         .addField(client.la[ls].cmds.info.serverinfo.field2, "\`" + moment(message.guild.createdTimestamp).format("DD/MM/YYYY") + "\`\n" + "`"+ moment(message.guild.createdTimestamp).format("hh:mm:ss") +"`", true)
@@ -64,8 +64,8 @@ module.exports = {
         .addField(client.la[ls].cmds.info.serverinfo.field10, "🟢 \`" + message.guild.members.cache.filter(member => member.presence && member.presence.status != "offline").size + "\`", true)
         .addField(client.la[ls].cmds.info.serverinfo.field11, ":black_circle:\`" + message.guild.members.cache.filter(member => !member.presence || member.presence.status == "offline").size + "\`", true)
 
-        .addField(client.la[ls].cmds.info.serverinfo.field12, "<a:nitro_logo:833402717950836806> \`" + message.guild.premiumSubscriptionCount + "\`", true)
-        .addField(client.la[ls].cmds.info.serverinfo.field13, "<a:nitro:833402717506502707> \`" + boostlevel + "\`", true)
+        .addField(client.la[ls].cmds.info.serverinfo.field12, "<a:nitro_logo:950884854684336159> \`" + message.guild.premiumSubscriptionCount + "\`", true)
+        .addField(client.la[ls].cmds.info.serverinfo.field13, "<a:nitro:950885057768341504> \`" + boostlevel + "\`", true)
         .addField(client.la[ls].cmds.info.serverinfo.field14, "👾 \`" + maxbitrate + " kbps\`", true)
         
         .addField(eval(client.la[ls]["cmds"]["info"]["serverinfo"]["variablex_1"]), eval(client.la[ls]["cmds"]["info"]["serverinfo"]["variable1"]))
@@ -82,12 +82,4 @@ module.exports = {
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

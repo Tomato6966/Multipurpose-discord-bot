@@ -16,8 +16,8 @@ module.exports = {
     { "String": { name: "text", description: "What should I send? [ +n+ = Newline ]", required: true } }, //to use in the code: interacton.getString("title")
   ],
   run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
-
-    if (!client.settings.get(message.guild.id, "FUN")) {
+    let GuildSettings = client.settings.get(`${interaction.guild.id}`)
+    if (GuildSettings.FUN === false) {
       return interaction?.reply({
         embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
@@ -39,7 +39,7 @@ module.exports = {
         .setTitle(eval(client.la[ls]["cmds"]["fun"]["note"]["variable2"]))
         .setDescription(eval(client.la[ls]["cmds"]["fun"]["note"]["variable3"]))
       ]
-    }).catch(() => {})
+    }).catch(() => null)
 
     //get the memer image
     client.memer.note(text).then(image => {
@@ -54,17 +54,9 @@ module.exports = {
           .setAuthor(`Meme for: ${message.author.tag}`, message.author.displayAvatarURL())
           .setImage("attachment://note.png")
         ], files: [attachment]
-      }).catch(() => {})
+      }).catch(() => null)
     })
 
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

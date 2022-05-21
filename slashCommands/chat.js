@@ -10,7 +10,7 @@ module.exports = {
   options: [
 		{"String": { name: "chat_text", description: "Wanna Chat with me?", required: false }}, 
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     try{
     //console.log(interaction, StringOption)
 		await interaction?.deferReply({ ephemeral: true })
@@ -40,12 +40,4 @@ module.exports = {
     }
   }
 }
-/**
-  * @INFO
-  * Bot Coded by Tomato#6966 | https://github?.com/Tomato6966/Discord-Js-Handler-Template
-  * @INFO
-  * Work for Milrato Development | https://milrato.eu
-  * @INFO
-  * Please mention Him / Milrato Development, when using this Code!
-  * @INFO
-*/
+

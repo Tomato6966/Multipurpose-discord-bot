@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure, dbRemove
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-language",
@@ -18,9 +18,9 @@ module.exports = {
   description: "Enable + Change the maximum Percent of UPPERCASE (caps) inside of a Message",
   memberpermissions: ["ADMINISTRATOR"],
   type: "info",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, Tls) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    let ls = Tls;
     
     try {
       let languages = {
@@ -32,7 +32,8 @@ module.exports = {
         "in": "🇮🇳 India (Hindi)",
         "nl": "🇳🇱 Dutch",
         "tr": "🇹🇷 Turkish",
-        "ir": "🇮🇷 Iran"
+        "ir": "🇮🇷 Iran",
+        "ru": "🇷🇺 Russian"
       }
       
       //function to handle true/false
@@ -80,9 +81,9 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor("Language System Setup", 
+          .setAuthor(client.getAuthor("Language System Setup", 
           "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/flag-united-kingdom_1f1ec-1f1e7.png",
-          "https://discord.gg/milrato")
+          "http://discord.gg/7PdChsBGKd"))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-language"]["variable1"]))
         let used1 = false;
         //send the menu msg
@@ -92,17 +93,17 @@ module.exports = {
           let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
           let menuoptionindex = menuoptions.findIndex(v => v.value == menu?.values[0])
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-language"]["variable2"]))
-          menu?.deferUpdate(); used1 = true;
+          client.disableComponentMessage(menu); used1 = true;
           handle_the_picks(menuoptionindex, menuoptiondata)
         }
         //Event
-        client.on('interactionCreate',  (menu) => {
+        client.on('interactionCreate', async (menu) => {
           if (menu?.message.id === menumsg.id) {
             if (menu?.user.id === cmduser.id) {
-              if(used1) return menu?.reply({content: `<:no:833101993668771842> You already selected something, this Selection is now disabled!`, ephemeral: true})
+              if(used1) return menu?.reply({content: `:x: You already selected something, this Selection is now disabled!`, ephemeral: true})
               menuselection(menu);
             }
-            else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+            else menu?.reply({content: `:x: You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
           }
         });
       }
@@ -120,12 +121,13 @@ module.exports = {
             let button_nl = new MessageButton().setStyle('PRIMARY').setCustomId('language_nl').setEmoji("🇳🇱").setLabel("Dutch").setDisabled(false)
             let button_tr = new MessageButton().setStyle('PRIMARY').setCustomId('language_tr').setEmoji("🇹🇷").setLabel("Turkish").setDisabled(false)
             let button_ir = new MessageButton().setStyle('PRIMARY').setCustomId('language_ir').setEmoji("🇮🇷").setLabel("Iran").setDisabled(false)
+            let button_ru = new MessageButton().setStyle('PRIMARY').setCustomId('language_ru').setEmoji("🇷🇺").setLabel("Russian").setDisabled(false)
             
 
         let buttonRow1 = new MessageActionRow()
-          .addComponents(button_en, button_de, /*button_fr, button_it, button_sp*/)
+          .addComponents(button_en,/* button_de, /*button_fr, button_it, button_sp*/)
         let buttonRow2 = new MessageActionRow()
-          .addComponents([button_ae, /*button_nl, button_tr, button_ir*/])
+          .addComponents([button_ru, /* button_ae, /*button_nl, button_tr, button_ir*/])
             let allbuttons = [buttonRow1, buttonRow2]
             //Send message with buttons
             let helpmsg = await message.reply({   
@@ -147,24 +149,25 @@ module.exports = {
             button_nl = new MessageButton().setStyle('PRIMARY').setCustomId('language_nl').setEmoji("🇳🇱").setLabel("Dutch").setDisabled(true)
             button_tr = new MessageButton().setStyle('PRIMARY').setCustomId('language_tr').setEmoji("🇹🇷").setLabel("Turkish").setDisabled(true)
             button_ir = new MessageButton().setStyle('PRIMARY').setCustomId('language_ir').setEmoji("🇮🇷").setLabel("Iran").setDisabled(true)
+            button_ru = new MessageButton().setStyle('PRIMARY').setCustomId('language_ru').setEmoji("🇮🇷").setLabel("Russian").setDisabled(true)
             buttonRow1 = new MessageActionRow()
             .addComponents(button_en, button_de, /*button_fr, button_it, button_sp*/)
             buttonRow2 = new MessageActionRow()
               .addComponents([button_ae, /*button_nl, button_tr, button_ir*/])
             let alldisabledbuttons = [buttonRow1, buttonRow2] 
             //create a collector for the thinggy
-            const collector = helpmsg.createMessageComponentCollector({filter: (i) => i?.isButton() && i?.user && i?.message.author.id == client.user.id, time: 180e3 }); //collector for 5 seconds
+            const collector = helpmsg.createMessageComponentCollector({filter: (i) => i?.isButton() && i?.user && i?.message.author?.id == client.user.id, time: 180e3 }); //collector for 5 seconds
             //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
             var edited = false; 
             let currentPage = 0;
             collector.on('collect', async b => {
-                if(b?.user.id !== message.author.id)
-                  return b?.reply(`<:no:833101993668771842> **Only the one who typed ${prefix}setup-language is allowed to react!**`, true)
-                if(b?.user.id == message.author.id && b?.message.id == helpmsg.id && b?.customId.includes("language_")){
+                if(b?.user.id !== message.author?.id)
+                  return b?.reply(`:x: **Only the one who typed ${prefix}setup-language is allowed to react!**`, true)
+                if(b?.user.id == message.author?.id && b?.message.id == helpmsg.id && b?.customId.includes("language_")){
                   b?.deferUpdate();
                   console.log(b?.user.id)
                   let lang = b?.customId.replace("language_", "")
-                  client.settings.set(message.guild.id, lang, "language");
+                  await client.settings.set(message.guild.id+".language", lang);
                   message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-language"]["variable5"]))
                     .setColor(es.color)
@@ -189,7 +192,7 @@ module.exports = {
             return;
           }
           case 1: {
-            client.settings.set(message.guild.id, "en", "language");
+            await client.settings.set(message.guild.id+".language", "en");
             return message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-language"]["variable6"]))
               .setColor(es.color)
@@ -197,7 +200,7 @@ module.exports = {
             });
           }
           case 2: {
-            let thesettings = client.settings.get(message.guild.id, `language`)
+            let thesettings = await client.settings.get(message.guild.id+`.language`)
             return message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-language"]["variable7"]))
               .setColor(es.color)
@@ -221,12 +224,4 @@ module.exports = {
     }
   },
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

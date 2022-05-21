@@ -15,14 +15,15 @@ module.exports = async (client, message, args, type, slashCommand = false, extra
   
   //just visual for the console
   
-  ee = client.settings.get(message.guild.id, "embed")
-  var es = client.settings.get(message.guild.id, "embed")
-  if(!client.settings.has(message.guild.id, "language")) client.settings.ensure(message.guild.id, { language: "en" });
-  let ls = client.settings.get(message.guild.id, "language");
+  let settings = client.settings.get(message.guild.id);
+  let es = settings.embed || ee
+  let ls = settings.language || "en";
+  ee = es
 
   let {
     channel
   } = message.member.voice;
+  if(!channel) return
   let botchannel = message.guild.me.voice.channel;
   const permissions = channel.permissionsFor(client.user);
 
@@ -53,8 +54,8 @@ module.exports = async (client, message, args, type, slashCommand = false, extra
     ]}).catch((e)=>console.log(String(e).grey));
   }
   if(!botchannel && channel.userLimit != 0 && channel.full){
-    if(slashCommand)  return slashCommand.reply({embeds: [new MessageEmbed().setTitle(":x: Your Voice Channel is full!").setColor(es.wrongcolor).setFooter(client.getFooter(es))]}).catch(()=>{});
-    return message.reply({embeds: [new MessageEmbed().setTitle(":x: Your Voice Channel is full!").setColor(es.wrongcolor).setFooter(client.getFooter(es))]}).catch(()=>{});
+    if(slashCommand)  return slashCommand.reply({embeds: [new MessageEmbed().setTitle(":x: Your Voice Channel is full!").setColor(es.wrongcolor).setFooter(client.getFooter(es))]}).catch(() => null);
+    return message.reply({embeds: [new MessageEmbed().setTitle(":x: Your Voice Channel is full!").setColor(es.wrongcolor).setFooter(client.getFooter(es))]}).catch(() => null);
   }
   if (method[0] === "song")
     require("./playermanagers/song")(client, message, args, type, slashCommand, extras); 
@@ -84,12 +85,4 @@ module.exports = async (client, message, args, type, slashCommand = false, extra
     ]}).catch((e)=>console.log(String(e).grey));
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

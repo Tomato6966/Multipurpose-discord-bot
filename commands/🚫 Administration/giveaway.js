@@ -1,10 +1,10 @@
 const Discord = require("discord.js");
 const {MessageEmbed, Permissions} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`)
+const config = require(`../../botconfig/config.json`)
 const ms = require("ms");
 const {
     databasing, swap_pages
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 module.exports = {
     name: "giveaway",
     aliases: ["g"],
@@ -12,11 +12,11 @@ module.exports = {
     description: "Giveaway manager",
     usage: "giveaway <start/end/reroll/edit/delete/list>",
     type: "server",
-    run: async (client, message, args, cmduser, text, prefix) => {
+    run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-        let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        let adminroles = client.settings.get(message.guild.id, "adminroles")
-        let cmdroles = client.settings.get(message.guild.id, "cmdadminroles.giveaway")
+        
+        let adminroles = GuildSettings?.adminroles || [];
+        let cmdroles = GuildSettings?.cmdadminroles?.giveaway || [];
         var cmdrole = []
         if (cmdroles.length > 0) {
             for (const r of cmdroles) {
@@ -25,13 +25,16 @@ module.exports = {
                 } else if (message.guild.members.cache.get(r)) {
                     cmdrole.push(` | <@${r}>`)
                 } else {
-                    
-                    //console.log(r)
-                    client.settings.remove(message.guild.id, r, `cmdadminroles.giveaway`)
+                    const File = `giveaway`;
+                    let index = GuildSettings && GuildSettings.cmdadminroles && typeof GuildSettings.cmdadminroles == "object" ? GuildSettings.cmdadminroles[File]?.indexOf(r) || -1 : -1;
+                    if(index > -1) {
+                      GuildSettings.cmdadminroles[File].splice(index, 1);
+                      client.settings.set(`${message.guild.id}.cmdadminroles`, GuildSettings.cmdadminroles)
+                    }
                 }
             }
         }
-        if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author.id) && !message.member.permissions.has([Permissions.FLAGS.ADMINISTRATOR]))
+        if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author?.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author?.id) && !message.member?.permissions?.has([Permissions.FLAGS.ADMINISTRATOR]))
             return message.reply({embeds : [new MessageEmbed()
                 .setColor(es.wrongcolor)
                 .setFooter(client.getFooter(es))
@@ -63,7 +66,7 @@ module.exports = {
 > \`${prefix}giveaway winner <G-Id>\`
 > This will send the winner(s) of the Giveaway, received from the Database`)
         ]})
-        var originalowner = message.author.id
+        var originalowner = message.author?.id
         if (args[0].toLowerCase() === "start") {
             try{
                 let giveawayChannel;
@@ -91,7 +94,7 @@ module.exports = {
                 var collected = await message.channel.awaitMessages({filter: m=>m.author.id == originalowner,  max: 1, time: 60e3, errors: ['time'] })
                 gargs = collected.first().content.split("+");
                 giveawayDuration = 0;
-                for(const a of gargs){
+                for await (const a of gargs){
                     giveawayDuration += ms(a.split(" ").join(""))
                 }
                 if(!giveawayDuration || isNaN(giveawayDuration)) throw { message: "You added a not valid Time!" };
@@ -126,14 +129,14 @@ module.exports = {
                 let options = {
                     time: giveawayDuration,
                     duration: giveawayDuration,
-                    prize: `<a:Gift:853993605868683285> ${giveawayPrize} <a:Gift:853993605868683285>`,
+                    prize: `:package: ${giveawayPrize} :package:`,
                     winnerCount: giveawayNumberWinners,
                     hostedBy: message.author,
                     thumbnail: es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null,
                     botsCanWin: false,
                     embedColor: require("discord.js").Util.resolveColor(es.color) ? require("discord.js").Util.resolveColor(es.color) : 3932049,
                     embedColorEnd: require("discord.js").Util.resolveColor(es.wrongcolor) ? require("discord.js").Util.resolveColor(es.wrongcolor) : 16731451,
-                    reaction: '867721863151747092',
+                    reaction: '943873660580692038',
                     lastChance: {
                         enabled: true,
                         content: '⚠️ **LAST CHANCE TO ENTER!** ⚠️',
@@ -148,14 +151,14 @@ module.exports = {
                     },
                     bonusEntries: [],
                     messages: {
-                        inviteToParticipate: "***React with <a:Tada_Yellow:867721863151747092> to participate!***\n",
+                        inviteToParticipate: "***React with <a:Tada_purple:943873660580692038> to participate!***\n",
                         drawing: "> Ends: {timestamp}\n",
                         hostedBy: "**Hosted by:** {this.hostedBy}",
-                        dropMessage: "Be the first to react with <a:Tada_Yellow:867721863151747092>",
+                        dropMessage: "Be the first to react with <a:Tada_purple:943873660580692038>",
                         noWinner: "\n**Giveaway cancelled!**\n> No valid participations. :cry:",
                         endedAt: "Ends at", 
-                        giveaway: '<a:Tada_Yellow:867721863151747092> **GIVEAWAY STARTED** <a:Tada_Yellow:867721863151747092>',
-                        giveawayEnded: '<a:Tada_Green:867721862858539048> **GIVEAWAY ENDED** <a:Tada_Green:867721862858539048>',
+                        giveaway: '<a:Tada_purple:943873660580692038> **GIVEAWAY STARTED** <a:Tada_purple:943873660580692038>',
+                        giveawayEnded: ':briefcase: **GIVEAWAY ENDED** :briefcase:',
                         winMessage: '**Congrats** {winners}!\n> You won **{this.prize}**!\n> **Jump:** {this.messageURL}\nHosted by: {this.hostedBy}',
                         embedFooter: '{this.winnerCount} Winner{this.winnerCount > 1 ? "s" : ""}'
                     },
@@ -256,7 +259,7 @@ module.exports = {
             client.giveawaysManager.edit(giveaway.messageId, {
                     setEndTimestamp: Date.now()
                 })
-                .then(() => {
+                .then(async () => {
                     message.reply({content : "Giveaway will end in less then 10 Seconds!"});
                 })
                 .catch((e) => {
@@ -280,7 +283,7 @@ module.exports = {
                 return message.reply({content : eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable34"])});
             }
             client.giveawaysManager.reroll(giveaway.messageId, { winnerCount: !isNaN(args[1]) ? Number(args[1]) : 1})
-                .then(() => {
+                .then(async () => {
                     message.reply({content : eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable35"]) + "Tipp!\nAdd the amount of reroll winners to the end!"});
                 })
                 .catch((e) => {
@@ -288,7 +291,7 @@ module.exports = {
                         message.reply(eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable36"]));
                     } else {
                         console.error(e);
-                        message.reply({content : '<:no:833101993668771842> **An error occured...**```' + String(e.message).substring(0, 1900) + "```"});
+                        message.reply({content : ':x: **An error occured...**```' + String(e.message).substring(0, 1900) + "```"});
                     }
                 });
 
@@ -303,7 +306,7 @@ module.exports = {
                 return message.reply({content : eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable34"])});
             }
             client.giveawaysManager.pause(giveaway.messageId)
-                .then(() => {
+                .then(async () => {
                     message.reply( { content : "Successfully! Paused the Giveaway" } );
                 })
                 .catch((e) => {
@@ -311,7 +314,7 @@ module.exports = {
                         message.reply(eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable36"]));
                     } else {
                         console.error(e);
-                        message.reply({content : '<:no:833101993668771842> **An error occured...**```' + String(e.message).substring(0, 1900) + "```"});
+                        message.reply({content : ':x: **An error occured...**```' + String(e.message).substring(0, 1900) + "```"});
                     }
                 });
         } else if (args[0].toLowerCase() === "unpause" || args[0].toLowerCase() === "resume") {
@@ -326,7 +329,7 @@ module.exports = {
                 return message.reply({content : eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable34"])});
             }
             client.giveawaysManager.unpause(giveaway.messageId)
-                .then(() => {
+                .then(async () => {
                     message.reply( { content : "Successfully! Unpaused the Giveaway!" } );
                 })
                 .catch((e) => {
@@ -334,7 +337,7 @@ module.exports = {
                         message.reply(eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable36"]));
                     } else {
                         console.error(e);
-                        message.reply({content : '<:no:833101993668771842> **An error occured...**```' + String(e.message).substring(0, 1900) + "```"});
+                        message.reply({content : ':x: **An error occured...**```' + String(e.message).substring(0, 1900) + "```"});
                     }
                 });
         } else if (args[0].toLowerCase() === "edit") {
@@ -351,7 +354,7 @@ module.exports = {
                 newWinnerCount: 3,
                 newPrize: giveawayPrize,
                 addTime: 5000
-            }).then(() => {
+            }).then(async () => {
                 // here, we can calculate the time after which we are sure that the lib will update the giveaway
                 const numberOfSecondsMax = client.giveawaysManager.options.updateCountdownEvery / 1000;
                 message.reply({content : eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable39"])});
@@ -364,7 +367,7 @@ module.exports = {
             if (!messageId) {
                 return message.reply({content : eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable41"])});
             }
-            client.giveawaysManager.delete(messageId).then(() => {
+            client.giveawaysManager.delete(messageId).then(async () => {
                     message.reply({content : eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable42"])});
                 })
                 .catch((err) => {
@@ -400,7 +403,7 @@ module.exports = {
             if (!args[0]) {
                 return message.reply({content : `:x: The right usage of this Command is: \`${prefix}giveaway winner <GiveawayId>\` ... note that GiveawayId is the MessageId of the (Embed) Giveaway-Message`});
             }
-            let giveaway = client.giveawayDB.find((g) => g.messageId === args[0]);
+            let giveaway = client.giveawayDB.all().then(d => d.find((g) => g.data.messageId === args[0])?.data);
 
             if (!giveaway) {
                 return message.reply({content : ":x: Could not find Data of this Giveaway"});
@@ -438,20 +441,20 @@ module.exports = {
             ]})
         }
 
-        if(client.settings.get(message.guild.id, `adminlog`) != "no"){
+        if(GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no"){
             try{
-              var channel = message.guild.channels.cache.get(client.settings.get(message.guild.id, `adminlog`))
-              if(!channel) return client.settings.set(message.guild.id, "no", `adminlog`);
+              var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
+              if(!channel) return client.settings.set(`${message.guild.id}.adminlog`, "no");
               channel.send({embeds :[new MessageEmbed()
                 .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-                .setAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({dynamic: true}))
+                .setAuthor(client.getAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({dynamic: true})))
                 .setDescription(eval(client.la[ls]["cmds"]["administration"]["giveaway"]["variable49"]))
                 .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
                .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-                .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+                .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
               ]})
             }catch (e){
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             }
           } 
     }

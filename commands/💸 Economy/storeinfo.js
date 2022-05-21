@@ -1,8 +1,8 @@
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { parseMilliseconds, duration, GetUser, nFormatter, ensure_economy_user } = require(`${process.cwd()}/handlers/functions`)
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { parseMilliseconds, duration, GetUser, nFormatter, ensure_economy_user } = require(`../../handlers/functions`)
 module.exports = {
   name: "storeinfo",
   category: "💸 Economy",
@@ -10,10 +10,10 @@ module.exports = {
   description: "Shows the Store",
   usage: "storeinfo",
   type: "info",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if(!client.settings.get(message.guild.id, "ECONOMY")){
+    
+    if(GuildSettings.ECONOMY === false){
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -27,8 +27,8 @@ module.exports = {
     if(user.bot) return message.reply(eval(client.la[ls]["cmds"]["economy"]["storeinfo"]["variable2"]))
     
       //ensure the economy data
-      ensure_economy_user(client, message.guild.id, user.id)
-    const data = client.economy.get(`${message.guild.id}-${user.id}`)
+      await ensure_economy_user(client, message.guild.id, user.id)
+    const data = await client.economy.get(`${message.guild.id}_${user.id}`)
     var items = 0;
     var itemsvalue = 0;
     for (const itemarray in data.items){
@@ -60,7 +60,7 @@ module.exports = {
       }
       itemsvalue += prize * data.items[`${itemarray}`];
     }
-    const p2b = (costs) => (Number(costs) > Number(data.balance)) ? "<:no:833101993668771842>" : "<a:yes:833101995723194437>";
+    const p2b = (costs) => (Number(costs) > Number(data.balance)) ? ":x:" : ":white_check_mark:";
     //return some message!
     return message.reply({embeds: [new MessageEmbed()
       .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
@@ -107,12 +107,4 @@ module.exports = {
   }
 }
 };
-/**
-* @INFO
-* Bot Coded by Tomato#6966 | https://discord.gg/milrato
-* @INFO
-* Work for Milrato Development | https://milrato.eu
-* @INFO
-* Please mention him / Milrato Development, when using this Code!
-* @INFO
-*/
+

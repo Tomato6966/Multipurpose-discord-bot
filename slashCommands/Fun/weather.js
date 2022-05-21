@@ -18,9 +18,10 @@ module.exports = {
     { "String": { name: "city", description: "What city do you want to find the weather of?", required: true } }, //to use in the code: interacton.getString("title")
   ],
     run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+    let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     const unit = interaction?.options.getString("unit");
     const city = interaction?.options.getString("city");
-    if (!client.settings.get(message.guild.id, "FUN")) {
+    if (GuildSettings.FUN === false) {
       return interaction?.reply({
         embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
@@ -40,7 +41,7 @@ module.exports = {
       search: city,
       degreeType: degree
     }, function (e, result) {
-      if (e) return console.log(e.stack ? String(e.stack).grey : String(e).grey);
+      if (e) return console.error(e);
         let embed = new MessageEmbed()
           .setColor(es.color)
           .setFooter(client.getFooter(es))
@@ -57,12 +58,4 @@ module.exports = {
     });
   },
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

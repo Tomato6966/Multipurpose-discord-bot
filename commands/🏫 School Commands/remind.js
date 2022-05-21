@@ -5,9 +5,9 @@ const {
   MessageEmbed,
   MessageAttachment
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const { duration } = require('../../handlers/functions');
 module.exports = {
   name: "remind",
@@ -16,15 +16,15 @@ module.exports = {
   description: "Reminds you at a specific day for something",
   usage: "remind TIME ++ TEXT",
   type: "time",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if(!client.settings.get(message.guild.id, "SCHOOL")){
+    
+    if(!GuildSettings.SCHOOL){
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.disabled.title)
-        .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+        .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
       ]});
     }
     if(!args[0])
@@ -38,7 +38,7 @@ module.exports = {
     let time = 0;
       try {
         const timeargs = newargs[0].trim().split(" ")
-        for(const t of timeargs){
+        for await (const t of timeargs){
           time += ms(t);
           console.log(t, ms(t))
         }
@@ -74,7 +74,7 @@ module.exports = {
       .setTitle(eval(client.la[ls]["cmds"]["schoolcommands"]["remind"]["variable10"]))
       .setDescription(eval(client.la[ls]["cmds"]["schoolcommands"]["remind"]["variable11"]))
     ]});
-    client.afkDB.push("REMIND", 
+    await client.afkDB.push("REMIND.REMIND", 
     {
       at: moment().format("DD/MM/YYYY HH:mm"),
       time: returntime,
@@ -82,9 +82,9 @@ module.exports = {
       content: content,
       channel: message.channel.id,
       guild: message.guild.id,
-      user: message.author.id,
+      user: message.author?.id,
       string_of_time: string_of_time,
-    }, "REMIND")
+    })
   }
 
 };

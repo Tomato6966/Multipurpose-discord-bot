@@ -16,6 +16,7 @@ module.exports = {
 		//{"StringChoices": { name: "what_ping", description: "What Ping do you want to get?", required: true, choices: [["Bot", "botping"], ["Discord Api", "api"]] }}, //here the second array input MUST BE A STRING // TO USE IN THE CODE: interacton.getString("what_ping")
   ],
   run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+    let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     //things u can directly access in an interaction!
 		let { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     let { guild } = member;
@@ -39,15 +40,15 @@ module.exports = {
         })
       }
       let embed = new MessageEmbed()
-      .setAuthor(handlemsg(client.la[ls].cmds.info.avatar.author, {
+      .setAuthor(client.getAuthor(handlemsg(client.la[ls].cmds.info.avatar.author, {
         usertag: user.tag
       }), user.displayAvatarURL({
         dynamic: true
-      }), "https://discord.gg/milrato")
+      }), "http://discord.gg/7PdChsBGKd"))
       .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-      .addField("<:arrow:832598861813776394> PNG", `[\`LINK\`](${user.displayAvatarURL({format: "png"})})`, true)
-      .addField("<:arrow:832598861813776394> JPEG", `[\`LINK\`](${user.displayAvatarURL({format: "jpg"})})`, true)
-      .addField("<:arrow:832598861813776394> WEBP", `[\`LINK\`](${user.displayAvatarURL({format: "webp"})})`, true)
+      .addField("<a:arrow:943027097348227073> PNG", `[\`LINK\`](${user.displayAvatarURL({format: "png"})})`, true)
+      .addField("<a:arrow:943027097348227073> JPEG", `[\`LINK\`](${user.displayAvatarURL({format: "jpg"})})`, true)
+      .addField("<a:arrow:943027097348227073> WEBP", `[\`LINK\`](${user.displayAvatarURL({format: "webp"})})`, true)
       .setURL(user.displayAvatarURL({
         dynamic: true
       }))
@@ -68,12 +69,4 @@ module.exports = {
     }
   }
 }
-/*
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

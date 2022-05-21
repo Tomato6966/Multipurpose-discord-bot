@@ -2,9 +2,9 @@ const Discord = require("discord.js");
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const moment = require('moment');
 const {
   databasing,
@@ -16,7 +16,7 @@ const {
   MessageButton,
   MessageActionRow
 } = require('discord.js')
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+const { handlemsg } = require(`../../handlers/functions`);
 module.exports = {
   name: "youtubeinfo",
   aliases: ["ytinfo", "youtubeuserinfo", "ytuserinfo", "ytuser", "youtubeuser"],
@@ -24,9 +24,9 @@ module.exports = {
   description: "Get information about a Youtube Channel-Link",
   usage: "youtubeinfo <YOUTUBECHANNELLINK>",
   type: "util",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       let button_back = new MessageButton().setStyle('PRIMARY').setCustomId('1').setLabel("<< Back")
       let button_forward = new MessageButton().setStyle('PRIMARY').setCustomId('3').setLabel('Forward >>')
@@ -54,7 +54,7 @@ module.exports = {
         ]});
       }
       let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed().setColor(es.color)
-        .setAuthor(client.la[ls].cmds.info.youtubeinfo.loading, "https://cdn.discordapp.com/emojis/756773010123522058.gif", "https://discord.gg/milrato")]})
+        .setAuthor(client.la[ls].cmds.info.youtubeinfo.loading, "https://cdn.discordapp.com/emojis/756773010123522058.gif", "http://discord.gg/7PdChsBGKd")]})
       let Channel = await channelInfo(url)
       let embed = new Discord.MessageEmbed()
         .setTitle(Channel.name)
@@ -89,7 +89,7 @@ module.exports = {
         components: allbuttons
       })
       //create a collector for the thinggy
-      const collector = pagemsg.createMessageComponentCollector({filter: (i) => i?.isButton() && i?.user && i?.user.id == cmduser.id && i?.message.author.id == client.user.id,
+      const collector = pagemsg.createMessageComponentCollector({filter: (i) => i?.isButton() && i?.user && i?.user.id == cmduser.id && i?.message.author?.id == client.user.id,
         time: 180e3
       }); //collector for 5 seconds
       //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
@@ -97,7 +97,7 @@ module.exports = {
       var embeds = [embed, embed2]
       let currentPage = 0;
       collector.on('collect', async b => {
-        if (b?.user.id !== message.author.id)
+        if (b?.user.id !== message.author?.id)
           return b?.reply(handlemsg(client.la[ls].cmds.info.youtubeinfo.error2, {
             prefix: prefix
           }))
@@ -152,12 +152,4 @@ module.exports = {
     return;
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

@@ -1,6 +1,6 @@
 /*const { MessageEmbed } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
 const emoji = require("../../botconfig/emojis.json");
 module.exports = {
     name: "togglerequestonly",
@@ -9,9 +9,9 @@ module.exports = {
     description: "Toggles if u are allowed to use MUSIC and FILTER Comamnds in different channels too! Default: true == Not allowed",
     usage: "togglerequestonly",
     memberpermissions: ["ADMINISTRATOR"],
-    run: async (client, message, args, cmduser, text, prefix) => {
+    run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-      let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+      
     try{
       
       //set the new prefix
@@ -34,12 +34,4 @@ module.exports = {
     }
   }
 };*/
-/**
-  * @INFO
-  * Bot Coded by Tomato#6966 | https://discord.gg/milrato
-  * @INFO
-  * Work for Milrato Development | https://milrato.eu
-  * @INFO
-  * Please mention him / Milrato Development, when using this Code!
-  * @INFO
-*/
+

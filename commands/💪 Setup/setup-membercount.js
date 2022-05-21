@@ -2,12 +2,12 @@ var {
   MessageEmbed, MessageSelectMenu, MessageActionRow
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure
+} = require(`../../handlers/functions`);
 module.exports = {
   name: "setup-membercount",
   category: "💪 Setup",
@@ -17,15 +17,15 @@ module.exports = {
   description: "This Setup allows you to specify a Channel which Name should be renamed every 10 Minutes to a Member Counter of Bots, Users, or Members",
   memberpermissions: ["ADMINISTRATOR"],
   type: "system",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+    
     //ensure the database
     let ensureobject = { }
-    for(let i = 1; i <= 25; i++){
+    for (let i = 1; i <= 25; i++){
       ensureobject[`channel${i}`] = "no";
       ensureobject[`message${i}`] = "🗣 Members: {member}";
     }
-    client.setups.ensure(message.guild.id,ensureobject,"membercount");
+    await dbEnsure(client.setups, message.guild.id+".membercount", ensureobject);
     try {
 
       let NumberEmojiIds = getNumberEmojis().map(emoji => emoji?.replace(">", "").split(":")[2])
@@ -33,7 +33,7 @@ module.exports = {
       async function first_layer(){
         
         let menuoptions = [ ]
-        for(let i = 1; i <= 25; i++){
+        for (let i = 1; i <= 25; i++){
           menuoptions.push({
             value: `${i} Member Counter`,
             description: `Manage/Edit the ${i}. Member Counter`,
@@ -60,7 +60,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
         .setColor(es.color)
-        .setAuthor('Member Counter Setup', 'https://cdn.discordapp.com/emojis/891040423605321778.png?size=96', 'https://discord.gg/milrato')
+        .setAuthor('Member Counter Setup', 'https://cdn.discordapp.com/emojis/891040423605321778.png?size=96', 'http://discord.gg/7PdChsBGKd')
         .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         let used1 = false;
         //send the menu msg
@@ -69,29 +69,29 @@ module.exports = {
         function menuselection(menu) {
           let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
           let SetupNumber = menu?.values[0].split(" ")[0]
           used1 = true;
           second_layer(SetupNumber, menuoptiondata)
         }
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
             menuselection(menu)
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `:x: You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `:white_check_mark: **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
       async function second_layer(SetupNumber, menuoptiondata){
@@ -111,10 +111,10 @@ module.exports = {
             if(!message) return message.reply( "NO MESSAGE SENT")
             let channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content);
             if(channel){
-              var settts = client.setups.get(message.guild.id, `membercount`);
-              let name = client.setups.get(message.guild.id, channel.id, `membercount.message${SetupNumber}`)
+              var settts = await client.setups.get(`${message.guild.id}.membercount`);
+              let name = await client.setups.get(`${message.guild.id}.membercount.message${SetupNumber}`, channel.id)
               let curmessage = name || channel.name;
-              client.setups.set(message.guild.id, channel.id, `membercount.channel${SetupNumber}`)
+              await client.setups.set(`${message.guild.id}.membercount.channel${SetupNumber}`, channel.id)
               let temptype = SetupNumber;
               message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-membercount"]["variable8"]))
@@ -174,7 +174,7 @@ module.exports = {
                   let name = message.content;
                   if(name && name.length <= 32){
                     let guild = message.guild;
-                    client.setups.set(message.guild.id, name, `membercount.message${SetupNumber}`)
+                    await client.setups.set(`${message.guild.id}.membercount.message${SetupNumber}`, name, )
                     channel.setName(String(name)
             
                     .replace(/{user}/i, guild.memberCount)
@@ -295,7 +295,7 @@ module.exports = {
             }
           })
           .catch(e => {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
             return message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-membercount"]["variable12"]))
               .setColor(es.wrongcolor)
@@ -314,15 +314,7 @@ module.exports = {
     }
   },
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://github?.com/Tomato6966/discord-js-lavalink-Music-Bot-erela-js
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */
+
 function getNumberEmojis() {
   return [
     "<:Number_0:843943149915078696>",

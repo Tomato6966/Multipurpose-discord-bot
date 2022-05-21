@@ -1,33 +1,33 @@
 {
-    "token": "GET from: https://discord.com/developers/applications",
-    "prefix": "//",
+    "token": "",
+    "prefix": "mx",
     "ownerIDS": [
-        "442355791412854784"
+        "410419863304273930"
     ],
-    "fnbr": "GET from: https://fnbr.co",
-    "fortnitetracker": "GET from: https://fortnitetracker.com",
-    "memer_api": "GET from: https://discord.gg/Mc2FudJkgP",
+    "fnbr": "DISABLED",
+    "fortnitetracker": "",
+    "memer_api": "",
     "status": {
-        "text": "{prefix}help | on {guildcount} Servers, with {membercount} Members | Played: {songsplayed} Songs",
-        "text2": "By: discord.gg/dcdev",
-        "type": "PLAYING",
-        "url": "https://twitch.tv/milratodiscordbot"
+        "text": "{prefix}help || {songsplayed} songs played",
+        "text2": "{prefix}help || {usedcommands} cmds used",
+        "type1": "PLAYING",
+        "type2": "LISTENING",
+        "url": "https://twitch.tv/"
     },
     "clientsettings": {
         "nodes": [
             {
                 "host": "localhost",
                 "port": 2333,
-                "password": "youshallnotpass"
+                "password": "marshal"
             }
         ]
     },
     "spotify": {
-        "clientSecret": "GET from: https://developers.spotify.com",
-        "clientID": "GET from: https://developers.spotify.com"
+        "clientSecret": "",
+        "clientID": ""
     },
     "settings": {
-        "COMMENT": "time_delay 0 === insta leave",
         "leaveOnEmpty_Channel": {
             "enabled": true,
             "time_delay": 30000
@@ -39,9 +39,9 @@
         "selfDeaf": true
     },
     "lyricssettings": {
-        "lyrics_finder": true,
+        "lyrics_finder": false,
         "ksoft_api": {
-            "use_this_instead": true,
+            "use_this_instead": false,
             "api_key": "DISABLED"
         }
     }

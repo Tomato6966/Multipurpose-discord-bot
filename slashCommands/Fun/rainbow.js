@@ -16,8 +16,9 @@ module.exports = {
     { "User": { name: "which_user", description: "From Which User do you want to get ... ?", required: false } }, //to use in the code: interacton.getUser("ping_a_user")
   ],
   run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+    let GuildSettings = client.settings.get(`${interaction.guild.id}`)
 
-    if (!client.settings.get(message.guild.id, "FUN")) {
+    if (GuildSettings.FUN === false) {
       return interaction?.reply({
         embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
@@ -42,15 +43,7 @@ module.exports = {
         .setFooter(client.getFooter(es))
         .setImage("attachment://rainbow.png")
       ], files: [attachment], ephemeral: true
-    }).catch(() => {})
+    }).catch(() => null)
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

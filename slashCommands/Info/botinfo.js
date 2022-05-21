@@ -5,21 +5,21 @@ let cpuStat = require("cpu-stat");
 const config = require(`${process.cwd()}/botconfig/config.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { duration, handlemsg } = require(`${process.cwd()}/handlers/functions`);
+const { duration, handlemsg, nFormatter } = require(`${process.cwd()}/handlers/functions`);
 const { connected } = require("process");
 module.exports = {
     name: "botinfo",
     description: "Sends detailed info about the client",
-    run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+    run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings, cluster, shards, guilds, members, ram, rssRam, ping, dbPing, players, uptime) => {
     //things u can directly access in an interaction!
     const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;    
     try{
       let tempmsg = await interaction?.reply({embeds: [new Discord.MessageEmbed().setColor(es.color)
-      .setAuthor(client.la[ls].cmds.info.botinfo.loading, "https://cdn.discordapp.com/emojis/756773010123522058.gif", "https://discord.gg/milrato")], ephemeral: true})
+      .setAuthor(client.getAuthor(client.la[ls].cmds.info.botinfo.loading, "https://cdn.discordapp.com/emojis/756773010123522058.gif", "http://discord.gg/7PdChsBGKd"))], ephemeral: true})
       cpuStat.usagePercent(function (e, percent, seconds) {
           if (e) {
-              return console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              return console.error(e);
           }
           let connectedchannelsamount = 0;
           let guilds = client.guilds.cache.map((guild) => guild);
@@ -35,29 +35,22 @@ module.exports = {
           author: member.user,
           createdTimestamp
         }
+        let index = message.guild.shard.id;
         const botinfo = new Discord.MessageEmbed()
-            .setAuthor(client.user.tag + " Information", es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL(), `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`) 
+            .setAuthor(client.getAuthor(client.user.tag + " Information", es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL(), `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`)) 
             .setDescription(eval(client.la[ls]["cmds"]["info"]["botinfo"]["variable1"]))
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-            .addField(client.la[ls].cmds.info.botinfo.field1.title, handlemsg(client.la[ls].cmds.info.botinfo.field1.value, {totalGuilds: totalGuilds, totalMembers: totalMembers, connections: connectedchannelsamount, connectedchannelsamount: connectedchannelsamount}), true)
+            .addField(client.la[ls].cmds.info.botinfo.field1.title, `\`\`\`yml\n${handlemsg(client.la[ls].cmds.info.botinfo.field1.value, {guildsamm: `${nFormatter(totalGuilds, 2)}`, usersamm: `${nFormatter(totalMembers, 2)}`, connectedchannelsamount: `${connectedchannelsamount}`, clustersamm: `${client.cluster.count}`, shardsamm: `${client.cluster.info.TOTAL_SHARDS}`})}\`\`\``, true)
             .addField(client.la[ls].cmds.info.botinfo.field2.title, `\`\`\`yml\nNode.js: ${process.version}\nDiscord.js: v${Discord.version}\nEnmap: v5.8.4\`\`\``, true)
             .addField(client.la[ls].cmds.info.botinfo.field3.title, handlemsg(client.la[ls].cmds.info.botinfo.field3.value, {cpu: percent.toFixed(2), ram: (process.memoryUsage().heapUsed/1024/1024).toFixed(2)}))
-            .addField(client.la[ls].cmds.info.botinfo.field4.title, `\`\`\`yml\nName: Tomato#6966\nID: [442355791412854784]\`\`\``, true)
+            .addField(client.la[ls].cmds.info.botinfo.field4.title, `\`\`\`yml\nName: Cepheid#0001\nID: [410419863304273930]\`\`\``, true)
             .addField(client.la[ls].cmds.info.botinfo.field5.title, handlemsg(client.la[ls].cmds.info.botinfo.field5.value, {invitelink: `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`}))
-            .setFooter(client.getFooter(es));
-        interaction?.editReply({embeds: [botinfo], ephemeral: true});
+            .setFooter(client.getFooter(es) + ` ︲ You're on Cluster #${client.cluster.id} and Shard #${message.guild.shard.id}`, es.footericon);
+            interaction?.editReply({embeds: [botinfo], ephemeral: true});
       });
     } catch (e) {
         console.log(String(e.stack).grey.bgRed)
     }
   },
 };
-/**
-  * @INFO
-  * Bot Coded by Tomato#6966 | https://discord.gg/milrato
-  * @INFO
-  * Work for Milrato Development | https://milrato.eu
-  * @INFO
-  * Please mention him / Milrato Development, when using this Code!
-  * @INFO
-*/
+

@@ -1,49 +1,61 @@
-{  
-  "ILOVERADIO": [
-    "Standard https://streams.ilovemusic.de/iloveradio1.mp3",
-    "Dance https://streams.ilovemusic.de/iloveradio2.mp3",
-    "Hip-hop https://streams.ilovemusic.de/iloveradio3.mp3",
-    "Deutsch-Rap https://streams.ilovemusic.de/iloveradio6.mp3",
-    "X-Mas https://streams.ilovemusic.de/iloveradio8.mp3",
-    "Top-100-Charts https://streams.ilovemusic.de/iloveradio9.mp3",
-    "Us-Rap https://streams.ilovemusic.de/iloveradio13.mp3",
-    "Party https://streams.ilovemusic.de/iloveradio14.mp3",
-    "Greatest-Hits https://streams.ilovemusic.de/iloveradio16.mp3",
-    "Chill-Hop https://streams.ilovemusic.de/iloveradio17.mp3",
-    "Hard-Style https://streams.ilovemusic.de/iloveradio21.mp3",
-    "Workout https://streams.ilovemusic.de/iloveradio23.mp3",
-    "Monstercat https://streams.ilovemusic.de/iloveradio24.mp3",
-    "Remixes https://streams.ilovemusic.de/iloveradio25.mp3",
-    "Bass-HBZ https://streams.ilovemusic.de/iloveradio29.mp3"
-  ],
-  "REYFM": [
-    "ORIGINAL https://listen.reyfm.de/original_320kbps.mp3",
-    "NIGHTLIFE https://listen.reyfm.de/nightlife_320kbps.mp3",
-    "RAPROYAL https://listen.reyfm.de/raproyal_320kbps.mp3",
-    "USRAP https://listen.reyfm.de/usrap_320kbps.mp3",
-    "HITSONLY https://listen.reyfm.de/hitsonly_320kbps.mp3",
-    "GAMING https://listen.reyfm.de/gaming_320kbps.mp3",
-    "HOUSEPARTY https://listen.reyfm.de/houseparty_320kbps.mp3",
-    "CHILLOUT https://listen.reyfm.de/chillout_320kbps.mp3",
-    "LOFI https://listen.reyfm.de/lofi_320kbps.mp3",
-    "OLDSCHOOL https://listen.reyfm.de/oldschool_320kbps.mp3",
-    "MASHUP https://listen.reyfm.de/mashup_320kbps.mp3",
-    "CHARTS https://listen.reyfm.de/charts_320kbps.mp3",
-    "PARTYHARD https://listen.reyfm.de/partyhard_320kbps.mp3",
-    "BASS https://listen.reyfm.de/bass_320kbps.mp3",
-    "KPOP https://listen.reyfm.de/kpop_320kbps.mp3",
-    "XMAS https://listen.reyfm.de/xmas_320kbps.mp3"
-  ],
+{
+
+  "Radiostations": [
+      "Standard-Radio https://streams.ilovemusic.de/iloveradio14.mp3",
+      "Base-Radio.de https://baseradiode.stream.laut.fm/baseradiode",
+      "Chill-Radio https://streams.ilovemusic.de/iloveradio17.mp3",
+      "Dance-Radio https://streams.ilovemusic.de/iloveradio2.mp3",
+      "Deutsch-Rap-Radio https://streams.ilovemusic.de/iloveradio6.mp3",
+      "Greatest-hits-Radio https://streams.ilovemusic.de/iloveradio16.mp3",
+      "Hip-hop-Radio https://streams.ilovemusic.de/iloveradio3.mp3",
+      "Party-Radio https://streams.ilovemusic.de/iloveradio14.mp3",
+      "Us-Rap-Radio https://streams.ilovemusic.de/iloveradio13.mp3",
+      "X-Mas-Radio https://streams.ilovemusic.de/iloveradio8.mp3",
+      "Greatest-hits-Radio https://stream-mz.planetradio.co.uk/net2national.mp3", 
+      "Absolut-Radio http://icy-e-bab-02-gos.sharp-stream.com/absoluteradio.mp3",
+      "Absolut-70s-Radio http://ais.absoluteradio.co.uk/absolute70s.mp3",
+      "Absolut-80s-Radio http://ais.absoluteradio.co.uk/absolute80s.mp3",
+      "Absolut-90s-Radio http://ais.absoluteradio.co.uk/absolute90s.mp3",
+      "Absolut-2000s-Radio http://ais.absoluteradio.co.uk/absolute00s.mp3",
+      "Absolut-Classic-Rock http://icy-e-bab-04-cr.sharp-stream.com/absoluteclassicrock.mp3",
+  
+      "Top-Radio http://loadbalancing.topradio.be/topradio.mp3", 
+  
+      "88.6-Radio http://radio886.fluidstream.eu/886_live.mp3", 
+      "Hitradio-Ö3 http://mp3stream7.apasf.apa.at:8000/.mp3", 
+  
+      "NRJ-Radio http://cdn.nrjaudio.fm/audio1/fr/30001/mp3_128.mp3",
+      "Radio-France-Radio http://direct.fipradio.fr/live/fip-midfi.mp3",
+  
+      "Rai-Radio http://icestreaming.rai.it:80/1.mp3",
+      "Veronica-Radio http://icestreaming.rai.it:80/2.mp3",
+  
+      "ERR-Radio http://icecast.err.ee:80/vikerraadio.mp3",
+      "Tallin-Radio http://icecast.err.ee:80/raadiotallinn.mp3",
+  
+      "Color-Music-Radio http://icecast8.play.cz/color128.mp3",
+      "Helax-93.7-Radio http://ice.abradio.cz:8000/helax128.mp3",
+  
+      "Český-rozhlas-Radio http://icecast6.play.cz/cro2-128.mp3",
+      "Spin-Radio http://icecast4.play.cz/spin128.mp3",
+  
+      "BB-Radio http://icecast.omroep.nl/radio1-bb-mp3",
+      "538-Radio http://21223.live.streamtheworld.com/RADIO538.mp3",
+  
+      "radio90-cieszyn http://streams2.radio90.pl:8000/radio90_128kbps_stereo.mp3",
+      "Fama-Radio http://stream2.nadaje.com:8076/,stream.mp3"
+    ],
+
   "EU":{
     "United_Kingdom":[
-      "Greatest-hits https://stream-mz.planetradio.co.uk/net2national.mp3",
-      "Absolut http://icy-e-bab-02-gos.sharp-stream.com/absoluteradio.mp3",
-      "Absolut-70s http://ais.absoluteradio.co.uk/absolute70s.mp3",
-      "Absolut-80s http://ais.absoluteradio.co.uk/absolute80s.mp3",
-      "Absolut-90s http://ais.absoluteradio.co.uk/absolute90s.mp3",
-      "Absolut-2000s http://ais.absoluteradio.co.uk/absolute00s.mp3",
+      "Greatest-hits-Radio https://stream-mz.planetradio.co.uk/net2national.mp3", 
+      "Absolut-Radio http://icy-e-bab-02-gos.sharp-stream.com/absoluteradio.mp3",
+      "Absolut-70s-Radio http://ais.absoluteradio.co.uk/absolute70s.mp3",
+      "Absolut-80s-Radio http://ais.absoluteradio.co.uk/absolute80s.mp3",
+      "Absolut-90s-Radio http://ais.absoluteradio.co.uk/absolute90s.mp3",
+      "Absolut-2000s-Radio http://ais.absoluteradio.co.uk/absolute00s.mp3",
       "Absolut-Classic-Rock http://icy-e-bab-04-cr.sharp-stream.com/absoluteclassicrock.mp3",
-      "Variety-Online https://everestcast.shoutcastservices.com:1295/stream",
+      "Variety-Online-Radio https://everestcast.shoutcastservices.com:1295/stream",
       "BBC-World-Service http://sc11.iad.llnw.net/stream/bbcwssc_mp1_ws-eieuk_backup",
       "LBC-RADIO http://icecast.thisisdax.com/LBC973"
     ],
@@ -51,7 +63,7 @@
       "Hitradio-Ö3 https://orf-live.ors-shoutcast.at/oe3-q1a",
       "Radio-Arabella http://arabella.stream.kapper.net:8000/arabellavie",
       "ENERGY-Austria http://streaming.streema.com/listen-nrj",
-      "Radio-88.6 https://statics-v2.streema.com/static/audios/sample.ea78c3d52389.mp3",
+      "Radio-88.6 https://radio886.fluidstream.eu/886_hardrock.mp3",
       "Radio-Wien https://orf-live.ors-shoutcast.at/wie-q1a",
       "Njoy http://94.136.28.9:8005/njoyradio-hd",
       "Radio-Stephansdom http://radioklassikstephansdom.ice.infomaniak.ch/radioklassikstephansdom.mp3",
@@ -64,7 +76,7 @@
       "La-Classica http://stream.laclassica.be:8023/stream",
       "Joe-FM-Fm-96.7 http://playerservices.streamtheworld.com/api/livestream-redirect/JOE.mp3 ",
       "Instrumentals-Forever http://184.75.223.178:8151/stream/;",
-      "VRT http://icecast.vrtcdn.be/ra2vlb-high.mp3",
+      "VRT-Radio http://icecast.vrtcdn.be/ra2vlb-high.mp3",
       "Nostalgie-FM-102.9 http://nostalgiewhatafeeling.ice.infomaniak.ch/nostalgiewhatafeeling-128.mp3",
       "Studio-Brussel-FM-100.6 http://icecast.vrtcdn.be/stubru-high.mp3",
       "RTBF-Class http://radios.rtbf.be/classic21-128.mp3/;",
@@ -215,18 +227,6 @@
       "SR-P3-Stockholm http://http-live.sr.se/p3-aac-32",
       "Radio-Sydvast http://149.255.59.3:8049/stream/;"
     ],
-    "TURKEY":[
-      "fenomen http://fenomen.listenfenomen.com/fenomen/128/icecast.audio",
-      "kral http://46.20.3.204/",
-      "slowtürk https://radyo.duhnet.tv/slowturk?/;stream.mp3",
-      "kralpop http://46.20.3.201/;",
-      "halay http://37.247.98.8/stream/30/",
-      "fenomentürk http://fenomenturk.listenfenomen.com/fenomenturk/128/icecast.audio ",
-      "powertürk http://powerturkeniyiler.listenpowerapp.com/powerturkeniyiler/mpeg/icecast.audio",
-      "turkrapfm http://95.173.188.166:9984/stream?type=http&nocache=56100",
-      "trt-radyo http://radyo.trt.net.tr/ext/js/list.m3u8",
-      "line http://radioline.fm:8000/"
-    ],
     "Ukraine":[
       "Радио-Шансон http://media2.brg.ua:8000/shanson_h",
       "Львівська-Хвиля http://onair.lviv.fm:8000/lviv.fm",
@@ -240,7 +240,7 @@
       "Gala-radio http://185.65.245.34:8000/kiev",
       "avamedia-radioca https://avamedia.radioca.st/live"
     ]
-  },
+    },
   "AMERICA": {
     "":[
       " ",
@@ -279,30 +279,7 @@
       "I-love-Radio-104 https://streams.ilovemusic.de/iloveradio104.mp3",
       "Deutschlands-Biggest-Hits https://streams.bigfm.de/bigfm-deutschland-128-mp3?usid=0-0-H-M-M-01",
       "Veronika-64 http://149.13.0.80/veronika64",
-      "Dechovka-128 http://icecast5.play.cz/dechovka128.mp3",
-      "OUI-FM https://stream.ouifm.fr/ouifm-high.mp3",
-      "metro http://17773.live.streamtheworld.com/METRO_FM_SC",
-      "radyod http://radyo.dogannet.tv/radyod",
-      "superfm http://17733.live.streamtheworld.com/SUPER_FM_SC",
-      "JoyFm https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_FM.mp3",
-      "fenomenakustik http://fenomenakustik.listenfenomen.com/fenomenakustik/128/icecast.audio ",
-      "show http://46.20.3.229/;",
-      "taksimclup http://cast1.taksim.fm:8016",
-      "megafm http://46.105.35.48:9346/; ",
-      "fenomenpop http://fenomenoriental.listenfenomen.com/fenomenpop/128/icecast.audio ",
-      "showpop http://46.20.3.229/;",
-      "powerakustik http://powerturkakustik.listenpowerapp.com/powerturkakustik/mpeg/icecast.audio ",
-      "fenomenrap http://fenomenoriental.listenfenomen.com/fenomenrap/128/icecast.audio ",
-      "fenomentürk http://fenomenturk.listenfenomen.com/fenomenturk/128/icecast.audio ",
-      "barışmanço http://nmbshsource.mediatriple.net:7000/stream/22/",
-      "popularfm http://37.59.205.232:9344/;",
-      "palslow http://shoutcast.radyogrup.com:2020/stream/1;",
-      "radyopop http://80.radyopop.com/stream/1/",
-      "clubmix http://cast1.taksim.fm:8016/;",
-      "türkfm http://turkiyemfm.canliyayinda.com:8032/;",
-      "hitfm http://yayin.turkiletisim.com.tr:1094/;",
-      "powertürkcover http://powerturkcover.listenpowerapp.com/powerturkcover/mpeg/icecast.audio",
-      "showradyo http://windows.showradyo.com.tr/;"
-    ]
-  }
+      "Dechovka-128 http://icecast5.play.cz/dechovka128.mp3"
+    ]  
+  }  
 }

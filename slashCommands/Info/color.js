@@ -22,7 +22,7 @@ module.exports = {
 		//{"IntChoices": { name: "what_ping", description: "What Ping do you want to get?", required: true, choices: [["Bot", 1], ["Discord Api", 2]] }, //here the second array input MUST BE A NUMBER // TO USE IN THE CODE: interacton.getInteger("what_ping")
 		//{"StringChoices": { name: "what_ping", description: "What Ping do you want to get?", required: true, choices: [["Bot", "botping"], ["Discord Api", "api"]] }}, //here the second array input MUST BE A STRING // TO USE IN THE CODE: interacton.getString("what_ping")
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     //things u can directly access in an interaction!
 		const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;
@@ -38,10 +38,10 @@ module.exports = {
       if (json.error) return interaction?.reply({content: client.la[ls].cmds.info.color.invalid + `\n\`\`\`fix\n${json.error}\n\`\`\``, ephemeral: true})
       const embed = new Discord.MessageEmbed()
         .setTitle(eval(client.la[ls]["cmds"]["info"]["color"]["variable1"]))
-        .addField('<:arrow:832598861813776394> **Name**', json.name, true)
-        .addField("<:arrow:832598861813776394> **Hex**", json.hex, true)
-        .addField("<:arrow:832598861813776394> **RGB**", json.rgb, true)
-        .addField(`<:arrow:832598861813776394> **${client.la[ls].cmds.info.color.brightershade}**`, json.brightened, true)
+        .addField('<a:arrow:943027097348227073> **Name**', json.name, true)
+        .addField("<a:arrow:943027097348227073> **Hex**", json.hex, true)
+        .addField("<a:arrow:943027097348227073> **RGB**", json.rgb, true)
+        .addField(`<a:arrow:943027097348227073> **${client.la[ls].cmds.info.color.brightershade}**`, json.brightened, true)
         .setThumbnail(json.color_image)
         .setColor(json.hex)
       interaction?.reply({
@@ -52,12 +52,4 @@ module.exports = {
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

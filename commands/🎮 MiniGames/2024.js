@@ -10,23 +10,21 @@ const chars = '0123456789abcdefghijklmnopqrstuvwxyz';
 const WIDTH = 4;
 const HEIGHT = 4;
 
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
 module.exports = {
   name: "2048",
   category: "🎮 MiniGames",
   description: "Play a game of 2048",
   usage: "2048 --> Play the Game",
   type: "buttons",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    let es = client.settings.get(message.guild.id, "embed");
-    let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MINIGAMES")) {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+    if (GuildSettings.FUN === false) {
       return message.reply(new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.disabled.title)
-        .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {
+        .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {
           prefix: prefix
         }))
       );
@@ -127,7 +125,7 @@ class TwoZeroFourEight {
     })
 
     collector.on('collect', async buttonInteraction => {
-      if (buttonInteraction.user.id !== this.message.author.id) {
+      if (buttonInteraction.user.id !== this.message.author?.id) {
         if (this.options.othersMessage == 'false') return await buttonInteraction.deferUpdate();
         return buttonInteraction.reply({
           content: this.options.othersMessage.replace('{author}', this.message.author.tag),

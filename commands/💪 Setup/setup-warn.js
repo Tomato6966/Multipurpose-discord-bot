@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure, dbRemove
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-warn",
@@ -18,10 +18,9 @@ module.exports = {
   description: "Adjust the Settings for the warn system, like add a Role per specific warn amount or ban/kick on a specific amount of warn",
   memberpermissions: ["ADMINISTRATOR"],
   type: "security",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    let warnsettings = client.settings.get(message.guild.id, "warnsettings")
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+
+    let warnsettings = GuildSettings.warnsettings
     try {
       first_layer()
       async function first_layer(){
@@ -77,7 +76,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor('Warn Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/prohibited_1f6ab?.png', 'https://discord.gg/milrato')
+          .setAuthor(client.getAuthor('Warn Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/prohibited_1f6ab.png', 'http://discord.gg/7PdChsBGKd'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable2"]))
         let used1 = false;
         //send the menu msg
@@ -87,18 +86,18 @@ module.exports = {
           let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
           let menuoptionindex = menuoptions.findIndex(v => v.value == menu?.values[0])
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable3"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
           used1 = true;
           handle_the_picks(menuoptionindex, menuoptiondata)
         }
         //Event
-        client.on('interactionCreate',  (menu) => {
+        client.on('interactionCreate', async (menu) => {
           if (menu?.message.id === menumsg.id) {
             if (menu?.user.id === cmduser.id) {
-              if(used1) return menu?.reply({content: `<:no:833101993668771842> You already selected something, this Selection is now disabled!`, ephemeral: true})
+              if(used1) return menu?.reply({content: `:x: You already selected something, this Selection is now disabled!`, ephemeral: true})
               menuselection(menu);
             }
-            else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+            else menu?.reply({content: `:x: You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
           }
         });
       }
@@ -111,12 +110,12 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable5"]))
                 .setFooter(client.getFooter(es))
                 .setColor(es.color)
-              message.reply({embeds: [msg6]}).then(msg => {
+              message.reply({embeds: [msg6]}).then(async (msg) => {
                 msg.channel.awaitMessages({filter: m => m.author.id == cmduser,
                   max: 1,
                   time: 180000,
                   errors: ['time'],
-                }).then(collected => {
+                }).then(async collected => {
                   amount = collected.first().content;
                   if(!amount)
                     return message.reply({embeds: [new Discord.MessageEmbed()
@@ -126,7 +125,7 @@ module.exports = {
                       .setFooter(client.getFooter(es))
                     ]});
                   if(amount.toLowerCase() == "no"){
-                    client.settings.set(message.guild.id, false, "warnsettings.kick")
+                    await client.settings.set(message.guild.id+".warnsettings.kick", false)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable7"]))
                       .setColor(es.wrongcolor)
@@ -147,7 +146,7 @@ module.exports = {
                       .setDescription(`You entered: \`${amount}\``.substring(0, 2000))
                       .setFooter(client.getFooter(es))
                     ]});
-                  client.settings.set(message.guild.id, amount, "warnsettings.kick")
+                  await client.settings.set(message.guild.id+".warnsettings.kick", amount)
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable10"]))
                     .setColor(es.wrongcolor)
@@ -170,12 +169,12 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable13"]))
                 .setFooter(client.getFooter(es))
                 .setColor(es.color)
-              message.reply({embeds: [msg7]}).then(msg => {
+              message.reply({embeds: [msg7]}).then(async (msg) => {
                 msg.channel.awaitMessages({filter: m => m.author.id == cmduser,
                   max: 1,
                   time: 180000,
                   errors: ['time'],
-                }).then(collected => {
+                }).then(async collected => {
                   amount = collected.first().content;
                   if(!amount)
                     return message.reply({embeds: [new Discord.MessageEmbed()
@@ -185,7 +184,7 @@ module.exports = {
                       .setFooter(client.getFooter(es))
                     ]});
                   if(amount.toLowerCase() == "no"){
-                  client.settings.set(message.guild.id, false, "warnsettings.ban")
+                    await client.settings.set(message.guild.id+".warnsettings.ban", false)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable15"]))
                       .setColor(es.wrongcolor)
@@ -206,7 +205,7 @@ module.exports = {
                       .setDescription(`You entered: \`${amount}\``.substring(0, 2000))
                       .setFooter(client.getFooter(es))
                     ]});
-                  client.settings.set(message.guild.id, amount, "warnsettings.ban")
+                  await client.settings.set(message.guild.id+".warnsettings.ban", amount)
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable18"]))
                     .setColor(es.wrongcolor)
@@ -229,12 +228,12 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable21"]))
                 .setFooter(client.getFooter(es))
                 .setColor(es.color)
-              message.reply({embeds: [msg8]}).then(msg => {
+              message.reply({embeds: [msg8]}).then(async (msg) => {
                 msg.channel.awaitMessages({filter: m => m.author.id == cmduser,
                   max: 1,
                   time: 180000,
                   errors: ['time'],
-                }).then(collected => {
+                }).then(async collected => {
                   let colargs = collected.first().content?.trim().split(" ")
                   let amount = colargs[0]
                   let role = collected.first().mentions.roles.filter(r=>r.guild.id == message.guild.id).first();
@@ -274,7 +273,7 @@ module.exports = {
                       .setDescription(`You can't add 2 Roles at the Same time`.substring(0, 2000))
                       .setFooter(client.getFooter(es))
                     ]});
-                  client.settings.push(message.guild.id, { warncount: Number(amount), roleid: role.id }, "warnsettings.roles")
+                  await client.settings.push(message.guild.id+".warnsettings.roles", { warncount: Number(amount), roleid: role.id })
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable27"]))
                     .setColor(es.wrongcolor)
@@ -297,12 +296,12 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable30"]))
                 .setFooter(client.getFooter(es))
                 .setColor(es.color)
-              message.reply({embeds: [msg8]}).then(msg => {
+              message.reply({embeds: [msg8]}).then(async (msg) => {
                 msg.channel.awaitMessages({filter: m => m.author.id == cmduser,
                   max: 1,
                   time: 180000,
                   errors: ['time'],
-                }).then(collected => {
+                }).then(async collected => {
                   let colargs = collected.first().content?.trim().split(" ")
                   let amount = colargs[0]
                   if(!amount)
@@ -335,7 +334,7 @@ module.exports = {
                       .setFooter(client.getFooter(es))
                     ]});
                   let yeee = warnsettings.roles.filter(r => r?.warncount == amount)[0]
-                  client.settings.remove(message.guild.id, v => v?.warncount == yeee.warncount , "warnsettings.roles")
+                  await client.settings.remove(message.guild.id+".warnsettings.roles", v => v?.warncount == yeee.warncount)
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable35"]))
                     .setColor(es.wrongcolor)
@@ -387,12 +386,4 @@ module.exports = {
     }
   },
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

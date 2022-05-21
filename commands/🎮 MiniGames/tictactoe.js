@@ -35,7 +35,7 @@ class TicTacToe {
                 let [a1, a2, a3, b1, b2, b3, c1, c2, c3] = getBoarder();
                 let [a11, a22, a33, b11, b22, b33, c11, c22, c33] = getIds();
                 let [A1, A2, A3, B1, B2, B3, C1, C2, C3] = getButtons();
-                const author = this.message.author.id;
+                const author = this.message.author?.id;
                 const member = this.opponent;
                 const authorName = this.message.author.username;
                 const gameData = [{
@@ -85,7 +85,7 @@ class TicTacToe {
                         midDuel.add(author)
                         midDuel.add(member.id)
                         const gameCollector = msg.createMessageComponentCollector({
-                                filter: (i) => i?.isButton() && i?.user && (i?.user.id == this.message.author.id || i?.user.id == this.opponent.id) && i?.message.author.id == this.message.client.user.id,
+                                filter: (i) => i?.isButton() && i?.user && (i?.user.id == this.message.author?.id || i?.user.id == this.opponent.id) && i?.message.author?.id == this.message.client.user.id,
                         });
 
 
@@ -557,7 +557,7 @@ class TicTacToe {
                                                 new MessageActionRow().addComponents([B1.setDisabled(), B2.setDisabled(), B3.setDisabled()]),
                                                 new MessageActionRow().addComponents([C1.setDisabled(), C2.setDisabled(), C3.setDisabled()]),
                                         ]
-                                }).catch(() => {})
+                                }).catch(() => null)
                         })
 
                 })
@@ -622,8 +622,8 @@ class TicTacToe {
         }
 
 }
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
 module.exports = {
         name: "tictactoe",
         aliases: ["ttt"],
@@ -631,17 +631,14 @@ module.exports = {
         description: "Allows you to play a Game of Tic Tac Toe",
         usage: "tictactoe --> Play the Game",
         type: "buttons",
-        run: async (client, message, args, cmduser, text, prefix) => {
-
-                let es = client.settings.get(message.guild.id, "embed");
-                let ls = client.settings.get(message.guild.id, "language")
-                if (!client.settings.get(message.guild.id, "MINIGAMES")) {
+        run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+                if (GuildSettings.FUN === false) {
                         return message.reply({
                                 embeds: [new MessageEmbed()
                                         .setColor(es.wrongcolor)
                                         .setFooter(client.getFooter(es))
                                         .setTitle(client.la[ls].common.disabled.title)
-                                        .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {
+                                        .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {
                                                 prefix: prefix
                                         }))
                                 ]

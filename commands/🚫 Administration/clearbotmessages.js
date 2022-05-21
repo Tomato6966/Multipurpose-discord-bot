@@ -1,13 +1,13 @@
 const {
   MessageEmbed, Collection, Permissions
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   delay,
   databasing
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 module.exports = {
   name: `clearbotmessages`,
   aliases: [`clearbotmsgs`, "purgebotmessages", "purgebotmsgs", "prune"],
@@ -15,17 +15,17 @@ module.exports = {
   description: `Deletes a amount of messages from the bot in a Channel.`,
   usage: `clearbotmessages <Amount of messages>`,
   type: "channel",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       if(!message.guild.me.permissions.has([Permissions.FLAGS.MANAGE_MESSAGES]))      
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor).setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["clearbotmessages"]["variable1"]))
         ]})
-      let adminroles = client.settings.get(message.guild.id, "adminroles")
-      let cmdroles = client.settings.get(message.guild.id, "cmdadminroles.clearbotmessages")
+      let adminroles = GuildSettings?.adminroles || [];
+      let cmdroles = GuildSettings?.cmdadminroles?.clearbotmessages || [];
       var cmdrole = []
       if (cmdroles.length > 0) {
         for (const r of cmdroles) {
@@ -34,13 +34,16 @@ module.exports = {
           } else if (message.guild.members.cache.get(r)) {
             cmdrole.push(` | <@${r}>`)
           } else {
-            
-            //console.log(r)
-            client.settings.remove(message.guild.id, r, `cmdadminroles.clearbotmessages`)
+            const File = `clearbotmessages`;
+            let index = GuildSettings && GuildSettings.cmdadminroles && typeof GuildSettings.cmdadminroles == "object" ? GuildSettings.cmdadminroles[File]?.indexOf(r) || -1 : -1;
+            if(index > -1) {
+              GuildSettings.cmdadminroles[File].splice(index, 1);
+              client.settings.set(`${message.guild.id}.cmdadminroles`, GuildSettings.cmdadminroles)
+            }
           }
         }
       }
-      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author.id) && !message.member.permissions.has([Permissions.FLAGS.ADMINISTRATOR]))
+      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author?.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author?.id) && !message.member?.permissions?.has([Permissions.FLAGS.ADMINISTRATOR]))
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -72,7 +75,7 @@ module.exports = {
           messageCollection = messageCollection.concat(channelMessages.filter(msg => msg.author.id == client.user.id)); //add them to the collection
       }
       let msgs = messageCollection.map(_ => _)
-      for(let i = 0; i < msgs.length; i+=100)
+      for (let i = 0; i < msgs.length; i+=100)
         await message.channel.bulkDelete(msgs.slice(i, i+100))
 
       await message.reply({embeds : [new MessageEmbed()
@@ -83,10 +86,10 @@ module.exports = {
         msg.delete()
       }catch{}
     },5000));
-      if (client.settings.get(message.guild.id, `adminlog`) != "no") {
+      if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
         try {
-          var channel = message.guild.channels.cache.get(client.settings.get(message.guild.id, `adminlog`))
-          if (!channel) return client.settings.set(message.guild.id, "no", `adminlog`);
+          var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
+          if (!channel) return client.settings.set(`${message.guild.id}.adminlog`, "no");
           channel.send({embeds : [new MessageEmbed()
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
             .setAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({
@@ -95,14 +98,14 @@ module.exports = {
             .setDescription(eval(client.la[ls]["cmds"]["administration"]["clearbotmessages"]["variable7"]))
             .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
            .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-            .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+            .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
         ]})
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     } catch (e) {
-      console.log(e.stack ? String(e.stack).grey : String(e).grey);
+      console.error(e);
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

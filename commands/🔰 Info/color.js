@@ -2,13 +2,13 @@ const Discord = require("discord.js");
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   GetUser,
   GetGlobalUser, handlemsg
-} = require(`${process.cwd()}/handlers/functions`)
+} = require(`../../handlers/functions`)
 const fetch = require("node-fetch")
 module.exports = {
   name: "color",
@@ -17,10 +17,8 @@ module.exports = {
   description: "Get Hex Color Information",
   usage: "color <HEX CODE> | Example: color #ee33ff",
   type: "util",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    let es = client.settings.get(message.guild.id, "embed");
-    let ls = client.settings.get(message.guild.id, "language")
-    
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+
 		try {
       let userinfo = false;
       if(!args[0]){
@@ -31,7 +29,6 @@ module.exports = {
       let json;
       try {
         json = await fetch(url).then(res => res.json())
-        console.log(json)
       } catch (e) {
         return message.reply({content: `${e.message ? e.message : e}`,
           codeBlock: "js"
@@ -42,10 +39,10 @@ module.exports = {
       })
       const embed = new Discord.MessageEmbed()
         .setTitle(eval(client.la[ls]["cmds"]["info"]["color"]["variable1"]))
-        .addField('<:arrow:832598861813776394> **Name**', "```"+json.name+"```", true)
-        .addField("<:arrow:832598861813776394> **Hex**",  "```"+json.hex+"```", true)
-        .addField("<:arrow:832598861813776394> **RGB**",  "```"+json.rgb+"```", true)
-        .addField(`<:arrow:832598861813776394> **${client.la[ls].cmds.info.color.brightershade}**`,  "```"+json.brightened +"```", true)
+        .addField('<a:arrow:943027097348227073> **Name**', "```"+json.name+"```", true)
+        .addField("<a:arrow:943027097348227073> **Hex**",  "```"+json.hex+"```", true)
+        .addField("<a:arrow:943027097348227073> **RGB**",  "```"+json.rgb+"```", true)
+        .addField(`<a:arrow:943027097348227073> **${client.la[ls].cmds.info.color.brightershade}**`,  "```"+json.brightened +"```", true)
         .setThumbnail(json.color_image)
         .setColor(json.hex)
       if(userinfo) embed.addField("Color ==  your Highest Role!", `> Usage: \`${prefix}color ${args[0]}\``);
@@ -63,12 +60,4 @@ module.exports = {
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+

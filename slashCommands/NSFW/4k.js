@@ -20,8 +20,8 @@ module.exports = {
             //{"StringChoices": { name: "what_ping", description: "What Ping do you want to get?", required: true, choices: [["Bot", "botping"], ["Discord Api", "api"]] }}, //here the second array input MUST BE A STRING // TO USE IN THE CODE: interacton.getString("what_ping")
       ],
       run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
-
-    if (!client.settings.get(message.guild.id, "NSFW")) {
+        let GuildSettings = client.settings.get(`${interaction.guild.id}`)
+    if(GuildSettings.NSFW === false) {
       const x = new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

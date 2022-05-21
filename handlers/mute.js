@@ -3,41 +3,36 @@ CronJob = require('cron').CronJob;
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 const ms = require("ms")
 const moment = require("moment")
+const { dbKeys, dbEnsure, dbRemove } = require("./functions")
 module.exports = async client => {
- //function that will run the checks
+    //function that will run the checks
     client.on("guildMemberAdd", async member => {
-        client.mutes.ensure("MUTES", {
-          MUTES: []
-        })
-        let data = client.mutes.get("MUTES")
-        var unmutes = data.MUTES.filter(d => d.guild == member.guild.id && d.user == member.user.id)
+        let data = await client.mutes.get("MUTES")
+        var unmutes = data?.MUTES?.filter(d => client.guilds.cache.has(d.guild))?.filter(d => d.guild == member.guild.id && d.user == member.user.id)
         if(unmutes) {
-            for(const unmute of unmutes){
+            for await (const unmute of unmutes){
                 try{
-                    member.roles.add(unmute.role).catch(() => {});
+                    await member.roles.add(unmute.role).catch(() => null);
                 }catch (e){
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                 }
             }
         }
     })
-    client.Jobmute = new CronJob('*/5 * * * * *', async function() {
-        client.mutes.ensure("MUTES", {
-            MUTES: []
-        })
-        let data = client.mutes.get("MUTES")
-        var unmutes = data.MUTES.filter(v=>{
+    client.Jobmute = new CronJob('*/10 * * * * *', async function() {
+        let data = await client.mutes.get("MUTES")
+        var unmutes = data?.MUTES?.filter(d => client.guilds.cache.has(d.guild))?.filter(v=>{
             return v.mutetime > 0 && v.mutetime - (Date.now() - v.timestamp) <= 0
         })
         if(unmutes && unmutes.length > 0){
             unmutes.forEach(async muteuser => {
                 try{
-                    let es = client.settings.get(muteuser.guild, "embed")
-                    if(!client.settings.has(muteuser.guild, "language")) client.settings.ensure(muteuser.guild, { language: "en" });
-                    let ls = client.settings.get(muteuser.guild, "language");
+                    let settings = await client.settings.get(muteuser.guild);
+                    let es = settings.embed
+                    let ls = settings.language;
                     let guild = client.guilds.cache.get(muteuser.guild)
-                    let member = guild.members.cache.get(muteuser.user);
-                    if(!member) member = await guild.members.fetch(muteuser.user).catch(() => {});
+                    if(!guild) return;
+                    let member = guild.members.cache.get(muteuser.user) || await guild.members.fetch(muteuser.user).catch(() => null);
                     if(member && member.roles.cache.has(muteuser.role)) {
                         member.roles.remove(muteuser.role)
                         let channel = guild.channels.cache.get(muteuser.channel);
@@ -46,40 +41,35 @@ module.exports = async client => {
                             .setFooter(client.getFooter(es))
                             .setTitle(eval(client.la[ls]["handlers"]["mutejs"]["mute"]["variable1"]))
                             .setDescription(eval(client.la[ls]["handlers"]["mutejs"]["mute"]["variable2"]))]
-                        }).catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                        }).catch(() => null)
                     } else if(member){
                         try{
                             member.roles.remove(muteuser.role)
                         }catch (e){ }
                     }
-                    client.mutes.remove("MUTES", v => v.user == muteuser.user, "MUTES")
+                    await dbRemove(client.mutes, "MUTES.MUTES", v => v.user == muteuser.user)
                 }catch (e){
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
-                    client.mutes.remove("MUTES", v=>v.user == muteuser.user, "MUTES")
+                    console.error(e)
+                    await dbRemove(client.mutes, "MUTES.MUTES", v=>v.user == muteuser.user)
                 }
             })
         }
-    }, null, true, 'America/Los_Angeles');
-    client.Jobremind = new CronJob("*/5 * * * * *", async function(){
-        let data = client.afkDB.get("REMIND")
-        if(!data) {
-            client.afkDB.ensure("REMIND", {
-                REMIND: []
-            });
-            data = [];
-        }
-        var reminds_now = data.REMIND.filter(v=>{
+    }, null, true, 'Europe/Berlin');
+    client.Jobremind = new CronJob("*/10 * * * * *", async function(){
+        let data = await client.afkDB.get("REMIND.REMIND") || []
+        var reminds_now = data.filter(v => {
             return v.time - (Date.now() - v.timestamp) <= 0
         })
        if(reminds_now && reminds_now.length > 0){
             reminds_now.forEach(async userData => {
                 let {content, at, time, guild, user, timestamp, channel, string_of_time} = userData;
                 try{
-                    let es = client.settings.get(guild, "embed")
-                    let ls = client.settings.get(guild, "language");
-                    
+                    let settings = await client.settings.get(guild);
+                    let es = settings.embed
+                    let ls = settings.language;
                     guild = client.guilds.cache.get(guild)  
-                    let member = await guild.members.fetch(user).catch(() => {});
+                    if(!guild) return;
+                    let member = await guild.members.fetch(user).catch(() => null);
                     let message = {
                         guild: {
                             name: guild.name
@@ -96,7 +86,7 @@ module.exports = async client => {
                       .addField("Created at:", `\`${at}\``)
                       .setDescription(content)
                     ]}).catch(e=>{
-                        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                        console.error(e)
                         let channel = guild.channels.cache.get(channel);
                         if(channel){
                             channel.send({embeds: [new Discord.MessageEmbed()
@@ -109,14 +99,14 @@ module.exports = async client => {
                               ], content: `<@${member.id}>`})
                         }
                     })
-                    client.afkDB.remove("REMIND", v => v.at == at && v.user == user, "REMIND")
+                    await dbRemove(client.afkDB, "REMIND.REMIND", v => v.at == at && v.user == user)
                 }catch (e){
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
-                    client.afkDB.remove("REMIND", v => v.at == at && v.user == user, "REMIND")
+                    console.error(e)
+                    await dbRemove(client.afkDB, "REMIND.REMIND", v => v.at == at && v.user == user)
                 }
             })
         }
-    }, null, true, "America/Los_Angeles")
+    }, null, true, "Europe/Berlin")
 
 
     client.on("ready", () => {

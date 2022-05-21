@@ -1,9 +1,10 @@
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+const ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { dbEnsure } = require("../../handlers/functions")
 module.exports = {
   name: "playmsg",
   category: "⚙️ Settings",
@@ -13,20 +14,22 @@ module.exports = {
   description: "Toggles if it should sends a Message with Buttons when a Song Starts! [Default: true]",
   memberpermissions: ["ADMINISTRATOR"],
   type: "music",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
-      client.settings.ensure(message.guild.id, {
+      await dbEnsure(client.settings, message.guild.id, {
         playmsg: true
-      });
+      })
       
-      client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "playmsg"), "playmsg");
+      const d = await client.settings.get(`${message.guild.id}.playmsg`);
+      console.log(d)
+      await client.settings.set(`${message.guild.id}.playmsg`, !d);
       
       return message.reply({embeds :[new MessageEmbed()
         .setFooter(client.getFooter(es)).setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-        .setTitle(eval(client.la[ls]["cmds"]["settings"]["playmsg"]["variable1"]))
-        .setDescription(eval(client.la[ls]["cmds"]["settings"]["playmsg"]["variable2"]))
+        .setTitle(`**Successfully __${!d ? "Enabled" : "Disabled"}__ the Play Message Sending**`)
+        .setDescription(`**I will now${!d ? "" : " not"} send Messages with Buttons when a Song starts**`)
       ]});
     } catch (e) {
       console.log(String(e.stack).grey.bgRed)
@@ -38,12 +41,4 @@ module.exports = {
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://github?.com/Tomato6966/discord-js-lavalink-Music-Bot-erela-js
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */
+

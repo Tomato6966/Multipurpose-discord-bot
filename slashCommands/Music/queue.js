@@ -21,10 +21,11 @@ module.exports = {
   },
   run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
     		//things u can directly access in an interaction!
+        let GuildSettings = client.settings.get(`${interaction.guild.id}`)
 		const { member } = interaction;
     const { guild } = member;
-    //let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    //
+    if(GuildSettings.MUSIC === false) {
       return interaction?.reply({ephemeral: true, embeds :[new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -47,7 +48,7 @@ module.exports = {
         ]}).then(msg => {
           setTimeout(()=>{
             try { 
-              msg.delete().catch(() => {});
+              msg.delete().catch(() => null);
             } catch {} 
           }, 5000)
         })
@@ -62,7 +63,7 @@ module.exports = {
         ]}).then(msg => {
           setTimeout(()=>{
             try { 
-              msg.delete().catch(() => {});
+              msg.delete().catch(() => null);
             } catch {} 
           }, 5000)
         })
@@ -91,12 +92,4 @@ module.exports = {
     }
   }
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://github?.com/Tomato6966/discord-js-lavalink-Music-Bot-erela-js
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention Him / Milrato Development, when using this Code!
- * @INFO
- */
+

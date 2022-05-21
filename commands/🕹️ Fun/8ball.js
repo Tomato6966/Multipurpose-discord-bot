@@ -42,15 +42,8 @@ module.exports = {
         if (body.magic.type === "Contrary") embedColor = "#ba0d0d";
         if (body.magic.type === "Neutral") embedColor = "#6f7275";
 const embed3 = new Discord.MessageEmbed()
-          .setTitle("8ball")
+          .setTitle(body.magic.answer)
           .setColor(embedColor)
-          .setThumbnail(message.author.displayAvatarURL({
-            dynamic: true
-          }))
-          .addField("Question: ", question, false)
-          .addField("Asked by: ", message.author.tag, false)
-          .addField("Reply: ", body.magic.answer, false)
-          .setFooter(eval(client.la[ls]["cmds"]["fun"]["8ball"]["variable4"]))
         
         message.reply({embeds : [embed3]});
       });
@@ -65,12 +58,4 @@ const embed3 = new Discord.MessageEmbed()
     }
   }
 }
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */
+
