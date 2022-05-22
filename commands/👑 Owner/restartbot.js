@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}botconfig/embed.json`);
-var emoji = require(`${process.cwd()}botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
   databasing, isValidURL
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 module.exports = {
   name: "restartbot",
   category: "👑 Owner",
@@ -22,7 +22,7 @@ module.exports = {
     if (config.ownerIDS.some(r => r.includes(message.author.id))){
       try {
         await message.reply("NOW RESTARTING!");
-        require("child_process").exec(`pm2 restart Erry --update-env`, (error, stdout, stderr) => {
+        require("child_process").exec(`pm2 restart --update-env`, (error, stdout, stderr) => {
           if (error) {
             console.error(`exec error: ${error}`);
             message.reply({content : eval(client.la[ls]["cmds"]["owner"]["restartbot"]["variable4"])})
