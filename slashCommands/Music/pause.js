@@ -21,6 +21,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
   run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
     let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     //
+    
     if(GuildSettings.MUSIC === false) {
       return interaction?.reply({ephemeral: true, embed : [new MessageEmbed()
         .setColor(es.wrongcolor)

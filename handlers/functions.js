@@ -1841,6 +1841,7 @@ async function databasing(client, guildid, userid) {
         });
         await dbEnsure(client.premium, guildid, {
           enabled: false,
+          days: "0",
         })
         const ensureData = {
           textchannel: "0",
@@ -2133,6 +2134,7 @@ async function databasing(client, guildid, userid) {
       if (userid) {
         await dbEnsure(client.premium, userid, {
           enabled: false,
+          days: "0",
         })
         await dbEnsure(client.queuesaves, userid, {
           "TEMPLATEQUEUEINFORMATION": ["queue", "sadasd"]

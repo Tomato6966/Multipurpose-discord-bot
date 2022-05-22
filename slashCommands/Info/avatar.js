@@ -59,7 +59,7 @@ module.exports = {
       }))
       if(customavatar)
         embed.setDescription(`**This User has a Custom Avatar too!**\n\n> [**\`Click here to get the LINK of it\`**](${customavatar})\n\n> **There is also:** \`${prefix}customavatar [@User]\``)
-      message.reply({
+        interaction?.reply({ephemeral: true,
         embeds: [embed]
       });
       

@@ -457,10 +457,8 @@ module.exports = {
             .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "🎶 Music").size}\`] 🎶 ${client.la[ls].cmds.info.help.tenlb} 🎶 | ${settings.MUSIC ? `:white_check_mark: ${client.la[ls].cmds.info.help.enabledtxt}` : `:x: ${client.la[ls].cmds.info.help.disabledtxt}`}`)
             .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "🎶 Music").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
             .addField("\u200b", `__**${client.la[ls].cmds.info.help.subcat}:**__`)
-            .addField(`${client.la[ls].cmds.info.help.queuecmds}`, "> "+client.commands.filter((cmd) => cmd.category === "🎶 Music" && cmd.type.includes("queue")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            .addField(`<a:Playing_Audio:943116563681275904> ${client.la[ls].cmds.info.help.songcmds}`, "> "+client.commands.filter((cmd) => cmd.category === "🎶 Music" && cmd.type.includes("song")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            .addField(`<:Bot_Flag:943116768602378290> ${client.la[ls].cmds.info.help.botcmds}`, "> "+client.commands.filter((cmd) => cmd.category === "🎶 Music" && cmd.type.includes("bot")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            if(!filterdisabled || settings.MUSIC || settings.showdisabled) embeds.push(embed3)
+            .addField(`<a:Playing_Audio:943116563681275904> ${client.la[ls].cmds.info.help.queuecmds}`, "> "+client.commands.filter((cmd) => cmd.category === "🎶 Music").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+          if(!filterdisabled || settings.MUSIC || settings.showdisabled) embeds.push(embed3)
 
           //FILTER COMMANDS
           var embed4 = new MessageEmbed()

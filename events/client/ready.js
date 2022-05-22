@@ -33,6 +33,7 @@ module.exports = async (client) => {
     });
     
     change_status(client);
+    client.giveawaysManager.refreshStorage()
     //loop through the status per each 10 minutes
     setInterval(()=>{
       change_status(client);

@@ -9,7 +9,8 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
 module.exports = {
   name: "translate",
   description: "Gives you an Invite link for this Bot",
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+    let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     //things u can directly access in an interaction!
     const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;

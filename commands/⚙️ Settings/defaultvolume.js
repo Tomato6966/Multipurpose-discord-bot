@@ -19,7 +19,7 @@ module.exports = {
     
     try {
       await dbEnsure(client.settings, message.guild.id, {
-        defaultvolume: 15
+        defaultvolume: 30
       })
       if(!args[0]){
         return message.reply({embeds : [new MessageEmbed()

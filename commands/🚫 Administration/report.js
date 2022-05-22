@@ -12,7 +12,7 @@ module.exports = {
   name: `report`,
   category: `🚫 Administration`,
   aliases: [`melden`],
-  cooldown: 300,
+  cooldown: 30,
   usage: `report @User <REASON>`,
   description: `Reports a User for a specific Reason!`,
   type: "member",
@@ -39,12 +39,6 @@ module.exports = {
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["report"]["variable4"]))
         ]});
       args.shift();
-      if (member.roles.highest.position > message.member.roles.highest.position)
-        return message.reply({embeds: [new MessageEmbed()
-          .setColor(es.wrongcolor)
-          .setFooter(client.getFooter(es))
-          .setTitle(eval(client.la[ls]["cmds"]["administration"]["report"]["variable5"]))
-        ]});
 
       let reason = args[0];
       if (!reason)

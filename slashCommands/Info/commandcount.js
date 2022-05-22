@@ -12,7 +12,8 @@ const fs = require('fs')
 module.exports = {
   name: "commandcount",
   description: "Shows the Amount of Commands I have!",
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+    let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     //things u can directly access in an interaction!
 		const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;

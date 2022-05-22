@@ -195,7 +195,7 @@
                 "mgte": "🕹️ **Mini Game to earn 💸**",
                 "mathcmds": ":school: **Mathematics**",
                 "timemgmt": ":clock1: **Time Management**",
-                "queuecmds": "📑 **Queue Commands**",
+                "queuecmds": "**Music Commands**",
                 "songcmds": "**Song Commands**",
                 "botcmds": "**Bot Commands**",
                 "usage": "**Usage**",
@@ -332,6 +332,7 @@
                 "field12": "**<a:arrow:943027097348227073> Total Boosts:**",
                 "field13": "**<a:arrow:943027097348227073> Boost-Level:**",
                 "field14": "**<a:arrow:943027097348227073> Max-Talk-Bitrate:**",
+                "field15": "**<:arrow:950884679114952715> Premium Server:**",
                 "variablex_1": "`<a:arrow:943027097348227073> [${message.guild.emojis.cache.size}] Emojis: `", "variable1":"\"> \"+message.guild.emojis.cache.size < 35 ? message.guild.emojis.cache.map(emoji => `${emoji}`).join(\"︲\") : message.guild.emojis.cache.size > 35 ? emojitrimarray(message.guild.emojis.cache.map(emoji => `${emoji}`)).substr(0, 2048) : 'No Emojis'",
                 "variablex_2": "`<a:arrow:943027097348227073> [${message.guild.roles.cache.size}] Roles: `", "variable2":"\"> \"+message.guild.roles.cache.size < 40 ? [...message.guild.roles.cache.values()].sort((a, b) => b.rawPosition - a.rawPosition).map(role => `<@&${role.id}>`).join(', ') : message.guild.roles.cache.size > 40 ? trimArray(message.guild.roles.cache) : 'None'",
                 "variable3": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
@@ -755,6 +756,7 @@
                 "variable1": "`\\`\\`\\`${e.message}\\`\\`\\``"
             },
             "musicsystem": {
+                "forward": "⏩ **Forwarded the song for `10 Seconds`!**",
                 "pause": "⏸ **Paused!**",
                 "resume": "▶️ **Resumed!**",
                 "autoplayon": "**Enabled Autoplay**",
@@ -3821,6 +3823,10 @@
             }
         },
         "fun": {
+            "choose": {
+                "no":"Nothing to choose",
+                "yes": "I choose..."
+            },
             "8ball": {
                 "variable1": "`:x: Please Add a Question`",
                 "variable2": "\"Can't get 8ball replies, try again later.\"",
@@ -4889,7 +4895,7 @@
         },
         "cooldown": ":x: Please wait {time} more second(s) before reusing the `{commandname}` command.",
         "premium": {
-            "title": ":x: **This Command is Premium Only!** <a:nitro:950885057768341504>",
+            "title": ":x: **This Command is Premium Only!**",
             "description": "> *This means, you need to **pay** in Order to be able to use this Command!*\n\n>[Pay through here](http://discord.gg/7PdChsBGKd)"
         },
         "permissions": {

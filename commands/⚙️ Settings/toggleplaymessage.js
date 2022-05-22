@@ -11,9 +11,15 @@ module.exports = {
     memberpermissions: ["ADMINISTRATOR"],
     type: "music",
     run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
-    
-      
-      
+      var guildpremData = await client.premium.get(`${message.guild.id}.enabled`)
+      if(guildpremData === false){
+        return message.reply({embeds: [new MessageEmbed()
+          .setColor(es.wrongcolor)
+          .setFooter(client.getFooter(es))
+          .setTitle(client.la[ls].common.premium.title)
+          .setDescription(handlemsg(client.la[ls].common.premium.description))
+        ]});
+      }    
       //run the code of togglepruning
       let { run } = require("./playmsg");
       run(client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings);

@@ -14,16 +14,19 @@ module.exports = {
 	type: "text",
 	//running the command with the parameters: client, message, args, user, text, prefix
   	run: async (client, message, args, cmduser, text, prefix) => {
-		  let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+		let settings = await client.settings.get(message.guild.id);
+
+  let es = settings.embed;
+  let ls = settings.language;
     
         const answers = args.join(" ").split("/");
-		if (answers.length < 2) return message.reply(`Nothing to choose (type \`${config.prefix}help choose\` for help)`);
-		if (answers.some(answer => !answer)) return message.reply(`Nothing to choose (type \`${config.prefix}help choose\` for help)`);
+		if (answers.length < 2) return message.reply(client.la[ls].cmds.fun.choose.no);
+		if (answers.some(answer => !answer)) return message.reply(client.la[ls].cmds.fun.choose.no);
 		
 		return message.reply({embeds :[new MessageEmbed()
 			.setColor(es.color)
 			.setFooter(client.getFooter(es))
-			.setTitle(`I choose...`)
+			.setTitle(client.la[ls].cmds.fun.choose.yes)
 			.setDescription(`**\`${answers[parseInt(Math.floor(Math.random() * answers.length))]}\`**`)
 		]})
 

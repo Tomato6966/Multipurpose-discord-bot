@@ -274,7 +274,7 @@ module.exports = async (client) => {
                   embeds: [new MessageEmbed()
                     .setColor(ee.color)
                     .setTimestamp()
-                    .setTitle(client.la[ls].cmds.music.forward.title)
+                    .setTitle(client.la[ls].cmds.music.musicsystem.forward)
                     .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
                 //edit the message so that it's right!
@@ -576,8 +576,8 @@ module.exports = async (client) => {
         if(musicChannelId != message.channel.id) return;
         //Delete the message once it got sent into the channel, bot messages after 5 seconds, user messages instantly!
         if (message.author?.id === client.user.id) 
-            setTimeout(()=> message.delete().catch(() => null), 2000)
-        else setTimeout(()=> message.delete().catch(() => null), 1000)
+            setTimeout(()=> message.delete().catch(() => null), 3500)
+        else setTimeout(()=> message.delete().catch(() => null), 500)
             
         if (message.author?.bot) return; // if the message  author is a bot, return aka ignore the inputs
         var prefix = await client.settings.get(message.guild.id+".prefix")
@@ -664,7 +664,7 @@ async function generateQueueEmbed(client, guildId, leave) {
     embeds[0] = new MessageEmbed()
     .setTitle(client.la[ls].cmds.music.musicsystem.qof+`__${guild.name}__  -  [ ${player.queue.length} ${client.la[ls].cmds.music.musicsystem.songg} ]`)
     .setColor(es.color)
-    .setDescription(String(songs.map((track, index) => `**\` ${++index}. \` ${track.uri ? `[${track.title.substr(0, 60).replace(/\[/igu, "\\[").replace(/\]/igu, "\\]")}](${track.uri})` : track.title}** - \`${track.isStream ? `LIVE STREAM` : format(track.duration).split(` | `)[0]}\`\n> *${client.la[ls].cmds.music.musicsystem.by}: __${track.requester.tag}__*`).join(`\n`)).substr(0, 2048));
+    .setDescription(String(songs.map((track, index) => `**\` ${++index}. \` ${track.uri ? `[${track.title.substr(0, 60).replace(/\[/igu, "\\[").replace(/\]/igu, "\\]")}](${track.uri})` : track.title}** - \`${track.isStream ? `LIVE` : format(track.duration).split(` | `)[0]}\`\n> *${client.la[ls].cmds.music.musicsystem.by}: __${track.requester.tag}__*`).join(`\n`)).substr(0, 2048));
     if(player.queue.length > 10)
       embeds[0].addField(`**\` N. \` *${player.queue.length > maxTracks ? player.queue.length - maxTracks : player.queue.length} ${client.la[ls].cmds.music.musicsystem.ot} ...***`, `\u200b`)
     embeds[0].addField(`**\` 0. \` __${client.la[ls].cmds.music.musicsystem.curt}__**`, `**${player.queue.current.uri ? `[${player.queue.current.title.substr(0, 60).replace(/\[/igu, "\\[").replace(/\]/igu, "\\]")}](${player.queue.current.uri})` : player.queue.current.title}** - \`${player.queue.current.isStream ? `LIVE STREAM` : format(player.queue.current.duration).split(` | `)[0]}\`\n> *${client.la[ls].cmds.music.musicsystem.by}: __${player.queue.current.requester.tag}__*`)
@@ -712,7 +712,7 @@ async function generateQueueEmbed(client, guildId, leave) {
   var lyricsbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Lyrics').setEmoji('🔄').setLabel(`${client.la[ls].cmds.music.musicsystem.replbt}`).setDisabled();
   var volumeup = new MessageButton().setStyle('SECONDARY').setCustomId('Vol+').setEmoji('🔊').setLabel(`${client.la[ls].cmds.music.musicsystem.volpbt}`).setDisabled();
   var volumedown = new MessageButton().setStyle('SECONDARY').setCustomId('Vol-').setEmoji('🔉').setLabel(`${client.la[ls].cmds.music.musicsystem.volmbt}`).setDisabled();
-  var volumemax = new MessageButton().setStyle('PRIMARY').setCustomId('Volmax').setEmoji('🔊').setLabel(`${client.la[ls].cmds.music.musicsystem.volmaxbt}`).setDisabled();
+  var volumemax = new MessageButton().setStyle('DANGER').setCustomId('Volmax').setEmoji('🔊').setLabel(`${client.la[ls].cmds.music.musicsystem.volmaxbt}`).setDisabled();
   var volumemid = new MessageButton().setStyle('PRIMARY').setCustomId('Volmid').setEmoji('🔊').setLabel(`${client.la[ls].cmds.music.musicsystem.midvolbt}`).setDisabled();
   var volumemin = new MessageButton().setStyle('PRIMARY').setCustomId('Volmin').setEmoji('🔉').setLabel(`${client.la[ls].cmds.music.musicsystem.volminbt}`).setDisabled();
   var joinbutton = new MessageButton().setStyle('SUCCESS').setCustomId('Join').setEmoji(`👌`).setLabel(`${client.la[ls].cmds.music.musicsystem.joinbt}`).setDisabled(false);
@@ -734,6 +734,10 @@ async function generateQueueEmbed(client, guildId, leave) {
     volumemax = volumemax.setDisabled(false);
     volumemin = volumemin.setDisabled(false);
     volumemid = volumemid.setDisabled(false);
+    if (player.volume >= 91){
+      volumeup = volumeup.setStyle('DANGER')
+      volumeup = volumeup.setLabel('BOOST!')
+    }
     if (player.volume == 150){
       volumemax = volumemax.setStyle('DANGER')
       volumemax = volumemax.setDisabled()

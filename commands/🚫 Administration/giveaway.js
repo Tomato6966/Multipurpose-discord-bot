@@ -3,7 +3,7 @@ const {MessageEmbed, Permissions} = require("discord.js");
 const config = require(`../../botconfig/config.json`)
 const ms = require("ms");
 const {
-    databasing, swap_pages
+    databasing, swap_pages, handlemsg
 } = require(`../../handlers/functions`);
 module.exports = {
     name: "giveaway",

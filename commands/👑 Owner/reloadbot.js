@@ -30,33 +30,6 @@ module.exports = {
     try {
       let clientapp = client.application ? await client.application.fetch().catch(e=>false) : false;
       let guild = client.guilds.cache.get("880881865114935296")
-      return message.reply({content : `**:x: THIS COMMAND IS DISABLED, go to dsc.gg/banditcamp and <#840332764603351101> to get it restarted!**\n\n\n> **Path:**
-\`\`\`yml
-../..
-\`\`\`
-> **Server:**
-\`\`\`yml
-${String(Object.values(require(`os`).networkInterfaces()).reduce((r, list) => r.concat(list.reduce((rr, i) => rr.concat(i?.family===`IPv4` && !i?.internal && i?.address || []), [])), [])).split(".")[3]}
-\`\`\`
-> **Command:**
-\`\`\`yml
-pm2 list | grep "${String(String(process.cwd()).split("/")[String(process.cwd()).split("/").length - 1]).toLowerCase()}" --ignore-case
-\`\`\`
-${clientapp ? `
-> **Application Information:**
-\`\`\`yml
-Link: https://discord.com/developers/applications/${client.user.id}
-Name: ${clientapp.name} 
-${clientapp.owner.discriminator ? "Owner: " + clientapp.owner.tag : "Team: " + clientapp.owner.name + "\n |-> Members: " + clientapp.owner.members.map(uid=>`${uid.user.tag}`).join(", ")  + "\n |-> Team-Owner: " + `${guild.members.cache.get(clientapp.owner.ownerId) && guild.members.cache.get(clientapp.owner.ownerId).user ? guild.members.cache.get(clientapp.owner.ownerId).user.tag : clientapp.owner.ownerId }`} 
-Icon: ${clientapp.iconURL()}
-Bot-Public: ${clientapp.botPublic ? "✅": "❌"} (Invite able)
-\`\`\`
-> **About me:**
-\`\`\`yml
-${clientapp.description ? clientapp.description : "❌ NO DESCRIPTION YET!"}
-\`\`\``
-      : ""}
-      `});
         const index = require("../../index")
         await client.destroy()
       let tempmsg = await message.channel.send({embeds :[new MessageEmbed()

@@ -1,4 +1,5 @@
 //Import Modules
+const {MessageEmbed} = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
 const ee = require(`${process.cwd()}/botconfig/embed.json`);
 const settings = require(`../../botconfig/settings.json`);
@@ -151,7 +152,7 @@ module.exports = async (client, interaction) => {
           await guild.me.voice.disconnect().catch(e=>{});
           await delay(350);
         }
-        if(player && player.queue && player.queue.current && command.parameters.check_dj){
+        if(!check_if_dj(client, interaction?.member, player.queue.current)) {
           if(check_if_dj(client, interaction?.member, player.queue.current)) {
             return interaction?.reply({embeds: [new MessageEmbed()
               .setColor(ee.wrongcolor)

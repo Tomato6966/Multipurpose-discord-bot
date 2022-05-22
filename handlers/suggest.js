@@ -89,7 +89,7 @@ module.exports = (client) => {
             components: allbuttons,
         }).then(async msg => {
             //ste suggestions Data
-            await client.settings.set(msg.id, {
+            await client.suggestions.set(msg.id, {
                 upvotes: 0,
                 downvotes: 0,
                 user: message.author?.id,
@@ -103,7 +103,7 @@ module.exports = (client) => {
               components: allbuttonsSave
           }).then(async msg => {
               //ste suggestions Data
-              await client.settings.set(msg.id, {
+              await client.suggestions.set(msg.id, {
                   upvotes: 0,
                   downvotes: 0,
                   user: message.author?.id,
@@ -135,7 +135,7 @@ module.exports = (client) => {
       let channel = button.message.channel;
       if (button.customId.startsWith("Suggest_")) {
           if(settings && settings.channel && settings.channel !== channel.id) return;
-          let SuggestionsData = await client.settings.get(button.message.id)
+          let SuggestionsData = await client.suggestions.get(button.message.id)
           if(!SuggestionsData.downvoted_ppl) {
             SuggestionsData.downvoted_ppl = []
           }
@@ -153,7 +153,7 @@ module.exports = (client) => {
               }
               SuggestionsData.upvotes += 1;
               SuggestionsData.voted_ppl.push(button.user.id);
-              await client.settings.set(button.message.id, SuggestionsData)
+              await client.suggestions.set(button.message.id, SuggestionsData)
           }
           if(button.customId == "Suggest_downvote") {
               if(SuggestionsData.downvoted_ppl.includes(button.user.id)){
@@ -167,9 +167,9 @@ module.exports = (client) => {
                   SuggestionsData.voted_ppl.splice(index, 1);
                 }
               }
-              SuggestionsData.upvotes += 1;
+              SuggestionsData.downvotes += 1;
               SuggestionsData.downvoted_ppl.push(button.user.id);
-              await client.settings.set(button.message.id, SuggestionsData)
+              await client.suggestions.set(button.message.id, SuggestionsData)
           }
           if(button.customId == "Suggest_who"){
             return button.reply({

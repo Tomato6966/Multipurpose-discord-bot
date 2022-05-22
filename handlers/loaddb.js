@@ -62,6 +62,8 @@ module.exports = async client => {
 
             client.setups = new client.database.table("setups");
 
+            client.suggestions = new client.database.table("suggestions");
+
             client.queuesaves = new client.database.table("queuesaves");
 
             client.modActions = new client.database.table("actions");
@@ -159,6 +161,7 @@ module.exports = async client => {
         async function manageGiveaways() {
             const CustomGiveawayManager = class extends GiveawaysManager {
                 async getAllGiveaways() {
+                    console.log("getAllGiveaways".bgGreen)
                     return await client.giveawayDB.all(true);
                 }
                 async saveGiveaway(messageId, giveawayData) {
@@ -173,11 +176,11 @@ module.exports = async client => {
                     await client.giveawayDB.delete(messageId);
                     return true;
                 }
-                /*async refreshStorage() {
+                async refreshStorage() {
                     console.log("refreshStorage".bgGreen)
                     // This should make all shards refresh their cache with the updated database
                     return client.cluster.broadcastEval(`this.giveawaysManager.getAllGiveaways()`);
-                }*/
+                }
             };
 
             const manager = new CustomGiveawayManager(client, {

@@ -76,6 +76,13 @@ module.exports = {
 
       embed.addField(client.la[ls].cmds.info.serverinfo.field13, `<a:nitro:950885057768341504> \`${boostlevel}\``, true)
       embed.addField(client.la[ls].cmds.info.serverinfo.field14, "👾 \`" + maxbitrate + " kbps\`", true)
+      let guildpremiumdat = await client.premium.get(`${message.guild.id}.enabled`)
+      if(guildpremiumdat === true){
+        var gildpremiumdata = ":white_check_mark:"
+      }else{
+        var gildpremiumdata = ":x:"
+      }
+      embed.addField(client.la[ls].cmds.info.serverinfo.field15, `${gildpremiumdata}`, true)
       if(boosts >= 14){
           embed.addField(`**<a:arrow:943027097348227073> Vanity:**`, `${message.guild.vanityURLCode ? `https://discord.gg/${message.guild.vanityURLCode}` : ":x: No Vanity-Invite"}`)
       }

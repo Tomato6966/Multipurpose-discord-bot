@@ -10,7 +10,8 @@ module.exports = {
   options: [
 		{"String": { name: "chat_text", description: "Wanna Chat with me?", required: false }}, 
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+    let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     try{
     //console.log(interaction, StringOption)
 		await interaction?.deferReply({ ephemeral: true })

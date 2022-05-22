@@ -18,7 +18,7 @@ module.exports = {
     
     try {
       await dbEnsure(client.settings, message.guild.id, {
-        defaultap: true,
+        defaultap: false,
       });
       const d = await client.settings.get(`${message.guild.id}.defaultap`);
       await client.settings.set(`${message.guild.id}.defaultap`, !d);
