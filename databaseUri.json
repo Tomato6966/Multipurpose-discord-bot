@@ -1,3 +1,3 @@
 {
-    "mongoUri": ""
+    "mongoUri": "mongodb://<username>:<password>@<IPV4>:<PORT>/<DB_NAME>"
 }
