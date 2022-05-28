@@ -1,8 +1,8 @@
 const Discord = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { duration, handlemsg } = require(`${process.cwd()}/handlers/functions`)
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { duration, handlemsg } = require(`../../handlers/functions`)
 const { MessageActionRow, MessageSelectMenu } = require("discord.js")
 module.exports = {
     name: "botfaq",
@@ -11,15 +11,19 @@ module.exports = {
     description: "Sends the FAQ Options for the BOT",
     usage: "botfaq",
     type: "bot",
-    run: async (client, message, args, cmduser, text, prefix) => {
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+    
     
 		try{
-      let milratodc = client.guilds.cache.get("773668217163218944")
-      let milratomembers = await milratodc.members.fetch().catch(() => {});
-      let partnercount = milratomembers.filter(m => m.roles.cache.has("823150244509515807"))
-      partnercount = partnercount.map(m=>m.id).length
-      
+      const membersWithRoleResult = await client.cluster.broadcastEval(async (client) => {
+        const guild = client.guilds.cache.get("773668217163218944");
+        if (!guild) return null;
+        const members = await guild.members.fetch().catch(() => null);
+        if (!members) return null;
+        const membersWithRole = members.filter(member => member.roles.cache.has("823150244509515807"));
+        return membersWithRole.size;
+      });
+      const partnercount = membersWithRoleResult.find(count => count !== null);
       let menuoptions = [
         {
           value: client.la[ls].cmds.info.botfaq.menuoptions[0].value,
@@ -120,13 +124,13 @@ module.exports = {
         }
       });
     } catch (e) {
-        console.log(String(e.stack).grey.bgRed)
+        console.error(e)
         return message.reply({embeds: [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.erroroccur)
             .setDescription(eval(client.la[ls]["cmds"]["info"]["botfaq"]["variable1"]))
-        ]}).catch(()=>{});
+        ]}).catch(() => null);
     }
   },
 };

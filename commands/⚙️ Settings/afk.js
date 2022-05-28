@@ -1,9 +1,9 @@
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+const ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 
 module.exports = {
   name: "afk",
@@ -14,13 +14,13 @@ module.exports = {
   description: "Set yourself AFK",
   type: "user",
   run: async (client, message, args, user, text, prefix, player) => {
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
-      if(args[0]) client.afkDB.set(message.guild.id+user.id, args.join(" "), "message");
-      client.afkDB.set(message.guild.id+user.id, Date.now(), "stamp");
+      if(args[0]) await client.afkDB.set(`${message.guild.id+user.id}.message`, args.join(" "));
+      await client.afkDB.set(`${message.guild.id+user.id}.stamp`, Date.now());
       message.reply(`You are now afk for: ${args.join(" ")}\n> **Tipp:** *Write \`[afk]\` infront of your Message to stay afk but still write*`);
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds : [new MessageEmbed()
         .setFooter(client.getFooter(es)).setColor(es.wrongcolor)
         .setTitle(client.la[ls].common.erroroccur)

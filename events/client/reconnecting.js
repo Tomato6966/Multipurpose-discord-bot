@@ -1,5 +1,5 @@
 //here the event starts
-module.exports = client => {
+module.exports = async (client) => {
     console.log(`Reconnceting at ${new Date()}.`.bgYellow.black)
 }
 /**

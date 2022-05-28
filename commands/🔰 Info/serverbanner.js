@@ -1,10 +1,10 @@
 const Discord = require("discord.js");
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const moment = require('moment');
-const { GetUser, GetGlobalUser, handlemsg } = require(`${process.cwd()}/handlers/functions`)
+const { GetUser, GetGlobalUser, handlemsg } = require(`../../handlers/functions`)
 module.exports = {
   name: "serverbanner",
   aliases: ["sbanner"],
@@ -12,9 +12,9 @@ module.exports = {
   description: "Get the Banner of the Server",
   usage: "serverbanner",
   type: "server",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {   
       if(message.guild.banner) {
         let embed = new Discord.MessageEmbed()
@@ -33,7 +33,7 @@ module.exports = {
         message.reply({embeds: [embed]})
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

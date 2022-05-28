@@ -2,13 +2,13 @@ const {
   MessageEmbed, Collection, MessageAttachment, Permissions
 } = require("discord.js");
 const Discord = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
 const moment = require("moment")
 const fs = require('fs')
 const {
   databasing, delay, create_transcript, GetUser, GetRole
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow } = require('discord.js')
 module.exports = {
   name: "instantdelete",
@@ -18,17 +18,17 @@ module.exports = {
   usage: "instantdelete",
   description: "Instant Deletes the Ticket",
   type: "channel",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     const guild = message.guild;
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
-      let adminroles = client.settings.get(message.guild.id, "adminroles")
-      let cmdroles = client.settings.get(message.guild.id, "cmdadminroles.ticket")
-      let cmdroles2 = client.settings.get(message.guild.id, "cmdadminroles.close")
-      try{for (const r of cmdroles2) cmdroles.push(r)}catch{}
+        let adminroles = GuildSettings?.adminroles || [];
+        let cmdroles = GuildSettings?.cmdadminroles?.ticket || [];
+        let cmdroles2 = GuildSettings?.cmdadminroles?.close || [];
+        try{for (const r of cmdroles2) cmdroles.push(r)}catch{}
         var cmdrole = []
         if(cmdroles.length > 0){
-          for(const r of cmdroles){
+          for await (const r of cmdroles){
             if(message.guild.roles.cache.get(r)){
               cmdrole.push(` | <@&${r}>`)
             }
@@ -36,9 +36,18 @@ module.exports = {
               cmdrole.push(` | <@${r}>`)
             }
             else {
-              //console.log(r)
-              try{ client.settings.remove(message.guild.id, r, `cmdadminroles.ticket`) }catch{ }
-              try{ client.settings.remove(message.guild.id, r, `cmdadminroles.close`) }catch{ }
+                const File = `ticket`;
+                let index = GuildSettings && GuildSettings.cmdadminroles && typeof GuildSettings.cmdadminroles == "object" ? GuildSettings.cmdadminroles[File]?.indexOf(r) || -1 : -1;
+                if(index > -1) {
+                  GuildSettings.cmdadminroles[File].splice(index, 1);
+                  client.settings.set(`${message.guild.id}.cmdadminroles`, GuildSettings.cmdadminroles)
+                }
+                const File2 = `close`;
+                let index2 = GuildSettings && GuildSettings.cmdadminroles && typeof GuildSettings.cmdadminroles == "object" ? GuildSettings.cmdadminroles[File2]?.indexOf(r) || -1 : -1;
+                if(index2 > -1) {
+                  GuildSettings.cmdadminroles[File2].splice(index2, 1);
+                  client.settings.set(`${message.guild.id}.cmdadminroles`, GuildSettings.cmdadminroles)
+                }
             }
           }
         }
@@ -49,7 +58,7 @@ module.exports = {
       ticketSystemNumber = ticketSystemNumber[ticketSystemNumber.length - 1];
       let ticket = client.setups.get(message.guild.id, `${String(Ticketdata.type).includes("menu") ? "menu": ""}ticketsystem${ticketSystemNumber}`)
       
-      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author.id) && !message.member.permissions.has([Permissions.FLAGS.ADMINISTRATOR]) && !message.member.roles.cache.some(r => ticket.adminroles.includes(r ? r.id : r)))
+      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author?.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author?.id) && !message.member?.permissions?.has([Permissions.FLAGS.ADMINISTRATOR]) && !message.member.roles.cache.some(r => ticket.adminroles.includes(r ? r.id : r)))
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -85,7 +94,7 @@ module.exports = {
                     ],
                     components: [new MessageActionRow().addComponents(button_ticket_verify.setDisabled(true))]
                 }).catch((e) => {
-                    console.log(String(e).grey)
+                    console.error(e)
                 });
                 let data = client.setups.get(msg.channel.id, "ticketdata");
 
@@ -114,7 +123,7 @@ module.exports = {
                             let messageCollection = new Collection(); //make a new collection
                             let channelMessages = await channel.messages.fetch({ //fetch the last 100 messages
                                 limit: 100
-                            }).catch(() => {}); //catch any error
+                            }).catch(() => null); //catch any error
                             messageCollection = messageCollection.concat(channelMessages); //add them to the Collection
                             let tomanymsgs = 1; //some calculation for the messagelimit
                             if (Number(msglimit) === 0) msglimit = 100; //if its 0 set it to 100
@@ -127,7 +136,7 @@ module.exports = {
                                 channelMessages = await channel.messages.fetch({
                                     limit: 100,
                                     before: lastMessageId
-                                }).catch(() => {}); //Fetch again, 100 messages above the already fetched messages
+                                }).catch(() => null); //Fetch again, 100 messages above the already fetched messages
                                 if (channelMessages) //if its true
                                     messageCollection = messageCollection.concat(channelMessages); //add them to the collection
                             }
@@ -153,21 +162,21 @@ module.exports = {
                                     await logChannel.send({
                                         content: `<@${buttonuser.id}>`,
                                         embeds: [sendembed]
-                                    }).catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                                    }).catch(e=>console.error(e))
                                     await logChannel.send({
                                         files: [attachment]
-                                    }).catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
-                                    //await tmmpmsg.delete().catch(e=>console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                                    }).catch(e=>console.error(e))
+                                    //await tmmpmsg.delete().catch(e=>console.error(e))
                                     await fs.unlinkSync(path)
                                 } catch (error) { //if the file is to big to be sent, then catch it!
                                     console.log(error)
                                 }
                             }).catch(e => {
-                                console.log(String(e).grey)
+                                console.error(e)
                             })
                         }
                     } catch (e){
-                        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                        console.error(e)
                     }
                 }
 
@@ -181,29 +190,29 @@ module.exports = {
                 })
                 setTimeout(() => {
                     msg.channel.delete().catch((e) => {
-                        console.log(String(e).grey)
+                        console.error(e)
                     });
                 }, 3500)
 
-                if (client.settings.get(guild.id, `adminlog`) != "no") {
+                if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
                     let message = msg; //NEEDED FOR THE EVALUATION!
                     try {
-                        var adminchannel = guild.channels.cache.get(client.settings.get(guild.id, `adminlog`))
-                        if (!adminchannel) return client.settings.set(guild.id, "no", `adminlog`);
+                        var adminchannel = guild.channels.cache.get(GuildSettings.adminlog)
+                        if (!adminchannel) return client.settings.set(`${message.guild.id}.adminlog`, "no");
                         adminchannel.send({
                             embeds: [new MessageEmbed()
                                 .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-                                .setAuthor(`ticket --> LOG | ${message.author.tag}`, message.author.displayAvatarURL({
+                                .setAuthor(client.getAuthor(`ticket --> LOG | ${message.author.tag}`, message.author.displayAvatarURL({
                                     dynamic: true
-                                }))
+                                })))
                                 .setDescription(eval(client.la[ls]["handlers"]["ticketeventjs"]["ticketevent"]["variable15"]))
                                 .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
                                 .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-                                .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+                                .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
                             ]
                         })
                     } catch (e) {
-                        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                        console.error(e)
                     }
                 }
             } else {
@@ -216,7 +225,7 @@ module.exports = {
                   ],
                   components: [new MessageActionRow().addComponents(button_ticket_verify.setDisabled(true))]
               }).catch((e) => {
-                  console.log(String(e).grey)
+                  console.error(e)
               });
             }
         });
@@ -231,12 +240,12 @@ module.exports = {
                     embeds: [endedembed],
                     components: [new MessageActionRow().addComponents(button_ticket_verify.setDisabled(true).setLabel("FAILED TO VERIFY").setEmoji("833101993668771842").setStyle('DANGER'))]
                 }).catch((e) => {
-                    console.log(String(e).grey)
+                    console.error(e)
                 });
             }
         });
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["administration"]["close"]["variable6"]))

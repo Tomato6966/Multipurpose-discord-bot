@@ -1,6 +1,6 @@
 const {
   MessageEmbed,
-  Collection, Permissions
+  Collection, Permissions, Guild
 } = require("discord.js")
 const config = require(`${process.cwd()}/botconfig/config.json`);
 const kernelsettings = require(`${process.cwd()}/botconfig/settings.json`);
@@ -16,139 +16,126 @@ var CronJob = require('cron').CronJob;
 
 module.exports = function (client) {
 
-  const maxJoinToCreate = 100;
-
-  client.JobJointocreate = new CronJob('0 * * * * *', function() {
-    check_voice_channels(client)
-  }, null, true, 'America/Los_Angeles');
-  client.JobJointocreate2 = new CronJob('0 * * * * *', function() {
-    check_created_voice_channels(client)
-  }, null, true, 'America/Los_Angeles');
+  // check channels every minute
+  client.JobJointocreate = new CronJob('0 * * * * *', async function () {
+    check_voice_channels(client);
+    check_created_voice_channels(client);
+    return;
+  }, null, true, 'Europe/Berlin');
 
   client.on("ready", () => {
     check_voice_channels(client);
     check_created_voice_channels(client)
-    client.JobJointocreate.start();
-    client.JobJointocreate2.start();
+    setTimeout(() => {
+      client.JobJointocreate.start();
+    }, 45_000)
+    return;
   })
   //voice state update event to check joining/leaving channels
-  client.on("voiceStateUpdate", (oldState, newState) => {
+  client.on("voiceStateUpdate", async (oldState, newState) => {
+    if (
+      (!oldState.streaming === false && newState.streaming === true) ||
+      (oldState.streaming === true && !newState.streaming === false) ||
+      (!oldState.serverDeaf === false && newState.serverDeaf === true) ||
+      (oldState.serverDeaf === true && !newState.serverDeaf === false) ||
+      (!oldState.serverMute === false && newState.serverMute === true) ||
+      (oldState.serverMute === true && !newState.serverMute === false) ||
+      (!oldState.selfDeaf === false && newState.selfDeaf === true) ||
+      (oldState.selfDeaf === true && !newState.selfDeaf === false) ||
+      (!oldState.selfMute === false && newState.selfMute === true) ||
+      (oldState.selfMute === true && !newState.selfMute === false) ||
+      (!oldState.selfVideo === false && newState.selfVideo === true) ||
+      (oldState.selfVideo === true && !newState.selfVideo === false)
+    ) return true;
+    const guildData = await client.jtcsettings.all().then(Data => Data.filter(d => d.data && typeof d.data == "object" ? Object.entries(d.data).some(([k, v]) => v.channel && v.channel != "no") : false).find(d => d.ID == newState.guild.id)?.data);
+    if (!guildData || typeof guildData !== "object") return
     // JOINED A CHANNEL
     if (!oldState.channelId && newState.channelId) {
-      let index = false;
-      if (!index) {
-        for (let i = 1; i <= maxJoinToCreate; i++) {
-          const d = client.jtcsettings
-          var pre = `jtcsettings${i}`;
-          if (d?.has(newState.guild.id) && d?.has(newState.guild.id, pre) && d?.get(newState.guild.id, pre+".channel").includes(newState.channelId)) index = i;
-        }
-      }
-      if (!index) {
-        return // console.log("No valid database for this jtc channel found...");
-      }
-      return create_join_to_create_Channel(client, newState, index);
+      let joined = await joinChannel();
+      if (joined) return true;
     }
     // LEFT A CHANNEL
-    if (oldState.channelId && !newState.channelId) {
-      if (client.jointocreatemap.has(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`) && oldState.guild.channels.cache.has(client.jointocreatemap.get(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`))) {
-        //CHANNEL DELETE CHECK
-        var vc = oldState.guild.channels.cache.get(client.jointocreatemap.get(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`));
-        if (vc.members.size < 1) {
-          client.jointocreatemap.delete(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`);
-          client.jointocreatemap.delete(`owner_${vc.guild.id}_${vc.id}`);
-          console.log(`Deleted the Channel: ${vc.name} in: ${vc.guild ? vc.guild.name : "undefined"} DUE TO EMPTYNESS`.strikethrough.brightRed)
-          return vc.delete().catch(e => console.log("Couldn't delete room"));
-        } else {
-          let ownerId = client.jointocreatemap.get(`owner_${vc.guild.id}_${vc.id}`);
-          //if owner left, then pick a random user
-          if (ownerId == oldState.id) {
-            let members = vc.members.map(m => m.id);
-            let randommemberid = members[Math.floor(Math.random() * members.length)];
-            //set the new owner + perms
-            client.jointocreatemap.set(`owner_${vc.guild.id}_${vc.id}`, randommemberid);
-            if(vc.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
-              vc.permissionOverwrites.edit(randommemberid, {
-                CONNECT: true,
-                VIEW_CHANNEL: true,
-                MANAGE_CHANNELS: true,
-                MANAGE_ROLES: true
-              }).catch(() => {})
-            }
-            //delete the old owner
-            vc.permissionOverwrites.delete(oldState.id).catch(() => {})
-            try {
-              let es = client.settings.get(vc.guild.id, "embed")
-              client.users.fetch(randommemberid).then(user => {
-                user.send({embeds: [new MessageEmbed()
-                  .setColor(es.color).setThumbnail(oldState.member.displayAvatarURL({dynamic:true}))
-                  .setFooter(client.getFooter(es))
-                  .setTitle(`The VC-OWNER \`${oldState.member.user.tag}\` left the VC! A new Random Owner got picked!`)
-                  .addField(`You now have access to all \`voice Commands\``, `> ${client.commands.filter((cmd) => cmd.category === "🎤 Voice").first().extracustomdesc.split(",").map(i => i?.trim()).join("︲")}`)
-                ]}).catch(() => {})
-              }).catch(() => {})
-            } catch {
-              /* */
-            }
-          }
-        }
-      }
+    else if (oldState.channelId && !newState.channelId) {
+      let left = await leaveChannel()
+      if (left) return true;
     }
     // Switch A CHANNEL
-    if (oldState.channelId && newState.channelId) {
-      if (oldState.channelId !== newState.channelId) {
-        let index = false;
-        if (!index) {
-          for (let i = 1; i <= maxJoinToCreate; i++) {
-            const d = client.jtcsettings
-            var pre = `jtcsettings${i}`;
-            if (d?.has(newState.guild.id) && d?.has(newState.guild.id, pre) && d?.get(newState.guild.id, pre+".channel").includes(newState.channelId)) index = i;
-          }
-        }
-        if (index) {
-          create_join_to_create_Channel(client, newState, index);
-        }
-        
-        //IF STATEMENT
-        if (client.jointocreatemap.has(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`) && oldState.guild.channels.cache.has(client.jointocreatemap.get(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`))) {
-          var vc = oldState.guild.channels.cache.get(client.jointocreatemap.get(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`));
-          if (vc.members.size < 1) {
-            client.jointocreatemap.delete(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`);
-            client.jointocreatemap.delete(`owner_${vc.guild.id}_${vc.id}`);
-            return vc.delete().catch(e => console.log("Couldn't delete room"));
-          } let ownerId = client.jointocreatemap.get(`owner_${vc.guild.id}_${vc.id}`);
-          //if owner left, then pick a random user
-          if (ownerId == oldState.id) {
-            let members = vc.members.map(m => m.id);
-            let randommemberid = members[Math.floor(Math.random() * members.length)];
-            //set the new owner + perms
-            client.jointocreatemap.set(`owner_${vc.guild.id}_${vc.id}`, randommemberid);
-            if(vc.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
-              vc.permissionOverwrites.edit(randommemberid, {
-                CONNECT: true,
-                VIEW_CHANNEL: true,
-                MANAGE_CHANNELS: true,
-                MANAGE_ROLES: true
-              }).catch(() => {})
-            }
-            //delete the old owner perms
-            vc.permissionOverwrites.delete(oldState.id).catch(() => {})
-            try {
-              let es = client.settings.get(vc.guild.id, "embed")
-              client.users.fetch(randommemberid).then(user => {
-                user.send({embeds: [new MessageEmbed()
-                  .setColor(es.color).setThumbnail(oldState.member.displayAvatarURL({dynamic:true}))
-                  .setFooter(client.getFooter(es))
-                  .setTitle(`The VC-OWNER \`${oldState.member.user.tag}\` left the VC! A new Random Owner got picked!`)
-                  .addField(`You now have access to all \`voice Commands\``, `> ${client.commands.filter((cmd) => cmd.category === "🎤 Voice").first().extracustomdesc.split(",").map(i => i?.trim()).join("︲")}`)
-                ]}).catch(() => {})
-              }).catch(() => {})
-            } catch {
-              /* */
-            }
-          }
-        }
-      }
+    else if (oldState.channelId && newState.channelId && oldState.channelId !== newState.channelId) {
+      let joined = await joinChannel();
+      let left = await leaveChannel();
+      if (joined || left) return true;
     }
+    return true;
+
+    async function joinChannel() {
+      return new Promise(async (res, rej) => {
+        const validEntries = Object.entries(guildData).filter(([k, v]) => v.channel && v.channel != "no");
+        if(!validEntries || validEntries.length == 0) return res(true);
+        for await (const [key, value] of validEntries) {
+          if (value.channel == newState.channelId) {
+            await create_join_to_create_Channel(client, newState, key);
+            return res(true);
+          } else continue;
+        }
+        return res(false);
+      })
+    }
+
+    async function leaveChannel() {
+      return new Promise(async (res) => {
+        const tempC = await client.jointocreatemap.get(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`);
+        var vc = oldState.guild.channels.cache.get(tempC);
+        if (tempC && vc) {
+          //CHANNEL DELETE CHECK
+          if (vc?.members?.size < 1) {
+            await client.jointocreatemap.delete(`tempvoicechannel_${oldState.guild.id}_${oldState.channelId}`);
+            await client.jointocreatemap.delete(`owner_${vc.guild.id}_${vc.id}`);
+            console.log(`Deleted the Channel: ${vc.name} in: ${vc.guild ? vc.guild.name : "undefined"} DUE TO EMPTYNESS`.strikethrough.brightRed)
+            vc.delete().catch(() => null);
+            return res(true);
+          } else {
+            let ownerId = await client.jointocreatemap.get(`owner_${vc.guild.id}_${vc.id}`);
+            //if owner left, then pick a random user
+            if (ownerId == oldState.id) {
+              let members = vc.members.map(m => m.id);
+              let randommemberid = members[Math.floor(Math.random() * members.length)];
+              //set the new owner + perms
+              await client.jointocreatemap.set(`owner_${vc.guild.id}_${vc.id}`, randommemberid);
+              if (vc.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+                await vc.permissionOverwrites.edit(randommemberid, {
+                  CONNECT: true,
+                  VIEW_CHANNEL: true,
+                  MANAGE_CHANNELS: true,
+                  MANAGE_ROLES: true
+                }).catch(() => null)
+              }
+              //delete the old owner
+              await vc.permissionOverwrites.delete(oldState.id).catch(() => null)
+              try {
+                let es = await client.settings.get(vc.guild.id + ".embed")
+                client.users.fetch(randommemberid).then(user => {
+                  user.send({
+                    embeds: [new MessageEmbed()
+                      .setColor(es.color).setThumbnail(oldState.member.displayAvatarURL({ dynamic: true }))
+                      .setFooter(client.getFooter(es))
+                      .setTitle(`The VC-OWNER \`${oldState.member.user.tag}\` left the VC! A new Random Owner got picked!`)
+                      .addField(`You now have access to all \`voice Commands\``, `> ${client.commands.filter((cmd) => cmd.category === "🎤 Voice").first().extracustomdesc.split(",").map(i => i?.trim()).join("︲")}`)
+                    ]
+                  }).catch(() => null)
+                }).catch(() => null)
+              } catch {
+                /* */
+              }
+              return res(true);
+            } else {
+              return;
+            }
+          }
+        }
+        return res(false);
+      })
+    }
+    return;
   })
 }
 

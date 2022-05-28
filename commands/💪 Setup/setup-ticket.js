@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure, dbRemove
+} = require(`../../handlers/functions`);
 const {
   MessageButton,
   MessageActionRow,
@@ -19,13 +19,10 @@ module.exports = {
   aliases: ["setupticket", "ticket-setup", "ticketsetup", "ticketsystem"],
   cooldown: 5,
   usage: "setup-ticket --> Follow Steps",
-  description: "Manage 25 different Ticket Systems, Ticket-Roles, messages, create/disable",
+  description: "Manage 100 Ticket Systems, Ticket-Roles, messages, create/disable",
   memberpermissions: ["ADMINISTRATOR"],
   type: "system",
-  run: async (client, message, args, cmduser, text, prefix) => {
-
-    let es = client.settings.get(message.guild.id, "embed");
-    let ls = client.settings.get(message.guild.id, "language")
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     try {
       let temptype = 0;
       let errored = false;
@@ -128,18 +125,18 @@ module.exports = {
         function menuselection(menu) {
           let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
           if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
           let SetupNumber = menu?.values[0].split(" ")[0]
           used1 = true;
           second_layer(SetupNumber, menuoptiondata)
         }
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
@@ -155,7 +152,7 @@ module.exports = {
           menumsg.edit({
             embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
             components: [],
-            content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**"}`
+            content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**"}`
           })
         });
       }
@@ -236,7 +233,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor(SetupNumber + " Ticket Setup", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/incoming-envelope_1f4e8.png", "https://discord.gg/milrato")
+          .setAuthor(client.getAuthor(SetupNumber + " Ticket Setup", "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/incoming-envelope_1f4e8.png", "https://discord.gg/milrato"))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable4"]))
         //send the menu msg
         let menumsg = await message.reply({
@@ -244,20 +241,20 @@ module.exports = {
           components: [new MessageActionRow().addComponents(Selection)]
         })
         //function to handle the menuselection
-        function menuselection(menu) {
+        async function menuselection(menu) {
           let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
           if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable5"]))
-          menu?.deferUpdate();
-          var ticket = client.setups.get(message.guild.id, `ticketsystem${SetupNumber}`);
+          client.disableComponentMessage(menu);
+          var ticket = await client.setups.get(message.guild.id+`.ticketsystem${SetupNumber}`);
           handle_the_picks(menu?.values[0], SetupNumber, ticket)
         }
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
@@ -273,7 +270,7 @@ module.exports = {
           menumsg.edit({
             embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
             components: [],
-            content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**"}`
+            content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**"}`
           })
         });
       }
@@ -282,7 +279,7 @@ module.exports = {
 
         switch (optionhandletype) {
           case "Closed Ticket Category": {
-            let parentId = client.setups.get(message.guild.id, `ticketsystem${SetupNumber}.closedParent`);
+            let parentId = await client.setups.get(message.guild.id+`.ticketsystem${SetupNumber}.closedParent`);
             let parent = parentId ? message.guild.channels.cache.get(parentId) : null;
             var rembed = new MessageEmbed()
               .setColor(es.color)
@@ -291,13 +288,13 @@ module.exports = {
               .setDescription(`Currently it's: \`${parentId ? "Not Setupped yet" : parent ? parent.name : `Channel not Found: ${parentId}`}\`!\nWhen closing a Ticket, it will be moved to there until it get's deleted!\n> **Send the new __PARENT ID__ now!**`)
             message.reply({
               embeds: [rembed]
-            }).then(msg => {
+            }).then(async (msg) => {
               msg.channel.awaitMessages({
-                filter: m => m.author.id === message.author.id,
+                filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 30000,
                 errors: ['time']
-              }).then(collected => {
+              }).then(async collected => {
                 let content = collected.first().content;
                 if (!content || content.length > 19 || content.length < 17) {
                   return message.reply("An Id is between 17 and 19 characters big")
@@ -309,7 +306,7 @@ module.exports = {
                 if(parent.type !== "GUILD_CATEGORY"){
                   return message.reply(`<#${parent.id}> is not a CATEGORY/PARENT`);
                 }
-                client.setups.set(message.guild.id, parent.id, `ticketsystem${SetupNumber}.closedParent`);
+                await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.closedParent`, parent.id);
                 message.reply(`I will now move closed Tickets to ${parent.name} (${parent.id})`);
               }).catch(error => {
                 return message.reply({
@@ -324,7 +321,7 @@ module.exports = {
             })
           } break;
           case "Set Default Ticket Name": {
-            let defaultname = client.setups.get(message.guild.id, `ticketsystem${SetupNumber}.defaultname`);
+            let defaultname = await client.setups.get(message.guild.id+`.ticketsystem${SetupNumber}.defaultname`);
             var rembed = new MessageEmbed()
               .setColor(es.color)
               .setFooter(client.getFooter(es))
@@ -332,13 +329,13 @@ module.exports = {
               .setDescription(`Currently it's: \`${defaultname}\` aka it will turn into: \`${defaultname.replace("{member}", message.author.username).replace("{count}", 0)}\`\n> \`{member}\` ... will get replaced with the ticket opening username\n> \`{count}\` ... Will get replaced with the TICKET ID (COUNT)\n**Send the Message now!**`)
             message.reply({
               embeds: [rembed]
-            }).then(msg => {
+            }).then(async (msg) => {
               msg.channel.awaitMessages({
-                filter: m => m.author.id === message.author.id,
+                filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 30000,
                 errors: ['time']
-              }).then(collected => {
+              }).then(async collected => {
                 let content = collected.first().content;
                 if (!content || !content.includes("{member}")) {
                   return message.reply("You need to have {member} somewhere")
@@ -347,7 +344,7 @@ module.exports = {
                   return message.reply("A Channelname can't be longer then 32 Characters")
                 }
                 defaultname = content;
-                client.setups.set(message.guild.id, defaultname, `ticketsystem${SetupNumber}.defaultname`);
+                await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.defaultname`, defaultname);
                 message.reply(`Set the Default Ticket Name to: \`${defaultname}\` aka it will turn into: \`${defaultname.replace("{member}", message.author.username).replace("{count}", 0)}\``)
               }).catch(error => {
                 return message.reply({
@@ -376,7 +373,7 @@ module.exports = {
                 max: 1,
                 time: 180000,
                 errors: ['time'],
-              }).then(collected => {
+              }).then(async collected => {
                 let channel = collected.first().mentions.channels?.filter(ch => ch.guild.id == mm.guild.id)?.first()
                 if (!channel) return message.reply({
                   embeds: [new Discord.MessageEmbed()
@@ -393,20 +390,20 @@ module.exports = {
                   .setColor(es.color)
                 message.reply({
                   embeds: [msg6]
-                }).then(msg => {
+                }).then(async (msg) => {
                   msg.channel.awaitMessages({
                     filter: m => m.author.id == cmduser,
                     max: 1,
                     time: 180000,
                     errors: ['time'],
-                  }).then(collected => {
+                  }).then(async collected => {
                     //parent id in db
-                    if (channel.parent && channel.parent.id) client.setups.set(message.guild.id, channel.parent.id, `ticketsystem${SetupNumber}.parentid`);
+                    if (channel.parent && channel.parent.id) await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.parentid`, channel.parent.id);
 
                     ticketmsg = collected.first().content;
 
                     //channel id in db
-                    client.setups.set(message.guild.id, channel.id, `ticketsystem${SetupNumber}.channelid`);
+                    await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.channelid`, channel.id);
 
                     let button_open = new MessageActionRow().addComponents([new MessageButton().setStyle('SUCCESS').setCustomId('create_a_ticket').setLabel('Create a Ticket').setEmoji("📨")])
 
@@ -418,10 +415,10 @@ module.exports = {
                         .setColor(es.color)
                       ],
                       components: [button_open]
-                    }).then(msg => {
+                    }).then(async (msg) => {
                       //message id in db
-                      client.setups.set(message.guild.id, msg.id, `ticketsystem${SetupNumber}.messageid`);
-                      client.setups.set(message.guild.id, true, `ticketsystem${SetupNumber}.enabled`);
+                      await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.messageid`, msg.id);
+                      await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.enabled`, true);
                       //msg.react(emoji2react)
                       var themebd = new MessageEmbed()
                         .setColor(es.color)
@@ -471,7 +468,7 @@ module.exports = {
               parent.delete();
             } catch { }
             message.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable17"]))
-            client.setups.set(message.guild.id, {
+            await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}`, {
               enabled: true,
               guildid: message.guild.id,
               messageid: "",
@@ -484,7 +481,7 @@ module.exports = {
               },
               message: "Hey {user}, thanks for opening an ticket! Someone will help you soon!",
               adminroles: []
-            }, `ticketsystem${SetupNumber}`);
+            });
             break;
           case "Edit Message":
             var rembed = new MessageEmbed()
@@ -495,15 +492,15 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable19"]))
             message.reply({
               embeds: [rembed]
-            }).then(msg => {
+            }).then(async (msg) => {
               msg.channel.awaitMessages({
-                filter: m => m.author.id === message.author.id,
+                filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 30000,
                 errors: ['time']
-              }).then(collected => {
+              }).then(async collected => {
                 message.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable20"]))
-                client.setups.set(message.guild.id, collected.first().content, `ticketsystem${SetupNumber}.message`);
+                await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.message`, collected.first().content);
 
               }).catch(error => {
                 return message.reply({
@@ -526,18 +523,18 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable23"]))
             message.reply({
               embeds: [rrembed]
-            }).then(msg => {
+            }).then(async (msg) => {
               msg.channel.awaitMessages({
-                filter: m => m.author.id === message.author.id,
+                filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 30000,
                 errors: ['time']
-              }).then(collected => {
+              }).then(async collected => {
                 var role = collected.first().mentions.roles.filter(role => role.guild.id == message.guild.id).first();
                 if (!role) message.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable24"]))
 
                 message.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable25"]));
-                client.setups.push(message.guild.id, role.id, `ticketsystem${SetupNumber}.adminroles`);
+                await client.setups.push(message.guild.id+`.ticketsystem${SetupNumber}.adminroles`, role.id);
 
               }).catch(error => {
                 return message.reply({
@@ -560,21 +557,21 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable28"]))
             message.reply({
               embeds: [rrrembed]
-            }).then(msg => {
+            }).then(async (msg) => {
               msg.channel.awaitMessages({
-                filter: m => m.author.id === message.author.id,
+                filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 30000,
                 errors: ['time']
-              }).then(collected => {
+              }).then(async collected => {
                 var role = collected.first().mentions.roles.filter(role => role.guild.id == message.guild.id).first();
                 if (!role) message.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable29"]))
                 try {
-                  client.setups.remove(message.guild.id, role.id, `ticketsystem${SetupNumber}.adminroles`);
+                  await dbRemove(client.setups, message.guild.id+`.ticketsystem${SetupNumber}.adminroles`, role.id);
                   message.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable30"]));
                 } catch {
                   message.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable31"]))
-                  client.setups.set(message.guild.id, [], `ticketsystem${SetupNumber}.adminroles`);
+                  await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.adminroles`, []);
                 }
               }).catch(error => {
                 return message.reply({
@@ -597,18 +594,18 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable34"]))
             message.reply({
               embeds: [rembed]
-            }).then(msg => {
+            }).then(async (msg) => {
               msg.channel.awaitMessages({
-                filter: m => m.author.id === message.author.id,
+                filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 30000,
                 errors: ['time']
-              }).then(collected => {
+              }).then(async collected => {
                 if (collected.first().content.length == 18) {
                   try {
                     var cat = message.guild.channels.cache.get(collected.first().content)
                     message.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable35"]))
-                    client.setups.set(message.guild.id, cat.id, `ticketsystem${SetupNumber}.parentid`);
+                    await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.parentid`, cat.id);
                   } catch {
                     message.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable36"]))
                   }
@@ -636,7 +633,7 @@ module.exports = {
               messageClaim: "{claimer} **has claimed the Ticket!**\n> He will now give {user} support!"
             },
             */
-            let claimData = client.setups.get(message.guild.id, `ticketsystem${SetupNumber}.claim`);
+            let claimData = await client.setups.get(message.guild.id+`.ticketsystem${SetupNumber}.claim`);
             third_layer(SetupNumber)
             async function third_layer(SetupNumber) {
               let menuoptions = [{
@@ -688,20 +685,20 @@ module.exports = {
                 components: [new MessageActionRow().addComponents(Selection)]
               })
               //function to handle the menuselection
-              function menuselection(menu) {
+              async function menuselection(menu) {
                 let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
                 if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable5"]))
-                menu?.deferUpdate();
-                var ticket = client.setups.get(message.guild.id, `ticketsystem${SetupNumber}`);
+                client.disableComponentMessage(menu);
+                var ticket = await client.setups.get(message.guild.id+`.ticketsystem${SetupNumber}`);
                 handle_the_picks2(menu?.values[0], SetupNumber, ticket)
               }
               //Create the collector
               const collector = menumsg.createMessageComponentCollector({
-                filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+                filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
                 time: 90000
               })
               //Menu Collections
-              collector.on('collect', menu => {
+              collector.on('collect', async menu => {
                 if (menu?.user.id === cmduser.id) {
                   collector.stop();
                   let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
@@ -717,7 +714,7 @@ module.exports = {
                 menumsg.edit({
                   embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
                   components: [],
-                  content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**"}`
+                  content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**"}`
                 })
               });
             }
@@ -725,8 +722,8 @@ module.exports = {
 
               switch (optionhandletype) {
                 case `${claimData.enabled ? "Disable Claim System" : "Enable Claim System"}`: {
-                  client.setups.set(message.guild.id, !claimData.enabled, `ticketsystem${SetupNumber}.claim.enabled`);
-                  claimData = client.setups.get(message.guild.id, `ticketsystem${SetupNumber}.claim`);
+                  await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.claim.enabled`, !claimData.enabled);
+                  claimData = await client.setups.get(message.guild.id+`.ticketsystem${SetupNumber}.claim`);
                   return message.reply({
                     embeds: [
                       new MessageEmbed().setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
@@ -744,14 +741,14 @@ module.exports = {
                     .setDescription(String("{user} will be replaced with a USERPING\n\n**Current Message:**\n>>> " + claimData.messageOpen.substring(0, 1900)))
                   message.reply({
                     embeds: [rembed]
-                  }).then(msg => {
+                  }).then(async (msg) => {
                     msg.channel.awaitMessages({
-                      filter: m => m.author.id === message.author.id,
+                      filter: m => m.author.id === message.author?.id,
                       max: 1,
                       time: 30000,
                       errors: ['time']
-                    }).then(collected => {
-                      client.setups.set(message.guild.id, collected.first().content, `ticketsystem${SetupNumber}.claim.messageOpen`);
+                    }).then(async collected => {
+                      await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.claim.messageOpen`, collected.first().content);
                       message.reply(`Successfully set the New Message!`)
                     }).catch(error => {
                       return message.reply({
@@ -773,14 +770,14 @@ module.exports = {
                     .setDescription(String("{user} will be replaced with a USERPING\n{claimer} will be replaced with a PING for WHO CLAIMED IT\n\n**Current Message:**\n>>> " + claimData.messageClaim.substring(0, 1900)))
                   message.reply({
                     embeds: [rembed]
-                  }).then(msg => {
+                  }).then(async (msg) => {
                     msg.channel.awaitMessages({
-                      filter: m => m.author.id === message.author.id,
+                      filter: m => m.author.id === message.author?.id,
                       max: 1,
                       time: 30000,
                       errors: ['time']
-                    }).then(collected => {
-                      client.setups.set(message.guild.id, collected.first().content, `ticketsystem${SetupNumber}.claim.messageClaim`);
+                    }).then(async collected => {
+                      await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.claim.messageClaim`, collected.first().content);
                       message.reply(`Successfully set the New Message!`)
                     }).catch(error => {
                       return message.reply({
@@ -806,19 +803,19 @@ module.exports = {
               .setDescription(`Ping the Channel / send \`no\` for disabeling Logs!\n\n*The Log will only be sent if the ticket gets __DELETED__ via the BUTTON (not the closing)*`)
             message.reply({
               embeds: [rembed]
-            }).then(msg => {
+            }).then(async (msg) => {
               msg.channel.awaitMessages({
-                filter: m => m.author.id === message.author.id,
+                filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 30000,
                 errors: ['time']
-              }).then(collected => {
+              }).then(async collected => {
                 let channel = collected.first().mentions.channels.first();
                 if (channel) {
-                  client.setups.set(message.guild.id, channel.id, `ticketsystem${SetupNumber}.ticketlogid`);
+                  await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.ticketlogid`, channel.id);
                   message.reply(`Successfully set the <#${channel.id}> as the TICKET-LOG for ${SetupNumber ? SetupNumber : 1}. Ticketsystem`);
                 } else {
-                  client.setups.set(message.guild.id, "", `ticketsystem${SetupNumber}.ticketlogid`);
+                  await client.setups.set(message.guild.id+`.ticketsystem${SetupNumber}.ticketlogid`, "");
                   message.reply(":x: Disabled the Log, because you did not send a valid channel")
                 }
               }).catch(error => {
@@ -844,7 +841,7 @@ module.exports = {
 
 
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({
         embeds: [new MessageEmbed()
           .setColor(es.wrongcolor).setFooter(client.getFooter(es))

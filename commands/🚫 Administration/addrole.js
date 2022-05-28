@@ -1,14 +1,14 @@
-const config = require(`${process.cwd()}/botconfig/config.json`);
+const config = require(`../../botconfig/config.json`);
 const ms = require(`ms`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`)
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var ee = require(`../../botconfig/embed.json`)
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   MessageEmbed,
   Permissions
 } = require(`discord.js`)
 const {
   databasing
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 module.exports = {
   name: `addrole`,
   category: `🚫 Administration`,
@@ -17,9 +17,9 @@ module.exports = {
   usage: `addrole @User @Role`,
   description: `Adds a Role to a User`,
   type: "memberrole",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       if(!message.guild.me.permissions.has([Permissions.FLAGS.MANAGE_ROLES]))      
         return message.reply({embeds: [new MessageEmbed()
@@ -27,8 +27,8 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["addrole"]["variable1"]))
         ]})
         
-      let adminroles = client.settings.get(message.guild.id, "adminroles")
-      let cmdroles = client.settings.get(message.guild.id, "cmdadminroles.addrole")
+      let adminroles = GuildSettings?.adminroles || [];
+      let cmdroles = GuildSettings?.cmdadminroles?.addrole || [];
       var cmdrole = []
       if (cmdroles.length > 0) {
         for (const r of cmdroles) {
@@ -38,11 +38,16 @@ module.exports = {
             cmdrole.push(` | <@${r}>`)
           } else {
             //console.log(r)
-            client.settings.remove(message.guild.id, r, `cmdadminroles.addrole`)
+            const File = `addrole`;
+            let index = GuildSettings && GuildSettings.cmdadminroles && typeof GuildSettings.cmdadminroles == "object" ? GuildSettings.cmdadminroles[File]?.indexOf(r) || -1 : -1;
+            if(index > -1) {
+              GuildSettings.cmdadminroles[File].splice(index, 1);
+              client.settings.set(`${message.guild.id}.cmdadminroles`, GuildSettings.cmdadminroles)
+            }
           }
         }
       }
-      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author.id) && !message.member.permissions.has([Permissions.FLAGS.ADMINISTRATOR]))
+      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author?.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author?.id) && !message.member?.permissions?.has([Permissions.FLAGS.ADMINISTRATOR]))
         return message.reply({embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -88,7 +93,7 @@ module.exports = {
         ]});
       var ge = false;
       member.roles.add(role.id).catch(e => {
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
         ge = e;
       })
       if (ge)
@@ -104,26 +109,26 @@ module.exports = {
         .setTitle(eval(client.la[ls]["cmds"]["administration"]["addrole"]["variable12"]))
       ]});
 
-      if (client.settings.get(message.guild.id, `adminlog`) != "no") {
+      if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
         try {
-          var channel = message.guild.channels.cache.get(client.settings.get(message.guild.id, `adminlog`))
-          if (!channel) return client.settings.set(message.guild.id, "no", `adminlog`);
+          var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
+          if (!channel) return client.settings.set(`${message.guild.id}.adminlog`, "no");
           channel.send({embeds: [new MessageEmbed()
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-            .setAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({
+            .setAuthor(client.getFooter(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({
               dynamic: true
-          }))
+          })))
             .setDescription(eval(client.la[ls]["cmds"]["administration"]["addrole"]["variable13"]))
              .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
             .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-            .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+            .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
            ] })
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

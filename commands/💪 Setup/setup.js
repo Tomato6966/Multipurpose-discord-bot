@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup",
@@ -18,9 +18,8 @@ module.exports = {
   description: "Shows all setup commands",
   memberpermissions: ["ADMINISTRATOR"],
   type: "info",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language");
     try {
       first_layer()
         async function first_layer(){
@@ -48,7 +47,7 @@ module.exports = {
             {
               value: "setup-antidiscord",
               description: `Setup a Anit-DISCORD System to prevent DC-LINKS`,
-              emoji: "787321652345438228"
+              emoji: "<:DiscordLogo:936723374644789370>"
             },
             {
               value: "setup-antilink",
@@ -222,7 +221,7 @@ module.exports = {
             },
           ]
           let Selection1 = new MessageSelectMenu()
-            .setPlaceholder('Click me to setup the (1/3) Systems [A-C]!').setCustomId('MenuSelection') 
+            .setPlaceholder('Click me to setup the (1/3) Systems [A-C]!').setCustomId('setup_cmd_MenuSelection') 
             .setMaxValues(1).setMinValues(1)
             .addOptions(
             menuoptions.map((option, index) => {
@@ -237,7 +236,7 @@ module.exports = {
               }
            }).filter(Boolean))
           let Selection2 = new MessageSelectMenu()
-            .setPlaceholder('Click me to setup the (2/3) Systems [C-R]!').setCustomId('MenuSelection') 
+            .setPlaceholder('Click me to setup the (2/3) Systems [C-R]!').setCustomId('setup_cmd_MenuSelection2') 
             .setMaxValues(1).setMinValues(1)
             .addOptions(
             menuoptions.map((option, index) => {
@@ -252,7 +251,7 @@ module.exports = {
               }
            }).filter(Boolean))
           let Selection3 = new MessageSelectMenu()
-            .setPlaceholder('Click me to setup the (3/3) Systems [R-Z]!').setCustomId('MenuSelection') 
+            .setPlaceholder('Click me to setup the (3/3) Systems [R-Z]!').setCustomId('setup_cmd_MenuSelection3') 
             .setMaxValues(1).setMinValues(1)
             .addOptions(
             menuoptions.map((option, index) => {
@@ -269,64 +268,43 @@ module.exports = {
           //define the embed
           let MenuEmbed1 = new Discord.MessageEmbed()
             .setColor(es.color)
-            .setAuthor("Setup-Systems | (1/3) [A-C]", 
+            .setAuthor(client.getAuthor("Setup-Systems", 
             "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/lg/57/gear_2699.png",
-            "https://discord.gg/milrato")
+            "https://discord.gg/milrato"))
             .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup"]["variable1"]))
-          let MenuEmbed2 = new Discord.MessageEmbed()
-            .setColor(es.color)
-            .setAuthor("Setup-Systems | (2/3) [C-R]", 
-            "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/lg/57/gear_2699.png",
-            "https://discord.gg/milrato")
-            .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup"]["variable2"]))
-          let MenuEmbed3 = new Discord.MessageEmbed()
-            .setColor(es.color)
-            .setAuthor("Setup-Systems | (3/3) [R-Z]", 
-            "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/lg/57/gear_2699.png",
-            "https://discord.gg/milrato")
-            .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup"]["variable3"]))
+         
           //send the menu msg
-          let menumsg1 = await message.reply({embeds: [MenuEmbed1], components: [new MessageActionRow().addComponents(Selection1)]})
-          let menumsg2 = await message.reply({embeds: [MenuEmbed2], components: [new MessageActionRow().addComponents(Selection2)]})
-          let menumsg3 = await message.reply({embeds: [MenuEmbed3], components: [new MessageActionRow().addComponents(Selection3)]})
+          let menumsg1 = await message.reply({embeds: [MenuEmbed1], components: [
+            new MessageActionRow().addComponents(Selection1),
+            new MessageActionRow().addComponents(Selection2),
+            new MessageActionRow().addComponents(Selection3),
+          ]})
           //function to handle the menuselection
           function menuselection(menu) {
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
             let menuoptionindex = menuoptions.findIndex(v => v.value == menu?.values[0])
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             handle_the_picks(menuoptionindex, menuoptiondata)
           }
           //Event
-          client.on('interactionCreate',  (menu) => {
+          client.on('interactionCreate', async (menu) => {
+            if(!menu.isSelectMenu() || !menu.customId.startsWith("setup_cmd_")) return;
+            if(!menumsg1) return;
             if (menu?.message.id === menumsg1.id) {
               if (menu?.user.id === cmduser.id) {
-                menumsg1.edit({components: [], embeds: menumsg1.embeds}).catch(() => {});
+                menumsg1.edit({components: [], embeds: menumsg1.embeds}).catch(() => null);
                 menuselection(menu);
               }
-              else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
-            }
-            if (menu?.message.id === menumsg2.id) {
-              if (menu?.user.id === cmduser.id) {
-                menumsg2.edit({components: [], embeds: menumsg2.embeds}).catch(() => {});
-                menuselection(menu);
-              }
-              else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
-            }
-            if (menu?.message.id === menumsg3.id) {
-              if (menu?.user.id === cmduser.id) {
-                menumsg3.edit({components: [], embeds: menumsg3.embeds}).catch(() => {});
-                menuselection(menu);
-              }
-              else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+              else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
             }
           });
         }
 
         async function handle_the_picks(menuoptionindex, menuoptiondata) {
-          require(`./${menuoptiondata.value.toLowerCase()}`).run(client, message, args, cmduser, text, prefix);
+          require(`./${menuoptiondata.value.toLowerCase()}`).run(client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings);
         }
       } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

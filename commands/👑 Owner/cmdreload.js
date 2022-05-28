@@ -2,14 +2,14 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 const fs = require('fs');
 var {
-  databasing,
+  dbEnsure,
   isValidURL
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 module.exports = {
   name: `cmdreload`,
   category: `👑 Owner`,
@@ -17,13 +17,13 @@ module.exports = {
   aliases: [`commandreload`],
   description: `Reloads a command`,
   usage: `cmdreload <CMD>`,
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!config.ownerIDS.includes(message.author.id))
+    
+    if (!config.ownerIDS.includes(message.author?.id))
       return message.channel.send({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor)
-        .setFooter(client.user.username, es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL())
+        .setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["owner"]["cmdreload"]["variable1"]))
       ]});
     try {
@@ -33,26 +33,38 @@ module.exports = {
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["owner"]["cmdreload"]["variable2"]))
         ]});
-      let reload = false;
-      let thecmd = client.commands.get(args[0].toLowerCase()) || client.commands.get(client.aliases.get(args[0].toLowerCase()));
-      if(thecmd){
-        for (let i = 0; i < client.categories.length; i += 1) {
-          let dir = client.categories[i];
-          try {
-            delete require.cache[require.resolve(`../../commands/${dir}/${thecmd.name}.js`)] // usage !reload <name>
-            client.commands.delete(thecmd.name)
-            const pull = require(`../../commands/${dir}/${thecmd.name}.js`)
-            client.commands.set(thecmd.name, pull)
-            reload = true;
-          } catch {
-          }
-        }
-      } else {
-        return message.channel.send({embeds : [new MessageEmbed()
+        let reload = false;
+        let thecmd = client.commands.get(args[0].toLowerCase()) || client.commands.get(client.aliases.get(args[0].toLowerCase()));
+        if(!thecmd)return message.channel.send({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["owner"]["cmdreload"]["variable3"]))
         ]});
+        /*
+          delete require.cache[require.resolve(`../${thecmd.category}/${thecmd.name}`)] // usage !reload <name>
+          client.commands.delete(thecmd.name)
+          const pull = require(`../${thecmd.category}/${thecmd.name}`)
+          client.commands.set(thecmd.name, pull)
+        */
+        let d = await client.cluster.broadcastEval(async (c, ctx) => {
+          let thecmd = ctx;
+          if(thecmd){
+            try {
+              delete require.cache[require.resolve(`${process.cwd()}/commands/${thecmd.category}/${thecmd.name}`)] // usage !reload <name>
+              c.commands.delete(thecmd.name)
+              const pull = require(`${process.cwd()}/commands/${thecmd.category}/${thecmd.name}`)
+              c.commands.set(thecmd.name, pull)
+              return { success: true, error: false };
+            } catch (e) {
+              console.error(e)
+              return { success: false, error: e };
+            }
+          }
+        }, { context: { name: thecmd.name, category: thecmd.category } })
+          
+        reload = true;
+      if(d.some(x => x.error)) {
+        return message.reply(`Failed to reload on some shards...\n\`\`\`\n${String(d.find(x => x.error)?.[0]).substring(0, 250)}\n\`\`\``);
       }
       if (reload)
         return message.channel.send({embeds : [new MessageEmbed()

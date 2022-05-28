@@ -1,6 +1,6 @@
 //Here the command starts
-const config = require(`${process.cwd()}/botconfig/config.json`)
-var ee = require(`${process.cwd()}/botconfig/embed.json`)
+const config = require(`../../botconfig/config.json`)
+var ee = require(`../../botconfig/embed.json`)
 const fetch = require("node-fetch");
 const { MessageEmbed } = require(`discord.js`);
 module.exports = {
@@ -13,9 +13,18 @@ module.exports = {
   	description: "View a GitHub Repository details.", //the description of the command
 
 	//running the command with the parameters: client, message, args, user, text, prefix
-  	run: async (client, message, args, cmduser, text, prefix) => {
-   		let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+  	run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+   		
 		try {
+			  
+			if(GuildSettings.PROGRAMMING !== false){
+				return message.reply({embeds : [new MessageEmbed()
+				.setColor(es.wrongcolor)
+				.setFooter(client.getFooter(es))
+				.setTitle(client.la[ls].common.disabled.title)
+				.setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+				]});
+			}
 			const repo = args[0];
 			if (!repo)
 				return message.reply({embeds: [new MessageEmbed()
@@ -32,7 +41,7 @@ module.exports = {
 					.setTitle(eval(client.la[ls]["cmds"]["programming"]["github"]["variable3"]))
 					.setDescription(eval(client.la[ls]["cmds"]["programming"]["github"]["variable4"]))
 				]});
-			const body = await fetch(`https://api.github?.com/repos/${username}/${repository}`)
+			const body = await fetch(`https://api.github.com/repos/${username}/${repository}`)
 				.then((res) => res.ok && res.json())
 				.catch(() => null);
 
@@ -51,14 +60,14 @@ module.exports = {
 
 			return message.reply({ embeds: [new MessageEmbed()
 				.setTitle(body.full_name)
-				.setAuthor('GitHub', 'https://github?.githubassets.com/images/modules/logos_page/GitHub-Mark.png')
+				.setAuthor(client.getAuthor('GitHub', 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'))
 				.setURL(body.html_url)
 				.setThumbnail(body.owner.avatar_url)
 				.setColor(es.color)
 				.setFooter(client.getFooter(es))
 				.setDescription(eval(client.la[ls]["cmds"]["programming"]["github"]["variable8"])) ]});
 		} catch (e) {
-			console.log(String(e.stack).grey.bgRed)
+			console.error(e)
 			return message.reply({embeds : [new MessageEmbed()
 			  .setColor(es.wrongcolor).setFooter(client.getFooter(es))
 			  .setTitle(client.la[ls].common.erroroccur)

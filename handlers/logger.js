@@ -104,14 +104,15 @@ module.exports = (c) => {
         )
         return;
       });
-
+      
+      
       c.on("guildBanAdd", async function ({guild, user}) {
         send_log(c,
           guild,
           "RED",
           "USER BANNED",
           `User: ${user} (\`${user.id}\`)\n\`${user.tag}\``,
-          user.displayAvatarURL({dynamic: true})
+          user ? user?.displayAvatarURL({dynamic: true}) : null,
         )
         return;
       });
@@ -121,19 +122,19 @@ module.exports = (c) => {
           "YELLOW",
           "USER UNBANNED",
           `User: ${user} (\`${user.id}\`)\n\`${user.tag}\``,
-          user.displayAvatarURL({dynamic: true})
+          user ? user?.displayAvatarURL({dynamic: true}) : null,
         )
         return;
       });
 
       c.on("guildMemberAdd", async function (member) {
         if (!member.user.bot) {
-          send_log(member.guild,
-            c,
+          send_log(c,
+            member.guild,
             "GREEN",
             "MEMBER JOINED",
             `Member: ${member.user} (\`${member.user.id}\`)\n\`${member.user.tag}\`\n\n**Account created:** \`${moment(member.user.createdTimestamp).format("DD/MM/YYYY") + "\` | " + "`"+ moment(member.user.createdTimestamp).format("hh:mm:ss")}`,
-             member.user.displayAvatarURL({dynamic: true})
+              member && member.user ? member.user?.displayAvatarURL({dynamic: true}) : member ? member?.displayAvatarURL({dynamic: true}) : null
             )
         } else {
           send_log(c,
@@ -158,9 +159,7 @@ module.exports = (c) => {
               "RED",
               "MEMBER LEFT",
               `Member: ${member.user} (\`${member.user.id}\`)\n\`${member.user.tag}\``,
-              member.user.displayAvatarURL({
-                dynamic: true
-              })
+              member && member.user ? member.user?.displayAvatarURL({dynamic: true}) : member ? member?.displayAvatarURL({dynamic: true}) : null
             )
           }, 500)
       });
@@ -173,9 +172,7 @@ module.exports = (c) => {
             "RED",
             "⚠️ MEMBER GOT BANNED ⚠️",
             `Member: ${ban.user} (\`${ban.user.id}\`)\n\`${ban.user.tag}\`\n\nReason: ${ban.reason ? ban.reason : "No Reason provided!"}`,
-            ban.user.displayAvatarURL({
-              dynamic: true
-            })
+            ban && ban.user ? ban.user?.displayAvatarURL({dynamic: true}) : ban ? ban?.displayAvatarURL({dynamic: true}) : null
           )
       });
       //UNBAN
@@ -187,14 +184,12 @@ module.exports = (c) => {
           "ORANGE",
           "⛔ MEMBER GOT __UN__BANNED ⛔",
           `Member: ${ban.user} (\`${ban.user.id}\`)\n\`${ban.user.tag}\`\n\nReason was: ${ban.reason ? ban.reason : "No Reason provided!"}`,
-          ban.user.displayAvatarURL({
-            dynamic: true
-          })
+          ban && ban.user ? ban.user?.displayAvatarURL({dynamic: true}) : ban ? ban?.displayAvatarURL({dynamic: true}) : null
         )
     });
     c.on("guildMembersChunk", async function (members, guild, chunk) {
-      send_log(guild,
-        c,
+      send_log(c,
+        guild,
         "RED",
         `MEMBER CHUNK / RAID - [${members.size}] Members`,
         members.size < 20 ? members.map((member, index) => `${index}) - ${member.user} - ${member.user.tag} - \`${member.user.id}\``).join("\n") : [...members.values()].slice(0, 20).map((member, index) => `${index}) - ${member.user} - ${member.user.tag} - \`${member.user.id}\`\n${members.size - 20} more...`).join("\n"),
@@ -230,7 +225,7 @@ module.exports = (c) => {
         }
         let text = `${roleremoved ? `❌ ROLE REMOVED: \n${roleremoved}` : ""}${roleadded ? `✅ ROLE ADDED:\n${roleadded}` : ""}`
         send_log(c,
-          oldMember.guild,
+          newMember.guild,
           `${roleadded ? "GREEN" : "RED"}`,
           "Member ROLES Changed",
           `Member: ${newMember.user}\nUser: \`${oldMember.user.tag}\`\n\n${text}`,
@@ -263,12 +258,12 @@ module.exports = (c) => {
     });
 
     c.on("messageUpdate", async function (oldMessage, newMessage) {
-        if (oldMessage.author && oldMessage.author.bot) return;
-        if (newMessage.author && newMessage.author.bot) return;
+        if (oldMessage.author && oldMessage.author?.bot) return;
+        if (newMessage.author && newMessage.author?.bot) return;
         if (oldMessage.channel.type !== "GUILD_TEXT") return
         if (newMessage.channel.type !== "GUILD_TEXT") return
         if (oldMessage.content === newMessage.content) return
-        send_log(c, oldMessage.guild,
+        send_log(c, newMessage.guild,
           "YELLOW",
           "Message UPDATED", 
           ` **Author:** <@${newMessage.author.id}> - *${newMessage.author.tag}*\n**Date:** ${newMessage.createdAt}\n**Channel:** <#${newMessage.channel?.id}> - *${newMessage.channel?.name}*\n**Orignal Message:**\n\`\`\`\n${oldMessage.content ? oldMessage.content.replace(/`/g, "'") : "UNKNOWN CONTENT"}\n\`\`\`\n**Updated Message :**\n\`\`\`\n${newMessage.content ? newMessage.content.replace(/`/g, "'") : "UNKNOWN CONTENT"}\n\`\`\``,
@@ -394,35 +389,40 @@ module.exports = (c) => {
 
 async function send_log(c, guild, color, title, description, thumb, fieldt, fieldv, fieldt2, fieldv2) {
   try {
-    if(!guild || guild?.available == false) return console.log("NO GUILD");
+    if(!c) return
+    if(!guild || guild.available === false) return
+    let icon = null; 
+    try{
+      icon = guild ? guild.iconURL({ format: "png" }) : c.user?.displayAvatarURL() || c.user?.displayAvatarURL();
+    } catch {
+      icon = c.user?.displayAvatarURL();
+    }
     //CREATE THE EMBED
     const LogEmbed = new Discord.MessageEmbed()
       .setColor(color ? color : "BLACK")
       .setDescription(description ? description.substring(0, 2048) : "\u200b")
       .setTitle(title ? title.substring(0, 256) : "\u200b")
       .setTimestamp()
-      .setThumbnail(thumb ? thumb : guild?.iconURL({
-        format: "png"
-      }))
-      .setFooter(c.getFooter(guild?.name + " | powered by: milrato.eu", guild?.iconURL({
-        format: "png"
-      })))
+      .setThumbnail(thumb ? thumb : icon)
+      .setFooter(c.getFooter(guild?.name + "\n❯ Dashboard: www.milrato.com", icon))
     if(fieldt && fieldv){
       if(fieldv.trim() !== ">>>") {
         LogEmbed.addField(fieldt.substring(0, 256), fieldv.substring(0, 1024))
       }
-    }
+    }2
     if(fieldt2 && fieldv2){
       if(fieldv2.trim() !== ">>>") {
         LogEmbed.addField(fieldt2.substring(0, 256), fieldv2.substring(0, 1024))
       }
     }
     //GET THE CHANNEL
-    let loggersettings = c.settings.get(guild.id, "logger")
+    let loggersettings = await c.settings.get(guild?.id+".logger")
     if (!loggersettings || loggersettings.channel === "no") return;
-    const logger = await c.channels.fetch(loggersettings.channel).catch(() => {});
-    if (!logger) throw new SyntaxError("CHANNEL NOT FOUND")
-    return logger.send({embeds: [LogEmbed]}).catch(() => {})
+    const logger = await guild?.channels.fetch(loggersettings.channel).catch(()=>null) || await c.channels.fetch(loggersettings.channel).catch(()=>null)
+    if (!logger || !logger.type) return // throw new SyntaxError(`CHANNEL ${loggersettings.channel} NOT FOUND ON THIS SHARD`)
+    try {logger.send({embeds: [LogEmbed]}).catch(() => null)}catch{}
+    return;
   } catch (e) {
+    console.error(e)
   }
 }

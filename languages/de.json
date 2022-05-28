@@ -16,7 +16,7 @@
                     {
                         "value": "Ersteller / Funktionen",
                         "description": "Wer ist mein Macher? / Was sind meine Funktionen?",
-                        "replymsg": "<:Milrato:840259659163893820> **__Milrato Development__ hat mich gemacht!**\n> <:Like:857334024087011378> **Ihre Internet Seite:** https://milrato.eu\n> <:Discord:787321652345438228> **Ihr Discord:** https://discord.gg/milrato\n``` ```***__Du kannst ihrem Discord Server beitreten und einen kostenlosen, bzw. günstigen Discord Bot deiner Wahl erhalten, wie mich!__***\n``` ```:muscle: **__Meine Funktionen__**\n>>> **68+ Systeme**, wie z.B: Automatischer <:twitter:840255600851812393> **Twitter-** & <:Youtube:840260133686870036> **Youtube** Upload Poster \n**Bewerbungs-**, Ticket-, **Willkommens-Bilder-** und Reaction Role-, ... Systeme\n:notes: Ein komplexes <:Spotify:846090652231663647> **Music System** mit **Audio Filter**\n:video_game: Viele **Minigames** und :joystick: **Fun** Befehle (150+)\n:no_entry_sign: **Administration** und **Auto-Moderation** und viel mehr!\n\n**Der Programmiere ist: `Tomato#6966` <:TOMATO:858450817665204224>, Wenn du ihn anheuern willst, dann kontaktiere ihn!**",
+                        "replymsg": "<:Milrato:840259659163893820> **__Milrato Development__ hat mich gemacht!**\n> <:Like:857334024087011378> **Ihre Internet Seite:** https://milrato.eu\n> <:DiscordLogo:936723374644789370> **Ihr Discord:** https://discord.gg/milrato\n``` ```***__Du kannst ihrem Discord Server beitreten und einen kostenlosen, bzw. günstigen Discord Bot deiner Wahl erhalten, wie mich!__***\n``` ```:muscle: **__Meine Funktionen__**\n>>> **68+ Systeme**, wie z.B: Automatischer <:twitter:840255600851812393> **Twitter-** & <:Youtube:840260133686870036> **Youtube** Upload Poster \n**Bewerbungs-**, Ticket-, **Willkommens-Bilder-** und Reaction Role-, ... Systeme\n:notes: Ein komplexes <:Spotify:846090652231663647> **Music System** mit **Audio Filter**\n:video_game: Viele **Minigames** und :joystick: **Fun** Befehle (150+)\n:no_entry_sign: **Administration** und **Auto-Moderation** und viel mehr!\n\n**Der Programmiere ist: `Tomato#6966` <:TOMATO:858450817665204224>, Wenn du ihn anheuern willst, dann kontaktiere ihn!**",
                         "emoji": "840259659163893820"
                     },
                     {
@@ -40,13 +40,13 @@
                     {
                         "value": "Partner / Sponsoren",
                         "description": "Wir sind sehr stolz auf unsere Partner & Sponsoren",
-                        "replymsg": "<:BeroHost:852970925695041646> Unser erster Sponsor ist **Bero-Host.de** <:BeroHost:852970925695041646>\n> <:Like:857334024087011378> **Ihre Internet Seite:** https://bero-host.de\n> <:Discord:787321652345438228> **Ihr Discord:** https://discord.bero-host.de\n> *Sie geben uns höchst qualtiative __SERVER__ welche wir für das Bot-Hosting verwenden! **BESUCHE SIE**!*\n``` ```<:Bittmax:840370610755862529> Unser zweiter Sponsor ist **Bittmax.de** <:Bittmax:840370610755862529>\n> <:Like:857334024087011378> **Ihre Internet Seite:** https://bittmax.de\n> <:Discord:787321652345438228> **Ihr Discord:** https://discord.gg/GgjJZCyYKD\n> *Sie geben uns höchst qualtiative __SERVER__ welche wir für das Bot-Hosting verwenden! **BESUCHE SIE**!*\n``` ```**__Partner__**\n> ***Wir haben zurzeit `{partnercount} Partner`, welche mindestens 1 OP GRATIS BOT erhalten***\n``` ```Du willst auch ein Partner sein oder uns Sponsorn?\nKontaktiere uns auf unserem Discord Server:\n <:Discord:787321652345438228> **Discord:** https://discord.gg/milrato und öffne ein Ticket in <#840491251278676008>",
+                        "replymsg": "<:BeroHost:852970925695041646> Unser erster Sponsor ist **Bero-Host.de** <:BeroHost:852970925695041646>\n> <:Like:857334024087011378> **Ihre Internet Seite:** https://bero-host.de\n> <:DiscordLogo:936723374644789370> **Ihr Discord:** https://discord.bero-host.de\n> *Sie geben uns höchst qualtiative __SERVER__ welche wir für das Bot-Hosting verwenden! **BESUCHE SIE**!*\n``` ```<:Bittmax:840370610755862529> Unser zweiter Sponsor ist **Bittmax.de** <:Bittmax:840370610755862529>\n> <:Like:857334024087011378> **Ihre Internet Seite:** https://bittmax.de\n> <:DiscordLogo:936723374644789370> **Ihr Discord:** https://discord.gg/GgjJZCyYKD\n> *Sie geben uns höchst qualtiative __SERVER__ welche wir für das Bot-Hosting verwenden! **BESUCHE SIE**!*\n``` ```**__Partner__**\n> ***Wir haben zurzeit `{partnercount} Partner`, welche mindestens 1 OP GRATIS BOT erhalten***\n``` ```Du willst auch ein Partner sein oder uns Sponsorn?\nKontaktiere uns auf unserem Discord Server:\n <:DiscordLogo:936723374644789370> **Discord:** https://discord.gg/milrato und öffne ein Ticket in <#840491251278676008>",
                         "emoji": "866089513436315698"
                     },
                     {
                         "value": "Mein Bot funktioniert nicht",
                         "description": "Wenn dein Bot nicht funktioniert, dann mach das:",
-                        "replymsg": "Kontaktiere uns in Milrato Development <:Discord:787321652345438228> **Discord:** https://discord.gg/milrato und öffne ein Ticket in <#840332764603351101>\n\n***Wenn er noch auf Befehle antworten kann, aber nicht richtig funktioniert, dann versuch mal das: `{prefix}reloadbot` / `{prefix}cmdreload [CMDNAME]`***\n\nStell sicher, dass ich genügend Rechte habe, bzw. das meine höchste Rolle soweit oben ist wie es nötig ist!",
+                        "replymsg": "Kontaktiere uns in Milrato Development <:DiscordLogo:936723374644789370> **Discord:** https://discord.gg/milrato und öffne ein Ticket in <#840332764603351101>\n\n***Wenn er noch auf Befehle antworten kann, aber nicht richtig funktioniert, dann versuch mal das: `{prefix}reloadbot` / `{prefix}cmdreload [CMDNAME]`***\n\nStell sicher, dass ich genügend Rechte habe, bzw. das meine höchste Rolle soweit oben ist wie es nötig ist!",
                         "emoji": "😓"
                     },
                     {
@@ -213,7 +213,7 @@
                 "variable24": "`🦾 **Custom Commands [${cuc[0].includes(\"NO\") ? 0 : items.length}]**`",
                 "variable25": "\"<:Milrato:840259659163893820> Bot Creator Company Advertisment\"",
                 "variablex_26": "`<:Milrato:840259659163893820> **__Bot Creator Information__**`",
-                "variable26": "`>>> 💯 This Bot has been made by:\\n[**Milrato Development**](https://milrato.eu)・[Discord](https://discord.com/invite/milrato)<:Discord:787321652345438228> [Click here to order yourself a own one](https://discord.com/invite/milrato)`",
+                "variable26": "`>>> 💯 This Bot has been made by:\\n[**Milrato Development**](https://milrato.eu)・[Discord](https://discord.com/invite/milrato)<:DiscordLogo:936723374644789370> [Click here to order yourself a own one](https://discord.com/invite/milrato)`",
                 "variable27": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "invite": {
@@ -959,7 +959,7 @@
                 "variable16": "`Erstellt mit:: \\`${prefix}savedqueue create ${Name}\\``",
                 "variable17": "`<:no:833101993668771842> Es wird nix Gespielt`",
                 "variable18": "`<:no:833101993668771842> Es wird nix gespielt!`",
-                "variable19": "`Es sind nun \\`${client.queuesaves.get(message.author.id, `${Name}`).length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
+                "variable19": "`Es sind nun \\`${theQueue.length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
                 "variable20": "`<:no:833101993668771842> You didn't entered a Saved-Queue-Name`",
                 "variable21": "`Richtige Nutzung: \\`${prefix}savedqueue <Type> <Name>\\`\\nName Information:\\n\\`Can be anything with maximum of 10 Letters\\``",
                 "variable22": "`<:no:833101993668771842> Your Saved-Queue-Name is too long!`",
@@ -980,7 +980,7 @@
                 "variable37": "`Create it with: \\`${prefix}savedqueue create ${Name}\\``",
                 "variable38": "`<:no:833101993668771842> Your provided Option is out of Range (\\`0\\` - \\`${tracks.length-1}\\`)`",
                 "variable39": "`See all your Tracks: \\`${prefix}savedqueue showdetails ${Name}\\`Richtige Nutzung: \\`${prefix}savedqueue removetrack ${Name} <Song number>\\``",
-                "variable40": "`There are now: \\`${client.queuesaves.get(message.author.id, `${Name}`).length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
+                "variable40": "`There are now: \\`${theQueue.length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
                 "variable41": "`<:no:833101993668771842> You didn't entered a Saved-Queue-Name`",
                 "variable42": "`Richtige Nutzung: \\`${prefix}savedqueue <Type> <Name>\\`\\nName Information:\\n\\`Can be anything with maximum of 10 Letters\\``",
                 "variable43": "`<:no:833101993668771842> Your Saved-Queue-Name is too long!`",
@@ -989,7 +989,7 @@
                 "variable46": "`Create it with: \\`${prefix}savedqueue create ${Name}\\``",
                 "variable47": "`<:no:833101993668771842> Your Saved-Queue ${Name} is Empty!`",
                 "variable48": "`Add the current **Queue** onto it: \\`${prefix}savedqueue addcurrentqueue ${Name}\\`\\nAdd the current **Track** onto it: \\`${prefix}savedqueue addcurrenttrack ${Name}\\``",
-                "variable49": "`There are now: \\`${client.queuesaves.get(message.author.id, `${Name}`).length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
+                "variable49": "`There are now: \\`${theQueue.length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
                 "variable50": "`<:no:833101993668771842> You didn't entered a Saved-Queue-Name`",
                 "variable51": "`Richtige Nutzung: \\`${prefix}savedqueue <Type> <Name>\\`\\nName Information:\\n\\`Can be anything with maximum of 10 Letters\\``",
                 "variable52": "`<:no:833101993668771842> Your Saved-Queue-Name is too long!`",
@@ -998,7 +998,7 @@
                 "variable55": "`Create it with: \\`${prefix}savedqueue create ${Name}\\``",
                 "variable56": "`<:no:833101993668771842> Your Saved-Queue ${Name} is Empty!`",
                 "variable57": "`Add the current **Queue** onto it: \\`${prefix}savedqueue addcurrentqueue ${Name}\\`\\nAdd the current **Track** onto it: \\`${prefix}savedqueue addcurrenttrack ${Name}\\``",
-                "variable58": "`There are now: \\`${client.queuesaves.get(message.author.id, `${Name}`).length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
+                "variable58": "`There are now: \\`${theQueue.length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
                 "variable59": "`<:no:833101993668771842> You don't have any Queues saved yet`",
                 "variable60": "`Create one with: \\`${prefix}savedqueue create <SavedQueueName>\\``",
                 "variable61": "`<:no:833101993668771842> You didn't entered a Saved-Queue-Name`",
@@ -1029,9 +1029,9 @@
                 "variable86": "`Channelname: \\`🔈 ${mechannel.name}\\``",
                 "variable87": "`<:no:833101993668771842> Your Queue does not exists Yet!`",
                 "variable88": "`Create it with: \\`${prefix}savedqueue create ${Name}\\``",
-                "variable89": "`Attempting to Load ${client.queuesaves.get(message.author.id, `${Name}`).length} Tracks`",
-                "variable90": "`It might take around about \\`${Math.ceil(client.queuesaves.get(message.author.id, `${Name}`).length / 2)} Seconds\\``",
-                "variable91": "`<a:yes:833101995723194437> Loaded ${client.queuesaves.get(message.author.id, `${Name}`).length} Tracks onto the current Queue`",
+                "variable89": "`Attempting to Load ${theQueue.length} Tracks`",
+                "variable90": "`It might take around about \\`${Math.ceil(theQueue.length / 2)} Seconds\\``",
+                "variable91": "`<a:yes:833101995723194437> Loaded ${theQueue.length} Tracks onto the current Queue`",
                 "variable92": "`<:no:833101993668771842> You didn't entered a Saved-Queue-Name`",
                 "variable93": "`Richtige Nutzung: \\`${prefix}savedqueue <Type> <Name>\\`\\nName Information:\\n\\`Can be anything with maximum of 10 Letters\\``",
                 "variable94": "`<:no:833101993668771842> Your Saved-Queue-Name is too long!`",
@@ -1926,7 +1926,7 @@
                 "variable8": "-",
                 "variable9": "\"What should be the embed color?\"",
                 
-                "variable9_1":"\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #ffee55)\"",
+                "variable9_1":"`It MUST be an HEX CODE 7 letters long, **with** the \\`#\\` (e.g: ${es.color})`",
                 "variable10": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable11": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable12": "\"<:no:833101993668771842> ERROR | Deine Zeit ist abgelaufen\"",
@@ -1963,7 +1963,7 @@
                 "variable40": "\"<:no:833101993668771842> ERROR | TIME RAN OUT / INVALID INPUT | ABGEBROCHEN\"",
                 "variable41": "-",
                 "variable42": "\"What should be the embed color?\"",
-                "variable42_1": "\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #ffee55)\"",
+                "variable42_1": "`It MUST be an HEX CODE 7 letters long, **with** the \\`#\\` (e.g: ${es.color})`",
                 "variable43": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable44": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable45": "\"<:no:833101993668771842> ERROR | TIME RAN OUT / INVALID INPUT | ABGEBROCHEN\"",
@@ -2124,7 +2124,7 @@
                 "variable199": "\"<:no:833101993668771842> ERROR | TIME RAN OUT / INVALID INPUT | ABGEBROCHEN\"",
                 "variable200": "-",
                 "variable201": "\"What should be the embed color?\"",
-                "variable201_1": "\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #ffee55)\"",
+                "variable201_1": "`It MUST be an HEX CODE 7 letters long, **with** the \\`#\\` (e.g: ${es.color})`",
                 "variable202": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable203": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable204": "\"<:no:833101993668771842> ERROR | TIME RAN OUT / INVALID INPUT | ABGEBROCHEN\"",

@@ -1,25 +1,25 @@
 const Discord = require("discord.js");
 const {MessageEmbed, MessageAttachment} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
+const config = require(`../../botconfig/config.json`);
 const canvacord = require("canvacord");
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+var ee = require(`../../botconfig/embed.json`);
 const request = require("request");
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 module.exports = {
   name: "8ball",
   category: "🕹️ Fun",
   description: "Answers your Question",
   usage: "8ball <Questions>",
   type: "text",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if(!client.settings.get(message.guild.id, "FUN")){
+    
+    if(GuildSettings.FUN === false){
       const embed1 = new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.disabled.title)
-        .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+        .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
       
       return message.reply({embeds : [embed1]});
     }
@@ -33,7 +33,7 @@ module.exports = {
         return message.reply({embeds : [embed2]});
       request(`https://8ball.delegator.com/magic/JSON/${question}`, function (e, response, body) {
         if (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey);
+          console.error(e);
           message.reply({content : eval(client.la[ls]["cmds"]["fun"]["8ball"]["variable2"])});
         }
         body = JSON.parse(body);
@@ -55,7 +55,7 @@ const embed3 = new Discord.MessageEmbed()
         message.reply({embeds : [embed3]});
       });
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       const embed4 = new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

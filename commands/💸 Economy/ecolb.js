@@ -1,8 +1,8 @@
 const {MessageEmbed, splitMessage} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { parseMilliseconds, duration, GetUser, nFormatter, ensure_economy_user } = require(`${process.cwd()}/handlers/functions`)
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { parseMilliseconds, duration, GetUser, nFormatter, ensure_economy_user } = require(`../../handlers/functions`)
 module.exports = {
   name: "ecolb",
   category: "💸 Economy",
@@ -10,27 +10,27 @@ module.exports = {
   description: "Shows leaderboard of econmy",
   usage: "ecolb",
   type: "info",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        if(!client.settings.get(message.guild.id, "ECONOMY")){
+    
+        if(GuildSettings.ECONOMY === false){
           return message.reply({embeds: [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.disabled.title)
-            .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+            .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
           ]});
         }
     try {
         var user = message.author;
         
       //ensure the economy data
-      ensure_economy_user(client, message.guild.id, user.id)
-        var users = client.economy.keyArray().filter(i => String(i).startsWith(message.guild.id));
+      await ensure_economy_user(client, message.guild.id, user.id)
+        var users = await client.economy.all().then(d => d.filter(i => String(i.ID).startsWith(message.guild.id)).map(i => i.ID));
         var datas = [];
-        for(const user of users)
+        for await (const user of users)
           try{
-            datas.push(client.economy.get(user)) 
+            datas.push(await client.economy.get(user)) 
           }catch{
 
           }
@@ -89,15 +89,16 @@ module.exports = {
               case "cat": prizeb += b?.items[`${itemarray}`] *  2000; break;
             }
           }
-          return (b?.balance + b?.bank + prizeb) - (a.balance + a.bank + prizea)});
+          return (b?.balance + b?.bank + prizeb) - (a.balance + a.bank + prizea)
+        });
         
         var stringarray = []
         var yourrank = false;
-        for(let i = 0; i < sorted.length; i++){
+        for (let i = 0; i < sorted.length; i++){
           let index = i;
           const data = sorted[i]
           if(!data.user || data.user == undefined) continue;
-          const tuser = await client.users.fetch(data.user).catch(() => {});
+          const tuser = await client.users.fetch(data.user).catch(() => null);
           if(!tuser) continue;
           if(user == message.author) {
             if(yourrank && yourrank > index + 1) yourrank = index + 1;
@@ -141,7 +142,6 @@ module.exports = {
           stringarray.push(`**${theindex}. \`${tuser.tag}\`** ・ ${tuser}\`\`\`yml\nPocket: ${nFormatter(Math.floor(data.balance))} 💸 ・ Bank: ${nFormatter(data.bank)} 💸 ・ [${items}] Items: ${nFormatter(itemsvalue)} 💸\`\`\``)
         }
         
-        
         const description = stringarray;
         const TITLE = `${message.guild.name} | Economy Leaderboard 💸`
 
@@ -153,14 +153,14 @@ module.exports = {
             const current = description.slice(i, k);
             k += 10;
             const embed = new MessageEmbed()
-              .setDescription(current)
+              .setDescription(current.join("\n"))
               .setTitle(TITLE)
               .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
                 
             embeds.push(embed);
           }
           embeds;
-        } catch {}
+        } catch (e){console.error(e)}
         if(embeds.length == 0) return message.reply(":x: No leaderboard yet!**")
         if (embeds.length === 1) return message.reply({embeds: [embeds[0]]}).catch(e => console.log("THIS IS TO PREVENT A CRASH"))
         const queueEmbed = await message.reply(
@@ -173,7 +173,7 @@ module.exports = {
         } catch {}
 
         const filter = (reaction, user) =>
-          (reactionemojis.includes(reaction.emoji?.name) || reactionemojis.includes(reaction.emoji?.name)) && message.author.id === user.id;
+          (reactionemojis.includes(reaction.emoji?.name) || reactionemojis.includes(reaction.emoji?.name)) && message.author?.id === user.id;
         const collector = queueEmbed.createReactionCollector({filter, 
           time: 45000
         });
@@ -200,11 +200,11 @@ module.exports = {
               collector.stop();
               reaction.message.reactions.removeAll();
             }
-            await reaction.users.remove(message.author.id);
+            await reaction.users.remove(message.author?.id);
           } catch {}
         });
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

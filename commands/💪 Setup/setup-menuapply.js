@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure
+} = require(`../../handlers/functions`);
 const {
   MessageButton,
   MessageActionRow,
@@ -19,13 +19,10 @@ module.exports = {
   aliases: ["setupmenuapply", "menuapply-setup", "menuapplysetup", "menuapplysystem"],
   cooldown: 5,
   usage: "setup-menuapply --> Follow Steps",
-  description: "Setup a Menu, which allows you to start one of the 25 Application Systems",
+  description: "Manage 100 Application Systems in a form of a DISCORD-MENU",
   memberpermissions: ["ADMINISTRATOR"],
   type: "system",
-  run: async (client, message, args, cmduser, text, prefix) => {
-
-    let es = client.settings.get(message.guild.id, "embed");
-    let ls = client.settings.get(message.guild.id, "language")
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     try {
       var theDB = client.menuapply;
       let pre;
@@ -36,7 +33,7 @@ module.exports = {
       async function first_layer() {
         
         let menuoptions = []
-        for(let i = 1; i<=100;i++) {
+        for (let i = 1; i<=100;i++) {
           menuoptions.push({
             value: `${i}. Menu Apply`,
             description: `Manage/Edit the ${i}. Menu Apply Setup`,
@@ -125,16 +122,16 @@ module.exports = {
         })
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000, errors: ["time"]
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(".")[0];
             pre = `menuapply${SetupNumber}` 
             theDB = client.menuapply; //change to the right database
@@ -154,7 +151,7 @@ module.exports = {
         });
       }
       async function second_layer() {
-        theDB.ensure(message.guild.id, {
+        await dbEnsure(theDB, `${message.guild.id}.${pre}`, {
           messageId: "",
           channelId: "",
           data: [
@@ -167,7 +164,7 @@ module.exports = {
               }
             */
           ]
-        },pre);
+        });
         let menuoptions = [{
             value: "Send the Config	Message",
             description: `(Re) Send the Menu Apply Message`,
@@ -213,16 +210,16 @@ module.exports = {
         })
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000, errors: ["time"]
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             handle_the_picks(menu?.values[0], menuoptiondata)
           } else menu?.reply({
             content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
@@ -241,8 +238,8 @@ module.exports = {
       async function handle_the_picks(optionhandletype, menuoptiondata) {
         switch (optionhandletype) {
           case "Send the Config	Message": {
-            let data = theDB.get(message.guild.id, pre+".data");
-            let settings = theDB.get(message.guild.id, pre);
+            let data = await theDB.get(`${message.guild.id}.${pre}.data`);
+            let settings = await theDB.get(`${message.guild.id}.${pre}`);
             if (!data || data.length < 1) {
               return message.reply("<:no:833101993668771842> **You need to add at least 1 Open-Apply-Option**")
             }
@@ -276,7 +273,7 @@ module.exports = {
                 time: 90000, errors: ["time"]
               });
               if (collected2 && collected2.first().mentions.channels.size > 0) {
-                let data = theDB.get(message.guild.id, pre+".data");
+                let data = await theDB.get(`${message.guild.id}.${pre}.data`);
                 let channel = collected2.first().mentions.channels.first();
                 let msgContent = collected.first().content;
                 let embed = new MessageEmbed()
@@ -324,14 +321,14 @@ module.exports = {
                   channel.send({
                     embeds: [embed],
                     components: [new MessageActionRow().addComponents([Selection])]
-                  }).then(msg => {
-                    theDB.set(message.guild.id, msg.id, pre+".messageId");
-                    theDB.set(message.guild.id, channel.id, pre+".channelId");
+                  }).then(async (msg) => {
+                    await theDB.set(`${message.guild.id}.${pre}.messageId`, msg.id);
+                    await theDB.set(`${message.guild.id}.${pre}.channelId`, channel.id);
                     message.reply(`Successfully Setupped the Menu-Apply in <#${channel.id}>`)
                   });
-                }).then(msg => {
-                  theDB.set(message.guild.id, msg.id, pre+".messageId");
-                  theDB.set(message.guild.id, channel.id, pre+".channelId");
+                }).then(async (msg) => {
+                  await theDB.set(`${message.guild.id}.${pre}.messageId`, msg.id);
+                  await theDB.set(`${message.guild.id}.${pre}.channelId`, channel.id);
                   message.reply(`Successfully Setupped the Menu-Apply in <#${channel.id}>`)
                 });
               } else {
@@ -343,7 +340,7 @@ module.exports = {
           }
           break;
           case "Add Apply Option": {
-            let data = theDB.get(message.guild.id, pre+".data");
+            let data = await theDB.get(`${message.guild.id}.${pre}.data`);
             if (data.length >= 25) {
               return message.reply("<:no:833101993668771842> **You reached the limit of 25 different Options!** Remove another Option first!")
             }
@@ -372,7 +369,7 @@ module.exports = {
 
               
               let menuoptions = []
-              for(let i = 1; i<=100;i++) {
+              for (let i = 1; i<=100;i++) {
                 menuoptions.push({
                   value: `${i} Apply System`,
                   description: `Manage/Edit the ${i} Apply Setup`,
@@ -457,15 +454,15 @@ module.exports = {
               let menumsg = await message.reply({embeds: [MenuEmbed], components: [row1, row2, row3, row4]})
               //Create the collector
               const collector = menumsg.createMessageComponentCollector({ 
-                filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+                filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
                 time: 90000
               })
               //Menu Collections
-              collector.on('collect', menu => {
+              collector.on('collect', async menu => {
                 if (menu?.user.id === cmduser.id) {
                   collector.stop();
                   if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   let applySystemExecution = menu?.values[0].split(" ")[0]
                   let index = data.findIndex(v => v.applySystemExecution == applySystemExecution);
                   if(index >= 0) {
@@ -510,7 +507,7 @@ module.exports = {
                           emojiMsg = NumberEmojis[data.length];
                         }
                       } catch (e){
-                        console.log(e)
+                        console.error(e)
                         message.reply(":x: **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!");
                         emoji = null;
                         emojiMsg = NumberEmojis[data.length];
@@ -523,15 +520,15 @@ module.exports = {
                       finished();
                     });
                   })
-                  function finished() {
+                  async function finished() {
                     
                   
-                    theDB.push(message.guild.id, {
+                    await theDB.push(`${message.guild.id}.${pre}.data`, {
                       value,
                       description,
                       applySystemExecution,
                       emoji
-                    }, pre+".data");
+                    });
                     message.reply({
                       embeds: [
                         new MessageEmbed()
@@ -542,11 +539,11 @@ module.exports = {
                     });
                   }
                 }
-                else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+                else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
               });
               //Once the Collections ended edit the menu message
               collector.on('end', collected => {
-                menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+                menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
               });
             } else {
               return message.reply("<:no:833101993668771842> **You did not enter a Valid Message in Time! CANCELLED!**")
@@ -554,7 +551,7 @@ module.exports = {
           }
           break;
           case "Remove Apply Option": {
-          let data = theDB.get(message.guild.id, pre+".data");
+          let data = await theDB.get(`${message.guild.id}.${pre}.data`);
           if (!data || data.length < 1) {
             return message.reply("<:no:833101993668771842> **There are no Open-Apply-Options to remove**")
           }
@@ -608,7 +605,7 @@ module.exports = {
           })
           //Create the collector
           const collector = menumsg.createMessageComponentCollector({
-            filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+            filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
             time: 90000, errors: ["time"]
           })
           //Menu Collections
@@ -619,7 +616,7 @@ module.exports = {
                 let index = data.findIndex(v => v.value == value);
                 data.splice(index, 1)
               }
-              theDB.set(message.guild.id, data, pre+".data");
+              await theDB.set(`${message.guild.id}.${pre}.data`, data);
               message.reply(`**Successfully removed:**\n>>> ${menu?.values.map(i => `\`${i}\``).join(", ")}\n\nDon't forget to resend the Apply Config-Message!`)
             } else menu?.reply({
               content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
@@ -639,7 +636,7 @@ module.exports = {
         }
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({
         embeds: [new MessageEmbed()
           .setColor(es.wrongcolor).setFooter(client.getFooter(es))

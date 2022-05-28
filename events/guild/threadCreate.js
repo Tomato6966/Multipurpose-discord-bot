@@ -5,7 +5,7 @@ module.exports = async (client, thread) => {
             await thread.join();
         }
     }catch (e){
-        console.log(String(e).grey)
+        console.error(e)
     }
 }
 /**

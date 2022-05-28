@@ -3,14 +3,14 @@ const {
   splitMessage
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 const fs = require('fs');
 var {
-  databasing,
+  dbEnsure,
   isValidURL
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 const {
   inspect
 } = require(`util`);
@@ -21,19 +21,20 @@ module.exports = {
   aliases: [`serverleave`, "kickbot"],
   description: `Make the Bot Leave a specific Server`,
   usage: `leaveserver <GUILDID>`,
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!config.ownerIDS.includes(message.author.id))
+    
+     
+    if (!config.ownerIDS.includes(message.author?.id))
       return message.channel.send({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor)
-        .setFooter(client.user.username, es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL())
+        .setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["owner"]["leaveserver"]["variable1"]))
       ]});
     if (!args[0])
       return message.channel.send({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor)
-        .setFooter(client.user.username, es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL())
+        .setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["owner"]["leaveserver"]["variable2"]))
         .setDescription(eval(client.la[ls]["cmds"]["owner"]["leaveserver"]["variable3"]))
       ]});

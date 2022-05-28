@@ -11,7 +11,7 @@ var {
 
 //function for searching songs
 async function search(client, message, args, type, slashCommand) {
-  let ls = client.settings.get(message.guild.id, "language")
+  let ls = await client.settings.get(message.guild.id+".language")
   var search = args.join(" ");
   try {
     var res;
@@ -32,9 +32,11 @@ async function search(client, message, args, type, slashCommand) {
     if (state !== "CONNECTED") {
       //set the variables
       player.set("message", message);
-      player.set("playerauthor", message.author.id);
+      player.set("playerauthor", message.author?.id);
       player.connect();
-      try{message.react("863876115584385074").catch(() => {});}catch(e){console.log(String(e).grey)}
+      if(!slashCommand) { 
+        message.react("863876115584385074").catch(() => null);
+      }
       player.stop();
     }
     try {
@@ -49,23 +51,23 @@ async function search(client, message, args, type, slashCommand) {
         message: "Playlists are not supported with this command. Use   ?playlist  "
       };
     } catch (e) {
-      console.log(e.stack ? String(e.stack).grey : String(e).grey)
+      console.error(e)
       if(slashCommand)
       return slashCommand.reply({ephemeral: true, embeds: [new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setTitle(eval(client.la[ls]["handlers"]["playermanagers"]["search"]["variable1"]))
         .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["search"]["variable2"]))
-      ]}).catch(() => {})
+      ]}).catch(() => null)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setTitle(eval(client.la[ls]["handlers"]["playermanagers"]["search"]["variable1"]))
         .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["search"]["variable2"]))
-      ]}).catch(() => {})
+      ]}).catch(() => null)
     }
 
 
     var max = 10,
-      collected, filter = (r, u) => u.id === message.author.id;
+      collected, filter = (r, u) => u.id === message.author?.id;
     if (res.tracks.length < max) max = res.tracks.length;
     track = res.tracks[0]
     var theresults = res.tracks
@@ -81,7 +83,7 @@ async function search(client, message, args, type, slashCommand) {
         .setFooter(client.getFooter(`Search-Request by: ${track.requester.tag}`, track.requester.displayAvatarURL({
           dynamic: true
         })))
-      ]}).catch(() => {});
+      ]}).catch(() => null);
     else toreact = await message.reply({embeds: [new MessageEmbed()
       .setTitle(`Search-Result for: 🔎 **\`${search}`.substring(0, 256 - 3) + "`**")
       .setColor(ee.color)
@@ -89,7 +91,7 @@ async function search(client, message, args, type, slashCommand) {
       .setFooter(client.getFooter((`Search-Request by: ${track.requester.tag}`, track.requester.displayAvatarURL({
         dynamic: true
       }))))
-    ]}).catch(() => {});
+    ]}).catch(() => null);
     const emojiarray = ["❌", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
     for (let i = 0; i < emojiarray.length; i++) {
       try {
@@ -111,11 +113,11 @@ async function search(client, message, args, type, slashCommand) {
       return slashCommand.reply({ephemeral: true, embeds: [new MessageEmbed()
         .setTitle(eval(client.la[ls]["handlers"]["playermanagers"]["search"]["variable3"]))
         .setColor(ee.wrongcolor)
-      ]}).catch(() => {});
+      ]}).catch(() => null);
       return message.reply({embeds: [new MessageEmbed()
         .setTitle(eval(client.la[ls]["handlers"]["playermanagers"]["search"]["variable3"]))
         .setColor(ee.wrongcolor)
-      ]}).catch(() => {});
+      ]}).catch(() => null);
     }
     var first = collected.first().emoji?.name;
     if (first === '❌') {
@@ -125,11 +127,11 @@ async function search(client, message, args, type, slashCommand) {
       return slashCommand.reply({ephemeral: true,embeds: [new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setTitle(eval(client.la[ls]["handlers"]["playermanagers"]["search"]["variable4"]))
-      ]}).catch(() => {});
+      ]}).catch(() => null);
       return message.reply({embeds: [new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setTitle(eval(client.la[ls]["handlers"]["playermanagers"]["search"]["variable4"]))
-      ]}).catch(() => {});
+      ]}).catch(() => null);
     }
 
     toreact.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
@@ -154,9 +156,11 @@ async function search(client, message, args, type, slashCommand) {
     if (player.state !== "CONNECTED") {
       //set the variables
       player.set("message", message);
-      player.set("playerauthor", message.author.id);
+      player.set("playerauthor", message.author?.id);
       player.connect();
-      try{message.react("863876115584385074").catch(() => {});}catch(e){console.log(String(e).grey)}
+      if(!slashCommand) { 
+        message.react("863876115584385074").catch(() => null);
+      }
       //add track
       player.queue.add(track);
       //set the variables
@@ -179,40 +183,41 @@ async function search(client, message, args, type, slashCommand) {
         .addField("⌛ Duration: ", `\`${track.isStream ? "LIVE STREAM" : format(track.duration)}\``, true)
         .addField("💯 Song By: ", `\`${track.author}\``, true)
         .addField("🔂 Queue length: ", `\`${player.queue.length} Songs\``, true)
-        if(slashCommand)
-        slashCommand.reply({ephemeral: true,embeds: [embed3]}).catch(() => {});
-        else message.reply({embeds: [embed3]}).catch(() => {});
+        .addField(":notes: Music Dashboard :new: ", `[**Check out the :new: Music Dashboard!**](https://milrato.com/dashboard/queue/${player.guild})\n> Live Music View, Live Music Requests, Live Music Control and more!`) 
+      if(slashCommand)
+        slashCommand.reply({ephemeral: true,embeds: [embed3]}).catch(() => null);
+        else message.reply({embeds: [embed3]}).catch(() => null);
     }
-    if(client.musicsettings.get(player.guild, "channel") && client.musicsettings.get(player.guild, "channel").length > 5){
-      let messageId = client.musicsettings.get(player.guild, "message");
-      let guild = client.guilds.cache.get(player.guild);
-      if(!guild) return 
-      let channel = guild.channels.cache.get(client.musicsettings.get(player.guild, "channel"));
-      if(!channel) return 
-      let message = channel.messages.cache.get(messageId);
-      if(!message) message = await channel.messages.fetch(messageId).catch(()=>{});
-      if(!message) return
-      //edit the message so that it's right!
-      var data = require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
-      message.edit(data).catch(() => {})
-      if(client.musicsettings.get(player.guild, "channel") == player.textChannel){
-        return;
+    const musicsettings = await client.musicsettings.get(player.guild)
+    if(musicsettings.channel && musicsettings.channel.length > 5){
+      let messageId = musicsettings.message;
+      let guild = await client.guilds.cache.get(player.guild)
+      if(guild && messageId) {
+        let channel = guild.channels.cache.get(musicsettings.channel);
+        let message = await channel.messages.fetch(messageId).catch(() => null);
+        if(message) {
+          //edit the message so that it's right!
+          var data = await require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
+          message.edit(data).catch(() => null)
+          if(musicsettings.channel == player.textChannel){
+            return;
+          }
+        }
       }
     }
-
   } catch (e) {
-    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+    console.error(e)
     if(slashCommand)
     return slashCommand.reply({ephemeral: true,embeds: [new MessageEmbed()
       .setColor(ee.wrongcolor)
       .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
-    ]}).catch(() => {});
+    ]}).catch(() => null);
     message.reply({embeds: [new MessageEmbed()
       .setColor(ee.wrongcolor)
       .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
-    ]}).catch(() => {}).then(msg => {
+    ]}).catch(() => null).then(msg => {
       setTimeout(()=>{
-        msg.delete().catch(() => {})
+        msg.delete().catch(() => null)
       }, 3000)
     })
   }

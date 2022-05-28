@@ -1,11 +1,11 @@
 const Discord = require("discord.js");
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const moment = require('moment');
-const { GetRole } = require(`${process.cwd()}/handlers/functions`)
-const { swap_pages, handlemsg } = require(`${process.cwd()}/handlers/functions`)
+const { GetRole } = require(`../../handlers/functions`)
+const { swap_pages, handlemsg } = require(`../../handlers/functions`)
 module.exports = {
   name: "roleinfo",
   aliases: ["rinfo"],
@@ -13,9 +13,9 @@ module.exports = {
   description: "Get information about a role",
   usage: "roleinfo [@Role/Id/Name]",
   type: "server",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {   
       var role;
       if(args[0]){
@@ -32,7 +32,7 @@ module.exports = {
         //create the EMBED
         const embeduserinfo = new MessageEmbed()
         embeduserinfo.setThumbnail(message.guild.iconURL({ dynamic: true, size: 512 }))
-        embeduserinfo.setAuthor(client.la[ls].cmds.info.roleinfo.author + " " + role.name, message.guild.iconURL({ dynamic: true }), "https://discord.gg/milrato")
+        embeduserinfo.setAuthor(client.getAuthor(client.la[ls].cmds.info.roleinfo.author + " " + role.name, message.guild.iconURL({ dynamic: true }), "https://discord.gg/milrato"))
         embeduserinfo.addField(client.la[ls].cmds.info.roleinfo.field1,`\`${role.name}\``,true)
         embeduserinfo.addField(client.la[ls].cmds.info.roleinfo.field2,`\`${role.id}\``,true)
         embeduserinfo.addField(client.la[ls].cmds.info.roleinfo.field3,`\`${role.hexColor}\``,true)
@@ -49,7 +49,7 @@ module.exports = {
 
       
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

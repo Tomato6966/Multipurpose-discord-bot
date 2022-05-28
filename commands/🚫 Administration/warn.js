@@ -1,12 +1,12 @@
 const {
   MessageEmbed, Permissions
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  databasing, dbEnsure
+} = require(`../../handlers/functions`);
 module.exports = {
   name: `warn`,
   category: `🚫 Administration`,
@@ -14,15 +14,15 @@ module.exports = {
   description: `Warns a Member with a Reason`,
   usage: `warn @User [Reason]`,
   type: "member",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
-      let adminroles = client.settings.get(message.guild.id, "adminroles")
-      let cmdroles = client.settings.get(message.guild.id, "cmdadminroles.warn")
+      let adminroles = GuildSettings?.adminroles || [];
+      let cmdroles = GuildSettings?.cmdadminroles?.warn || [];
       var cmdrole = []
         if(cmdroles.length > 0){
-          for(const r of cmdroles){
+          for await (const r of cmdroles){
             if(message.guild.roles.cache.get(r)){
               cmdrole.push(` | <@&${r}>`)
             }
@@ -30,13 +30,16 @@ module.exports = {
               cmdrole.push(` | <@${r}>`)
             }
             else {
-              
-              //console.log(r)
-              client.settings.remove(message.guild.id, r, `cmdadminroles.warn`)
+              const File = `warn`;
+              let index = GuildSettings && GuildSettings.cmdadminroles && typeof GuildSettings.cmdadminroles == "object" ? GuildSettings.cmdadminroles[File]?.indexOf(r) || -1 : -1;
+              if(index > -1) {
+                GuildSettings.cmdadminroles[File].splice(index, 1);
+                client.settings.set(`${message.guild.id}.cmdadminroles`, GuildSettings.cmdadminroles)
+              }
             }
           }
         }
-      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author.id) && !message.member.permissions.has([Permissions.FLAGS.ADMINISTRATOR]))
+      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author?.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author?.id) && !message.member?.permissions?.has([Permissions.FLAGS.ADMINISTRATOR]))
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -68,46 +71,49 @@ module.exports = {
         ]});
 
       try {
-        client.userProfiles.ensure(warnmember.user.id, {
-          id: message.author.id,
+
+        await dbEnsure(client.userProfiles, message.author?.id, {
+          id: message.author?.id,
           guild: message.guild.id,
           totalActions: 0,
           warnings: [],
           kicks: []
         });
-        const newActionId = client.modActions.autonum;
-        client.modActions.set(newActionId, {
-          user: warnmember.user.id,
+        const newActionId = await client.modActions.stats().then(d => client.getUniqueID(d.count));
+        await client.modActions.set(newActionId, {
+          user: message.author?.id,
           guild: message.guild.id,
           type: 'warning',
-          moderator: message.author.id,
-          reason: reason,
+          moderator: message.author?.id,
+          reason: "Anticaps Autowarn",
           when: new Date().toLocaleString(`de`),
-          oldhighesrole: warnmember.roles ? warnmember.roles.highest : `Had No Roles`,
-          oldthumburl: warnmember.user.displayAvatarURL({
-            dynamic: true
+          oldhighesrole: message.member.roles ? message.member.roles.highest : `Had No Roles`,
+          oldthumburl: message.author.displayAvatarURL({
+              dynamic: true
           })
         });
         // Push the action to the user's warnings
-        client.userProfiles.push(warnmember.user.id, newActionId, 'warnings');
-        client.userProfiles.inc(warnmember.user.id, 'totalActions');
-        
-        client.stats.push(message.guild.id+message.author.id, new Date().getTime(), "warn"); 
-        const warnIDs = client.userProfiles.get(warnmember.user.id, 'warnings')
-        const warnData = warnIDs.map(id => client.modActions.get(id));
+        await client.userProfiles.push(message.author?.id + '.warnings', newActionId);
+        await client.userProfiles.add(message.author?.id + '.totalActions', 1);
+        await client.stats.push(message.guild.id + message.author?.id + ".warn", new Date().getTime());
+        const warnIDs = await client.userProfiles.get(message.author?.id + '.warnings')
+        const modActions = await client.modActions.all();
+        const warnData = warnIDs.map(id => modActions.find(d => d.ID == id)?.data);
         let warnings = warnData.filter(v => v.guild == message.guild.id);
+
+
         warnmember.send({embeds :[new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-          .setFooter(client.getFooter(`You have: ${client.userProfiles.get(warnmember.user.id, 'warnings') ? client.userProfiles.get(warnmember.user.id, 'warnings').length : 0} Global Warns`, "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/joypixels/275/globe-with-meridians_1f310.png"))
+          .setFooter(client.getFooter(`You have: ${warnings ? warnings.length : 0} Global Warns`, "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/joypixels/275/globe-with-meridians_1f310.png"))
           
-          .setAuthor(`You've got warned by: ${message.author.tag}`, message.author.displayAvatarURL({
+          .setAuthor(client.getAuthor(`You've got warned by: ${message.author.tag}`, message.author.displayAvatarURL({
             dynamic: true
-          }))
+          })))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable6"]))]}).catch(e => console.log(e.message))
 
         message.reply({embeds :[new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-          .setFooter(client.getFooter(`He has: ${client.userProfiles.get(warnmember.user.id, 'warnings') ? client.userProfiles.get(warnmember.user.id, 'warnings').length : 0} Global Warns`, "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/joypixels/275/globe-with-meridians_1f310.png"))
+          .setFooter(client.getFooter(`He has: ${warnings ? warnings.length : 0} Global Warns`, "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/joypixels/275/globe-with-meridians_1f310.png"))
           
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable7"]))
           .setThumbnail(warnmember.user.displayAvatarURL({
@@ -116,7 +122,7 @@ module.exports = {
           .setDescription(`**He now has: ${warnings.length} Warnings in ${message.guild.name}**`.substring(0, 2048))
         ]});
 
-        let warnsettings = client.settings.get(message.guild.id, "warnsettings")
+        let warnsettings = GuildSettings.warnsettings;
         if(warnsettings.kick && warnsettings.kick == warnings.length){
           if (!warnmember.kickable)
             return message.reply({embeds :[new MessageEmbed()
@@ -142,7 +148,7 @@ module.exports = {
             try {
               warnmember.kick({
                 reason: `Reached ${warnings.length} Warnings`
-              }).then(() => {
+              }).then(async () => {
                 message.reply({embeds :[new MessageEmbed()
                   .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
                   .setFooter(client.getFooter(es))
@@ -151,7 +157,7 @@ module.exports = {
                 ]});
               });
             } catch (e) {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              console.error(e);
               return message.reply({embeds : [new MessageEmbed()
                 .setColor(es.wrongcolor)
                 .setFooter(client.getFooter(es))
@@ -184,7 +190,7 @@ module.exports = {
             try {
               warnmember.ban({
                 reason: `Reached ${warnings.length} Warnings`
-              }).then(() => {
+              }).then(async () => {
                 message.reply({embeds :[new MessageEmbed()
                   .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
                   .setFooter(client.getFooter(es))
@@ -193,7 +199,7 @@ module.exports = {
                 ]});
               });
             } catch (e) {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              console.error(e);
               return message.reply({embeds :[new MessageEmbed()
                 .setColor(es.wrongcolor)
                 .setFooter(client.getFooter(es))
@@ -202,32 +208,32 @@ module.exports = {
               ]});
             }
         }
-        for(const role of warnsettings.roles){
+        for await (const role of warnsettings.roles){
           if(role.warncount == warnings.length){
             if(!warnmember.roles.cache.has(role.roleid)){
-              warnmember.roles.add(role.roleid).catch((O)=>{})
+              warnmember.roles.add(role.roleid).catch(() => null)
             }
           }
         }
-        if(client.settings.get(message.guild.id, `adminlog`) != "no"){
+        if(GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no"){
           try{
-            var channel = message.guild.channels.cache.get(client.settings.get(message.guild.id, `adminlog`))
-            if(!channel) return client.settings.set(message.guild.id, "no", `adminlog`);
+            var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
+            if(!channel) return client.settings.set(`${message.guild.id}.adminlog`, "no");
             channel.send({embeds : [new MessageEmbed()
               .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-              .setAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({dynamic: true}))
+              .setAuthor(client.getAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({dynamic: true})))
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable24"]))
               .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
              .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-              .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+              .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
             ]})
           }catch (e){
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
           }
         } 
         
       } catch (e) {
-        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+        console.error(e);
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -236,7 +242,7 @@ module.exports = {
         ]});
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["administration"]["warn"]["variable29"]))

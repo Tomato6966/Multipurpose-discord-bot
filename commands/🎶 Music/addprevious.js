@@ -2,11 +2,11 @@ const Discord = require(`discord.js`);
 const {
   MessageEmbed
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const ee = require(`../../botconfig/embed.json`);
 const playermanager = require(`../../handlers/playermanager`);
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+const { handlemsg } = require(`../../handlers/functions`);
     module.exports = {
   name: `addprevious`,
   category: `🎶 Music`,
@@ -19,10 +19,10 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     "previoussong": true
   },
   type: "queue",
-  run: async (client, message, args, cmduser, text, prefix, player) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    
+    if(GuildSettings.MUSIC === false) {
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

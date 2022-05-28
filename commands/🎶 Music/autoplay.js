@@ -2,11 +2,11 @@ const Discord = require(`discord.js`);
 const {
   MessageEmbed
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+const ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const playermanager = require(`../../handlers/playermanager`);
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+const { handlemsg } = require(`../../handlers/functions`);
 module.exports = {
   name: `autoplay`,
   category: `🎶 Music`,
@@ -20,10 +20,10 @@ module.exports = {
     "previoussong": false
   },
   type: "queue",
-  run: async (client, message, args, cmduser, text, prefix, player) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    
+    if(GuildSettings.MUSIC === false) {
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -36,18 +36,18 @@ module.exports = {
       player.set(`autoplay`, !player.get(`autoplay`))
       if(player.get(`autoplay`)){
         try{
-          message.react("♾").catch(()=>{})
-          message.react("833101995723194437").catch(()=>{})
+          message.react("♾").catch(() => null)
+          message.react("833101995723194437").catch(() => null)
         }catch{ }
       }else {
         try{
-          message.react("♾").catch(()=>{})
-          message.react("833101993668771842").catch(()=>{})
+          message.react("♾").catch(() => null)
+          message.react("833101993668771842").catch(() => null)
         }catch{  }
       }
       //Send Success Message
       return message.reply({embeds :[new MessageEmbed()
-        .setColor(es.color)
+        .setColor(es. color)
         .setTitle(eval(client.la[ls]["cmds"]["music"]["autoplay"]["variable1"]))
         .setDescription(eval(client.la[ls]["cmds"]["music"]["autoplay"]["variable2"]))
       ]});

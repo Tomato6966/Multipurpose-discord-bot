@@ -1,11 +1,11 @@
 var { MessageEmbed } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var radios = require(`../../botconfig/radiostations.json`);
 var playermanager = require(`../../handlers/playermanager`);
-var { stations, databasing } = require(`${process.cwd()}/handlers/functions`);
+var { stations, dbEnsure } = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
     name: "setup-music",
@@ -16,12 +16,10 @@ module.exports = {
     description: "Setup a Music Request Channel",
     memberpermissions: ["ADMINISTRATOR"],
     type: "fun",
-    run: async (client, message, args, cmduser, text, prefix) => {
-    
-      let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
       try{
         //I AM NOW MAKING A MUSIC REQUEST SYSTEM FOR A BOT!
-        client.musicsettings.ensure(message.guild.id, {
+        await dbEnsure(client.musicsettings, message.guild.id, {
           "channel": "",
           "message": ""
         })
@@ -63,14 +61,14 @@ module.exports = {
         let channel = message.mentions.channels.first();
         if(!channel) return message.reply(":x: **You forgot to ping a Text-Channel!**")
         //send the data in the channel
-        channel.send({embeds, components}).then(msg => {
-          client.musicsettings.set(message.guild.id, channel.id, "channel");
-          client.musicsettings.set(message.guild.id, msg.id, "message");
+        channel.send({embeds, components}).then(async (msg) => {
+          await client.musicsettings.set(message.guild.id+".channel", channel.id);
+          await client.musicsettings.set(message.guild.id+".message", msg.id);
           //send a success message
           return message.reply(`✅ **Successfully setupped the Music System in:** <#${channel.id}>`)
         });
         } catch (e) {
-            console.log(String(e.stack).grey.bgRed)
+            console.error(e)
             return message.reply({embeds: [new MessageEmbed()
                 .setColor(es.wrongcolor)
     						.setFooter(client.getFooter(es))

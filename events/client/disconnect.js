@@ -1,5 +1,5 @@
 //here the event starts
-module.exports = client => {
+module.exports = async (client) => {
     console.log(`You have been disconnected at ${new Date()}.`.dim)
 }
 /**

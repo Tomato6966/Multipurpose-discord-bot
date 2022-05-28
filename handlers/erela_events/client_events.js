@@ -52,7 +52,7 @@ var {
             try {
                 await nS.guild.me.voice.setSuppressed(false);
             } catch (e) {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
             }
         }
       })

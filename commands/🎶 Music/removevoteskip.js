@@ -1,10 +1,10 @@
 /*const {
   MessageEmbed
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+const config = require(`../../botconfig/config.json`);
+const ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { handlemsg } = require(`../../handlers/functions`);
     module.exports = {
   name: `removevoteskip`,
   category: `🎶 Music`,
@@ -16,10 +16,10 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     "activeplayer": true,
     "previoussong": false
   },
-  run: async (client, message, args, cmduser, text, prefix, player) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    
+    if(GuildSettings.MUSIC === false) {
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -36,8 +36,8 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
 
         voteamount = Math.ceil(channelmembersize / 3);
 
-        if (player.get(`vote-${message.author.id}`)) {
-          player.set(`vote-${message.author.id}`, false)
+        if (player.get(`vote-${message.author?.id}`)) {
+          player.set(`vote-${message.author?.id}`, false)
           player.set(`votes`, String(Number(player.get(`votes`)) - 1));
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.color)

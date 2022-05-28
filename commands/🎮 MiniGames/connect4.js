@@ -99,7 +99,7 @@ class Connect4Game {
         }
 
         if (this.opponent.bot) return this.sendMessage('You can\'t play with bots!')
-        if (this.opponent.id === this.message.author.id) return this.sendMessage('You cannot play with yourself!')
+        if (this.opponent.id === this.message.author?.id) return this.sendMessage('You cannot play with yourself!')
 
         const check = await verify(this.options)
 
@@ -171,12 +171,12 @@ class Connect4Game {
 
 
         collector.on('collect', async btn => {
-            if (btn.user.id !== this.message.author.id && btn.user.id !== this.opponent.id) {
+            if (btn.user.id !== this.message.author?.id && btn.user.id !== this.opponent.id) {
                 const authors = this.message.author.tag + 'and' + this.opponent.tag;
                 return btn.reply({ content: this.options.othersMessage.replace('{author}', authors),  ephemeral: true })
             }
             
-            const turn = this.redTurn ? this.message.author.id : this.opponent.id;
+            const turn = this.redTurn ? this.message.author?.id : this.opponent.id;
             if (btn.user.id !== turn) {
 				return btn.reply({ content: this.options.waitMessage,  ephemeral: true })
 			}
@@ -302,15 +302,15 @@ module.exports = {
     description: "Allows you to play a Game of Connect4",
     usage: "connect4 --> Play the Game",
     type: "buttons",
-    run: async (client, message, args, cmduser, text, prefix) => {
+    run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-        let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        if(!client.settings.get(message.guild.id, "MINIGAMES")){
+        
+        if(GuildSettings.FUN === false){
           return message.reply(new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.disabled.title)
-            .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+            .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
           );
         }
         const opponent = message.mentions.members.first() || message.guild.members.cache.get(args[0]);

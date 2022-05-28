@@ -1,9 +1,10 @@
 const Discord = require("discord.js");
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { GetUser, GetGlobalUser, handlemsg, nFormatter, swap_pages2 } = require(`${process.cwd()}/handlers/functions`)
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { GetUser, GetGlobalUser, handlemsg, nFormatter, swap_pages2 } = require(`../../handlers/functions`)
+const { DbAllCache } = require("../../handlers/caches.js");
 module.exports = {
   name: "invitesleaderboard",
   aliases: ["inviteslb"],
@@ -11,14 +12,17 @@ module.exports = {
   description: "See the Leaderboard of the Invites in this Guild!",
   usage: "invitesleaderboard",
   type: "user",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
     try {
       
-      await message.guild.members.fetch().catch(()=>{});
+      await message.guild.members.fetch().catch(() => null);
 
-      const filtered = client.invitesdb.filter(p => p.guildId === message.guild.id).map(d => {
+      let invites = DbAllCache.get(message.guild.id) || await client.invitesdb.all().then(v => v.data?.guildId == message.guild.id) || [];
+      DbAllCache.set(message.guild.id, invites);
+
+
+      const filtered = invites.filter(p => p.data?.guildId === message.guild.id).map(p => p.data).map(d => {
         let {
           invites,
           fake,
@@ -46,7 +50,6 @@ module.exports = {
           return 0;
         }
       });
-      console.log(sorted.length);
       let maxnum = sorted.length;
       if(maxnum < 25) maxnum = 25;
       var embeds = [];
@@ -61,18 +64,18 @@ module.exports = {
           var string = "";
           for (const data of top) {
               j++;
-              if(j == 1) string += `:first_place: ${data.id == message.author.id ? "__" : ""}**${data.usertag}**: \`Invites: ${data.invites}\`${data.id == message.author.id ? "__" : ""}\n`;
-              else if(j == 2) string += `:second_place: ${data.id == message.author.id ? "__" : ""}**${data.usertag}**: \`Invites: ${data.invites}\`${data.id == message.author.id ? "__" : ""}\n`;
-              else if(j == 3) string += `:third_place: ${data.id == message.author.id ? "__" : ""}**${data.usertag}**: \`Invites: ${data.invites}\`${data.id == message.author.id ? "__" : ""}\n`;
-              else string += `${data.id == message.author.id ? "__" : ""}\`${j}\`. **${data.usertag}**: \`Invites: ${data.invites}\`${data.id == message.author.id ? "__" : ""}\n`;
-              if(data.id == message.author.id) userrank = j;
+              if(j == 1) string += `:first_place: ${data.id == message.author?.id ? "__" : ""}**${data.usertag}**: \`Invites: ${data.invites}\`${data.id == message.author?.id ? "__" : ""}\n`;
+              else if(j == 2) string += `:second_place: ${data.id == message.author?.id ? "__" : ""}**${data.usertag}**: \`Invites: ${data.invites}\`${data.id == message.author?.id ? "__" : ""}\n`;
+              else if(j == 3) string += `:third_place: ${data.id == message.author?.id ? "__" : ""}**${data.usertag}**: \`Invites: ${data.invites}\`${data.id == message.author?.id ? "__" : ""}\n`;
+              else string += `${data.id == message.author?.id ? "__" : ""}\`${j}\`. **${data.usertag}**: \`Invites: ${data.invites}\`${data.id == message.author?.id ? "__" : ""}\n`;
+              if(data.id == message.author?.id) userrank = j;
           }
           embed.setDescription(string.substring(0, 2048))
           embeds.push(embed);
       }
       swap_pages2(client, message, embeds.map(e => e.setFooter(client.getFooter(`You are #${userrank} on the Leaderboard`))))
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

@@ -2,15 +2,15 @@ const Discord = require(`discord.js`)
 const {
     MessageEmbed
 } = require(`discord.js`)
-const config = require(`${process.cwd()}/botconfig/config.json`)
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`)
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const playermanager = require(`../../handlers/playermanager`)
 const {
     createBar,
     format
-} = require(`${process.cwd()}/handlers/functions`);
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
+const { handlemsg } = require(`../../handlers/functions`);
     module.exports = {
     name: `searchplaylist`,
     category: `🎶 Music`,
@@ -24,10 +24,10 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
         "previoussong": false
     },
     type: "queue",
-    run: async (client, message, args, cmduser, text, prefix, player) => {
+    run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
         
-        let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        if (!client.settings.get(message.guild.id, "MUSIC")) {
+        
+        if(GuildSettings.MUSIC === false) {
         return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))

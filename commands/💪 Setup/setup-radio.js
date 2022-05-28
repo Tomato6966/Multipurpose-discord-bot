@@ -1,11 +1,11 @@
 var { MessageEmbed } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var radios = require(`../../botconfig/radiostations.json`);
 var playermanager = require(`../../handlers/playermanager`);
-var { stations, databasing } = require(`${process.cwd()}/handlers/functions`);
+var { stations, dbEnsure } = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
     name: "setup-radio",
@@ -16,11 +16,10 @@ module.exports = {
     description: "Manage the Waitingroom System / 24/7 Radio System",
     memberpermissions: ["ADMINISTRATOR"],
     type: "fun",
-    run: async (client, message, args, cmduser, text, prefix) => {
+    run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-      let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
       try{
-        var adminroles = client.settings.get(message.guild.id, "adminroles")
+        var adminroles = GuildSettings.adminroles ? GuildSettings.adminroles : []
         var { guild } = message;
         //get the channel instance from the Member
         var { channel } = message.member.voice;
@@ -40,7 +39,7 @@ module.exports = {
         if (isNaN(args[0])) {
             return message.reply({embeds: [new MessageEmbed()
               .setColor(es.wrongcolor)
-              .setFooter(client.user.username, es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL())
+              .setFooter(client.getFooter(es))
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-radio"]["variable2"]))
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-radio"]["variable3"]))
             ]});
@@ -49,7 +48,7 @@ module.exports = {
         if (Number(args[1]) > 150 || Number(args[1]) < 1)
           return message.reply({embeds: [new MessageEmbed()
             .setColor(es.wrongcolor)
-            .setFooter(client.user.username, es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL())
+            .setFooter(client.getFooter(es))
             .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-radio"]["variable4"]))
             .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-radio"]["variable5"]))
           ]});
@@ -69,8 +68,8 @@ module.exports = {
           let lastitem = array[array.length - 1];
           let flatObject = [, ...Object.values(radios.REYFM), ...Object.values(radios.ILOVERADIO), ...Object.values(radios.EU), ...Object.values(radios.OTHERS)];
           let allArray = [];
-          for(const element of flatObject){
-            if(Array.isArray(element)) for(const e of element) allArray.push(e);
+          for (const element of flatObject){
+            if(Array.isArray(element)) for (const e of element) allArray.push(e);
             else allArray.push(element);
           }
           return allArray.indexOf(lastitem);
@@ -118,16 +117,16 @@ module.exports = {
                 .setColor("#7fafe3")
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-radio"]["variable8"]))
                 .setURL(song.url)
-                .setFooter(client.user.username, es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL())
+                .setFooter(client.getFooter(es))
             )
 
-        client.settings.set(message.guild.id, channel.id, `channel`);
-        client.settings.set(message.guild.id, song.url, `song`);
-        client.settings.set(message.guild.id, volume, `volume`);
+        await client.settings.set(message.guild.id+`.channel`, channel.id);
+        await client.settings.set(message.guild.id+`.song`, song.url);
+        await client.settings.set(message.guild.id+`.volume`, volume);
         //play the radio but make the URL to an array ;) like that: [ `urlhere` ]
-        playermanager(client, message, Array(client.settings.get(message.guild.id, `song`)), `song:radioraw`, channel, message.guild);
+        playermanager(client, message, Array(song.url), `song:radioraw`, channel, message.guild);
         } catch (e) {
-            console.log(String(e.stack).grey.bgRed)
+            console.error(e)
             return message.reply({embeds: [new MessageEmbed()
                 .setColor(es.wrongcolor)
     						.setFooter(client.getFooter(es))

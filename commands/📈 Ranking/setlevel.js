@@ -1,6 +1,6 @@
 //Here the command starts
-const config = require(`${process.cwd()}/botconfig/config.json`)
-var ee = require(`${process.cwd()}/botconfig/embed.json`)
+const config = require(`../../botconfig/config.json`)
+var ee = require(`../../botconfig/embed.json`)
 module.exports = {
 	//definition
 	name: "setlevel", //the name of the command 
@@ -11,7 +11,7 @@ module.exports = {
   	description: "Set a specific amount of Levels to a User", //the description of the command
 	  type: "manage",
 	//running the command with the parameters: client, message, args, user, text, prefix
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
 	}
 }

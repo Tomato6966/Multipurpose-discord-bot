@@ -1,13 +1,13 @@
 const {
   MessageEmbed
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   autoplay
-} = require(`${process.cwd()}/handlers/functions`);
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
+const { handlemsg } = require(`../../handlers/functions`);
 /*module.exports = {
   name: `voteskip`,
   category: `🎶 Music`,
@@ -19,10 +19,10 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     "activeplayer": true,
     "previoussong": false
   },
-  run: async (client, message, args, cmduser, text, prefix, player) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    
+    if(GuildSettings.MUSIC === false) {
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -30,12 +30,12 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
         .setDescription(handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
       ]});
     }
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    if(GuildSettings.MUSIC === false) {
       return message.reply({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.disabled.title)
-        .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+        .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
       ]});
     }
     try {
@@ -47,8 +47,8 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
         if (channelmembersize <= 3) voteamount = 1;
         voteamount = Math.ceil(channelmembersize / 3);
 
-        if (!player.get(`vote-${message.author.id}`)) {
-          player.set(`vote-${message.author.id}`, true);
+        if (!player.get(`vote-${message.author?.id}`)) {
+          player.set(`vote-${message.author?.id}`, true);
           player.set(`votes`, String(Number(player.get(`votes`)) + 1));
           if (voteamount <= Number(player.get(`votes`))) {
             message.reply({embeds : [new MessageEmbed()

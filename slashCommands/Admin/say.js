@@ -18,7 +18,7 @@ module.exports = {
 	
   ],
   memberpermissions: ["ADMINISTRATOR"],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     try{
 	    //console.log(interaction, StringOption)
 		
@@ -35,11 +35,11 @@ module.exports = {
 		//let RoleOption = options.getRole("OPTIONNAME"); //RETURNS ROLE OBJECT
 		const channel = ChannelOption && ["GUILD_PRIVATE_THREAD ", "GUILD_PUBLIC_THREAD ", "GUILD_NEWS_THREAD ", "GUILD_NEWS", "GUILD_TEXT"].includes(ChannelOption.type) ? ChannelOption : guild.channels.cache.get(channelId);
 		//update it without a response!
-		await interaction?.reply({content: `Sending the Message...`, ephemeral: true}).catch(()=>{});
+		await interaction?.reply({content: `Sending the Message...`, ephemeral: true}).catch(() => null);
 		//SEND THE EMBED!
-		await channel.send({content: String(Text).substring(0, 2000).split("+n+").join("\n")}).catch(()=>{});
+		await channel.send({content: String(Text).substring(0, 2000).split("+n+").join("\n")}).catch(() => null);
 		//Edit the reply
-		interaction?.editReply({content: `✅ Message sent in ${channel}!`, ephemeral: true}).catch(()=>{});
+		interaction?.editReply({content: `✅ Message sent in ${channel}!`, ephemeral: true}).catch(() => null);
     } catch (e) {
         console.log(String(e.stack).bgRed)
     }

@@ -1,9 +1,9 @@
 const Discord = require("discord.js");
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
 const moment = require("moment")
-const { GetUser, GetGlobalUser, handlemsg } = require(`${process.cwd()}/handlers/functions`)
+const { GetUser, GetGlobalUser, handlemsg } = require(`../../handlers/functions`)
 module.exports = {
   name: "emojiinfo",
   aliases: ["infoemoji"],
@@ -11,9 +11,9 @@ module.exports = {
   description: "See Information about an emji",
   usage: "emojiinfo <EMOJI>",
   type: "util",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       let hasEmoteRegex = /<a?:.+:\d+>/gm
       let emoteRegex = /<:.+:(\d+)>/gm
@@ -24,10 +24,17 @@ module.exports = {
         
       if (emoji1 = emoteRegex.exec(message)) {
         let url = "https://cdn.discordapp.com/emojis/" + emoji1[1] + ".png?v=1"
-        const emoji = message.guild.emojis.cache.find((emj) => emj.name === emoji1[1] || emj.id == emoji1[1])
+        let emoji = message.guild.emojis.cache.find((emj) => emj.name === emoji1[1] || emj.id == emoji1[1]) || await client.cluster.broadcastEval((c, emoji) => 
+          c.emojis.cache.find((emj) => emj.name === emoji || emj.id == emoji), { context: emoji1[1]}
+        ).catch(() => null).then(e => e.filter(Boolean)[0])
         if(!emoji) return message.reply(handlemsg(client.la[ls].cmds.info.emojiinfo.error2))
-      
-        const authorFetch = await emoji?.fetchAuthor();
+        let authorFetch = "Emoji not fetchable";
+        try {
+          authorFetch = await emoji?.fetchAuthor();
+        }catch{
+
+        }
+        const guild = client.guilds.cache.get(emoji.guildId) || message.guild;
         const checkOrCross = (bool) => bool ? "✅" : "❌" ;
         const embed = new MessageEmbed()
         .setTitle(eval(client.la[ls]["cmds"]["info"]["emojiinfo"]["variable1"]))
@@ -44,7 +51,7 @@ module.exports = {
           `${handlemsg(client.la[ls].cmds.info.emojiinfo.embed.field2.value[1])} \`${checkOrCross(emoji?.animated)}\``,
           `${handlemsg(client.la[ls].cmds.info.emojiinfo.embed.field2.value[2])} \`${checkOrCross(emoji?.deleteable)}\``,
           `${handlemsg(client.la[ls].cmds.info.emojiinfo.embed.field2.value[3])} \`${checkOrCross(emoji?.managed)}\``,
-        ].join("\n")).setFooter(client.getFooter(es))
+        ].join("\n")).setFooter(client.getFooter(guild.name, `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.${guild.icon.startsWith("a_") ? "gif" : "png"}?size=4096`))
         message.reply({embeds: [embed]})
       }
       else if (emoji1 = animatedEmoteRegex.exec(message)) {
@@ -76,7 +83,7 @@ module.exports = {
       else {return message.reply(handlemsg(client.la[ls].cmds.info.emojiinfo.error3))
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

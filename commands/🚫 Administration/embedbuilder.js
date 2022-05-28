@@ -2,11 +2,11 @@ const {
   MessageEmbed,
   Permissions
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
 const {
   databasing
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow } = require("discord.js") // using discord.js but edited!
 module.exports = {
   name: "embedbuilder",
@@ -16,15 +16,15 @@ module.exports = {
   usage: "embedbuilder --> follow Steps",
   description: "Resends a message from u as an Embed\n\n To have forexample no title do that:  embed ++ This is what an Embed without Image Looks like",
   type: "server",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
-      let adminroles = client.settings.get(message.guild.id, "adminroles")
-      let cmdroles = client.settings.get(message.guild.id, "cmdadminroles.embedbuilder")
+      let adminroles = GuildSettings?.adminroles || [];
+      let cmdroles = GuildSettings?.cmdadminroles?.embedbuilder || [];
       var cmdrole = []
         if(cmdroles.length > 0){
-          for(const r of cmdroles){
+          for await (const r of cmdroles){
             if(message.guild.roles.cache.get(r)){
               cmdrole.push(` | <@&${r}>`)
             }
@@ -32,13 +32,16 @@ module.exports = {
               cmdrole.push(` | <@${r}>`)
             }
             else {
-              
-              //console.log(r)
-              client.settings.remove(message.guild.id, r, `cmdadminroles.embedbuilder`)
+              const File = `embedbuilder`;
+              let index = GuildSettings && GuildSettings.cmdadminroles && typeof GuildSettings.cmdadminroles == "object" ? GuildSettings.cmdadminroles[File]?.indexOf(r) || -1 : -1;
+              if(index > -1) {
+                GuildSettings.cmdadminroles[File].splice(index, 1);
+                client.settings.set(`${message.guild.id}.cmdadminroles`, GuildSettings.cmdadminroles)
+              }
             }
           }
         }
-      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author.id) && !message.member.permissions.has([Permissions.FLAGS.ADMINISTRATOR]))
+      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author?.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author?.id) && !message.member?.permissions?.has([Permissions.FLAGS.ADMINISTRATOR]))
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -119,7 +122,7 @@ let buttonEvent = async (interaction) => {
     if (interaction?.user.id === message.member.id) {
       embedEditing(interaction);
     } else {
-      await interaction?.reply({content : `<:no:833101993668771842> You are not allowed to do that! Only: <@${message.author.id}>`, ephemeral : true}); //ephemeral message
+      await interaction?.reply({content : `<:no:833101993668771842> You are not allowed to do that! Only: <@${message.author?.id}>`, ephemeral : true}); //ephemeral message
     }
   }
 }
@@ -148,7 +151,7 @@ let embedEditing = async(button) => {
 
         let input;
         if(noInputFinal) {
-            let filter = async(message) => button?.user.id == message.author.id
+            let filter = async(message) => button?.user.id == message.author?.id
             input = await button?.channel.awaitMessages({filter,  max: 1, time: 30000, errors: ['time'] }).catch(e => {
                 return client.emit(`interactionCreate`, {
                     id: `buildEmbed_cancel`,
@@ -198,7 +201,7 @@ let embedEditing = async(button) => {
         button?.message.edit({content :`Canceling...` ,components:null}) 
 
         setTimeout(async() => {
-            let message = await button?.channel.messages.fetch(button?.message.id).catch(() => {})
+            let message = await button?.channel.messages.fetch(button?.message.id).catch(() => null)
             message.delete();
         }, 3000)
 
@@ -206,7 +209,7 @@ let embedEditing = async(button) => {
     }
 
     if(id == `save`) {
-        let messageToDelete = await button?.channel.messages.fetch(button?.message.id).catch(() => {});
+        let messageToDelete = await button?.channel.messages.fetch(button?.message.id).catch(() => null);
 
         messageToDelete.delete();
           embedToBuild = Object.keys(embedToBuild).reduce((object, key) => {
@@ -229,25 +232,25 @@ let embedEditing = async(button) => {
     }, 300000)
   }
 
-    if(client.settings.get(message.guild.id, `adminlog`) != "no"){
+    if(GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no"){
       try{
-        var channel2 = message.guild.channels.cache.get(client.settings.get(message.guild.id, `adminlog`))
-        if(!channel2) return client.settings.set(message.guild.id, "no", `adminlog`);
+        var channel2 = message.guild.channels.cache.get(GuildSettings.adminlog)
+        if(!channel2) return client.settings.set(`${message.guild.id}.adminlog`, "no");
         channel2.send({embeds : [new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-          .setAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({dynamic: true}))
+          .setAuthor(client.getAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({dynamic: true})))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["embedbuilder"]["variable3"]))
           .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
          .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-          .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+          .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
         ]})
       }catch (e){
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
       }
     } 
       
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

@@ -1,7 +1,7 @@
 const { MessageEmbed } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 module.exports = {
     name: `removedj`,
     aliases: [`deletedj`],
@@ -10,9 +10,9 @@ module.exports = {
     usage: `removedj @ROLE`,
     memberpermissions: [`ADMINISTRATOR`],
     type: "music",
-    run: async (client, message, args, cmduser, text, prefix) => {
+    run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-      let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+      
     try{
       
       //get the role of the mention
@@ -34,17 +34,20 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["settings"]["removedj"]["variable2"]))
         ]});
       }
+      const djroles = GuildSettings.djroles;
       //if its not in the database return error
-      if(!client.settings.get(message.guild.id,`djroles`).includes(role.id))
+      if(!djroles.includes(role.id))
         return message.reply({embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(`<:no:833101993668771842> **This Role is not a DJ-Role!**`)
         ]});
       //remove it from the Database
-      client.settings.remove(message.guild.id, role.id, `djroles`);
+      let index = djroles.indexOf(role.id);
+      if(index > -1) djroles.splice(index, 1);
+      await client.settings.set(`${message.guild.id}.djroles`, djroles);
       //These lines create the String for all left Roles
-      var leftb = client.settings.get(message.guild.id, `djroles`).map(r => `<@&${r}>`);
+      var leftb = await client.settings.get(`${message.guild.id}.djroles`).then(d => d.map(r => `<@&${r}>`));
       if (leftb?.length == 0) leftb = "`not setup`";
       else leftb?.join(", ");
       //send the success message
@@ -55,7 +58,7 @@ module.exports = {
         .setDescription(eval(client.la[ls]["cmds"]["settings"]["removedj"]["variable5"]))
       ]});
     } catch (e) {
-        console.log(String(e.stack).grey.bgRed)
+        console.error(e)
         return message.reply({embeds: [new MessageEmbed()
             .setColor(es.wrongcolor)
 						.setFooter(client.getFooter(es))

@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure, dbRemove, dbKeys
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-ghost-ping-detector",
@@ -18,9 +18,8 @@ module.exports = {
   description: "Enable/Disable the ghost-ping-detector / Ghost-Ping-Detector - Logger",
   memberpermissions: ["ADMINISTRATOR"],
   type: "security",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
     try {
       first_layer()
       async function first_layer(){
@@ -66,30 +65,30 @@ module.exports = {
         //define the embed
         let MenuEmbed = new MessageEmbed()
           .setColor(es.color)
-          .setAuthor('Ghost-Ping-Detector Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/bookmark_1f516.png', 'https://discord.gg/milrato')
+          .setAuthor(client.getAuthor('Ghost-Ping-Detector Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/bookmark_1f516.png', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
 
@@ -103,17 +102,17 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-logger"]["variable6"]) + `\n\nIf you want to change the maxmimum Time, until a Ping is detected as a ghost ping, then do something like this: \`#channel 30\` ... send logs in #channel, detect ghost-pings of deletions in under 30 Seconds`)
                 .setFooter(client.getFooter(es))]
               })
-              await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+              await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                   max: 1,
                   time: 90000,
                   errors: ["time"]
                 })
-                .then(collected => {
+                .then(async collected => {
                   var message = collected.first();
                   var channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
                   if (channel) {
                     try {
-                      client.settings.set(message.guild.id, channel.id, "ghost_ping_detector");
+                      await client.settings.set(message.guild.id+".ghost_ping_detector", channel.id);
                       let maxtime = message.content.split(">")[1];
                       let isnan = false;
                       if(maxtime && maxtime.length > 0){
@@ -127,7 +126,7 @@ module.exports = {
                       } else {
                         maxtime = 10000;
                       }
-                      client.settings.set(message.guild.id, maxtime, "ghost_ping_detector_max_time");
+                      await client.settings.set(message.guild.id+".ghost_ping_detector_max_time", maxtime);
                       return message.reply({embeds: [new Discord.MessageEmbed()
                         .setTitle(`<a:yes:833101995723194437> I will now send all detected Ghost Pings in \`${channel.name}\``)
                         .setColor(es.color)
@@ -147,7 +146,7 @@ module.exports = {
                   }
                 })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-admincmdlog"]["variable7"]))
                 .setColor(es.wrongcolor)
@@ -159,8 +158,8 @@ module.exports = {
           break;
           case "Disable Detector-Log":
             {
-              client.settings.set(message.guild.id, false, "ghost_ping_detector");
-              client.settings.set(message.guild.id, 10000, "ghost_ping_detector_max_time");
+              await client.settings.set(message.guild.id+".ghost_ping_detector", false);
+              await client.settings.set(message.guild.id+".ghost_ping_detector_max_time", 10000);
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(`Successfully disabled the Ghost-Ping-Detector System & Log`)
                 .setColor(es.color)
@@ -170,8 +169,8 @@ module.exports = {
           break;
           case "Show Settings":
             {
-              let ghost_ping_detector = client.settings.get(message.guild.id, `ghost_ping_detector`)
-              let ghost_ping_detector_max_time = client.settings.get(message.guild.id, `ghost_ping_detector_max_time`)
+              let ghost_ping_detector = await client.settings.get(message.guild.id, `ghost_ping_detector`)
+              let ghost_ping_detector_max_time = await client.settings.get(message.guild.id, `ghost_ping_detector_max_time`)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle("Settings of the Ghost-Ping-Detector-Log")
                 .setColor(es.color)
@@ -185,7 +184,7 @@ module.exports = {
       
   
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

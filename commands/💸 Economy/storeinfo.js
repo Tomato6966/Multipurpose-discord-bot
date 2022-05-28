@@ -1,8 +1,8 @@
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { parseMilliseconds, duration, GetUser, nFormatter, ensure_economy_user } = require(`${process.cwd()}/handlers/functions`)
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { parseMilliseconds, duration, GetUser, nFormatter, ensure_economy_user } = require(`../../handlers/functions`)
 module.exports = {
   name: "storeinfo",
   category: "💸 Economy",
@@ -10,10 +10,10 @@ module.exports = {
   description: "Shows the Store",
   usage: "storeinfo",
   type: "info",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if(!client.settings.get(message.guild.id, "ECONOMY")){
+    
+    if(GuildSettings.ECONOMY === false){
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -27,8 +27,8 @@ module.exports = {
     if(user.bot) return message.reply(eval(client.la[ls]["cmds"]["economy"]["storeinfo"]["variable2"]))
     
       //ensure the economy data
-      ensure_economy_user(client, message.guild.id, user.id)
-    const data = client.economy.get(`${message.guild.id}-${user.id}`)
+      await ensure_economy_user(client, message.guild.id, user.id)
+    const data = await client.economy.get(`${message.guild.id}_${user.id}`)
     var items = 0;
     var itemsvalue = 0;
     for (const itemarray in data.items){
@@ -97,7 +97,7 @@ module.exports = {
 )
       ]});
   } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
     return message.reply({embeds: [new MessageEmbed()
       .setColor(es.wrongcolor)
       .setFooter(client.getFooter(es))

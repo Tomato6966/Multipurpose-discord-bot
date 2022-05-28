@@ -1,12 +1,12 @@
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   duration
-} = require(`${process.cwd()}/handlers/functions`)
+} = require(`../../handlers/functions`)
 const moment = require("moment")
 module.exports = {
   name: "uptime",
@@ -15,9 +15,9 @@ module.exports = {
   usage: "uptime",
   description: "Returns the duration on how long the Bot is online",
   type: "bot",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       let date = new Date()
       let timestamp = date.getTime() - Math.floor(client.uptime);
@@ -25,12 +25,12 @@ module.exports = {
         .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
         .setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["info"]["uptime"]["variable1"]))
-        .setDescription(eval(client.la[ls]["cmds"]["info"]["uptime"]["variable2"]))
-        .addField(eval(client.la[ls]["cmds"]["info"]["uptime"]["variablex_3"]), eval(client.la[ls]["cmds"]["info"]["uptime"]["variable3"])
-        )]}
-      );
-    } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+        .addField(`🤖 __Bot__`, `\n> **Uptime:** <t:${Math.floor(timestamp/1000)}:R>\n> **Launch:** <t:${Math.floor(timestamp/1000)}:F>`)
+        .addField(`<:online:862306785007632385> __Database / System__`, `\n> **Uptime:** <t:${Math.floor(Date.now() / 1000 - require("os").uptime())}:R>\n> **Launch:** <t:${Math.floor(Date.now() / 1000 - require("os").uptime())}:F>`)
+        ]}
+        );
+      } catch (e) {
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

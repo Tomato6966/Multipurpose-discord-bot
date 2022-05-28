@@ -7,40 +7,48 @@ const {
   Permissions
 } = require(`discord.js`);
 const moment = require("moment");
-const { dbEnsure } = require("./functions");
+const { dbEnsure, dbRemove, delay } = require("./functions");
 
 module.exports = (client, preindex) => {
 
   const maxTicketsAmount = 100;
 
   client.on("interactionCreate", async (interaction) => {
-    if (!interaction?.isButton()) return;
-    var { guild, channel, user, message } = interaction;
+    if (!interaction.isButton()) return;
+    var { guild, channel, user, message, channelId } = interaction;
     if (!guild || !channel || !message || !user) return
-    if (!interaction?.customId.includes("create_a_ticket")) return
+    if (!interaction.customId.includes("create_a_ticket")) return
     
     let index = preindex ? preindex : false;
+    let d = client.setups
+    let guildData = await d.get(guild.id)
     if (!index) {
       for (let i = 1; i <= maxTicketsAmount; i++) {
-        let d = client.setups
-        if (d.has(guild.id)) {
-          let data = d.get(guild.id, `ticketsystem${i}`);
-          if (data && message.id === data.messageid && channel.id === data.channelid) index = i;
+        if (guildData) {
+          let data = guildData[`ticketsystem${i}`]
+          if (!data) continue;
+          if (message.id === data.messageid && (channel.id === data.channelid || channelId === data.channelid)) index = i;
+          else continue;
+        } else {
+          break;
         }
       }
     }
     if (!index) {
-      return interaction?.editReply(":x: Could not find the Database for your Ticket!");
+      if(!interaction.replied) await interaction.reply(":x: Could not find the Database for your Ticket!").catch(console.warn);
+      else await interaction.editReply(":x: Could not find the Database for your Ticket!").catch(console.warn);
+      return 
     }
-
+    if(!interaction.replied) await interaction.reply({ephemeral: true, content: `Found the DB-INDEX`}).catch(console.warn);
+    else await interaction.editReply({ephemeral: true, content: `Found the DB-INDEX`}).catch(console.warn);
     let filename = `ticket${index}`;
     let systempath = `ticketsystem${index}`;
     let ticketspath = `tickets${index}`;
     let idpath = `ticketid${index}`;
     let tickettypepath = `ticket-setup-${index}`;
 
-
-    client.setups.ensure(guild.id, {
+    const obj = {};
+    obj[systempath] = {
       enabled: false,
       guildid: guild.id,
       defaultname: "🎫・{count}・{member}",
@@ -54,43 +62,40 @@ module.exports = (client, preindex) => {
       },
       message: "Hey {user}, thanks for opening an ticket! Someone will help you soon!",
       adminroles: []
-    }, systempath);
-
-
-    let ticket = client.setups.get(guild.id, systempath);
-    if (!ticket.claim || !ticket.claim.messageOpen) {
-      client.setups.ensure(guild.id, {
-        enabled: false,
-        messageOpen: "Dear {user}!\n> *Please wait until a Staff Member, claimed your Ticket!*",
-        messageClaim: "{claimer} **has claimed the Ticket!**\n> He will now give {user} support!"
-      }, `${systempath}.claim`);
     }
-    //if invalid return
-    if (guild.id !== ticket.guildid || interaction?.message.id !== ticket.messageid) return
+    await dbEnsure(client.setups, `${guild.id}`, obj, true);
 
-    if (client.setups.get("TICKETS", ticketspath).includes(user.id)) {
+
+    let ticket = await guildData[systempath];
+    
+    //if invalid return
+    if (guild.id !== ticket.guildid || interaction.message.id !== ticket.messageid) return
+    let dd = await client.setups.get(`TICKETS.${ticketspath}`);
+    if (dd.includes(user.id)) {
       try {
-        var ticketchannel = guild.channels.cache.get(client.setups.get(user.id, idpath))
+        var ticketchannel = guild.channels.cache.get(await client.setups.get(`${user.id}.${idpath}`))
         if (!ticketchannel || ticketchannel == null || !ticketchannel.id || ticketchannel.id == null) throw {
           message: "NO TICKET CHANNEL FOUND AKA NO ANTISPAM"
         }
-        if (client.setups.has(ticketchannel.id) && client.setups.has(ticketchannel.id, "ticketdata")) {
-          let data = client.setups.get(ticketchannel.id, "ticketdata");
+        let data = await client.setups.get(`${ticketchannel.id}.ticketdata`);
+        if (data) {
           if (data.state != "closed") {
-            return interaction?.reply({ content: `<:no:833101993668771842> **You already have an Ticket!** <#${ticketchannel.id}>`, ephemeral: true });
+            if(!interaction.replied) await interaction.reply({ content: `<:no:833101993668771842> **You already have an Ticket!** <#${ticketchannel.id}>`, ephemeral: true }).catch(console.warn);
+            else await interaction.editReply({ content: `<:no:833101993668771842> **You already have an Ticket!** <#${ticketchannel.id}>`, ephemeral: true }).catch(console.warn);
+            return
           }
         }
       } catch {
-        client.setups.remove("TICKETS", user.id, ticketspath)
+        await dbRemove(client.setups, `TICKETS.${ticketspath}`, user.id)
       }
 
     }
 
-    client.stats.ensure(guild.id, {
+    await dbEnsure(client.stats, guild.id, {
       ticketamount: 0
     });
-    client.stats.inc(guild.id, "ticketamount");
-    let ticketamount = client.stats.get(guild.id, "ticketamount");
+    await client.stats.add(guild.id+ ".ticketamount", 1);
+    let ticketamount = await client.stats.get(guild.id+".ticketamount");
 
     let channelname = ticket.defaultname.replace("{member}", user.username).replace("{count}", ticketamount).replace(/\s/igu, "-").substring(0, 31);
 
@@ -195,24 +200,27 @@ module.exports = (client, preindex) => {
     /**
      * CREATE THE CHANNEL
      */
-    await interaction?.reply({ content: `<a:Loading:833101350623117342> **Creating your Ticket...** (Usually takes 0-2 Seconds)`, ephemeral: true });
+    if(!interaction.replied) await interaction.reply({ content: `<a:Loading:833101350623117342> **Creating your Ticket...** (Usually takes 0-2 Seconds)`, ephemeral: true }).catch(console.warn);
+    else await interaction.editReply({ content: `<a:Loading:833101350623117342> **Creating your Ticket...** (Usually takes 0-2 Seconds)`, ephemeral: true }).catch(console.warn);
     guild.channels.create(channelname.substring(0, 31), optionsData).then(async ch => {
-      let es = client.settings.get(guild.id, "embed")
-      client.setups.push("TICKETS", user.id, ticketspath);
-      client.setups.push("TICKETS", ch.id, ticketspath);
-      client.setups.set(user.id, ch.id, idpath);
-      client.setups.set(ch.id, {
+      let settings = await client.settings.get(guild.id)
+      let es = settings.embed || ee
+
+      client.setups.push(`TICKETS.${ticketspath}`, user.id);
+      client.setups.push(`TICKETS.${ticketspath}`, ch.id);
+      client.setups.set(`${user.id}.${idpath}`, ch.id);
+      client.setups.set(`${ch.id}.ticketdata`, {
         user: user.id,
         channel: ch.id,
         guild: guild.id,
         type: tickettypepath,
         state: "open",
         date: Date.now(),
-      }, "ticketdata");
+      });
 
       var ticketembed = new MessageEmbed()
         .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-        .setFooter(client.getFooter(`To close/manage this ticket react with the buttons\nYou can also type: ${client.settings.get(guild.id, "prefix")}ticket`, es.footericon))
+        .setFooter(client.getFooter(`To close/manage this ticket react with the buttons\nYou can also type: ${settings.prefix || config.prefix}ticket`, es.footericon))
         .setAuthor(client.getAuthor(`Ticket for: ${user.tag}`, user.displayAvatarURL({
           dynamic: true
         }), "https://discord.gg/milrato"))
@@ -245,33 +253,25 @@ module.exports = (client, preindex) => {
             content: `<@${user.id}> ${ticketroles.length > 0 ? "| " + ticketroles.join(" / ") : ""}`,
             embeds: ticketembeds,
             components: allbuttons
-          }).catch((O) => {
-            console.log(String(O).grey)
-          }).then(msg => {
+          }).catch(console.error).then(msg => {
             if (msg.channel.permissionsFor(msg.guild.me).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-              msg.pin().catch((O) => {
-                console.log(String(O).grey)
-              })
+              msg.pin().catch(console.error)
             }
           })
         } else {
           await ch.send({
             content: `<@${user.id}> ${ticketroles.length > 0 ? "| " + ticketroles.join(" / ") : ""}\n${ticketembeds[0].description}`.substring(0, 2000),
             components: allbuttons
-          }).catch((O) => {
-            console.log(String(O).grey)
-          }).then(msg => {
+          }).catch(console.error).then(msg => {
             if (msg.channel.permissionsFor(msg.guild.me).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-              msg.pin().catch((O) => {
-                console.log(String(O).grey)
-              })
+              msg.pin().catch(console.error)
             }
           })
         }
       }
-      await interaction?.editReply({ content: `<a:yes:833101995723194437> **Your Ticket is created!** <#${ch.id}>`, ephemeral: true });
+      await interaction.editReply({ content: `<a:yes:833101995723194437> **Your Ticket is created!** <#${ch.id}>`, ephemeral: true });
     }).catch(e => {
-      interaction?.editReply({ content: ":x: **Something went wrong!**", ephemeral: true })
+      interaction.editReply({ content: ":x: **Something went wrong!**", ephemeral: true })
       console.error(e)
     })
   });

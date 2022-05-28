@@ -1,14 +1,15 @@
-const config = require(`${process.cwd()}/botconfig/config.json`);
+const config = require(`../../botconfig/config.json`);
 const ms = require(`ms`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`)
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var ee = require(`../../botconfig/embed.json`)
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   MessageEmbed,
   Permissions, MessageSelectMenu, MessageButton, MessageActionRow
 } = require(`discord.js`)
 const {
-  databasing, GetUser
-} = require(`${process.cwd()}/handlers/functions`);
+  databasing, GetUser, dbEnsure
+} = require(`../../handlers/functions`);
+const { DbAllCache } = require("../../handlers/caches.js");
 module.exports = {
   name: `manageinvites`,
   category: `🚫 Administration`,
@@ -17,9 +18,9 @@ module.exports = {
   description: `Manages the Invites of a User`,
   memberpermissions: ["ADMINISTRATOR"],
   type: "member",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       var user;
       if(args[0]){
@@ -94,7 +95,7 @@ module.exports = {
           return Obj;
          }))
       // Fetch guild and member data from the db
-      client.invitesdb?.ensure(message.guild.id + user.id, {
+      await dbEnsure(client.invitesdb, message.guild.id + user.id, {
         /* REQUIRED */
         id: user.id, // Discord ID of the user
         guildId: message.guild.id,
@@ -116,7 +117,7 @@ module.exports = {
         /* BOT */
         bot: user.bot || false
       });
-      let memberData = client.invitesdb?.get(message.guild.id + user.id)
+      let memberData = await client.invitesdb?.get(`${message.guild.id + user.id}.invites`)
       let {
         invites,
         fake,
@@ -126,12 +127,33 @@ module.exports = {
       //define the embed
       let MenuEmbed = new MessageEmbed()
       .setColor(es.color)
-      .setAuthor(eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable1"]))
+      .setAuthor(client.getAuthor(eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable1"])))
       .setDescription(eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable2"]))
       .addField("**CURRENT INVITES:**", `<:Like:857334024087011378> ${user} _**has invited __${realinvites} Member${realinvites != 1 ? "s": ""}__**_!`)
       .addField(eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variablex_3"]), eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable3"]))
       //send the menu msg
       let menumsg = await message.reply({embeds : [MenuEmbed], components : [new MessageActionRow().addComponents(Selection)]})
+      //Create the collector
+      const collector = menumsg.createMessageComponentCollector({ 
+        filter: i => i?.isSelectMenu() && i?.user,
+        time: 90000
+      })
+      // Menu Collections
+      collector.on('collect', async menu => {
+        if (menu?.user.id === cmduser.id) {
+          collector.stop();
+          let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
+          if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
+          client.disableComponentMessage(menu);
+          let SetupNumber = menu?.values[0].split(" ")[0]
+          menuselection(menu)
+        }
+        else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+      });
+      // Once the Collections ended edit the menu message
+      collector.on('end', collected => {
+        menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+      });
       //function to handle the menuselection
       async function menuselection(menu) {
         let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0]);
@@ -139,87 +161,80 @@ module.exports = {
         if(menu?.values[0] == "Cancel") return menu?.reply({content : eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable4"])})
         await menu?.reply({embeds : [new MessageEmbed()
           .setColor(es.color)
-          .setAuthor(client.la[ls].cmds.info.botfaq.menuembed.title, client.user.displayAvatarURL(), "https://discord.gg/milrato")
+          .setAuthor(client.getAuthor(client.la[ls].cmds.info.botfaq.menuembed.title, client.user.displayAvatarURL(), "https://discord.gg/milrato"))
           .setDescription(menuoptiondata.replymsg)]})
           await message.channel.awaitMessages({filter: m=>m.author.id == cmduser.id, max: 1, time: 60e3, errors: ["time"]}).then(collected=>{
-          let AddNumber = collected.first().content;
-          if(isNaN(AddNumber)){
-            return message.reply({content : eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable5"])});
-          }
-          if(AddNumber < 0) AddNumber *= 1;
-          switch(index){
-            //add joins
-            case 0:{
-              client.invitesdb?.math(message.guild.id + user.id, "+", Number(AddNumber), "invites")
-            }break;
-            //remove joins
-            case 1:{ 
-              client.invitesdb?.math(message.guild.id + user.id, "-", Number(AddNumber), "invites")
-            }break;
-            //add fakes
-            case 2:{
-              client.invitesdb?.math(message.guild.id + user.id, "+", Number(AddNumber), "fake")
-            }break;
-            //remove fakes
-            case 3:{
-              client.invitesdb?.math(message.guild.id + user.id, "-", Number(AddNumber), "fake")
-            }break;
-            //add leaves
-            case 4:{
-              client.invitesdb?.math(message.guild.id + user.id, "+", Number(AddNumber), "leaves")
-            }break;
-            //remove leaves
-            case 5:{
-              client.invitesdb?.math(message.guild.id + user.id, "-", Number(AddNumber), "leaves")
-            }break;
-          }
-          memberData = client.invitesdb?.get(message.guild.id + user.id)
-          let {
-            invites,
-            fake,
-            leaves
-          } = memberData;
-          realinvites = invites - fake - leaves;
-          message.reply({embeds : [new MessageEmbed()
-            .setAuthor(`New Invites of: ${user.tag}`, user.displayAvatarURL({dynamic: true}), "https://discord.gg/milrato")
-            .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-            .addField("\u200b", `<:Like:857334024087011378> ${user} _**has invited __${realinvites} Member${realinvites != 1 ? "s": ""}__**_!`)
-            .addField(eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variablex_6"]),eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable6"]))
-            .setFooter(client.getFooter(es))
-          ]});
-        })
+            let AddNumber = collected.first().content;
+            if(isNaN(AddNumber)){
+              return message.reply({content : eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable5"])});
+            }
+            if(AddNumber < 0) AddNumber *= 1;
+            switch(index){
+              //add joins
+              case 0:{
+                await client.invitesdb?.add(`${message.guild.id + user.id}.invites`, Number(AddNumber))
+              }break;
+              //remove joins
+              case 1:{ 
+                await client.invitesdb?.subtract(`${message.guild.id + user.id}.invites`, Number(AddNumber))
+              }break;
+              //add fakes
+              case 2:{
+                await client.invitesdb?.add(`${message.guild.id + user.id}.fake`, Number(AddNumber))
+              }break;
+              //remove fakes
+              case 3:{
+                await client.invitesdb?.add(`${message.guild.id + user.id}.fake`, Number(AddNumber))
+              }break;
+              //add leaves
+              case 4:{
+                await client.invitesdb?.add(`${message.guild.id + user.id}.leaves`, Number(AddNumber))
+              }break;
+              //remove leaves
+              case 5:{
+                await client.invitesdb?.subtract(`${message.guild.id + user.id}.leaves`, Number(AddNumber))
+              }break;
+            }
+            memberData = await client.invitesdb.get(`${message.guild.id + user.id}.invites`)
+            let {
+              invites,
+              fake,
+              leaves
+            } = memberData;
+            realinvites = invites - fake - leaves;
+            message.reply({embeds : [new MessageEmbed()
+              .setAuthor(client.getAuthor(`New Invites of: ${user.tag}`, user.displayAvatarURL({dynamic: true}), "https://discord.gg/milrato"))
+              .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
+              .addField("\u200b", `<:Like:857334024087011378> ${user} _**has invited __${realinvites} Member${realinvites != 1 ? "s": ""}__**_!`)
+              .addField(eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variablex_6"]),eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable6"]))
+              .setFooter(client.getFooter(es))
+            ]});
+          }).catch(() => null)
       }
-      //Event
-      client.on('interactionCreate',  (menu) => {
-        if (menu?.message.id === menumsg.id) {
-          if (menu?.user.id === cmduser.id) menuselection(menu);
-          else menu?.reply({content : handlemsg(client.la[ls].cmds.info.botfaq.notallowed, {cmduserid: cmduser.id}), ephemeral : true});
-        }
-      });
 
 
 
 
-      if (client.settings.get(message.guild.id, `adminlog`) != "no") {
+      if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
         try {
-          var channel = message.guild.channels.cache.get(client.settings.get(message.guild.id, `adminlog`))
-          if (!channel) return client.settings.set(message.guild.id, "no", `adminlog`);
+          var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
+          if (!channel) return client.settings.set(`${message.guild.id}.adminlog`, "no");
           channel.send({embeds: [new MessageEmbed()
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-            .setAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({
+            .setAuthor(client.getAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({
               dynamic: true
-            }))
+            })))
             .setDescription(eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable7"]))
             .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
            .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-            .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+            .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
           ]})
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

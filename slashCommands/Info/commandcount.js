@@ -12,7 +12,7 @@ const fs = require('fs')
 module.exports = {
   name: "commandcount",
   description: "Shows the Amount of Commands I have!",
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     //things u can directly access in an interaction!
 		const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;
@@ -42,7 +42,7 @@ module.exports = {
         });
         return results;
       }
-      for(const source of walk(process.cwd())){
+      for await (const source of walk(process.cwd())){
         try{
           let data = fs.readFileSync(source, 'utf8')
           letters += data.length;
@@ -59,7 +59,7 @@ module.exports = {
         .setDescription(handlemsg(client.la[ls].cmds.info.commandcount.description, {catcount: client.categories.length, lines: lines, letters: nFormatter(letters, 4)}))
       ], ephemeral: true});
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

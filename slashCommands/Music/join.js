@@ -15,10 +15,10 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     "activeplayer": false,
     "previoussong": false
   },
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     
-    //let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    //
+    if(GuildSettings.MUSIC === false) {
       return interaction?.reply({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -35,6 +35,13 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
           .setColor(es.wrongcolor)
           .setTitle(client.la[ls].common.join_vc)
         ]});
+
+      
+      if(!interaction.member?.voice.channel?.permissionsFor(message.guild?.me)?.has(Permissions.FLAGS.CONNECT)) 
+        return message.reply({ content: "<:no:833101993668771842> **I'm missing the Permission to Connect to your Voice-Channel!**"}).catch(() => null);
+      if(!interaction.member?.voice.channel?.permissionsFor(message.guild?.me)?.has(Permissions.FLAGS.SPEAK)) 
+        return message.reply({ content: "<:no:833101993668771842> **I'm missing the Permission to Speak in your Voice-Channel!**"}).catch(() => null);
+    
       //if no args return error
       var player = client.manager.players.get(message.guild.id);
       if (player) {

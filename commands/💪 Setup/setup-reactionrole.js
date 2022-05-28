@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure, dbRemove
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-reactionrole",
@@ -18,9 +18,8 @@ module.exports = {
   description: "Create Reaction Roles, or delete all active Reaction Roles.",
   memberpermissions: ["ADMINISTRATOR"],
   type: "system",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
     try {
       var rembed = new MessageEmbed()
       .setColor(es.color)
@@ -68,11 +67,11 @@ module.exports = {
         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable3"]))
         .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable4"]))
       var cancel = false;
-      message.reply({embeds: [rermbed]}).then(msg => {
-        msg.awaitReactions({ filter: (reaction, user) => user.id == message.author.id, 
+      message.reply({embeds: [rermbed]}).then(async (msg) => {
+        msg.awaitReactions({ filter: (reaction, user) => user.id == message.author?.id, 
           max: 1,
           time: 180e3
-        }).then(collected => {
+        }).then(async collected => {
           if (collected.first().emoji?.id  && collected.first().emoji?.id.length > 2) {
             msg.delete();
             object2.Emoji = collected.first().emoji?.id ;
@@ -96,10 +95,10 @@ module.exports = {
             return finished();
           }
         });
-        msg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+        msg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
           max: 1,
           time: 180e3
-        }).then(collected => {
+        }).then(async collected => {
           if (collected.first().content.toLowerCase() === "finish") {
             cancel = true;
             return finished();
@@ -117,11 +116,11 @@ module.exports = {
         var rermbed = new MessageEmbed()
           .setColor(es.color)
           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable8"]))
-        message.reply({embeds: [rermbed]}).then(msg => {
-          msg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+        message.reply({embeds: [rermbed]}).then(async (msg) => {
+          msg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
             max: 1,
             time: 180e3
-          }).then(collected => {
+          }).then(async collected => {
             var role = collected.first().mentions.roles.filter(role=>role.guild.id==message.guild.id).first();
             if (!role) message.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable9"])})
             if (role) {
@@ -143,7 +142,7 @@ module.exports = {
               return finished();
             }
           }).catch((e) => {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
             message.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable11"])});
             return finished();
           });
@@ -157,14 +156,14 @@ module.exports = {
         .setColor(es.color)
         .setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable12"]))
-        .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable13"]))]}).then(msg => {
+        .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable13"]))]}).then(async (msg) => {
         var emojis2 = ["1️⃣", "2️⃣"]
         for (var emoji of emojis2) msg.react(emoji)
-        msg.awaitReactions({ filter: (reaction, user) => user.id === message.author.id && emojis2.includes(reaction.emoji?.name),
+        msg.awaitReactions({ filter: (reaction, user) => user.id === message.author?.id && emojis2.includes(reaction.emoji?.name),
           max: 1,
           time: 120000,
           erros: ["time"]
-        }).then(collected => {
+        }).then(async collected => {
           switch (collected.first().emoji?.name) {
             case "1️⃣":
               break;
@@ -185,12 +184,12 @@ module.exports = {
           message.reply({
             content: `I will use **${objet.remove_others ? "Single": "Multiple"}** Reaction Option!\n`,
             embeds: [thisembed]
-          }).then(msg => {
-            msg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+          }).then(async (msg) => {
+            msg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
               max: 1,
               time: 120000,
               errors: ["TIME"]
-            }).then(collected => {
+            }).then(async collected => {
               var title = String(collected.first().content).substring(0, 256);
 
               message.reply({embeds: [new MessageEmbed()
@@ -198,12 +197,12 @@ module.exports = {
                 .setFooter(client.getFooter(es))
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable17"]))
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable18"]))
-              ]}).then(msg => {
-                msg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+              ]}).then(async (msg) => {
+                msg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                   max: 1,
                   time: 120000,
                   errors: ["TIME"]
-                }).then(collected => {
+                }).then(async collected => {
 
                   if (collected.first().mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first()) {
 
@@ -216,19 +215,19 @@ module.exports = {
                       try {
                         buffer += objet.Parameters[i].Emojimsg + "  **==**  <@&" + objet.Parameters[i].Role + ">\n";
                       } catch (e) {
-                        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                        console.error(e)
                       }
                     }
-                    channel.send({embeds: [embed.setDescription(buffer)]}).then(msg => {
+                    channel.send({embeds: [embed.setDescription(buffer)]}).then(async (msg) => {
                       for (var i = 0; i < objet.Parameters.length; i++) {
                         try {
-                          msg.react(objet.Parameters[i].Emoji).catch(e => console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                          msg.react(objet.Parameters[i].Emoji).catch(e => console.error(e))
                         } catch (e) {
-                          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                          console.error(e)
                         }
                       }
                       objet.MESSAGE_ID = msg.id;
-                      client.reactionrole.push(message.guild.id, objet, "reactionroles");
+                      await client.reactionrole.push(message.guild.id+".reactionroles", objet);
                       message.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable19"])})
                     })
 
@@ -236,16 +235,16 @@ module.exports = {
                     message.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable20"])});
                     return;
                   }
-                }).catch(e => console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                }).catch(e => console.error(e))
               })
-            }).catch(e => console.log(e.stack ? String(e.stack).grey : String(e).grey))
+            }).catch(e => console.error(e))
           })
-        }).catch(e => console.log(e.stack ? String(e.stack).grey : String(e).grey))
+        }).catch(e => console.error(e))
       })
     }
   
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

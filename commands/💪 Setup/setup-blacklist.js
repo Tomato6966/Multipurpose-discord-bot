@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing, swap_pages, swap_pages2
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure, swap_pages, swap_pages2, dbRemove
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-blacklist",
@@ -18,9 +18,7 @@ module.exports = {
   description: "Blacklist specific Words in your Server",
   memberpermissions: ["ADMINISTRATOR"],
   type: "security",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     try {
       first_layer()
       async function first_layer(){
@@ -86,31 +84,31 @@ module.exports = {
         //define the embed
         let MenuEmbed = new MessageEmbed()
         .setColor(es.color)
-        .setAuthor('Setup Blacklist', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/joypixels/291/stop-sign_1f6d1.png', 'https://discord.gg/milrato')
+        .setAuthor(client.getAuthor('Setup Blacklist', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/joypixels/291/stop-sign_1f6d1.png', 'https://discord.gg/milrato'))
         .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         let used1 = false;
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             used1 = true;
             handle_the_picks(menu?.values[0], menuoptiondata)
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
       async function handle_the_picks(optionhandletype, menuoptiondata) {
@@ -122,25 +120,27 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-blacklist"]["variable6"]))
               .setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
               max: 1,
               time: 90000,
               errors: ["time"]
             })
-            .then(collected => {
+            .then(async collected => {
               var message = collected.first();
             
               if (message.content) {
                 try {
                   var blacklistedwords = message.content.split(",").filter(Boolean).map(item => item.trim().toLowerCase());
                   var notadded = []
-                  for(const blacklistword of blacklistedwords){
-                    if(client.blacklist.get(message.guild.id, "words").includes(blacklistword)){
+                  const words = await client.blacklist.get(message.guild.id+".words") || [];
+                  for await (const blacklistword of blacklistedwords){
+                    if(words.includes(blacklistword)){
                       notadded.push(blacklistword);
                     }else {
-                      client.blacklist.push(message.guild.id, blacklistword, "words")
+                      words.push(blacklistword)
                     }
                   }
+                  await client.blacklist.set(message.guild.id+".words", words)
                   return message.reply({embeds: [new MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-blacklist"]["variable7"]))
                     .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-blacklist"]["variable8"]))
@@ -148,7 +148,7 @@ module.exports = {
                     .setFooter(client.getFooter(es))]}
                   );
                 } catch (e) {
-                  console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  console.error(e)
                   return message.reply({embeds: [new MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-blacklist"]["variable9"]))
                     .setColor(es.wrongcolor)
@@ -161,7 +161,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({embeds: [new MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-blacklist"]["variable11"]))
                 .setColor(es.wrongcolor)
@@ -178,25 +178,28 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-blacklist"]["variable13"]))
               .setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 90000,
                 errors: ["time"]
               })
-              .then(collected => {
+              .then(async collected => {
                 var message = collected.first();
                
                 if (message.content) {
                   try {
                     var blacklistedwords = message.content.split(",").filter(Boolean).map(item => item.trim().toLowerCase());
                     var notremoved = []
-                    for(const blacklistword of blacklistedwords){
-                      if(!client.blacklist.get(message.guild.id, "words").includes(blacklistword)){
-                        notremoved.push(blacklistword);
+                    const words = await client.blacklist.get(message.guild.id+".words") || [];
+                    for await (const blacklistword of blacklistedwords){
+                      if(words.includes(blacklistword)){
+                        notadded.push(blacklistword);
                       }else {
-                        client.blacklist.remove(message.guild.id, blacklistword, "words")
+                        let index = words.indexOf(blacklistword);
+                        if(index > -1) words.splice(index, 1);
                       }
                     }
+                    await client.blacklist.set(message.guild.id+".words", words)
                     return message.reply({embeds: [new MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-blacklist"]["variable14"]))
                       .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-blacklist"]["variable15"]))
@@ -204,7 +207,7 @@ module.exports = {
                       .setFooter(client.getFooter(es))]}
                     );
                   } catch (e) {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     return message.reply({embeds: [new MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-blacklist"]["variable16"]))
                       .setColor(es.wrongcolor)
@@ -217,7 +220,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
                 return message.reply({embeds: [new MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-blacklist"]["variable18"]))
                   .setColor(es.wrongcolor)
@@ -228,11 +231,12 @@ module.exports = {
           }
           break;
           case "Show Settings": { 
-            return swap_pages(client, message, `${client.blacklist.get(message.guild.id, "words").map(word => `\`${word}\``).join(", ").split("`").join("\`")}`, `${message.guild.name} | Blacklisted Words`);
+            const words = await client.blacklist.get(message.guild.id+".words") || [];
+            return swap_pages(client, message, `${words.map(word => `\`${word}\``).join(", ").split("`").join("\`")}`, `${message.guild.name} | Blacklisted Words`);
           }
           break;
           case "Reset Blacklist": { 
-            client.blacklist.set(message.guild.id, [], "words")
+            await client.blacklist.set(message.guild.id+".words", [])
             return message.reply({embeds: [new MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-blacklist"]["variable19"]))
               .setColor(es.color)
@@ -247,27 +251,27 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antidiscord"]["variable6"]))
               .setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 90000,
                 errors: ["time"]
             })
-            .then(collected => {
+            .then(async collected => {
               var message = collected.first();
               var channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
               if (channel) {
-                let antisettings = client.blacklist.get(message.guild.id, "whitelistedchannels")
-                if (antisettings.includes(channel.id)) return message.reply({embeds: [new Discord.MessageEmbed()
+                let antisettings = await client.blacklist.get(message.guild.id+".whitelistedchannels") || [];
+                if (antisettings?.includes(channel.id)) return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antidiscord"]["variable7"]))
                   .setColor(es.wrongcolor)
                   .setFooter(client.getFooter(es))]
                 });
                 try {
-                  client.blacklist.push(message.guild.id, channel.id, "whitelistedchannels");
+                  await client.blacklist.push(message.guild.id+".whitelistedchannels", channel.id);
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(`The Channel \`${channel.name}\` is now got added to the Whitelisted Channels of this System`)
                     .setColor(es.color)
-                    .setDescription(`Every single Channel:\n<#${client.blacklist.get(message.guild.id, "whitelistedchannels").join(">\n<#")}>\nis not checked by the System`.substring(0, 2048))
+                    .setDescription(`Every single Channel:\n<#${[...antisettings, channel.id].join(">\n<#")}>\nis not checked by the System`.substring(0, 2048))
                     .setFooter(client.getFooter(es))]
                   });
                 } catch (e) {
@@ -299,27 +303,28 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antidiscord"]["variable13"]))
               .setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 90000,
                 errors: ["time"]
             })
-            .then(collected => {
+            .then(async collected => {
               var message = collected.first();
               var channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
               if (channel) {
-                let antisettings = client.blacklist.get(message.guild.id, "whitelistedchannels")
-                if (!antisettings.includes(channel.id)) return message.reply({embeds: [new Discord.MessageEmbed()
+                let antisettings = await client.blacklist.get(message.guild.id+".whitelistedchannels") || [];
+                if (!antisettings?.includes(channel.id)) return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antidiscord"]["variable14"]))
                   .setColor(es.wrongcolor)
                   .setFooter(client.getFooter(es))]
                 });
                 try {
-                  client.blacklist.remove(message.guild.id, channel.id, "whitelistedchannels");
+                  dbRemove(client.blacklist+".whitelistedchannels", message.guild.id, channel.id);
+                  antisettings = await client.blacklist.get(message.guild.id+".whitelistedchannels", true) || [];
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(`The Channel \`${channel.name}\` is now removed out of the Whitelisted Channels of this System`)
                     .setColor(es.color)
-                    .setDescription(`Every single Channel:\n> <#${client.blacklist.get(message.guild.id, "whitelistedchannels").join(">\n> <#")}>\nis not checked by the System`.substring(0, 2048))
+                    .setDescription(`Every single Channel:\n> <#${antisettings.join(">\n> <#")}>\nis not checked by the System`.substring(0, 2048))
                     .setFooter(client.getFooter(es))]
                   });
                 } catch (e) {
@@ -347,15 +352,15 @@ module.exports = {
             tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle("How often should someone be allowed to do it within 15 Seconds?")
               .setColor(es.color)
-              .setDescription(`Currently it is at: \`${client.blacklist.get(message.guild.id, "mute_amount")}\`\n\nPlease just send the Number! (0 means after the first time he/she will get muted)`)
+              .setDescription(`Currently it is at: \`${await client.blacklist.get(message.guild.id+".mute_amount")}\`\n\nPlease just send the Number! (0 means after the first time he/she will get muted)`)
               .setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 90000,
                 errors: ["time"]
             })
-            .then(collected => {
+            .then(async collected => {
               var message = collected.first();
               if (message.content) {
                 let number = message.content;
@@ -363,7 +368,7 @@ module.exports = {
                 if(Number(number) < 0 || Number(number) > 15) return message.reply(":x: **The Number must be between `0` and `15`**");
                 
                 try {
-                  client.blacklist.set(message.guild.id, Number(number), "mute_amount");
+                  await client.blacklist.set(message.guild.id+".mute_amount", Number(number));
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle("Successfully set the New Maximum Allowed Amounts to " + number + " Times")
                     .setColor(es.color)
@@ -396,7 +401,7 @@ module.exports = {
       }
       
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

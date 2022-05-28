@@ -1,6 +1,6 @@
 /*const { MessageEmbed } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
 const emoji = require("../../botconfig/emojis.json");
 module.exports = {
     name: "toggledjonly",
@@ -9,9 +9,9 @@ module.exports = {
     description: "Set's a Command to the DJ ONLY State, by typing it again, it gets to not DJ ONLY aka its a toggle",
     usage: "adddj @role",
     memberpermissions: ["ADMINISTRATOR"],
-    run: async (client, message, args, cmduser, text, prefix) => {
+    run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-      let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+      
     try{
       
       //get the role of the mention
@@ -46,7 +46,7 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["settings"]["toggledjonly"]["variable4"]))
               ]});
             }catch (e){
-              console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              console.error(e);
               return message.reply({embeds :[new MessageEmbed()
                 .setColor(es.wrongcolor)
                 .setFooter(client.getFooter(es))
@@ -65,7 +65,7 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["settings"]["toggledjonly"]["variable8"]))
               ]});
             }catch (e){
-              console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              console.error(e);
               return message.reply({embeds : [new MessageEmbed()
                 .setColor(es.wrongcolor)
                 .setFooter(client.getFooter(es))
@@ -82,7 +82,7 @@ module.exports = {
         ]});
       }
     } catch (e) {
-        console.log(String(e.stack).grey.bgRed)
+        console.error(e)
         return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
 						.setFooter(client.getFooter(es))

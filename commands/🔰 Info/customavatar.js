@@ -2,14 +2,14 @@ const Discord = require("discord.js");
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   GetUser,
   GetGlobalUser,
   handlemsg
-} = require(`${process.cwd()}/handlers/functions`)
+} = require(`../../handlers/functions`)
 module.exports = {
   name: "customavatar",
   aliases: ["cav", "cavatar", "memberavatar", "mavatar"],
@@ -17,10 +17,8 @@ module.exports = {
   description: "Get the Avatar of an user",
   usage: "avatar [@USER]",
   type: "user",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
 
-    let es = client.settings.get(message.guild.id, "embed");
-    let ls = client.settings.get(message.guild.id, "language")
     try {
       //"HELLO"
       var user;
@@ -34,7 +32,7 @@ module.exports = {
       }
       try {
         let member = message.guild.members.cache.get(user.id);
-        if (!member) await message.guild.members.fetch(user.id).catch(() => {}) || false;
+        if (!member) await message.guild.members.fetch(user.id).catch(() => null) || false;
         if (member && member.avatar) {
           customavatar = member.displayAvatarURL({
             dynamic: true,
@@ -42,7 +40,7 @@ module.exports = {
           })
         }
       } catch (e) {
-        console.log(String(e.stack).grey.bgRed)
+        console.error(e)
       }
       if (customavatar) {
         let embed = new Discord.MessageEmbed()
@@ -84,7 +82,7 @@ module.exports = {
         });
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({
         embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)

@@ -1,6 +1,6 @@
 //Here the command starts
-const config = require(`${process.cwd()}/botconfig/config.json`)
-var ee = require(`${process.cwd()}/botconfig/embed.json`)
+const config = require(`../../botconfig/config.json`)
+var ee = require(`../../botconfig/embed.json`)
 const fetch = require("node-fetch");
 const { MessageEmbed } = require(`discord.js`);
 module.exports = {
@@ -13,10 +13,18 @@ module.exports = {
   	description: "Compile Code", //the description of the command
 
 	//running the command with the parameters: client, message, args, user, text, prefix
-  	run: async (client, message, args, cmduser, text, prefix) => {
-    	let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+  	run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+    	
 		try {
 			  
+			if(GuildSettings.PROGRAMMING !== false){
+				return message.reply({embeds : [new MessageEmbed()
+				.setColor(es.wrongcolor)
+				.setFooter(client.getFooter(es))
+				.setTitle(client.la[ls].common.disabled.title)
+				.setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+				]});
+			}
 			const possiblecommands = {
 				cpp: "g++ main.cpp -pthread -pedantic -Wall -Wextra && ./a.out",
 				"c++": "g++ main.cpp -pthread -pedantic -Wall -Wextra && ./a.out",
@@ -74,11 +82,11 @@ module.exports = {
 				.then((res) => res.text());
 				return message.reply({content : eval(client.la[ls]["cmds"]["programming"]["coliru"]["variable4"])});
 			}  
-			if (res.length < 1990) return message.reply(`{content : \`\`\`${lang}\n${res}\n\`\`\`}`);
+			if (res.length < 1990) return message.reply({content : `\`\`\`${lang}\n${res}\n\`\`\``});
 				return post(message, { cmd, src });
 	
 		} catch (e) {
-			console.log(String(e.stack).grey.bgRed)
+			console.error(e)
 			return message.reply({embeds : [new MessageEmbed()
 			  .setColor(es.wrongcolor).setFooter(client.getFooter(es))
 			  .setTitle(client.la[ls].common.erroroccur)

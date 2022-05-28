@@ -6,8 +6,8 @@
                 "variable1": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "botfaq": {
-                "notallowed": "<:no:833101993668771842> You are not allowed to do that! Only: <@{cmduserid}>",
-                "placeholder": "Click me to make a Selection!",
+                "notallowed": "<:no:833101993668771842> You are not allowed to do that! Only: <@{cmduserid}> is allowed to do this.",
+                "placeholder": "Make a selection!",
                 "menuembed": {
                     "title": "Bot Help",
                     "description": "***Select what you need in the `Selection` down Below!***"
@@ -16,43 +16,43 @@
                     {
                         "value": "Creator / Features",
                         "description": "Who is my Creator? / What are my Features?",
-                        "replymsg": "<:Milrato:840259659163893820> **__Milrato Development__ made me!**\n> <:Like:857334024087011378> **Their Website:** https://milrato.eu\n> <:Discord:787321652345438228> **Their Discord:** https://discord.gg/milrato\n``` ```***__You can join their Discord Server and get yourself a Bot like me, for FREE/CHEAP!__***\n``` ```:muscle: **__My Features__**\n>>> **68+ Systems**, like: <:twitter:840255600851812393> **Twitter-** & <:Youtube:840260133686870036> **Youtube-Auto-Poster** \n**Application-**, Ticket-, **Welcome-Images-** and Reaction Role-, ... Systems\n:notes: An advanced <:Spotify:846090652231663647> **Music System** with **Audio Filtering**\n:video_game: Many **Minigames** and :joystick: **Fun** Commands (150+)\n:no_entry_sign: **Administration** and **Auto-Moderation** and way much more!\n\n**The Developer is: `Tomato#6966` <:TOMATO:858450817665204224>, Contact him if you wanna hire him!**",
+                        "replymsg": "<:Milrato:840259659163893820> **__Milrato Development__ made me!**\n> <:Like:857334024087011378> **Their Website:** https://milrato.eu\n> <:DiscordLogo:936723374644789370> **Their Discord:** https://discord.gg/milrato\n``` ```***__You can join their Discord Server and get yourself a Bot like me, for FREE/CHEAP!__***\n``` ```:muscle: **__My Features__**\n>>> **68+ Systems**, like: <:twitter:840255600851812393> **Twitter-** & <:Youtube:840260133686870036> **Youtube-Auto-Poster** \n**Application-**, Ticket-, **Welcome-Images-** and Reaction Role-, ... Systems\n:notes: An advanced <:Spotify:846090652231663647> **Music System** with **Audio Filtering**\n:video_game: Many **Minigames** and :joystick: **Fun** Commands (150+)\n:no_entry_sign: **Administration** and **Auto-Moderation** and way much more!\n\n**The Developer is: `Tomato#6966` <:TOMATO:858450817665204224>, Contact him if you wanna hire him!**",
                         "emoji": "840259659163893820"
                     },
                     {
                         "value": "Stats",
-                        "description": "See my Statistics!",
+                        "description": "Those are my stats!",
                         "replymsg": "**__📈 Stats!__**\n>>> :gear: **{commandcount} Commands**\n:file_folder: on **{guildcount} Guilds**\n⌚️ **{uptime} Uptime**\n📶 **`{ping}ms` Ping**",
                         "emoji": "📈"
                     },
                     {
-                        "value": "How to use me",
-                        "description": "Let me explain you!",
-                        "replymsg": "**__❓ How do you use me?__**\n> My Prefix is: `{prefix}` but you can always **Ping** me instead!\n\n**Just use one of my {commandcount} Commands by typing:**\n> `{prefix}commandname`\n**Example:**\n> `{prefix}help`\n\n__**I have setups, this is how you manage them:**__\n>>> `{prefix}setup` and react with the Emoji for the right action,\nbut you can also do `{prefix}setup-SYSTEM` e.g. `{prefix}setup-welcome`\n\n\n**Very important is this Command:**\n`{prefix}setup-antinuke`, because it protects you from NUKES!",
+                        "value": "How to use me.",
+                        "description": "Let me explain it to you!",
+                        "replymsg": "**__❓ How do you use me?__**\n> My Prefix is: `{prefix}` but you can always **Ping** me instead!\n\n**Just use one of my {commandcount} Commands by typing:**\n> `{prefix}commandname`\n**Example:**\n> `{prefix}help`\n\n__**I have setups, this is how you manage them:**__\n>>> `{prefix}setup` and react with the emoji for the right action,\nbut you can also do `{prefix}setup-system` e.g. `{prefix}setup-welcome`\n\n\n**Very important is this Command:**\n`{prefix}setup-antinuke`, because it protects you from **nukes**!",
                         "emoji": "❓"
                     },
                     {
                         "value": "Sponsor / Support us",
                         "description": "Thanks for everything, you'll get something back!",
-                        "replymsg": "**__There are several Sponsor Options:__**\n\n> <:PAYPAL:861207258846330880> **Paypal:**\n> https://paypal.me/MilratoDevelopment\n\n> <:PATREON:861207934070816849> **Patreon:**\n> https://www.patreon.com/MilratoDevelopment?fan_landing=true\n\n> 💸 **Donate via Paysafe, Sofort or others: (1/2)**\n> https://bero-host.de/spenden/qgswlxrzgtll\n\n> 💸 **Donate via Paysafe, Sofort or others: (2/2)**\n> https://mc-host24.de/donate/tomato\n\n> **Every donator** gets the **@DONATOR Role** on:\n> https://discord.gg/milrato\n\n\n> **Every Donator** with more then **10€** Gets a **Free Bot** of his **Choice*!",
+                        "replymsg": "**__There are several **sponsor options**:__**\n\n> <:PAYPAL:861207258846330880> **Paypal:**\n> https://paypal.me/MilratoDevelopment\n\n> <:PATREON:861207934070816849> **Patreon:**\n> https://www.patreon.com/MilratoDevelopment?fan_landing=true\n\n> 💸 **Donate via Paysafe, Sofort or others: (1/2)**\n> https://bero-host.de/spenden/qgswlxrzgtll\n\n> 💸 **Donate via Paysafe, Sofort or others: (2/2)**\n> https://mc-host24.de/donate/tomato\n\n> **Every donator** gets the **@DONATOR Role** on:\n> https://discord.gg/milrato\n\n\n> **Every Donator** with more then **10€** Gets a **Free Bot** of his **Choice*!",
                         "emoji": "861207258846330880"
                     },
                     {
                         "value": "Partners / Sponsors",
                         "description": "We are really proud of our Sponsors and Partners!",
-                        "replymsg": "<:BeroHost:852970925695041646> Our First/Main Sponsor is **Bero-Host.de** <:BeroHost:852970925695041646>\n> <:Like:857334024087011378> **Their Website:** https://bero-host.de\n> <:Discord:787321652345438228> **Their Discord:** https://discord.bero-host.de\n> *They provide us several HIGH QUALTIY __Servers__ which we are using for our HOSTING! **CHECK THEM OUT**!*\n``` ```<:Bittmax:840370610755862529> Our Second Sponsor is **Bittmax.de** <:Bittmax:840370610755862529>\n> <:Like:857334024087011378> **Their Website:** https://bittmax.de\n> <:Discord:787321652345438228> **Their Discord:** https://discord.gg/GgjJZCyYKD\n> *They provide us several __Servers__ which we are using for our PUBLIC BOT HOSTING! **CHECK THEM OUT**!*\n``` ```**__Partners__**\n> ***We currently have `{partnercount} Partners`, which get at least 1 FREE OP BOT***\n``` ```Wanna be a Partner/Sponsor too? Contact us in our <:Discord:787321652345438228> **Discord:** https://discord.gg/milrato and open a Ticket in <#840491251278676008>",
+                        "replymsg": "<:BeroHost:852970925695041646> Our First/Main Sponsor is **Bero-Host.de** <:BeroHost:852970925695041646>\n> <:Like:857334024087011378> **Their Website:** https://bero-host.de\n> <:DiscordLogo:936723374644789370> **Their Discord:** https://discord.bero-host.de\n> *They provide us several HIGH QUALTIY __Servers__ which we are using for our HOSTING! **CHECK THEM OUT**!*\n``` ```<:Bittmax:840370610755862529> Our Second Sponsor is **Bittmax.de** <:Bittmax:840370610755862529>\n> <:Like:857334024087011378> **Their Website:** https://bittmax.de\n> <:DiscordLogo:936723374644789370> **Their Discord:** https://discord.gg/GgjJZCyYKD\n> *They provide us several __Servers__ which we are using for our PUBLIC BOT HOSTING! **CHECK THEM OUT**!*\n``` ```**__Partners__**\n> ***We currently have `{partnercount} Partners`, which get at least 1 FREE OP BOT***\n``` ```Wanna be a Partner/Sponsor too? Contact us in our <:DiscordLogo:936723374644789370> **Discord:** https://discord.gg/milrato and open a Ticket in <#840491251278676008>",
                         "emoji": "866089513436315698"
                     },
                     {
-                        "value": "My Bot doesnt work",
+                        "value": "My bot doesnt work",
                         "description": "If your Bot is not working do this:",
-                        "replymsg": "Contact us in Milrato Development <:Discord:787321652345438228> **Discord:** https://discord.gg/milrato and open a Ticket in <#840332764603351101>\n\n***If it still responds with messages but doesn't work right, then you can try to do: `{prefix}reloadbot` / `{prefix}cmdreload [CMDNAME]`***\n\nMake sure that I have enough Permissions, as well as that the highest Role is high enough!",
+                        "replymsg": "Contact us on Milrato Development <:DiscordLogo:936723374644789370> **Discord:** https://discord.gg/milrato and open a Ticket in the Ticket Support channel, located in the **HELP DECK** category after verifying your account!\n\n***If it still responds with messages but doesn't work right, then you can try to do: `{prefix}reloadbot` / `{prefix}cmdreload [CMDNAME]`***\n\nMake sure that I have enough Permissions, as well as that my role is over the other roles!",
                         "emoji": "😓"
                     },
                     {
                         "value": "Change the Bot?",
                         "description": "There are several ways to adjust this Bot...",
-                        "replymsg": "If you are one of the OWNERs of **{clientusertag}**, then those Commands are available for you:\n\n>>> `{prefix}changename` -- https://discord.gg/milrato To Change the Bot Name\n`{prefix}changeavatar` -- To Change the Bot Avatar\n`{prefix}prefix` -- To Change the Bot Server-Prefix\n`{prefix}changestatus` -- To Change the Bot Status\n`{prefix}setup-owner` -- To Change the Bot Owners\n`{prefix}setup-advertise` -- To Enable/Disable Our ADS\n`{prefix}setup-embed` -- To Change the Embed Design in this SERVER",
+                        "replymsg": "If you are the **Owner** or *one* of the Owners of **{clientusertag}**, then those Commands are available for you:\n\n>>> `{prefix}changename` -- https://discord.gg/milrato To change the bot name\n`{prefix}changeavatar` -- To change the bot avatar\n`{prefix}prefix` -- To Change the local bot prefix\n`{prefix}changestatus` -- To Change the Bot Status\n`{prefix}setup-owner` -- To Change the Bot Owners\n`{prefix}setup-advertise` -- To Enable/Disable Our Advertisements. ||It would be very nice of you if you could not deactivate it, though! We earn our money through those advertisements.||\n`{prefix}setup-embed` -- To Change the Embed Design in this server.",
                         "emoji": "⚙️"
                     }
                 ],
@@ -104,7 +104,7 @@
                 "variable1": "`\\`\\`\\`${String(e.stack).substr(0, 2000)}\\`\\`\\``"
             },
             "djmode": {
-                "nodjroles": "no Dj Roles, aka all Users are Djs",
+                "nodjroles": "No Dj Roles, all Users are Djs",
                 "description": "If a Command is listed here, and at least one role exists, then it means that you have to have this Role, in order to be able to use these listed Commands!",
                 "field1": "<:arrow:832598861813776394> Dj Only Commands active for:",
                 "field2": "<:arrow:832598861813776394> Dj Roles",
@@ -208,7 +208,7 @@
                 "variable23": "\"🦾 Custom Commands\"",
                 "variable24": "`🦾 **Custom Commands [${cuc[0].includes(\"NO\") ? 0 : items.length}]**`",
                 "variable25": "\"<:Milrato:840259659163893820> Bot Creator Company Advertisment\"",
-                "variablex_26": "`<:Milrato:840259659163893820> **__Bot Creator Information__**`", "variable26": "`>>> 💯 This Bot has been made by:\\n[**Milrato Development**](https://milrato.eu)・[Discord](https://discord.com/invite/milrato)<:Discord:787321652345438228> [Click here to order yourself a own one](https://discord.com/invite/milrato)`",
+                "variablex_26": "`<:Milrato:840259659163893820> **__Bot Creator Information__**`", "variable26": "`>>> 💯 This Bot has been made by:\\n[**Milrato Development**](https://milrato.eu)・[Discord](https://discord.com/invite/milrato)<:DiscordLogo:936723374644789370> [Click here to order yourself a own one](https://discord.com/invite/milrato)`",
                 "variable27": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "invite": {
@@ -402,7 +402,7 @@
                 "field6": {
                     "title": "Location"
                 },
-                "title": "Twitterinformation about: `{name}`",
+                "title": "Twitter Information about: `{name}`",
                 "variable1": "`\\`\\`\\`${user.description}\\`\\`\\``",
                 "variable2": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
@@ -926,7 +926,7 @@
                 "variable16": "`Create it with: \\`${prefix}savedqueue create ${Name}\\``",
                 "variable17": "`<:no:833101993668771842> There is nothing playing`",
                 "variable18": "`<:no:833101993668771842> There is nothing playing!`",
-                "variable19": "`There are now: \\`${client.queuesaves.get(message.author.id, `${Name}`).length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
+                "variable19": "`There are now: \\`${theQueue.length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
                 "variable20": "`<:no:833101993668771842> You didn't entered a Saved-Queue-Name`",
                 "variable21": "`Usage: \\`${prefix}savedqueue <Type> <Name>\\`\\nName Information:\\n\\`Can be anything with maximum of 10 Letters\\``",
                 "variable22": "`<:no:833101993668771842> Your Saved-Queue-Name is too long!`",
@@ -947,7 +947,7 @@
                 "variable37": "`Create it with: \\`${prefix}savedqueue create ${Name}\\``",
                 "variable38": "`<:no:833101993668771842> Your provided Option is out of Range (\\`0\\` - \\`${tracks.length-1}\\`)`",
                 "variable39": "`See all your Tracks: \\`${prefix}savedqueue showdetails ${Name}\\`Usage: \\`${prefix}savedqueue removetrack ${Name} <Song number>\\``",
-                "variable40": "`There are now: \\`${client.queuesaves.get(message.author.id, `${Name}`).length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
+                "variable40": "`There are now: \\`${theQueue.length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
                 "variable41": "`<:no:833101993668771842> You didn't entered a Saved-Queue-Name`",
                 "variable42": "`Usage: \\`${prefix}savedqueue <Type> <Name>\\`\\nName Information:\\n\\`Can be anything with maximum of 10 Letters\\``",
                 "variable43": "`<:no:833101993668771842> Your Saved-Queue-Name is too long!`",
@@ -956,7 +956,7 @@
                 "variable46": "`Create it with: \\`${prefix}savedqueue create ${Name}\\``",
                 "variable47": "`<:no:833101993668771842> Your Saved-Queue ${Name} is Empty!`",
                 "variable48": "`Add the current **Queue** onto it: \\`${prefix}savedqueue addcurrentqueue ${Name}\\`\\nAdd the current **Track** onto it: \\`${prefix}savedqueue addcurrenttrack ${Name}\\``",
-                "variable49": "`There are now: \\`${client.queuesaves.get(message.author.id, `${Name}`).length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
+                "variable49": "`There are now: \\`${theQueue.length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
                 "variable50": "`<:no:833101993668771842> You didn't entered a Saved-Queue-Name`",
                 "variable51": "`Usage: \\`${prefix}savedqueue <Type> <Name>\\`\\nName Information:\\n\\`Can be anything with maximum of 10 Letters\\``",
                 "variable52": "`<:no:833101993668771842> Your Saved-Queue-Name is too long!`",
@@ -965,7 +965,7 @@
                 "variable55": "`Create it with: \\`${prefix}savedqueue create ${Name}\\``",
                 "variable56": "`<:no:833101993668771842> Your Saved-Queue ${Name} is Empty!`",
                 "variable57": "`Add the current **Queue** onto it: \\`${prefix}savedqueue addcurrentqueue ${Name}\\`\\nAdd the current **Track** onto it: \\`${prefix}savedqueue addcurrenttrack ${Name}\\``",
-                "variable58": "`There are now: \\`${client.queuesaves.get(message.author.id, `${Name}`).length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
+                "variable58": "`There are now: \\`${theQueue.length} Tracks\\`\\n\\nPlay it with: \\`${prefix}savedqueue play ${Name}\\``",
                 "variable59": "`<:no:833101993668771842> You don't have any Queues saved yet`",
                 "variable60": "`Create one with: \\`${prefix}savedqueue create <SavedQueueName>\\``",
                 "variable61": "`<:no:833101993668771842> You didn't entered a Saved-Queue-Name`",
@@ -996,9 +996,9 @@
                 "variable86": "`Channelname: \\`🔈 ${mechannel.name}\\``",
                 "variable87": "`<:no:833101993668771842> Your Queue does not exists Yet!`",
                 "variable88": "`Create it with: \\`${prefix}savedqueue create ${Name}\\``",
-                "variable89": "`Attempting to Load ${client.queuesaves.get(message.author.id, `${Name}`).length} Tracks`",
-                "variable90": "`It might take around about \\`${Math.ceil(client.queuesaves.get(message.author.id, `${Name}`).length / 2)} Seconds\\``",
-                "variable91": "`<a:yes:833101995723194437> Loaded ${client.queuesaves.get(message.author.id, `${Name}`).length} Tracks onto the current Queue`",
+                "variable89": "`Attempting to Load ${theQueue.length} Tracks`",
+                "variable90": "`It might take around about \\`${Math.ceil(theQueue.length / 2)} Seconds\\``",
+                "variable91": "`<a:yes:833101995723194437> Loaded ${theQueue.length} Tracks onto the current Queue`",
                 "variable92": "`<:no:833101993668771842> You didn't entered a Saved-Queue-Name`",
                 "variable93": "`Usage: \\`${prefix}savedqueue <Type> <Name>\\`\\nName Information:\\n\\`Can be anything with maximum of 10 Letters\\``",
                 "variable94": "`<:no:833101993668771842> Your Saved-Queue-Name is too long!`",
@@ -1523,7 +1523,7 @@
                 "variable2": "`${emoji.msg.ERROR} You have to add which Guild I should leave`",
                 "variable3": "`Usage: \\`${prefix}leaveserver <SERVERID>\\``",
                 "variable4": "\":x: Could not find the Guild to Leave\"",
-                "variable5": "`${emoji.msg.SUCCESS} Leaft ${g.name} | ${g.id}`",
+                "variable5": "`${emoji.msg.SUCCESS} Left ${g.name} | ${g.id}`",
                 "variable6": "`\\`\\`\\`${e.message}\\`\\`\\``"
             },
             "reloadbot": {
@@ -1855,7 +1855,7 @@
                 "variable8": "-",
                 "variable9": "\"What should be the embed color?\"",
                 
-                "variable9_1":"\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #ffee55)\"",
+                "variable9_1":"`It MUST be an HEX CODE 7 letters long, **with** the \\`#\\` (e.g: ${es.color})`",
                 "variable10": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable11": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable12": "\"<:no:833101993668771842> ERROR | Your Time ran out\"",
@@ -1892,7 +1892,7 @@
                 "variable40": "\"<:no:833101993668771842> ERROR | TIME RAN OUT / INVALID INPUT | cancelled\"",
                 "variable41": "-",
                 "variable42": "\"What should be the embed color?\"",
-                "variable42_1": "\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #ffee55)\"",
+                "variable42_1": "`It MUST be an HEX CODE 7 letters long, **with** the \\`#\\` (e.g: ${es.color})`",
                 "variable43": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable44": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable45": "\"<:no:833101993668771842> ERROR | TIME RAN OUT / INVALID INPUT | cancelled\"",
@@ -2053,7 +2053,7 @@
                 "variable199": "\"<:no:833101993668771842> ERROR | TIME RAN OUT / INVALID INPUT | cancelled\"",
                 "variable200": "-",
                 "variable201": "\"What should be the embed color?\"",
-                "variable201_1": "\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #ffee55)\"",
+                "variable201_1": "`It MUST be an HEX CODE 7 letters long, **with** the \\`#\\` (e.g: ${es.color})`",
                 "variable202": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable203": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable204": "\"<:no:833101993668771842> ERROR | TIME RAN OUT / INVALID INPUT | cancelled\"",
@@ -5715,9 +5715,9 @@
                 "variable1": "`**${member.guild.name} IS PROTECT BY A CAPTCHA SYSTEM**`",
                 "variable2": "`<@${member.user.id}> please send me (type) the Captcha Code (Text) in the next 30 Seconds, otherwise, you will be not verified and kicked!`",
                 "variable3": "`✅ Successfully verified for: **${member.guild.name}**`",
-                "variable4": "\"BECAUSE U FAILED THE CAPTCHA, I KICKED U! HERE IS AN INVITE: \" + invite.url).catch(e => console.log(\"prevented bug\"",
-                "variable5": "\"BECAUSE U FAILED THE CAPTCHA, I KICKED U!\").catch(e => console.log(\"prevented bug\"",
-                "variable6": "`✅ Successfully verified for: **${member.guild.name}**\\n\\nDELETING CHANNEL in 15 SECONDS, *only if noone else joins until then!*`",
+                "variable4": "\"Because you failed the Captcha, the Bot kicked you! HERE IS AN INVITE: \" + invite.url).catch(e => console.log(\"prevented bug\"",
+                "variable5": "\"Because you failed the Captcha, the Bot kicked you!\").catch(e => console.log(\"prevented bug\"",
+                "variable6": "`✅ Successfully verified for: **${member.guild.name}**\\n\\nDELETING CHANNEL in 15 SECONDS, *only if no one else joins until then!*`",
                 "variable7": "`**Welcome to ${member.guild.name}!**`",
                 "variablex_8": "\"\\u200b\"","variable8": "invitemessage && !invitemessage.includes(undefined) ? invitemessage : \"\\u200b\"",
                 "variable9": "`**Welcome to ${member.guild.name}!**`",

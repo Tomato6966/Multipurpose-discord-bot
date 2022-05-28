@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-validcode",
@@ -18,9 +18,8 @@ module.exports = {
   description: "This Setup allows you to send logs into a specific Channel, when someone enters a the Command: report",
   memberpermissions: ["ADMINISTRATOR"],
   type: "fun",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+
     try {
       ///////////////////////////////////////
       ///////////////////////////////////////
@@ -36,9 +35,9 @@ module.exports = {
       async function first_layer(){
         let menuoptions = [
           {
-            value: `${client.settings.get(message.guild.id, `validcode`) ? "Disable" : "Enable"} Valid Code`,
-            description: client.settings.get(message.guild.id, `validcode`) ? "Don't do anything with Messages containing Code" : "React to messages containing a Valid Code Snippet",
-            emoji: client.settings.get(message.guild.id, `validcode`) ? "833101993668771842" : "833101995723194437"
+            value: `${GuildSettings.validcode ? "Disable" : "Enable"} Valid Code`,
+            description: GuildSettings.validcode ? "Don't do anything with Messages containing Code" : "React to messages containing a Valid Code Snippet",
+            emoji: GuildSettings.validcode ? "833101993668771842" : "833101995723194437"
           },
           {
             value: "Settings",
@@ -67,9 +66,9 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor("Valid-Code System Setup", 
+          .setAuthor(client.getAuthor("Valid-Code System Setup", 
           "https://cdn.discordapp.com/emojis/858405056238714930.gif?v=1",
-          "https://discord.gg/milrato")
+          "https://discord.gg/milrato"))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-validcode"]["variable1"]))
         let used1 = false;
         //send the menu msg
@@ -79,17 +78,17 @@ module.exports = {
           let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
           let menuoptionindex = menuoptions.findIndex(v => v.value == menu?.values[0])
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-validcode"]["variable2"]))
-          menu?.deferUpdate(); used1 = true;
+          client.disableComponentMessage(menu); used1 = true;
           handle_the_picks(menuoptionindex, menuoptiondata)
         }
         //Event
-        client.on('interactionCreate',  (menu) => {
-          if (menu?.message.id === menumsg.id) {
+        client.on('interactionCreate', async (menu) => {
+          if (menu?.message?.id === menumsg.id) {
             if (menu?.user.id === cmduser.id) {
-              if(used1) return menu?.reply({content: `<:no:833101993668771842> You already selected something, this Selection is now disabled!`, ephemeral: true})
+              if(used1) return menu?.reply({content: `❌ You already selected something, this Selection is now disabled!`, ephemeral: true})
               menuselection(menu);
             }
-            else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+            else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
           }
         });
       }
@@ -98,7 +97,7 @@ module.exports = {
       async function handle_the_picks(menuoptionindex, menuoptiondata) {
         switch(menuoptionindex){
           case 0: {
-            client.settings.set(message.guild.id, !client.settings.get(message.guild.id, `validcode`), `validcode`)
+            await client.settings.set(message.guild.id+`.validcode`, !GuildSettings.validcode)
             return message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-validcode"]["variable3"]))
               .setColor(es.color)
@@ -106,7 +105,7 @@ module.exports = {
             ]});
           }
           case 1: {
-            let thesettings = client.settings.get(message.guild.id, `validcode`)
+            let thesettings = GuildSettings.validcode
             return message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-validcode"]["variable4"]))
               .setColor(es.color)
@@ -122,7 +121,7 @@ module.exports = {
       ///////////////////////////////////////
       ///////////////////////////////////////
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

@@ -2,11 +2,11 @@ const Discord = require(`discord.js`);
 const {
   MessageEmbed
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+const ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const playermanager = require(`../../handlers/playermanager`);
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+const { handlemsg } = require(`../../handlers/functions`);
     module.exports = {
   name: `playskip`,
   category: `🎶 Music`,
@@ -20,10 +20,10 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     "previoussong": false
   },
   type: "song",
-  run: async (client, message, args, cmduser, text, prefix, player) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    
+    if(GuildSettings.MUSIC === false) {
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -38,9 +38,9 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
           .setColor(es.wrongcolor)
           .setTitle(eval(client.la[ls]["cmds"]["music"]["playskip"]["variable1"]))
         ]});
-      message.react("🔎").catch(()=>{})
-      message.react("840260133686870036").catch(()=>{})
-      message.react(emoji?.react.skip_track).catch(()=>{})
+      message.react("🔎").catch(() => null)
+      message.react("840260133686870036").catch(() => null)
+      message.react(emoji?.react.skip_track).catch(() => null)
 
       //play the SONG from YOUTUBE
       playermanager(client, message, args, `skiptrack:youtube`);

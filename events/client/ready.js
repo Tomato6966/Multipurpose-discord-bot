@@ -3,7 +3,18 @@ let config = require(`${process.cwd()}/botconfig/config.json`)
 const Discord = require("discord.js")
 const moment = require("moment")
 const { nFormatter } = require(`${process.cwd()}/handlers/functions`)
-module.exports = client => {
+module.exports = async (client) => {
+  if(client.cluster.id == 0){
+    /*
+    // LOG THE RAM USAGE OF EACH CLUSTER!   
+    setInterval(async () => {
+      const rss = await client.cluster.broadcastEval(`process.memoryUsage().rss`)
+      const heap = await client.cluster.broadcastEval(`process.memoryUsage().heapUsed`)
+      console.log(`${rss.map((_, i) => `${`Cluster #${i}`.brightGreen}: ${`${(heap[i] / 1024 / 1024).toFixed(2)}MB / ${(rss[i] / 1024 / 1024).toFixed(2)}MB`.green}`).join("\n")}`)
+    }, 30_000)
+    
+    */
+  }
   //SETTING ALL GUILD DATA FOR THE DJ ONLY COMMANDS for the DEFAULT
   //client.guilds.cache.forEach(guild=>client.settings.set(guild.id, ["autoplay", "clearqueue", "forward", "loop", "jump", "loopqueue", "loopsong", "move", "pause", "resume", "removetrack", "removedupe", "restart", "rewind", "seek", "shuffle", "skip", "stop", "volume"], "djonlycmds"))
   try{
@@ -17,8 +28,10 @@ module.exports = client => {
       console.log(`     ┃ `.bold.brightGreen + " ".repeat(-1+stringlength-` ┃ `.length)+ "┃".bold.brightGreen)
       console.log(`     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`.bold.brightGreen)
     } catch { /* */ }
-
     console.table({ 
+      //'info': `${client.guilds.cache.get("773668217163218944")?.name} SERVER`,
+      'Cluster:' : `#${client.cluster.id}` ,
+      'Shards:' : `${client.cluster.ids.map(d => `#${d.id}`).join(", ")}` ,
       'Bot User:' : `${client.user.tag}` ,
       'Guild(s):' : `${client.guilds.cache.size} Servers` ,
       'Watching:' : `${client.guilds.cache.reduce((a, b) => a + b?.memberCount, 0)} Members` ,
@@ -32,43 +45,48 @@ module.exports = client => {
     
     change_status(client);
     //loop through the status per each 10 minutes
+    
     setInterval(()=>{
       change_status(client);
     }, 90 * 1000);
   
   } catch (e){
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
   }
 }
 var state = false;
-function change_status(client){
+async function change_status(client){
+  let stats = await client.stats.get("global");
   config = require(`${process.cwd()}/botconfig/config.json`)
   if(!state){
-    client.user.setActivity(`${config.status.text}`
-      .replace("{prefix}", config.prefix)
-      .replace("{guildcount}", nFormatter(client.guilds.cache.size, 2))
-      .replace("{membercount}", nFormatter(client.guilds.cache.reduce((a, b) => a + b?.memberCount, 0), 2))
-      .replace("{created}", moment(client.user.createdTimestamp).format("DD/MM/YYYY"))
-      .replace("{createdime}", moment(client.user.createdTimestamp).format("HH:mm:ss"))
-      .replace("{name}", client.user.username)
-      .replace("{tag}", client.user.tag)
-      .replace("{commands}", client.commands.size)
-      .replace("{usedcommands}", nFormatter(Math.ceil(client.stats.get("global", "commands") * [...client.guilds.cache.values()].length / 10), 2))
-      .replace("{songsplayed}", nFormatter(Math.ceil(client.stats.get("global", "songs") * [...client.guilds.cache.values()].length / 10), 2))
-    , {type: config.status.type, url: config.status.url});
+    for await (id of client.cluster.ids.map(s => s.id)){
+      client.user.setActivity(`${config.status.text} | on Cluster: ${client.cluster.id} | on Shard: ${id}`
+        .replace("{prefix}", config.prefix)
+        .replace("{guildcount}", nFormatter(client.guilds.cache.size, 2))
+        .replace("{membercount}", nFormatter(client.guilds.cache.reduce((a, b) => a + b?.memberCount, 0), 2))
+        .replace("{created}", moment(client.user.createdTimestamp).format("DD/MM/YYYY"))
+        .replace("{createdime}", moment(client.user.createdTimestamp).format("HH:mm:ss"))
+        .replace("{name}", client.user.username)
+        .replace("{tag}", client.user.tag)
+        .replace("{commands}", client.commands.size)
+        .replace("{usedcommands}", nFormatter(Math.ceil(stats.commands * [...client.guilds.cache.values()].length / 10), 2))
+        .replace("{songsplayed}", nFormatter(Math.ceil(stats.songs * [...client.guilds.cache.values()].length / 10), 2)), {type: config.status.type, url: config.status.url, shardId: id});
+    }
   } else {
-    client.user.setActivity(`${config.status.text2}`
-    .replace("{prefix}", config.prefix)
-    .replace("{guildcount}", nFormatter(client.guilds.cache.size, 2))
-    .replace("{membercount}", nFormatter(client.guilds.cache.reduce((a, b) => a + b?.memberCount, 0), 2))
-    .replace("{created}", moment(client.user.createdTimestamp).format("DD/MM/YYYY"))
-    .replace("{createdime}", moment(client.user.createdTimestamp).format("HH:mm:ss"))
-    .replace("{name}", client.user.username)
-    .replace("{tag}", client.user.tag)
-    .replace("{commands}", client.commands.size)
-    .replace("{usedcommands}", nFormatter(Math.ceil(client.stats.get("global", "commands") * [...client.guilds.cache.values()].length / 10), 2))
-    .replace("{songsplayed}", nFormatter(Math.ceil(client.stats.get("global", "songs") * [...client.guilds.cache.values()].length / 10), 2))
-    , {type: config.status.type, url: config.status.url});
+    for await (id of client.cluster.ids.map(s => s.id)){
+      client.user.setActivity(`${config.status.text2} | on Cluster: ${client.cluster.id} | on Shard: ${id}`
+        .replace("{prefix}", config.prefix)
+        .replace("{guildcount}", nFormatter(client.guilds.cache.size, 2))
+        .replace("{membercount}", nFormatter(client.guilds.cache.reduce((a, b) => a + b?.memberCount, 0), 2))
+        .replace("{created}", moment(client.user.createdTimestamp).format("DD/MM/YYYY"))
+        .replace("{createdime}", moment(client.user.createdTimestamp).format("HH:mm:ss"))
+        .replace("{name}", client.user.username)
+        .replace("{tag}", client.user.tag)
+        .replace("{commands}", client.commands.size)
+        .replace("{usedcommands}", nFormatter(Math.ceil(stats.commands * [...client.guilds.cache.values()].length / 10), 2))
+        .replace("{songsplayed}", nFormatter(Math.ceil(stats.songs * [...client.guilds.cache.values()].length / 10), 2)), {type: config.status.type, url: config.status.url, shardId: id});
+    }
+    
   }
   state = !state;
   if(client.ad.enabled){

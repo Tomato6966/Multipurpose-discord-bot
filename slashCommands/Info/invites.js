@@ -3,7 +3,7 @@ const {MessageEmbed} = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { GetUser, GetGlobalUser, handlemsg, nFormatter } = require(`${process.cwd()}/handlers/functions`)
+const { dbEnsure, GetGlobalUser, handlemsg, nFormatter } = require(`${process.cwd()}/handlers/functions`)
 module.exports = {
   name: "invites",
   description: "See how many Invites a user has!",
@@ -16,7 +16,7 @@ module.exports = {
 		//{"IntChoices": { name: "what_ping", description: "What Ping do you want to get?", required: true, choices: [["Bot", 1], ["Discord Api", 2]] }, //here the second array input MUST BE A NUMBER // TO USE IN THE CODE: interacton.getInteger("what_ping")
 		//{"StringChoices": { name: "what_ping", description: "What Ping do you want to get?", required: true, choices: [["Bot", "botping"], ["Discord Api", "api"]] }}, //here the second array input MUST BE A STRING // TO USE IN THE CODE: interacton.getString("what_ping")
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     //things u can directly access in an interaction!
 		const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;
@@ -24,10 +24,10 @@ module.exports = {
     if(!user) user = member.user;
     try{
       // Fetch guild and member data from the db
-      client.invitesdb?.ensure(guild.id + user.id, {
+      await dbEnsure(client.invitesdb, message.guild.id + user.id, {
         /* REQUIRED */
         id: user.id, // Discord ID of the user
-        guildId: guild.id,
+        guildId: message.guild.id,
         /* STATS */
         fake: 0,
         leaves: 0,
@@ -47,7 +47,7 @@ module.exports = {
         bot: user.bot || false
       });
       //get the new memberdata
-      let memberData = client.invitesdb?.get(guild.id + user.id)
+      let memberData = await client.invitesdb.get(message.guild.id + user.id)
       let {
         invites,
         fake,
@@ -64,7 +64,7 @@ module.exports = {
         leaves = nFormatter(leaves, 2);
         messagesCount = nFormatter(messagesCount, 3);
       interaction?.reply({ephemeral: true, embeds: [new Discord.MessageEmbed()
-        .setAuthor(handlemsg(client.la[ls].cmds.info.invites.author, {usertag: user.tag}), user.displayAvatarURL({dynamic: true}), "https://discord.gg/milrato")
+        .setAuthor(client.getAuthor(handlemsg(client.la[ls].cmds.info.invites.author, {usertag: user.tag}), user.displayAvatarURL({dynamic: true}), "https://discord.gg/milrato"))
         .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
         .addField("\u200b", handlemsg(client.la[ls].cmds.info.invites.field1.value, {realinvites: realinvites, user: user}))
         .addField(client.la[ls].cmds.info.invites.field2.title, handlemsg(client.la[ls].cmds.info.invites.field2.value, {invites: invites, fake: fake, leaves: leaves}))
@@ -72,7 +72,7 @@ module.exports = {
         .addField(client.la[ls].cmds.info.invites.field4.title, handlemsg(client.la[ls].cmds.info.invites.field4.value, {messagesCount: messagesCount}))
         .setFooter(client.getFooter(es))]});
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
     }
   }
 }

@@ -11,7 +11,7 @@ var {
 
 //function for playling song
 async function request(client, message, args, type, slashCommand) {
-  let ls = client.settings.get(message.guild.id, "language")
+  let ls = await client.settings.get(message.guild.id+".language")
   var search = args.join(" ");
   var res;
   var player = client.manager.players.get(message.guild.id);
@@ -31,7 +31,7 @@ async function request(client, message, args, type, slashCommand) {
   if (state !== "CONNECTED") {
     //set the variables
     player.set("message", message);
-    player.set("playerauthor", message.author.id);
+    player.set("playerauthor", message.author?.id);
     player.connect();
     player.stop();
   }
@@ -53,14 +53,14 @@ async function request(client, message, args, type, slashCommand) {
         .setColor(ee.wrongcolor)
         .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
         .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["request"]["variable1"]))
-      ]}).catch(() => {})
+      ]}).catch(() => null)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
         .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["request"]["variable1"]))
-      ]}).catch(() => {}).then(msg => {
+      ]}).catch(() => null).then(msg => {
         setTimeout(()=>{
-          msg.delete().catch(() => {})
+          msg.delete().catch(() => null)
         }, 3000)
       })
     }
@@ -68,7 +68,7 @@ async function request(client, message, args, type, slashCommand) {
     if (player.state !== "CONNECTED") {
       //set the variables
       player.set("message", message);
-      player.set("playerauthor", message.author.id);
+      player.set("playerauthor", message.author?.id);
       player.connect();
       //add track
       player.queue.add(res.tracks[0]);
@@ -87,21 +87,23 @@ async function request(client, message, args, type, slashCommand) {
       //add track
       player.queue.add(res.tracks[0]);
     }
-    if(client.musicsettings.get(player.guild, "channel") && client.musicsettings.get(player.guild, "channel").length > 5){
-      let messageId = client.musicsettings.get(player.guild, "message");
-      let guild = client.guilds.cache.get(player.guild);
-      if(!guild) return 
-      let channel = guild.channels.cache.get(client.musicsettings.get(player.guild, "channel"));
-      if(!channel) return 
-      let message = channel.messages.cache.get(messageId);
-      if(!message) message = await channel.messages.fetch(messageId).catch(()=>{});
-      if(!message) return
-      //edit the message so that it's right!
-      var data = require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
-      message.edit(data).catch(() => {})
-      if(client.musicsettings.get(player.guild, "channel") == player.textChannel){
-        return;
-      }
+    
+    const musicsettings = await client.musicsettings.get(player.guild)
+    if(musicsettings.channel && musicsettings.channel.length > 5){
+      let messageId = musicsettings.message;
+      let guild = await client.guilds.cache.get(player.guild)
+      if(guild && messageId) {
+        let channel = guild.channels.cache.get(musicsettings.channel);
+        let message = await channel.messages.fetch(messageId).catch(() => null);
+        if(message) {
+          //edit the message so that it's right!
+          var data = await require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
+          message.edit(data).catch(console.error)
+          if(musicsettings.channel == player.textChannel){
+            return;
+          }
+        }
+      } 
     }
   }
   //function for playist
@@ -112,14 +114,14 @@ async function request(client, message, args, type, slashCommand) {
           .setColor(ee.wrongcolor)
           .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
           .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["request"]["variable2"]))
-        ]}).catch(() => {})
+        ]}).catch(() => null)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(ee.wrongcolor)
         .setTitle(String("❌ Error | Found nothing for: **`" + search).substring(0, 256 - 3) + "`**")
         .setDescription(eval(client.la[ls]["handlers"]["playermanagers"]["request"]["variable2"]))
-      ]}).catch(() => {}).then(msg => {
+      ]}).catch(() => null).then(msg => {
         setTimeout(()=>{
-          msg.delete().catch(() => {})
+          msg.delete().catch(() => null)
         }, 3000)
       })
     }
@@ -127,7 +129,7 @@ async function request(client, message, args, type, slashCommand) {
     if (player.state !== "CONNECTED") {
       //set the variables
       player.set("message", message);
-      player.set("playerauthor", message.author.id);
+      player.set("playerauthor", message.author?.id);
       player.connect();
       //add track
       player.queue.add(res.tracks);
@@ -143,21 +145,22 @@ async function request(client, message, args, type, slashCommand) {
     } else {
       player.queue.add(res.tracks);
     }
-    if(client.musicsettings.get(player.guild, "channel") && client.musicsettings.get(player.guild, "channel").length > 5){
-      let messageId = client.musicsettings.get(player.guild, "message");
-      let guild = client.guilds.cache.get(player.guild);
-      if(!guild) return 
-      let channel = guild.channels.cache.get(client.musicsettings.get(player.guild, "channel"));
-      if(!channel) return 
-      let message = channel.messages.cache.get(messageId);
-      if(!message) message = await channel.messages.fetch(messageId).catch(()=>{});
-      if(!message) return
-      //edit the message so that it's right!
-      var data = require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
-      message.edit(data).catch(() => {})
-      if(client.musicsettings.get(player.guild, "channel") == player.textChannel){
-        return;
-      }
+    const musicsettings = await client.musicsettings.get(player.guild)
+    if(musicsettings.channel && musicsettings.channel.length > 5){
+      let messageId = musicsettings.message;
+      let guild = await client.guilds.cache.get(player.guild)
+      if(guild && messageId) {
+        let channel = guild.channels.cache.get(musicsettings.channel);
+        let message = await channel.messages.fetch(messageId).catch(() => null);
+        if(message) {
+          //edit the message so that it's right!
+          var data = await require("../erela_events/musicsystem").generateQueueEmbed(client, player.guild)
+          message.edit(data).catch(console.error)
+          if(musicsettings.channel == player.textChannel){
+            return;
+          }
+        }
+      } 
     }
   }
 }

@@ -3,19 +3,19 @@ const config = require(`${process.cwd()}/botconfig/config.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 const { duration, handlemsg } = require(`${process.cwd()}/handlers/functions`)
-const { MessageActionRow, MessageSelectMenu } = require("discord.js")
+const { Collection, MessageActionRow, MessageSelectMenu } = require("discord.js");
 module.exports = {
     name: "botfaq",
     description: "Frequently Asked Questions, about me!",
-    run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+    run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
       //things u can directly access in an interaction!
       const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
       const { guild } = member;
 		try{
       let milratodc = client.guilds.cache.get("773668217163218944")
-      let milratomembers = await milratodc.members.fetch();
-      let partnercount = milratomembers.filter(m => m.roles.cache.has("823150244509515807"))
-      partnercount = partnercount.map(m=>m.id).length
+      let milratomembers = await milratodc.members.fetch().catch(() => null) || new Collection();
+      let partnercount = milratomembers.filter(m => m?.roles?.cache?.has("823150244509515807") || false)
+      partnercount = partnercount.map(m=> m?.id).length || 0;
       
       let menuoptions = [
         {
@@ -94,7 +94,7 @@ module.exports = {
       //define the embed
       let MenuEmbed = new Discord.MessageEmbed()
       .setColor(es.color)
-      .setAuthor(client.la[ls].cmds.info.botfaq.menuembed.title, client.user.displayAvatarURL(), "https://discord.gg/milrato")
+      .setAuthor(client.getAuthor(client.la[ls].cmds.info.botfaq.menuembed.title, client.user.displayAvatarURL(), "https://discord.gg/milrato"))
       .setDescription(client.la[ls].cmds.info.botfaq.menuembed.description)
       //send the menu msg
       await interaction?.reply({embeds: [MenuEmbed], components: [Selection], ephemeral: true})
@@ -103,7 +103,7 @@ module.exports = {
         let menuoptiondata = menuoptions.find(v=>v.value.substring(0, 25) == interaction?.values[0])
         interaction?.reply({embeds: [new Discord.MessageEmbed()
         .setColor(es.color)
-        .setAuthor(client.la[ls].cmds.info.botfaq.menuembed.title, client.user.displayAvatarURL(), "https://discord.gg/milrato")
+        .setAuthor(client.getAuthor(client.la[ls].cmds.info.botfaq.menuembed.title, client.user.displayAvatarURL(), "https://discord.gg/milrato"))
         .setDescription(menuoptiondata.replymsg)], ephemeral: true});
       }
       //Event
@@ -114,7 +114,7 @@ module.exports = {
         }
       });
     } catch (e) {
-        console.log(String(e.stack).grey.bgRed)
+        console.error(e)
     }
   },
 };

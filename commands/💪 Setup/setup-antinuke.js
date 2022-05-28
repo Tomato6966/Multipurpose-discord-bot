@@ -2,12 +2,12 @@ var {
   MessageEmbed, Permissions, MessageButton, MessageActionRow, MessageSelectMenu
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing, delay
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure, delay, dbRemove, dbKeys, dbEnsure
+} = require(`../../handlers/functions`);
 module.exports = {
   name: "setup-antinuke",
   category: "💪 Setup",
@@ -17,16 +17,16 @@ module.exports = {
   description: "Manage the Anti Nuke System",
   memberpermissions: ["ADMINISTRATOR"],
   type: "security",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language");
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+    ;
     //only allow the Server owner, (&Tomato) to execute this Command, (Tomato just because if he needs to help for Shop Bots)
-    if(message.author.id != message.guild.ownerId){
-      if(message.author.id != "442355791412854784")
+    if(message.author?.id != message.guild.ownerId){
+      if(message.author?.id != "442355791412854784")
         return message.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable1"])})
     }
     
     try {
-      client.Anti_Nuke_System.ensure(message.guild.id, {
+      await dbEnsure(await client.Anti_Nuke_System, message.guild.id, {
         all: {
             enabled: false,
             logger: "no",
@@ -241,7 +241,7 @@ module.exports = {
                 }
             },
         },
-    })
+      })
       first_layer()
       async function first_layer(){
         let menuoptions = [
@@ -311,15 +311,15 @@ module.exports = {
             await message.reply({ content: "<a:yes:833101995723194437> **The Current Anti-Nuke Settings**", embeds: [new MessageEmbed()
               .setColor(es.color)
               .setFooter(client.getFooter(es))
-              .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable5"]))
-              .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_6"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable6"]))
-              .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_7"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable7"]))
-              .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_8"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable8"]))
-              .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_9"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable9"]))
-              .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_10"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable10"]))
-              .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_11"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable11"]))
+              .setTitle(`${await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled") ? "<a:yes:833101995723194437> __**The Anti Nuke is enabled!**__": "<:no:833101993668771842> __**The Anti Nuke is disabled!**__"}`)
+              .addField(`__**Anti Add Bot | ${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.enabled") ? "<a:yes:833101995723194437> Enabled ": "<:no:833101993668771842> Disabled"}**__`, `>>> [Remove Roles] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.removeroles.neededdaycount")}\`**\n[Remove Roles] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.removeroles.neededweekcount")}\`\n**[Remove Roles] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.removeroles.neededmonthcount")}\`**\n\n[Kick] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.kick.neededdaycount")}\`**\n[Kick] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.kick.neededweekcount")}\`\n**[Kick] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.kick.neededmonthcount")}\`**\n\n[Ban] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.ban.neededdaycount")}\`**\n[Ban] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.ban.neededweekcount")}\`\n**[Ban] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.ban.neededmonthcount")}\`**`)
+              .addField(`__**Anti Kick/Ban | ${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.enabled") ? "<a:yes:833101995723194437> Enabled ": "<:no:833101993668771842> Disabled"}**__`, `>>> [Remove Roles] **Kicks / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.removeroles.neededdaycount")}\`**\n[Remove Roles] **Kicks / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.removeroles.neededweekcount")}\`\n**[Remove Roles] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.removeroles.neededmonthcount")}\`**\n\n[Kick] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.kick.neededdaycount")}\`**\n[Kick] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.kick.neededweekcount")}\`\n**[Kick] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.kick.neededmonthcount")}\`**\n\n[Ban] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.ban.neededdaycount")}\`**\n[Ban] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.ban.neededweekcount")}\`\n**[Ban] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.ban.neededmonthcount")}\`**`)
+              .addField(`__**Anti Delete Role | ${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.enabled") ? "<a:yes:833101995723194437> Enabled ": "<:no:833101993668771842> Disabled"}**__`, `>>> [Remove Roles] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.removeroles.neededdaycount")}\`**\n[Remove Roles] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.removeroles.neededweekcount")}\`\n**[Remove Roles] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.removeroles.neededmonthcount")}\`**\n\n[Kick] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.kick.neededdaycount")}\`**\n[Kick] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.kick.neededweekcount")}\`\n**[Kick] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.kick.neededmonthcount")}\`**\n\n[Ban] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.ban.neededdaycount")}\`**\n[Ban] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.ban.neededweekcount")}\`\n**[Ban] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.ban.neededmonthcount")}\`**`)
+              .addField(`__**Anti Delete Channel | ${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.enabled") ? "<a:yes:833101995723194437> Enabled ": "<:no:833101993668771842> Disabled"}**__`, `>>> [Remove Roles] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.removeroles.neededdaycount")}\`**\n[Remove Roles] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.removeroles.neededweekcount")}\`\n**[Remove Roles] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.removeroles.neededmonthcount")}\`**\n\n[Kick] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.kick.neededdaycount")}\`**\n[Kick] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.kick.neededweekcount")}\`\n**[Kick] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.kick.neededmonthcount")}\`**\n\n[Ban] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.ban.neededdaycount")}\`**\n[Ban] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.ban.neededweekcount")}\`\n**[Ban] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.ban.neededmonthcount")}\`**`)
+              .addField(`__**Anti Create Role | ${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.enabled") ? "<a:yes:833101995723194437> Enabled ": "<:no:833101993668771842> Disabled"}**__`, `>>> [Remove Roles] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.removeroles.neededdaycount")}\`**\n[Remove Roles] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.removeroles.neededweekcount")}\`\n**[Remove Roles] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.removeroles.neededmonthcount")}\`**\n\n[Kick] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.kick.neededdaycount")}\`**\n[Kick] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.kick.neededweekcount")}\`\n**[Kick] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.kick.neededmonthcount")}\`**\n\n[Ban] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.ban.neededdaycount")}\`**\n[Ban] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.ban.neededweekcount")}\`\n**[Ban] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.ban.neededmonthcount")}\`**`)
+              .addField(`__**Anti Create Channel | ${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.enabled") ? "<a:yes:833101995723194437> Enabled ": "<:no:833101993668771842> Disabled"}**__`, `>>> [Remove Roles] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.removeroles.neededdaycount")}\`**\n[Remove Roles] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.removeroles.neededweekcount")}\`\n**[Remove Roles] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.removeroles.neededmonthcount")}\`**\n\n[Kick] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.kick.neededdaycount")}\`**\n[Kick] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.kick.neededweekcount")}\`\n**[Kick] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.kick.neededmonthcount")}\`**\n\n[Ban] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.ban.neededdaycount")}\`**\n[Ban] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.ban.neededweekcount")}\`\n**[Ban] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.ban.neededmonthcount")}\`**`)
               .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_12"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable12"]))
-              .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable13"]))]
+              .setDescription(`${await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog") ? "> <a:yes:833101995723194437> **I will show it when a Whitelisted User/Role makes an Action**\n> *But I won't do anything to him/her, cause he/she is whitelisted!*": "> <:no:833101993668771842> **I won't show it when a whitelisted User is doing something!**\n> This doesn't affect your security! (He is whitelisted, from the YOU)"}${await client.Anti_Nuke_System.get(message.guild.id+ ".all.quarantine")?.length > 0 ? `\n\n> **I will add him/her the Quarantine Role: <@&${await client.Anti_Nuke_System.get(message.guild.id+ ".all.quarantine")}> Role when removing the Roles!**` : "*NO Quarantine Role set, I will just remove his/her Roles / KICK / BAN..!*"}`)]
             });
             return menu?.reply({embeds: [new MessageEmbed()
             .setColor(es.color)
@@ -329,7 +329,7 @@ module.exports = {
           });
           } 
           else if(menu?.values[0] == "Manage Whitelist"){
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             menuoptions = [
               {
                 value: "General Users/Roles",
@@ -403,14 +403,14 @@ module.exports = {
               let index = menuoptions.findIndex(v=>v.value == menu?.values[0])
               //Toggle
               if(String(index) == "0"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable18"]))
                   .setColor(es.color)
                   .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable19"])).setFooter(client.getFooter(es))
                 ]})
-                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                     max: 1,
                     time: 90000,
                     errors: ["time"]
@@ -424,40 +424,40 @@ module.exports = {
                     let addedroles = [];
                     let removedusers = [];
                     let removedroles = [];
-                    let current = client.Anti_Nuke_System.get(message.guild.id, "all.whitelisted");
-                    for(const u of users){
+                    let current = await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted");
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
-                      client.Anti_Nuke_System.push(message.guild.id, u, "all.whitelisted.users")
+                    
+                    for await (const u of addedusers){
+                      await client.Anti_Nuke_System.push(message.guild.id+".all.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
-                      client.Anti_Nuke_System.push(message.guild.id, r, "all.whitelisted.roles")
+                    for await (const r of addedroles){
+                      await client.Anti_Nuke_System.push(message.guild.id+".all.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
-                      client.Anti_Nuke_System.remove(message.guild.id, u, "all.whitelisted.users")
+                    for await (const u of removedusers){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".all.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
-                      client.Anti_Nuke_System.remove(message.guild.id, r, "all.whitelisted.roles")
+                    for await (const r of removedroles){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".all.whitelisted.roles", r)
                     }
-                  
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable20"]))
                       .setColor(es.color)
                       .setDescription(`**Removed [${removedroles.length}] Roles and [${removedusers.length}] Users from the __general__ Whitelist!**`.substring(0, 2048))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_21"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable21"]))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_22"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable22"]))
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_21"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted.users").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted.users").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted.users").slice(0, 15).map(x=>`<@${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted.users").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted.users").map(x=>`<@${x}>`).join("︲")}`)
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_22"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted.roles").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted.roles").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted.roles").slice(0, 15).map(x=>`<@&${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted.roles").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted.roles").map(x=>`<@&${x}>`).join("︲")}`)
                       .setFooter(client.getFooter(es))]
                     });
                   })
@@ -472,14 +472,14 @@ module.exports = {
                     .setFooter(client.getFooter(es))]
                   });
               } else if(String(index) == "1"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable24"]))
                   .setColor(es.color)
                   .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable25"])).setFooter(client.getFooter(es))
                 ]})
-                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                     max: 1,
                     time: 90000,
                     errors: ["time"]
@@ -493,40 +493,40 @@ module.exports = {
                     let addedroles = [];
                     let removedusers = [];
                     let removedroles = [];
-                    let current = client.Anti_Nuke_System.get(message.guild.id, "antibot.whitelisted");
-                    for(const u of users){
+                    let current = await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted");
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
-                      client.Anti_Nuke_System.push(message.guild.id, u, "antibot.whitelisted.users")
+                    for await (const u of addedusers){
+                      await client.Anti_Nuke_System.push(message.guild.id+".antibot.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
-                      client.Anti_Nuke_System.push(message.guild.id, r, "antibot.whitelisted.roles")
+                    for await (const r of addedroles){
+                      await client.Anti_Nuke_System.push(message.guild.id+".antibot.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
-                      client.Anti_Nuke_System.remove(message.guild.id, u, "antibot.whitelisted.users")
+                    for await (const u of removedusers){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".antibot.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
-                      client.Anti_Nuke_System.remove(message.guild.id, r, "antibot.whitelisted.roles")
+                    for await (const r of removedroles){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".antibot.whitelisted.roles", r)
                     }
                   
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable26"]))
                       .setColor(es.color)
                       .setDescription(`<:leaves:866356598356049930> **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Bot add__ Whitelist (module)!**`.substring(0, 2048))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_27"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable27"]))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_28"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable28"]))
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_27"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted.users").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted.users").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted.users").slice(0, 15).map(x=>`<@${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted.users").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted.users").map(x=>`<@${x}>`).join("︲")}`)
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_28"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted.roles").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted.roles").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted.roles").slice(0, 15).map(x=>`<@&${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted.roles").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted.roles").map(x=>`<@&${x}>`).join("︲")}`)
                       .setFooter(client.getFooter(es))]
                     });
                   })
@@ -541,14 +541,14 @@ module.exports = {
                     .setFooter(client.getFooter(es))]
                   });
               } else if(String(index) == "2"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable30"]))
                   .setColor(es.color)
                   .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable31"])).setFooter(client.getFooter(es))
                 ]})
-                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                     max: 1,
                     time: 90000,
                     errors: ["time"]
@@ -562,40 +562,40 @@ module.exports = {
                     let addedroles = [];
                     let removedusers = [];
                     let removedroles = [];
-                    let current = client.Anti_Nuke_System.get(message.guild.id, "antideleteuser.whitelisted");
-                    for(const u of users){
+                    let current = await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted");
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
-                      client.Anti_Nuke_System.push(message.guild.id, u, "antideleteuser.whitelisted.users")
+                    for await (const u of addedusers){
+                      await client.Anti_Nuke_System.push(message.guild.id+".antideleteuser.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
-                      client.Anti_Nuke_System.push(message.guild.id, r, "antideleteuser.whitelisted.roles")
+                    for await (const r of addedroles){
+                      await client.Anti_Nuke_System.push(message.guild.id+".antideleteuser.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
-                      client.Anti_Nuke_System.remove(message.guild.id, u, "antideleteuser.whitelisted.users")
+                    for await (const u of removedusers){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".antideleteuser.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
-                      client.Anti_Nuke_System.remove(message.guild.id, r, "antideleteuser.whitelisted.roles")
+                    for await (const r of removedroles){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".antideleteuser.whitelisted.roles", r)
                     }
                   
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable32"]))
                       .setColor(es.color)
                       .setDescription(`<:leaves:866356598356049930> **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Kick/Ban__ Whitelist (module)!**`.substring(0, 2048))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_33"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable33"]))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_34"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable34"]))
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_33"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted.users").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted.users").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted.users").slice(0, 15).map(x=>`<@${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted.users").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted.users").map(x=>`<@${x}>`).join("︲")}`)
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_34"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted.roles").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted.roles").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted.roles").slice(0, 15).map(x=>`<@&${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted.roles").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted.roles").map(x=>`<@&${x}>`).join("︲")}`)
                       .setFooter(client.getFooter(es))]
                     });
                   })
@@ -610,14 +610,14 @@ module.exports = {
                     .setFooter(client.getFooter(es))]
                   });
               } else if(String(index) == "3"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable36"]))
                   .setColor(es.color)
                   .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable37"])).setFooter(client.getFooter(es))
                 ]})
-                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                     max: 1,
                     time: 90000,
                     errors: ["time"]
@@ -631,40 +631,40 @@ module.exports = {
                     let addedroles = [];
                     let removedusers = [];
                     let removedroles = [];
-                    let current = client.Anti_Nuke_System.get(message.guild.id, "anticreaterole.whitelisted");
-                    for(const u of users){
+                    let current = await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted");
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
-                      client.Anti_Nuke_System.push(message.guild.id, u, "anticreaterole.whitelisted.users")
+                    for await (const u of addedusers){
+                      await client.Anti_Nuke_System.push(message.guild.id+".anticreaterole.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
-                      client.Anti_Nuke_System.push(message.guild.id, r, "anticreaterole.whitelisted.roles")
+                    for await (const r of addedroles){
+                      await client.Anti_Nuke_System.push(message.guild.id+".anticreaterole.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
-                      client.Anti_Nuke_System.remove(message.guild.id, u, "anticreaterole.whitelisted.users")
+                    for await (const u of removedusers){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".anticreaterole.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
-                      client.Anti_Nuke_System.remove(message.guild.id, r, "anticreaterole.whitelisted.roles")
+                    for await (const r of removedroles){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".anticreaterole.whitelisted.roles", r)
                     }
                   
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable38"]))
                       .setColor(es.color)
                       .setDescription(`<:leaves:866356598356049930> **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Create Role__ Whitelist (module)!**`.substring(0, 2048))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_39"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable39"]))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_40"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable40"]))
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_39"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted.users").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted.users").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted.users").slice(0, 15).map(x=>`<@${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted.users").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted.users").map(x=>`<@${x}>`).join("︲")}`)
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_40"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted.roles").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted.roles").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted.roles").slice(0, 15).map(x=>`<@&${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted.roles").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted.roles").map(x=>`<@&${x}>`).join("︲")}`)
                       .setFooter(client.getFooter(es))]
                     });
                   })
@@ -679,14 +679,14 @@ module.exports = {
                     .setFooter(client.getFooter(es))]
                   });
               } else if(String(index) == "4"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable42"]))
                   .setColor(es.color)
                   .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable43"])).setFooter(client.getFooter(es))
                 ]})
-                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                     max: 1,
                     time: 90000,
                     errors: ["time"]
@@ -700,40 +700,40 @@ module.exports = {
                     let addedroles = [];
                     let removedusers = [];
                     let removedroles = [];
-                    let current = client.Anti_Nuke_System.get(message.guild.id, "antideleterole.whitelisted");
-                    for(const u of users){
+                    let current = await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted");
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
-                      client.Anti_Nuke_System.push(message.guild.id, u, "antideleterole.whitelisted.users")
+                    for await (const u of addedusers){
+                      await client.Anti_Nuke_System.push(message.guild.id+".antideleterole.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
-                      client.Anti_Nuke_System.push(message.guild.id, r, "antideleterole.whitelisted.roles")
+                    for await (const r of addedroles){
+                      await client.Anti_Nuke_System.push(message.guild.id+".antideleterole.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
-                      client.Anti_Nuke_System.remove(message.guild.id, u, "antideleterole.whitelisted.users")
+                    for await (const u of removedusers){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".antideleterole.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
-                      client.Anti_Nuke_System.remove(message.guild.id, r, "antideleterole.whitelisted.roles")
+                    for await (const r of removedroles){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".antideleterole.whitelisted.roles", r)
                     }
                   
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable44"]))
                       .setColor(es.color)
                       .setDescription(`<:leaves:866356598356049930> **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Delete Role__ Whitelist (module)!**`.substring(0, 2048))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_45"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable45"]))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_46"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable46"]))
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_45"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted.users").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted.users").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted.users").slice(0, 15).map(x=>`<@${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted.users").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted.users").map(x=>`<@${x}>`).join("︲")}`)
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_46"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted.roles").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted.roles").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted.roles").slice(0, 15).map(x=>`<@&${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted.roles").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted.roles").map(x=>`<@&${x}>`).join("︲")}`)
                       .setFooter(client.getFooter(es))]
                     });
                   })
@@ -748,14 +748,14 @@ module.exports = {
                     .setFooter(client.getFooter(es))]
                   });
               } else if(String(index) == "5"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable48"]))
                   .setColor(es.color)
                   .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable49"])).setFooter(client.getFooter(es))
                 ]})
-                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                     max: 1,
                     time: 90000,
                     errors: ["time"]
@@ -769,40 +769,40 @@ module.exports = {
                     let addedroles = [];
                     let removedusers = [];
                     let removedroles = [];
-                    let current = client.Anti_Nuke_System.get(message.guild.id, "antichanneldelete.whitelisted");
-                    for(const u of users){
+                    let current = await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted");
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
-                      client.Anti_Nuke_System.push(message.guild.id, u, "antichanneldelete.whitelisted.users")
+                    for await (const u of addedusers){
+                      await client.Anti_Nuke_System.push(message.guild.id+"antichanneldelete.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
-                      client.Anti_Nuke_System.push(message.guild.id, r, "antichanneldelete.whitelisted.roles")
+                    for await (const r of addedroles){
+                      await client.Anti_Nuke_System.push(message.guild.id+".antichanneldelete.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
-                      client.Anti_Nuke_System.remove(message.guild.id, u, "antichanneldelete.whitelisted.users")
+                    for await (const u of removedusers){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+ ".antichanneldelete.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
-                      client.Anti_Nuke_System.remove(message.guild.id, r, "antichanneldelete.whitelisted.roles")
+                    for await (const r of removedroles){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".antichanneldelete.whitelisted.roles", r)
                     }
                   
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable50"]))
                       .setColor(es.color)
                       .setDescription(`<:leaves:866356598356049930> **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Channel Create__ Whitelist (module)!**`.substring(0, 2048))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_51"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable51"]))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_52"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable52"]))
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_51"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted.users").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted.users").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted.users").slice(0, 15).map(x=>`<@${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted.users").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted.users").map(x=>`<@${x}>`).join("︲")}`)
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_52"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted.roles").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted.roles").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted.roles").slice(0, 15).map(x=>`<@&${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted.roles").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted.roles").map(x=>`<@&${x}>`).join("︲")}`)
                       .setFooter(client.getFooter(es))]
                     });
                   })
@@ -817,14 +817,14 @@ module.exports = {
                     .setFooter(client.getFooter(es))]
                   });
               } else if(String(index) == "6"){
-                menu?.deferUpdate();
+                client.disableComponentMessage(menu);
                 let timeouterror = false;
                 let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable54"]))
                   .setColor(es.color)
                   .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable55"])).setFooter(client.getFooter(es))
                 ]})
-                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+                await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                     max: 1,
                     time: 90000,
                     errors: ["time"]
@@ -838,40 +838,40 @@ module.exports = {
                     let addedroles = [];
                     let removedusers = [];
                     let removedroles = [];
-                    let current = client.Anti_Nuke_System.get(message.guild.id, "antichannelcreate.whitelisted");
-                    for(const u of users){
+                    let current = await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted");
+                    for await (const u of users){
                       if(current.users.includes(u)){
                         removedusers.push(u)
                       }else {
                         addedusers.push(u)
                       }
                     }
-                    for(const r of roles){
+                    for await (const r of roles){
                       if(current.roles.includes(r)){
                         removedroles.push(r)
                       }else {
                         addedroles.push(r)
                       }
                     }
-                    for(const u of addedusers){
-                      client.Anti_Nuke_System.push(message.guild.id, u, "antichannelcreate.whitelisted.users")
+                    for await (const u of addedusers){
+                      await client.Anti_Nuke_System.push(message.guild.id+".antichannelcreate.whitelisted.users", u)
                     }
-                    for(const r of addedroles){
-                      client.Anti_Nuke_System.push(message.guild.id, r, "antichannelcreate.whitelisted.roles")
+                    for await (const r of addedroles){
+                      await client.Anti_Nuke_System.push(message.guild.id+".antichannelcreate.whitelisted.roles", r)
                     }
-                    for(const u of removedusers){
-                      client.Anti_Nuke_System.remove(message.guild.id, u, "antichannelcreate.whitelisted.users")
+                    for await (const u of removedusers){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".antichannelcreate.whitelisted.users", u)
                     }
-                    for(const r of removedroles){
-                      client.Anti_Nuke_System.remove(message.guild.id, r, "antichannelcreate.whitelisted.roles")
+                    for await (const r of removedroles){
+                      await dbRemove(client.Anti_Nuke_System, message.guild.id+".antichannelcreate.whitelisted.roles", r)
                     }
                   
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable56"]))
                       .setColor(es.color)
                       .setDescription(`<:leaves:866356598356049930> **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Channel Delete__ Whitelist (module)!**`.substring(0, 2048))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_57"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable57"]))
-                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_58"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable58"]))
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_57"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted.users").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted.users").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted.users").slice(0, 15).map(x=>`<@${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted.users").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted.users").map(x=>`<@${x}>`).join("︲")}`)
+                      .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_58"]), `>>> ${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted.roles").length == 0 ? "**No One**" : await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted.roles").length > 15 ? await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted.roles").slice(0, 15).map(x=>`<@&${x}>`).join("︲") + ` ***and ${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted.roles").length - 15} more...***`: await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted.roles").map(x=>`<@&${x}>`).join("︲")}`)
                       .setFooter(client.getFooter(es))]
                     });
                   })
@@ -891,31 +891,31 @@ module.exports = {
             }
             //Create the collector
             const collector = menumsg.createMessageComponentCollector({ 
-              filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+              filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
               time: 90000
             })
             //Menu Collections
-            collector.on('collect', menu => {
+            collector.on('collect', async menu => {
               if (menu?.user.id === cmduser.id) {
                 collector.stop();
                 menuselection2(menu);
               }
-              else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+              else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
             });
             //Once the Collections ended edit the menu message
             collector.on('end', collected => {
-              menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+              menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
             });
           
         
           } 
           else if(menu?.values[0] == "Manage Settings"){
-              menu?.deferUpdate();
+              client.disableComponentMessage(menu);
               menuoptions = [
                 {
-                  value: client.Anti_Nuke_System.get(message.guild.id, "all.enabled") ? "Disable complete AntiNuke": "Enable complete Anti Nuke",
-                  description: client.Anti_Nuke_System.get(message.guild.id, "all.enabled") ? "I will not work anymore": "I will be enabled",
-                  emoji: client.Anti_Nuke_System.get(message.guild.id, "all.enabled") ? "833101993668771842": "833101995723194437"
+                  value: await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled") ? "Disable complete AntiNuke": "Enable complete Anti Nuke",
+                  description: await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled") ? "I will not work anymore": "I will be enabled",
+                  emoji: await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled") ? "833101993668771842": "833101995723194437"
                 },
                 {
                   value: "Set Logger",
@@ -923,9 +923,9 @@ module.exports = {
                   emoji: "866089515993792522"
                 },
                 {
-                  value: client.Anti_Nuke_System.get(message.guild.id, "all.showwhitelistlog") ? "Disable Whitelisted Log": "Enable Whitelisted Log",
-                  description: client.Anti_Nuke_System.get(message.guild.id, "all.showwhitelistlog") ? "I will not show when a whitelisted User makes smt": "I will show when a whitelisted User makes smt (I won't do smt tho)",
-                  emoji: client.Anti_Nuke_System.get(message.guild.id, "all.showwhitelistlog") ? "833101993668771842": "833101995723194437"
+                  value: await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog") ? "Disable Whitelisted Log": "Enable Whitelisted Log",
+                  description: await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog") ? "I will not show when a whitelisted User makes smt": "I will show when a whitelisted User makes smt (I won't do smt tho)",
+                  emoji: await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog") ? "833101993668771842": "833101995723194437"
                 },
                 {
                   value: "Modify Quarantine Role",
@@ -999,22 +999,22 @@ module.exports = {
                 let index = menuoptions.findIndex(v=>v.value == menu?.values[0])
                 //Toggle
                 if(String(index) == "0"){
-                  client.Anti_Nuke_System.set(message.guild.id, !client.Anti_Nuke_System.get(message.guild.id, "all.enabled"), "all.enabled")
+                  await client.Anti_Nuke_System.set(message.guild.id+ ".all.enabled", !await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled"))
                   return menu?.reply({embeds: [new MessageEmbed()
                   .setFooter(client.getFooter(es)).setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-                  .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable64"]))
-                  .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable65"]))
+                  .setTitle(`**Successfully __${await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled") ? "Enabled" : "Disabled"}__ the Anti-Nuke System**`)
+                  .setDescription(`**I will now${await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled") ? "" : " not"} the Anti-Nuke System!**\n> But please mind the Settings of each Module!`)
                   .addField("\u200b", eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable66"]))
                 ]});
                 } else if(String(index) == "1"){
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   let timeouterror = false;
                   let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable67"]))
                     .setColor(es.color)
                     .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable68"])).setFooter(client.getFooter(es))
                   ]})
-                  await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+                  await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                       max: 1,
                       time: 90000,
                       errors: ["time"]
@@ -1031,7 +1031,7 @@ module.exports = {
                             .setFooter(client.getFooter(es))]
                           })
                         }catch (e){
-                          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                          console.error(e)
                         }
                         try{
                           message.reply({embeds: [new Discord.MessageEmbed()
@@ -1041,9 +1041,9 @@ module.exports = {
                             .setFooter(client.getFooter(es))
                           ]})
                         }catch (e){
-                          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                          console.error(e)
                         }
-                        client.Anti_Nuke_System.set(message.guild.id, message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first().id, `all.logger`)
+                        await client.Anti_Nuke_System.set(message.guild.id+`.all.logger`, message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first().id)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable71"]))
                           .setColor(es.color)
@@ -1066,22 +1066,22 @@ module.exports = {
                       .setFooter(client.getFooter(es))]
                     });
                 } else if(String(index) == "2"){
-                  client.Anti_Nuke_System.set(message.guild.id, !client.Anti_Nuke_System.get(message.guild.id, "all.showwhitelistlog"), "all.showwhitelistlog")
+                  await client.Anti_Nuke_System.set(message.guild.id+".all.showwhitelistlog", !await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog"))
                   return menu?.reply({embeds: [new MessageEmbed()
                   .setFooter(client.getFooter(es)).setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-                  .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable73"]))
-                  .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable74"]))
+                  .setTitle(`**Successfully __${await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog") ? "Enabled" : "Disabled"}__ the Whitelisted Log**`)
+                  .setDescription(`**I will now${await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog") ? "" : " not"} show it, when a Whitelisted User / Role makes something**\n> But please mind the Settings of each Module!${await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog") ? "\n\n> Tho this is enabled it does **not** mean i will punish the Whitelisted User, this is **just the Logging** for it!\n> ***So that you know, when what happens!***" : ""}`)
                   .addField("\u200b", eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable75"]))
                 ]});
                 } else if(String(index) == "3"){
-                  menu?.deferUpdate();
+                  client.disableComponentMessage(menu);
                   let timeouterror = false;
                   let tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable76"]))
                     .setColor(es.color)
                     .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable77"])).setFooter(client.getFooter(es))
                   ]})
-                  await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+                  await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                       max: 1,
                       time: 90000,
                       errors: ["time"]
@@ -1090,7 +1090,7 @@ module.exports = {
                       var message = collected.first();
                       if(!message || !message.content) throw "NO MESSAGE SENT";
                       if(message.content.toLowerCase() == "no"){
-                        client.Anti_Nuke_System.set(message.guild.id, false, `all.quarantine`)
+                        await client.Anti_Nuke_System.set(message.guild.id+`.all.quarantine`, false)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable78"]))
                           .setColor(es.color)
@@ -1098,7 +1098,7 @@ module.exports = {
                         });
                       }
                       if(message.mentions.roles.filter(r=>r.guild.id==message.guild.id).first()){
-                        client.Anti_Nuke_System.set(message.guild.id, message.mentions.roles.filter(r=>r.guild.id==message.guild.id).first().id, `all.quarantine`)
+                        await client.Anti_Nuke_System.set(message.guild.id+`.all.quarantine`, message.mentions.roles.filter(r=>r.guild.id==message.guild.id).first().id)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable79"]))
                           .setColor(es.color)
@@ -1157,9 +1157,9 @@ module.exports = {
                     async function first_layer(){
                       menuoptions = [
                         {
-                          value: client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`) ? `Disable ${thename}`: `Enable ${thename}`,
-                          description: client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`) ? `${thename} will stop working`: `${thename} will be working`,
-                          emoji: client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`) ? "833101993668771842": "833101995723194437"
+                          value: await client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`) ? `Disable ${thename}`: `Enable ${thename}`,
+                          description: await client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`) ? `${thename} will stop working`: `${thename} will be working`,
+                          emoji: await client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`) ? "833101993668771842": "833101995723194437"
                         },
                         {
                           value: "Remove Roles / Day",
@@ -1241,23 +1241,24 @@ module.exports = {
                       //function to handle the menuselection
 
                       //Event
-                      client.on('interactionCreate',  (menu) => {
+                      client.on('interactionCreate', async (menu) => {
                         if (menu?.message.id === menumsg.id) {
                           if (menu?.user.id === cmduser.id) {
-                            if(used33) return menu?.reply({content: `<:no:833101993668771842> You already selected something, this Selection is now disabled!`, ephemeral: true})
+                            if(used33) return menu?.reply({content: `❌ You already selected something, this Selection is now disabled!`, ephemeral: true})
                             let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
                             let menuoptionindex = menuoptions.findIndex(v => v.value == menu?.values[0])
                             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-warn"]["variable3"]))
-                            menu?.deferUpdate();
+                            client.disableComponentMessage(menu);
                             used33 = true;
-                            if(menu?.values[0] == client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`) ? `Disable ${thename}`: `Enable ${thename}`) {
-                              client.Anti_Nuke_System.set(message.guild.id, !client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`), `${thekey}.enabled`)
-                              return message.reply(`${client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`) ? `Enabled: ${thename}`: `Disabled: ${thename}`}`)
+                            const dd = await client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`);
+                            if(menu?.values[0] == dd ? `Disable ${thename}`: `Enable ${thename}`) {
+                              await client.Anti_Nuke_System.set(message.guild.id+`.${thekey}.enabled`, !dd)
+                              return message.reply(`${!dd ? `Enabled: ${thename}`: `Disabled: ${thename}`}`)
                             } else {
                               handle_the_picks_X(menuoptionindex - 1, menuoptiondata)
                             }
                           }
-                          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+                          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
                         }
                       });
                     }
@@ -1288,14 +1289,14 @@ module.exports = {
                           time: 90000,
                           errors: ["time"]
                         })
-                        .then(collected => {
+                        .then(async collected => {
                           var message = collected.first();
                           let thenumber = message.content;
                           if(isNaN(thenumber)){
                             return message.reply(`:x: **Your Input is not a real Number**\n> \`${String(thenumber).substring(0, 50)}\``)
                           }
                           thenumber = Number(thenumber)
-                          client.Anti_Nuke_System.set(message.guild.id, thenumber, finalkey);
+                          await client.Anti_Nuke_System.set(message.guild.id+`.finalkey`, thenumber);
                           return message.reply({embeds: [new Discord.MessageEmbed()
                             .setTitle(`\`${finalkey}\` Is now limited to **\`${thenumber} Actions\`**`)
                             .setColor(es.color)
@@ -1303,7 +1304,7 @@ module.exports = {
                           ]});
                         })
                       .catch(e => {
-                        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                        console.error(e)
                         return message.reply({embeds: [new Discord.MessageEmbed()
                           .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable69"]))
                           .setColor(es.wrongcolor)
@@ -1316,33 +1317,33 @@ module.exports = {
               }
               //Create the collector
               const collector = menumsg.createMessageComponentCollector({ 
-                filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+                filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
                 time: 90000
               })
               //Menu Collections
-              collector.on('collect', menu => {
+              collector.on('collect', async menu => {
                 if (menu?.user.id === cmduser.id) {
                   collector.stop();
                   menuselection3(menu);
                 }
-                else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+                else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
               });
               //Once the Collections ended edit the menu message
               collector.on('end', collected => {
-                menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+                menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
               });
             
           } 
           else if(menu?.values[0] == "Suggested Settings"){
-            client.Anti_Nuke_System.set(message.guild.id, {
+            await client.Anti_Nuke_System.set(message.guild.id, {
               all: {
                   enabled: true,
-                  logger: client.Anti_Nuke_System.get(message.guild.id, "all.logger"),
-                  whitelisted: client.Anti_Nuke_System.get(message.guild.id, "all.whitelisted"),
+                  logger: await client.Anti_Nuke_System.get(message.guild.id+ ".all.logger"),
+                  whitelisted: await client.Anti_Nuke_System.get(message.guild.id+ ".all.whitelisted"),
               },
               antibot: {
                   enabled: true,
-                  whitelisted: client.Anti_Nuke_System.get(message.guild.id, "antibot.whitelisted"),
+                  whitelisted: await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.whitelisted"),
                   punishment: {
                       bot: {
                           kick: true,
@@ -1376,7 +1377,7 @@ module.exports = {
               //Anti Kick & Ban
               antideleteuser: {
                   enabled: true,
-                  whitelisted: client.Anti_Nuke_System.get(message.guild.id, "antideleteuser.whitelisted"),
+                  whitelisted: await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.whitelisted"),
                   punishment: {
                       member: {
                           removeroles: {
@@ -1406,7 +1407,7 @@ module.exports = {
               //ANTI CREATE ROLE
               anticreaterole: {
                   enabled: true,
-                  whitelisted: client.Anti_Nuke_System.get(message.guild.id, "anticreaterole.whitelisted"),
+                  whitelisted: await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.whitelisted"),
                   punishment: {
                       removeaddedrole: true,
                       member: {
@@ -1437,7 +1438,7 @@ module.exports = {
               //Anti DELETE Role
               antideleterole: {
                   enabled: true,
-                  whitelisted: client.Anti_Nuke_System.get(message.guild.id, "antideleterole.whitelisted"),
+                  whitelisted: await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.whitelisted"),
                   punishment: {
                       readdrole: true,
                       member: {
@@ -1468,7 +1469,7 @@ module.exports = {
               //ANTI DELETE CHANNEL
               antichanneldelete: {
                   enabled: true,
-                  whitelisted: client.Anti_Nuke_System.get(message.guild.id, "antichanneldelete.whitelisted"),
+                  whitelisted: await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.whitelisted"),
                   punishment: {
                       member: {
                           removeroles: {
@@ -1498,7 +1499,7 @@ module.exports = {
               //ANTI CREATE CHANNEL
               antichannelcreate: {
                   enabled: true,
-                  whitelisted: client.Anti_Nuke_System.get(message.guild.id, "antichannelcreate.whitelisted"),
+                  whitelisted: await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.whitelisted"),
                   punishment: {
                       deletecreatedchannel: true,
                       member: {
@@ -1526,24 +1527,24 @@ module.exports = {
                       }
                   },
               },
-          })
+            })
             return menu?.reply({content: "<a:yes:833101995723194437> **Now using the Suggested Settings!**", embeds: [new MessageEmbed()
               .setColor(es.color)
               .setFooter(client.getFooter(es))
-              .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable82"]))
-              .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_83"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable83"]))
-              .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_84"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable84"]))
-              .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_85"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable85"]))
-              .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_86"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable86"]))
-              .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_87"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable87"]))
-              .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_88"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable88"]))
+              .setTitle(`${await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled") ? "<a:yes:833101995723194437> __**The Anti Nuke is enabled!**__": "<:no:833101993668771842> __**The Anti Nuke is disabled!**__"}`)
+              .addField(`__**Anti Add Bot | ${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.enabled") ? "<a:yes:833101995723194437> Enabled ": "<:no:833101993668771842> Disabled"}**__`, `>>> [Remove Roles] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.removeroles.neededdaycount")}\`**\n[Remove Roles] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.removeroles.neededweekcount")}\`\n**[Remove Roles] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.removeroles.neededmonthcount")}\`**\n\n[Kick] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.kick.neededdaycount")}\`**\n[Kick] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.kick.neededweekcount")}\`\n**[Kick] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.kick.neededmonthcount")}\`**\n\n[Ban] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.ban.neededdaycount")}\`**\n[Ban] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.ban.neededweekcount")}\`\n**[Ban] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antibot.punishment.member.ban.neededmonthcount")}\`**`)
+              .addField(`__**Anti Kick/Ban | ${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.enabled") ? "<a:yes:833101995723194437> Enabled ": "<:no:833101993668771842> Disabled"}**__`, `>>> [Remove Roles] **Kicks / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.removeroles.neededdaycount")}\`**\n[Remove Roles] **Kicks / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.removeroles.neededweekcount")}\`\n**[Remove Roles] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.removeroles.neededmonthcount")}\`**\n\n[Kick] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.kick.neededdaycount")}\`**\n[Kick] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.kick.neededweekcount")}\`\n**[Kick] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.kick.neededmonthcount")}\`**\n\n[Ban] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.ban.neededdaycount")}\`**\n[Ban] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.ban.neededweekcount")}\`\n**[Ban] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleteuser.punishment.member.ban.neededmonthcount")}\`**`)
+              .addField(`__**Anti Delete Role | ${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.enabled") ? "<a:yes:833101995723194437> Enabled ": "<:no:833101993668771842> Disabled"}**__`, `>>> [Remove Roles] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.removeroles.neededdaycount")}\`**\n[Remove Roles] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.removeroles.neededweekcount")}\`\n**[Remove Roles] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.removeroles.neededmonthcount")}\`**\n\n[Kick] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.kick.neededdaycount")}\`**\n[Kick] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.kick.neededweekcount")}\`\n**[Kick] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.kick.neededmonthcount")}\`**\n\n[Ban] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.ban.neededdaycount")}\`**\n[Ban] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.ban.neededweekcount")}\`\n**[Ban] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antideleterole.punishment.member.ban.neededmonthcount")}\`**`)
+              .addField(`__**Anti Delete Channel | ${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.enabled") ? "<a:yes:833101995723194437> Enabled ": "<:no:833101993668771842> Disabled"}**__`, `>>> [Remove Roles] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.removeroles.neededdaycount")}\`**\n[Remove Roles] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.removeroles.neededweekcount")}\`\n**[Remove Roles] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.removeroles.neededmonthcount")}\`**\n\n[Kick] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.kick.neededdaycount")}\`**\n[Kick] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.kick.neededweekcount")}\`\n**[Kick] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.kick.neededmonthcount")}\`**\n\n[Ban] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.ban.neededdaycount")}\`**\n[Ban] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.ban.neededweekcount")}\`\n**[Ban] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichanneldelete.punishment.member.ban.neededmonthcount")}\`**`)
+              .addField(`__**Anti Create Role | ${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.enabled") ? "<a:yes:833101995723194437> Enabled ": "<:no:833101993668771842> Disabled"}**__`, `>>> [Remove Roles] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.removeroles.neededdaycount")}\`**\n[Remove Roles] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.removeroles.neededweekcount")}\`\n**[Remove Roles] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.removeroles.neededmonthcount")}\`**\n\n[Kick] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.kick.neededdaycount")}\`**\n[Kick] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.kick.neededweekcount")}\`\n**[Kick] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.kick.neededmonthcount")}\`**\n\n[Ban] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.ban.neededdaycount")}\`**\n[Ban] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.ban.neededweekcount")}\`\n**[Ban] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".anticreaterole.punishment.member.ban.neededmonthcount")}\`**`)
+              .addField(`__**Anti Create Channel | ${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.enabled") ? "<a:yes:833101995723194437> Enabled ": "<:no:833101993668771842> Disabled"}**__`, `>>> [Remove Roles] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.removeroles.neededdaycount")}\`**\n[Remove Roles] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.removeroles.neededweekcount")}\`\n**[Remove Roles] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.removeroles.neededmonthcount")}\`**\n\n[Kick] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.kick.neededdaycount")}\`**\n[Kick] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.kick.neededweekcount")}\`\n**[Kick] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.kick.neededmonthcount")}\`**\n\n[Ban] **Actions / Day: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.ban.neededdaycount")}\`**\n[Ban] **Actions / Week: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.ban.neededweekcount")}\`\n**[Ban] **Actions / Month: \`${await client.Anti_Nuke_System.get(message.guild.id+ ".antichannelcreate.punishment.member.ban.neededmonthcount")}\`**`)
               .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_89"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable89"]))
               .addField(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variablex_90"]), eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable90"]))
-              .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable91"]))]
+              .setDescription(`${await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog") ? "> <a:yes:833101995723194437> **I will show it when a Whitelisted User/Role makes an Action**\n> *But I won't do anything to him/her, cause he/she is whitelisted!*": "> <:no:833101993668771842> **I won't show it when a whitelisted User is doing something!**\n> This doesn't affect your security! (He is whitelisted, from the YOU)"}${await client.Anti_Nuke_System.get(message.guild.id+ ".all.quarantine")?.length > 0 ? `\n\n> **I will add him/her the Quarantine Role: <@&${await client.Anti_Nuke_System.get(message.guild.id+ ".all.quarantine")}> Role when removing the Roles!**` : "*NO Quarantine Role set, I will just remove his/her Roles / KICK / BAN..!*"}`)]
             });
           } 
           else if(menu?.values[0] == "Sync Quarantine Role"){
-            let role = client.Anti_Nuke_System.get(message.guild.id, "all.quarantine");
+            let role = await client.Anti_Nuke_System.get(message.guild.id+ ".all.quarantine");
             if(!role || role.length <= 5){
               return menu?.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable92"])})
             }
@@ -1552,7 +1553,7 @@ module.exports = {
               return menu?.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable93"])})
             }
             menu?.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable94"])})
-            for(const ch of channels.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966)){
+            for await (const ch of channels.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966)){
               try {
                 if(ch) {
                   if(ch.permissionsFor(ch.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
@@ -1572,30 +1573,30 @@ module.exports = {
             }
             message.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable95"])});
           } else {
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
           }
         }
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             menuselection(menu);
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
 
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

@@ -1,10 +1,10 @@
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { swap_pages } = require(`${process.cwd()}/handlers/functions`)
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { swap_pages } = require(`../../handlers/functions`)
 module.exports = {
   name: "showblacklist",
   category: "🔰 Info",
@@ -13,15 +13,15 @@ module.exports = {
   usage: "showblacklist",
   description: "Shows all blacklisted Words!",
   type: "server",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
-      let words = client.blacklist.get(message.guild.id, "words");
+      let words = await client.blacklist.get(message.guild.id + ".words");
       if(!words || words.length <= 0) words = ["No Blacklisted Words added yet!"]
       return swap_pages(client, message, `${words.map(word => `\`${word}\``.split("`").join("\`"))}`, `${message.guild.name} | ${client.la[ls].cmds.info.showblacklist.info}`)
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

@@ -1,11 +1,11 @@
 const fetch = require("node-fetch");
 const Discord = require("discord.js");
 const {MessageEmbed, MessageAttachment} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
+const config = require(`../../botconfig/config.json`);
 const canvacord = require("canvacord");
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+var ee = require(`../../botconfig/embed.json`);
 const request = require("request");
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const subreddits = [
   "memes",
   "DeepFriedMemes",
@@ -23,15 +23,15 @@ module.exports = {
   usage: `${path.parse(__filename).name} [@User]`,
   type: "user",
   description: "*Image cmd in the style:* " + path.parse(__filename).name,
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        if(!client.settings.get(message.guild.id, "FUN")){
+    
+        if(GuildSettings.FUN === false){
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.disabled.title)
-            .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+            .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
           ]});
         }
     try {
@@ -45,7 +45,7 @@ module.exports = {
         if(!selected) return message.reply(":x: **No Meme found, please retry!**")
       return message.reply({content : eval(client.la[ls]["cmds"]["fun"]["meme"]["variable1"])});
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
