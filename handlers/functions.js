@@ -1906,14 +1906,14 @@ async function databasing(client, guildid, userid) {
           commands: []
         }).catch(() => null)
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         respones = await dbEnsure(client.keyword, guildid, {
           commands: []
         }).catch(() => null)
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         /**
@@ -1959,7 +1959,7 @@ async function databasing(client, guildid, userid) {
           }
         }).catch(() => null)
         
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         respones = await dbEnsure(client.stats, guildid, {
@@ -1967,14 +1967,14 @@ async function databasing(client, guildid, userid) {
           songs: 0
         }).catch(() => null)
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         respones = await dbEnsure(client.premium, guildid, {
           enabled: false,
         }).catch(() => null)
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         const ensureData = {
@@ -2010,7 +2010,7 @@ async function databasing(client, guildid, userid) {
         
         respones = await dbEnsure(client.setups, guildid, ensureData).catch(() => null)
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         respones = await dbEnsure(client.blacklist, guildid, {
@@ -2019,7 +2019,7 @@ async function databasing(client, guildid, userid) {
           whitelistedchannels: [],
         }).catch(() => null);
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         respones = await dbEnsure(client.settings, guildid, {
@@ -2273,7 +2273,7 @@ async function databasing(client, guildid, userid) {
           botchannel: [],
         })
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         respones = await dbEnsure(client.jtcsettings, guildid, {
@@ -2283,17 +2283,17 @@ async function databasing(client, guildid, userid) {
           guild: guildid,
         })
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         respones = await dbEnsure(client.musicsettings, guildid, {"channel": "","message": ""})
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         respones = await dbEnsure(client.stats, guildid, {commands: 0,songs: 0})
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)       
       }
       if (userid) {
@@ -2301,21 +2301,21 @@ async function databasing(client, guildid, userid) {
           enabled: false,
         })
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         respones = await dbEnsure(client.queuesaves, userid, {
           "TEMPLATEQUEUEINFORMATION": ["queue", "sadasd"]
         })
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         respones = await dbEnsure(client.settings, userid, {
           dm: true,
         })
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         respones = await dbEnsure(client.stats, guildid + userid, {
@@ -2327,7 +2327,7 @@ async function databasing(client, guildid, userid) {
           warn: [],
         })
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
       }
       if (userid && guildid) {
@@ -2340,7 +2340,7 @@ async function databasing(client, guildid, userid) {
           warn: [],
         })
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
 
         respones = await dbEnsure(client.userProfiles, userid, {
@@ -2351,7 +2351,7 @@ async function databasing(client, guildid, userid) {
           kicks: []
         })
 
-        if(respones && respones.changed) await delay(5000);
+        if(respones && respones.changed) await delay(5);
         ress.push(respones)
       }
       console.log(ress, "DATABASING CHANGES / NO CHANGES")
@@ -2564,10 +2564,7 @@ async function dbEnsure(db, key, defaultObject) {
         throw new Error(`No default value for for "${key}"`)
     }
     
-    //if(db.model.collection.name !== "settings") return res({changed: false});
-
-    const newData = defaultObject;
-    console.log(newData, "newData")
+    const newData = lodash.clone(defaultObject);
     const r = UtilClass.getKeyMetadata(key);
     // get the current master data if 
     let dbData = await db.get(r.master) || {};
@@ -2575,7 +2572,6 @@ async function dbEnsure(db, key, defaultObject) {
       console.error("No dbdata object , force setting it to one");
       dbData = {};
     }
-    console.log(dbData);
     // if there is a target, check for the target
     if(r.target) {
         if(lodash.has(dbData, r.target)) {
@@ -2585,60 +2581,54 @@ async function dbEnsure(db, key, defaultObject) {
             if(newPathData) {
               lodash.set(dbData, r.target, newPathData);
               await db.set(r.master, dbData);
-              console.log("CHANGES IN HERE 1");
+              console.log("CHANGES IN HERE 1".brightGreen);
               return res({ changed: true });
             }
             return res({ changed: false }); 
         }
         // if it's not in the dbData, then set it
         lodash.set(dbData, r.target, newData)
-        console.log("CHANGES IN HERE 2");
+        console.log("CHANGES IN HERE 2".brightGreen);
         await db.set(r.master, dbData);
         return res({ changed: true });
     }
-    // check for non-targets object changes
-    /*
-      dbData = {1: "c", 4: "d"}
-      newData = {1: "a", 2: "b"}
-
-      return {1: "c", 2: "b", 4: "d"}
-     */
     const newPathData = await checkObjectDeep(dbData, newData);
     // something has changed
     if(newPathData) {
         await db.set(r.master, newPathData);
-        console.log("CHANGES IN HERE 3");
+        console.log("CHANGES IN HERE 3".brightGreen);
         return res({ changed: true });
     } 
     // return something
     return res({ changed: false }); 
   })
-}
-async function checkObjectDeep(dd, data) {
-  return new Promise(async (res) => {
-      let changed = false;
+  
+  async function checkObjectDeep(dd, data) {
+    return new Promise(async (res) => {
+        let changed = false;
 
-      const visitNodes = (obj, visitor, stack = []) => {
-        if (typeof obj === 'object') {
-          for (let key in obj) {
-            visitNodes(obj[key], visitor, [...stack, key]);
+        const visitNodes = (obj, visitor, stack = []) => {
+          if (typeof obj === 'object') {
+            for (let key in obj) {
+              visitNodes(obj[key], visitor, [...stack, key]);
+            }
+          } else {
+            visitor(stack.join('.').replace(/(?:\.)(\d+)(?![a-z_])/ig, '[$1]'), obj);
           }
-        } else {
-          visitor(stack.join('.').replace(/(?:\.)(\d+)(?![a-z_])/ig, '[$1]'), obj);
         }
-      }
-      
-      visitNodes(data, (path, value) => {
-        if(!lodash.has(dd, path)) {
-          lodash.set(dd, path, value);
-          changed = true;
-          console.log(`NO PATH: ${path}`);
-        }
-      });
+        
+        visitNodes(data, (path, value) => {
+          if(!lodash.has(dd, path)) {
+            lodash.set(dd, path, value);
+            changed = true;
+            console.log(`NO PATH: ${path}`);
+          }
+        });
 
-      if(changed) return res(dd);
-      return res(false);
-  })        
+        if(changed) return res(dd);
+        return res(false);
+    })        
+  }
 }
 
 /*

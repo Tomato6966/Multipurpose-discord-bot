@@ -36,6 +36,7 @@ module.exports = async (client, interaction) => {
       if(!guild) {
         return interaction?.reply({content: ":x: Interactions only Works inside of GUILDS!", ephemeral: true}).catch(() => null);
       }
+      
       if(!client.guilds.cache.get(interaction.guild.id)) return;
       const CategoryName = interaction?.commandName;
       let command = false;

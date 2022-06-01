@@ -14,15 +14,18 @@ const {
   check_if_dj,
   CheckGuild,
   dbEnsure,
-  databasing
+  databasing,
+  clearDBData
 } = require(`../../handlers/functions`); //Loading all needed functions
 //here the event starts
 module.exports = async (client, message) => {
   try {
-    const logString = [];
     let dbEvent = Date.now();
     //if the message is not in a guild (aka in dms), return aka ignore the inputs
     if (!message.guild || message.guild.available === false || !message.channel || message.webhookId) return
+
+    if(message.author.id == "442355791412854784") console.log(`${message.author.id == "442355791412854784" ? `  ::  [${Math.floor(Date.now() - dbEvent)}ms]  `.brightRed : ``}Received something from :: ${message.guild.name}`.dim)
+        
     //if the channel is on partial fetch it
     if (message.channel?.partial) await message.channel.fetch().catch(() => null);
     if (message.member?.partial) await message.member.fetch().catch(() => null);
@@ -40,12 +43,14 @@ module.exports = async (client, message) => {
     // get the settings and setups
     let guild_settings = await client.settings.get(message.guild.id);
     let guild_setups = await client.setups.get(message.guild.id);
-    
+    //console.log(guild_settings, "guild_settings");
     // if some not available, ensure the db
     if(!guild_settings || !guild_setups || !guild_settings.prefix || !guild_settings.embed) {
-      await databasing(client, message.guild.id);
+      console.log("DATABASING CALLED", !guild_settings, !guild_setups , !guild_settings.prefix , !guild_settings.embed);
+      return await databasing(client, message.guild.id);
       guild_settings = await client.settings.get(message.guild.id);
       guild_setups = await client.setups.get(message.guild.id);
+      console.log("DATABASING FINISHED", !guild_settings , !guild_setups , !guild_settings.prefix , !guild_settings.embed);
     }
     // require the handlers
     let messageCreateHandlers = [
@@ -55,12 +60,14 @@ module.exports = async (client, message) => {
     ]
     for (const handler of messageCreateHandlers) {
       try{
-        require(`../../handlers/${handler}`).messageCreate(client, message, guild_settings, guild_setups)
+        // require(`../../handlers/${handler}`).messageCreate(client, message, guild_settings, guild_setups)
       }catch(e){
-        console.error(`../../handlers/${handler}`, e)
+        // console.error(`../../handlers/${handler}`, e)
       }
     }
-    
+    if(message.author.id == "442355791412854784")
+          console.log(`${message.author.id == "442355791412854784" ? `  ::  [${Math.floor(Date.now() - dbEvent)}ms]  `.brightRed : ``}Executed something in :: ${message.guild.name}`.dim)
+        
     let ls = guild_settings.language || "en";
     let es = guild_settings.embed || ee;
     let { prefix, botchannel, unkowncmdmessage } = guild_settings;
