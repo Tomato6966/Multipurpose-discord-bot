@@ -80,8 +80,6 @@ module.exports = async (client) => {
                                 "giphy.com/gifs",
                                 "c.tenor.com",
                                 "tenor.com/view",
-                                "milrato.dev",
-                                "milrato.eu",
                                 "github?.com",
                                 "mozilla.org",
                                 "w3schools.com",

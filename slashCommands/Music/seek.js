@@ -36,14 +36,14 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       let args = [interaction?.options.getInteger("seconds")]
       //if number is out of range return error
       if (Number(args[0]) < 0 || Number(args[0]) >= player.queue.current.duration / 1000)
-        return interaction?.reply({embeds :[new MessageEmbed()
+        return interaction?.reply({ephemeral: true, embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setTitle(eval(client.la[ls]["cmds"]["music"]["seek"]["variable1"]))
         ]});
       //seek to the position
       player.seek(Number(args[0]) * 1000);
       //send success message
-      return interaction?.reply({embeds :[new MessageEmbed()
+      return interaction?.reply({ephemeral: true, embeds :[new MessageEmbed()
         .setTitle(eval(client.la[ls]["cmds"]["music"]["seek"]["variable2"]))
         .addField(`${emoji?.msg.time} Progress: `, createBar(player))
         .setColor(es.color)

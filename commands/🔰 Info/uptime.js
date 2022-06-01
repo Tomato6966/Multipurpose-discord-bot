@@ -26,7 +26,7 @@ module.exports = {
         .setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["info"]["uptime"]["variable1"]))
         .addField(`🤖 __Bot__`, `\n> **Uptime:** <t:${Math.floor(timestamp/1000)}:R>\n> **Launch:** <t:${Math.floor(timestamp/1000)}:F>`)
-        .addField(`:green_circle: __Database / System__`, `\n> **Uptime:** <t:${Math.floor(Date.now() / 1000 - require("os").uptime())}:R>\n> **Launch:** <t:${Math.floor(Date.now() / 1000 - require("os").uptime())}:F>`)
+        .addField(`<:online:970050105338130433> __Database / System__`, `\n> **Uptime:** <t:${Math.floor(Date.now() / 1000 - require("os").uptime())}:R>\n> **Launch:** <t:${Math.floor(Date.now() / 1000 - require("os").uptime())}:F>`)
         ]}
         );
       } catch (e) {

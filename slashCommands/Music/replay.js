@@ -29,7 +29,7 @@ module.exports = {
       //seek to 0
       player.seek(0);
       //send informational message
-      interaction?.reply({embeds: [new MessageEmbed()
+      interaction?.reply({ephemeral: true, embeds: [new MessageEmbed()
         .setColor(es.color)
         .setTitle(`🔃 Replaying the Track!`)
       ]})

@@ -69,7 +69,7 @@ module.exports = (client, preindex) => {
     let ticket = await guildData[systempath];
     
     //if invalid return
-    if (guild.id !== ticket.guildid || interaction.message.id !== ticket.messageid) return console.log(`Invalid Ticket Data`, ticket)
+    if (guild.id !== ticket.guildid || interaction.message.id !== ticket.messageid) return
     let dd = await client.setups.get(`TICKETS.${ticketspath}`);
     if (dd.includes(user.id)) {
       try {
@@ -200,8 +200,8 @@ module.exports = (client, preindex) => {
     /**
      * CREATE THE CHANNEL
      */
-    if(!interaction.replied) await interaction.reply({ content: `<a:Loading:950883677255118898> **Creating your Ticket...** (Usually takes 0-2 Seconds)`, ephemeral: true }).catch(console.warn);
-    else await interaction.editReply({ content: `<a:Loading:950883677255118898> **Creating your Ticket...** (Usually takes 0-2 Seconds)`, ephemeral: true }).catch(console.warn);
+    if(!interaction.replied) await interaction.reply({ content: `<a:Loading1:958415066972184636> **Creating your Ticket...** (Usually takes 0-2 Seconds)`, ephemeral: true }).catch(console.warn);
+    else await interaction.editReply({ content: `<a:Loading1:958415066972184636> **Creating your Ticket...** (Usually takes 0-2 Seconds)`, ephemeral: true }).catch(console.warn);
     guild.channels.create(channelname.substring(0, 31), optionsData).then(async ch => {
       let settings = await client.settings.get(guild.id)
       let es = settings.embed || ee
@@ -239,10 +239,10 @@ module.exports = (client, preindex) => {
       } = require('discord.js')
       let button_close = new MessageButton().setStyle('PRIMARY').setCustomId('ticket_close').setLabel('Close').setEmoji("🔒")
       let button_delete = new MessageButton().setStyle('DANGER').setCustomId('ticket_delete').setLabel("Delete").setEmoji("🗑️")
-      let button_transcript = new MessageButton().setStyle('SECONDARY').setCustomId('ticket_transcript').setLabel("Transcript").setEmoji("📑")
+      let button_transcript = new MessageButton().setStyle('PRIMARY').setCustomId('ticket_transcript').setLabel("Transcript").setEmoji("📑")
       let button_user = new MessageButton().setStyle('SUCCESS').setCustomId('ticket_user').setLabel("Users").setEmoji("👤")
       let button_role = new MessageButton().setStyle('SUCCESS').setCustomId('ticket_role').setLabel("Roles").setEmoji("📌")
-      const allbuttons = [new MessageActionRow().addComponents([button_delete, button_transcript, button_user, button_role])]
+      const allbuttons = [new MessageActionRow().addComponents([button_close, button_delete, button_transcript, button_user, button_role])]
       if (ticket.claim.enabled) {
         allbuttons.push(new MessageActionRow().addComponents([new MessageButton().setStyle('SECONDARY').setCustomId('ticket_claim').setLabel("Claim the Ticket").setEmoji("✅")]))
       }
@@ -269,7 +269,7 @@ module.exports = (client, preindex) => {
           })
         }
       }
-      await interaction.editReply({ content: `:white_check_mark: **Your Ticket is created!** <#${ch.id}>`, ephemeral: true });
+      await interaction.editReply({ content: `<a:yes:950884027320135711> **Your Ticket is created!** <#${ch.id}>`, ephemeral: true });
     }).catch(e => {
       interaction.editReply({ content: ":x: **Something went wrong!**", ephemeral: true })
       console.error(e)

@@ -19,7 +19,7 @@ module.exports = {
   memberpermissions: ["ADMINISTRATOR"],
   type: "info",
   run: async (client, message, args, cmduser, text, prefix, player, es, Tls) => {
-    
+    return message.reply("Disabled due to not working, in dev")
     let ls = Tls;
     
     try {

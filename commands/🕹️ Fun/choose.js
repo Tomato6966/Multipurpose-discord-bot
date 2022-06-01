@@ -15,7 +15,7 @@ module.exports = {
 	//running the command with the parameters: client, message, args, user, text, prefix
   	run: async (client, message, args, cmduser, text, prefix) => {
 		let settings = await client.settings.get(message.guild.id);
-
+    
   let es = settings.embed;
   let ls = settings.language;
     

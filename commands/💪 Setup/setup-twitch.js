@@ -215,9 +215,20 @@ module.exports = {
               .then(async collected => {
                 var msg = collected.first().content;
                 if(msg && msg.toLowerCase().includes("https")){
-                  
                   var channelname = msg.split("/")
                   channelname = channelname[channelname.length - 1]
+
+                  for (let i = 0; i < channels.length; i++) {
+                  if (channels+`.${i}`.includes(channelname)){
+                    return message.reply({embeds: [new Discord.MessageEmbed()
+                      .setTitle(client.la[ls]["cmds"]["setup"]["setup-twitch"]["notitle"])
+                      .setColor(es.wrongcolor)
+                      .setDescription(client.la[ls]["cmds"]["setup"]["setup-twitch"]["nosubtitle"])
+                      .setFooter(client.getFooter(es))
+                    ]})
+                  }
+                }
+
                   tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable7"]))
                     .setColor(es.color)

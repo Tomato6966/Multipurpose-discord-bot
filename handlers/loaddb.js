@@ -14,7 +14,7 @@ module.exports = async client => {
             minPoolSize: 50,
             writeConcern: "majority",
         };
-        
+         
         // CACHE DURATION OPTIONS
         process.env.DB_cache_ping = 10_000; // Delete the cache after X ms | < 0 === never delete [DEFAULT: 60_000]
         process.env.DB_cache_get = 0; // Delete the cache after X ms | < 0 === never delete [DEFAULT: 300_000]
@@ -161,7 +161,6 @@ module.exports = async client => {
         async function manageGiveaways() {
             const CustomGiveawayManager = class extends GiveawaysManager {
                 async getAllGiveaways() {
-                    console.log("getAllGiveaways".bgGreen)
                     return await client.giveawayDB.all(true);
                 }
                 async saveGiveaway(messageId, giveawayData) {
@@ -176,11 +175,10 @@ module.exports = async client => {
                     await client.giveawayDB.delete(messageId);
                     return true;
                 }
-                async refreshStorage() {
-                    console.log("refreshStorage".bgGreen)
+                /*async refreshStorage() {
                     // This should make all shards refresh their cache with the updated database
                     return client.cluster.broadcastEval(`this.giveawaysManager.getAllGiveaways()`);
-                }
+                }*/
             };
 
             const manager = new CustomGiveawayManager(client, {

@@ -3,7 +3,7 @@ const {MessageEmbed, Permissions} = require("discord.js");
 const config = require(`../../botconfig/config.json`)
 const ms = require("ms");
 const {
-    databasing, swap_pages, handlemsg
+    databasing, swap_pages
 } = require(`../../handlers/functions`);
 module.exports = {
     name: "giveaway",
@@ -158,7 +158,7 @@ module.exports = {
                         noWinner: "\n**Giveaway cancelled!**\n> No valid participations. :cry:",
                         endedAt: "Ends at", 
                         giveaway: '<a:Tada_purple:943873660580692038> **GIVEAWAY STARTED** <a:Tada_purple:943873660580692038>',
-                        giveawayEnded: ':briefcase: **GIVEAWAY ENDED** :briefcase:',
+                        giveawayEnded: '<a:Tada_Green:867721862858539048> **GIVEAWAY ENDED** <a:Tada_Green:867721862858539048>',
                         winMessage: '**Congrats** {winners}!\n> You won **{this.prize}**!\n> **Jump:** {this.messageURL}\nHosted by: {this.hostedBy}',
                         embedFooter: '{this.winnerCount} Winner{this.winnerCount > 1 ? "s" : ""}'
                     },

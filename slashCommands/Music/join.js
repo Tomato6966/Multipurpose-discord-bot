@@ -19,7 +19,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     //
     if(GuildSettings.MUSIC === false) {
-      return interaction?.reply({embeds :[new MessageEmbed()
+      return interaction?.reply({ephemeral: true, embeds :[new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.disabled.title)
@@ -57,13 +57,13 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       if (player.state !== "CONNECTED") {
         await player.connect();
         await player.stop();
-        return interaction?.reply({embeds: [new MessageEmbed()
+        return interaction?.reply({ephemeral: true, embeds: [new MessageEmbed()
           .setColor(es.color)
           .setTitle(client.la[ls].cmds.music.join.title)
           .setDescription(eval(client.la[ls]["cmds"]["music"]["join"]["variable2"]))]
         });
       } else {
-        return interaction?.reply({embeds: [new MessageEmbed()
+        return interaction?.reply({ephemeral: true, embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setTitle(client.la[ls].common.wrong_vc)
           .setDescription(eval(client.la[ls]["cmds"]["music"]["join"]["variable3"]))

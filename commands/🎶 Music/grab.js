@@ -43,7 +43,7 @@ const { handlemsg } = require(`../../handlers/functions`);
         .setTitle(eval(client.la[ls]["cmds"]["music"]["grab"]["variable1"]))
         .addField(client.la[ls].cmds.music.grab?.field1, `\`${format(player.queue.current.duration)}\``, true)
         .addField(client.la[ls].cmds.music.grab?.field2, `\`${player.queue.current.author}\``, true)
-        .addField(client.la[ls].cmds.music.grab?.field3, `\`${player.queue.length} Songs\``, true)
+        .addField(client.la[ls].cmds.music.grab?.field3, `\`${player.queue.length} ${client.la[ls]["cmds"]["music"]["musicsystem"]["songg"]}\``, true)
         .addField(client.la[ls].cmds.music.grab?.field4, `\`${prefix}play ${player.queue.current.uri}\``)
         .addField(client.la[ls].cmds.music.grab?.field5, `<#${message.channel.id}>`)
         .setFooter(
@@ -54,7 +54,7 @@ const { handlemsg } = require(`../../handlers/functions`);
       ]}).catch(e => {
         return message.reply({content : client.la[ls].common.dms_disabled})
       })
-      message.react(emoji?.react.SUCCESS).catch(e => console.log("Could not react"))
+      message.react("<:save:981615630178471947>").catch(e => console.log("Could not react"))
     } catch (e) {
       console.log(String(e.stack).dim.bgRed)
       return message.reply({embeds : [new MessageEmbed()

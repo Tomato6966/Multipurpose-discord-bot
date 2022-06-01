@@ -12,7 +12,7 @@ module.exports = {
   name: `report`,
   category: `🚫 Administration`,
   aliases: [`melden`],
-  cooldown: 30,
+  cooldown: 10,
   usage: `report @User <REASON>`,
   description: `Reports a User for a specific Reason!`,
   type: "member",
@@ -38,6 +38,14 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["report"]["variable3"]))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["report"]["variable4"]))
         ]});
+      if (message.author.id == member){
+        return message.reply({embeds :[new MessageEmbed()
+          .setColor(es.wrongcolor)
+          .setFooter(client.getFooter(es))
+          .setTitle(client.la[ls]["cmds"]["administration"]["report"]["title"])
+          .setDescription(client.la[ls]["cmds"]["administration"]["report"]["subtitle"])
+        ]});
+      }
       args.shift();
 
       let reason = args[0];

@@ -231,7 +231,7 @@ module.exports = {
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antidiscord"]["variable15"]))
                     .setColor(es.color)
-                    .setDescription(`Every single Channel:\n> <#${antisettings.join(">\n> <#")}>\nis not checked by the Anti Discord Links System`.substring(0, 2048))
+                    .setDescription(`Every single Channel:\n> <#${antisettings}>\nis not checked by the Anti Discord Links System`.substring(0, 2048))
                     .setFooter(client.getFooter(es))]
                   });
                 } catch (e) {

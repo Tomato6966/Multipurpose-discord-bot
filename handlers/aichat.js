@@ -28,11 +28,10 @@ module.exports = async (client) => {
                 if(message.author.bot) return message.reply(":x: I don't talk with **BOTS**!")
               if(message.attachments.size > 0)
               {
-                  const attachment = new MessageAttachment("https://cdn.discordapp.com/attachments/816645188461264896/826736269509525524/I_CANNOT_READ_FILES.png")
-                  return message.channel.send({files: [attachment]})
+                  return message.channel.send("I CANNOT READ FILES!")
               }
               try{
-                fetch(`http://api.brainshop.ai/get?bid=153861&key=0ZjvbPWKAxJvcJ96&uid=1&msg=${encodeURIComponent(message)}`)
+                fetch(`http://api.brainshop.ai/get?bid=166923&key=UHH4ewDAMkrhzWQT&uid=1&msg=${encodeURIComponent(message)}`)
                 .then(res => res.json())
                 .then(data => {
                   message.channel.send({content: data.cnt}).catch(() => null)

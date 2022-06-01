@@ -46,7 +46,7 @@ const { handlemsg } = require(`../../handlers/functions`);
       //send success message
       return message.reply({embeds :[new MessageEmbed()
         .setTitle(eval(client.la[ls]["cmds"]["music"]["seek"]["variable2"]))
-        .addField(`${emoji?.msg.time} Progress: `, createBar(player))
+        .addField(client.la[ls]["cmds"]["music"]["forward"]["field"], createBar(player))
         .setColor(es.color)
 
       ]});

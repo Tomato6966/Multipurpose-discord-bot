@@ -52,7 +52,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
           dynamic: true
         })))
       //Send Now playing Message
-      return interaction?.reply({embeds :[embed]});
+      return interaction?.reply({ephemeral: true, embeds :[embed]});
     } catch (e) {
       console.log(String(e.stack).dim.bgRed)
     }

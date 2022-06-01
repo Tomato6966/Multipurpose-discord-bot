@@ -26,7 +26,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     //
     if(GuildSettings.MUSIC === false) {
-      return message.reply({embeds : [new MessageEmbed()
+      return message.reply({ephemeral: true, embeds : [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.disabled.title)
@@ -38,7 +38,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       if(!args[0]) args = [interaction?.options.getString("song")]
       //if no args return error
       if (!args[0])
-        return interaction?.reply({embeds :[new MessageEmbed()
+        return interaction?.reply({ephemeral: true, embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setTitle(eval(client.la[ls]["cmds"]["music"]["playskipsc"]["variable1"]))
         ]});
@@ -47,7 +47,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       playermanager(client, message, args, `skiptrack:soundcloud`, interaction);
     } catch (e) {
       console.log(String(e.stack).dim.bgRed)
-      return interaction?.reply({embeds :[new MessageEmbed()
+      return interaction?.reply({ephemeral: true, embeds :[new MessageEmbed()
         .setColor(es.wrongcolor)
 
         .setTitle(client.la[ls].common.erroroccur)

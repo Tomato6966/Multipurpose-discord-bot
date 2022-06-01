@@ -42,7 +42,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       for (const track of player.get(`beforeshuffle`))
         player.queue.add(track);
       //return success message
-      return interaction?.reply({embeds : [new MessageEmbed()
+      return interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
         .setTitle(eval(client.la[ls]["cmds"]["music"]["unshuffle"]["variable3"]))
         .setColor(es.color)
       ]});

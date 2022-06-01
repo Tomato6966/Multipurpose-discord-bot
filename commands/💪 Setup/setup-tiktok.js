@@ -137,7 +137,7 @@ module.exports = {
           .setColor(es.color)
           .setDescription(`Example:
           
-https://www.tiktok.com/@milratodev`)
+https://www.tiktok.com/@obama`)
           .setFooter(client.getFooter(es))]
         })
         await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,

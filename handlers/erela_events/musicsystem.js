@@ -28,85 +28,84 @@ module.exports = async (client) => {
         if(!member) member = guild.members.cache.get(user.id);
         if(!member) member = await guild.members.fetch(user.id).catch(() => null);
         if(!member) return;
+        let settings = await client.settings.get(guild.id)
+        let es = settings.embed;
+        let ls = settings.language;
         //if the member is not connected to a vc, return
-        if(!member.voice.channel) return interaction?.reply({ephemeral: true, content: ":x: **Please Connect to a Voice Channel first!**"})
         //now its time to start the music system
-        if (!member.voice.channel)
+        if (!member.voice.channel && interaction?.customId != "Text")
             return interaction?.reply({
-                content: `:x: **Please join a Voice Channel first!**`,
+                content: `${client.la[ls].cmds.music.musicsystem.joinvc}`,
                 ephemeral: true
             })      
             
         var player = client.manager.players.get(interaction?.guild.id);
-        if (!interaction.isSelectMenu() && interaction?.customId != "Join" && interaction?.customId != "Leave" && (!player || !player.queue || !player?.queue?.current))
-            return interaction?.reply({content: ":x: Nothing Playing yet", ephemeral: true})
+        if (!interaction.isSelectMenu() && interaction?.customId != "Join" && interaction?.customId != "Text" && interaction?.customId != "Leave" && (!player || !player.queue || !player?.queue?.current))
+            return interaction?.reply({content: `${client.la[ls].cmds.music.musicsystem.nothingplay}`, ephemeral: true})
                         
         //if not connected to the same voice channel, then make sure to connect to it!
         if (player && member.voice.channel.id !== player.voiceChannel)
             return interaction?.reply({
-                content: `:x: **Please join __my__ Voice Channel first! <#${player.voiceChannel}>**`,
+                content: `${client.la[ls].cmds.music.musicsystem.joinmevc} <#${player.voiceChannel}>**`,
                 ephemeral: true
             })
         //here i use my check_if_dj function to check if he is a dj if not then it returns true, and it shall stop!
         const dj = await check_if_dj(client, member, player?.queue?.current);
-        if(player && interaction?.customId != `Join` && interaction?.customId != `Lyrics` && dj) {
+        if(player && interaction?.customId != `Join` && interaction?.customId != "Text" && interaction?.customId != `Lyrics` && dj) {
                 return interaction?.reply({embeds: [new MessageEmbed()
                   .setColor(ee.wrongcolor)
                   .setFooter({text: `${ee.footertext}`, iconURL: `${ee.footericon}`})
-                  .setTitle(`:x: **You are not a DJ and not the Song Requester!**`)
-                  .setDescription(`**DJ-ROLES:**\n${dj}`)
+                  .setTitle(client.la[ls].cmds.music.musicsystem.djerr)
+                  .setDescription(`${client.la[ls].cmds.music.musicsystem.djroles}\n${dj}`)
                 ],
                 ephemeral: true});
         }
-        let settings = await client.settings.get(guild.id)
-        let es = settings.embed;
-        let ls = settings.language;
         switch(interaction?.customId){
-            case "Join": {
-                //create the player
-                var player = await client.manager.create({
-                    guild: guild.id,
-                    voiceChannel: member.voice.channel.id,
-                    textChannel: channel.id,
-                    selfDeafen: config.settings.selfDeaf,
-                });
-                await player.connect();
-                await player.stop();
-                 interaction?.reply({embeds: [new MessageEmbed()
-                    .setColor(es.color)
-                    .setTitle(client.la[ls].cmds.music.join.title)
-                    .setDescription(`Channel: <#${member.voice.channel.id}>`)]
-                });
+          case "Join": {
+            //create the player
+            var player = await client.manager.create({
+                guild: guild.id,
+                voiceChannel: member.voice.channel.id,
+                textChannel: channel.id,
+                selfDeafen: config.settings.selfDeaf,
+            });
+            await player.connect();
+            await player.stop();
+             interaction?.reply({embeds: [new MessageEmbed()
+                .setColor(es.color)
+                .setTitle(client.la[ls].cmds.music.join.title)
+                .setDescription(`<#${member.voice.channel.id}>`)]
+            });
+            //edit the message so that it's right!
+            var data = await generateQueueEmbed(client, guild.id)
+            message.edit(data).catch((e) => {
+              //console.error(e)
+            })
+        }break;
+        case "Leave": {
+            //Stop the player
+            interaction?.reply({
+              embeds: [new MessageEmbed()
+              .setColor(ee.color)
+              .setTimestamp()
+              .setTitle(handlemsg(client.la[ls].cmds.music.leave.title))
+              .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
+            }) 
+            if(player){
+                await player.destroy();
                 //edit the message so that it's right!
                 var data = await generateQueueEmbed(client, guild.id)
                 message.edit(data).catch((e) => {
                   //console.error(e)
                 })
-            }break;
-            case "Leave": {
-                //Stop the player
-                interaction?.reply({
-                  embeds: [new MessageEmbed()
-                  .setColor(ee.color)
-                  .setTimestamp()
-                  .setTitle(handlemsg(client.la[ls].cmds.music.leave.title))
-                  .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
-                }) 
-                if(player){
-                    await player.destroy();
-                    //edit the message so that it's right!
-                    var data = await generateQueueEmbed(client, guild.id)
-                    message.edit(data).catch((e) => {
-                      //console.error(e)
-                    })
-                } else {
-                    //edit the message so that it's right!
-                    var data = await generateQueueEmbed(client, guild.id)
-                    message.edit(data).catch((e) => {
-                    //console.error(e)
-                    })
-                }
-            }break;
+            } else {
+                //edit the message so that it's right!
+                var data = await generateQueueEmbed(client, guild.id)
+                message.edit(data).catch((e) => {
+                //console.error(e)
+                })
+            }
+        }break;
             case "Skip": {
                 //if ther is nothing more to skip then stop music and leave the Channel
                 if (!player.queue || !player?.queue?.size || player?.queue?.size === 0) {
@@ -304,7 +303,9 @@ module.exports = async (client) => {
                 })
             }break;
             case "Lyrics": {
-              await player.seek(0);
+              	await player.seek(0);
+              	
+              	
                     var data = await generateQueueEmbed(client, guild.id)
                     message.edit(data).catch((e) => {
                       //console.error(e)
@@ -327,7 +328,7 @@ module.exports = async (client) => {
                   embeds: [new MessageEmbed()
                     .setColor(es.wrongcolor)
                     .setTimestamp()
-                    .setTitle(`🔊 **Volume already 150(Max)**`)
+                    .setTitle(client.la[ls].cmds.music.musicsystem.alrmax)
                     .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({
                       dynamic: true
                      })))
@@ -359,7 +360,7 @@ module.exports = async (client) => {
                   embeds: [new MessageEmbed()
                     .setColor(es.wrongcolor)
                     .setTimestamp()
-                    .setTitle(`🔊 **Volume already 1(Min)**`)
+                    .setTitle(client.la[ls].cmds.music.musicsystem.alrmin)
                     .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({
                       dynamic: true
                      })))
@@ -385,12 +386,12 @@ module.exports = async (client) => {
             }
             break;
             case "Volmid": {
-              if(player.volume == 90){
+              if(player.volume == 100){
                 interaction.reply({
                   embeds: [new MessageEmbed()
                     .setColor(es.wrongcolor)
                     .setTimestamp()
-                    .setTitle(`🔊 **Volume already 90(Mid)**`)
+                    .setTitle(client.la[ls].cmds.music.musicsystem.alrmid)
                     .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({
                       dynamic: true
                      })))
@@ -398,7 +399,7 @@ module.exports = async (client) => {
                   })
                 break;
               }
-              await player.setVolume(90)
+              await player.setVolume(100)
               interaction.reply({
                 embeds: [new MessageEmbed()
                   .setColor(es.color)
@@ -421,7 +422,7 @@ module.exports = async (client) => {
                   embeds: [new MessageEmbed()
                     .setColor(es.wrongcolor)
                     .setTimestamp()
-                    .setTitle(`🔊 **Volume already 150(Max)**`)
+                    .setTitle(client.la[ls].cmds.music.musicsystem.alrmax)
                     .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({
                       dynamic: true
                      })))
@@ -473,7 +474,7 @@ module.exports = async (client) => {
                   embeds: [new MessageEmbed()
                     .setColor(es.wrongcolor)
                     .setTimestamp()
-                    .setTitle(`🔊 **Volume already 1(Min)**`)
+                    .setTitle(client.la[ls].cmds.music.musicsystem.alrmin)
                     .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({
                       dynamic: true
                      })))
@@ -519,6 +520,93 @@ module.exports = async (client) => {
               }
             }
             break;
+            case "Text": {
+              let musicsettings = await client.musicsettings.get(guild.id)
+              if(musicsettings.text == false) {
+                await client.musicsettings.set(guild.id+".text", true);
+                interaction?.reply({embeds : [new MessageEmbed()
+                  .setColor(es.color)
+                  .setFooter(client.getFooter(es))
+                  .setTitle(handlemsg(client.la[ls]["cmds"]["settings"]["msbt"]["title1"]))
+                  .setDescription(handlemsg(client.la[ls]["cmds"]["settings"]["msbt"]["subtitle1"]))
+              ]});
+              }else{
+                await client.musicsettings.set(guild.id+".text", false);
+                  interaction?.reply({embeds : [new MessageEmbed()
+                  .setColor(es.color)
+                  .setFooter(client.getFooter(es))
+                  .setTitle(handlemsg(client.la[ls]["cmds"]["settings"]["msbt"]["title2"]))
+                  .setDescription(handlemsg(client.la[ls]["cmds"]["settings"]["msbt"]["subtitle2"]))
+                ]});
+              }
+              var data = await generateQueueEmbed(client, guild.id)
+              message.edit(data).catch((e) => {
+                //console.error(e)
+              })
+            }
+            break;
+            case "Save": {
+              interaction?.user.send({embeds : [new MessageEmbed()
+                .setAuthor(client.la[ls].cmds.music.grab?.author, message.author.displayAvatarURL({
+                  dynamic: true
+                }))
+                .setThumbnail(`https://img.youtube.com/vi/${player.queue.current.identifier}/mqdefault.jpg`)
+                .setURL(player.queue.current.uri)
+                .setColor(es.color)
+                .setTitle(eval(client.la[ls]["cmds"]["music"]["grab"]["variable1"]))
+                .addField(client.la[ls].cmds.music.grab?.field1, `\`${format(player.queue.current.duration)}\``, true)
+                .addField(client.la[ls].cmds.music.grab?.field2, `\`${player.queue.current.author}\``, true)
+                .addField(client.la[ls].cmds.music.grab?.field3, `\`${player.queue.length} ${client.la[ls]["cmds"]["music"]["musicsystem"]["songg"]}\``, true)
+                .addField(client.la[ls].cmds.music.grab?.field4, `\`${client.prefix}play ${player.queue.current.uri}\``)
+                .addField(client.la[ls].cmds.music.grab?.field5, `<#${message.channel.id}>`)
+                .setFooter(
+                  handlemsg(client.la[ls].cmds.music.grab?.footer, { usertag: player.queue.current.requester.tag, guild: message.guild.name + " | " + message.guild.id})
+                  , player.queue.current.requester.displayAvatarURL({
+                  dynamic: true
+                }))
+              ]}).catch(e => {
+                return interaction?.reply({content : client.la[ls].common.dms_disabled})
+              })
+              interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
+                .setColor(es.color)
+                .setFooter(client.getFooter(es))
+                .setTitle(handlemsg(client.la[ls].cmds.music.musicsystem.savetitle))
+                .setDescription(handlemsg(client.la[ls].cmds.music.musicsystem.savesubtitle))
+              ]});
+              // -------------
+              var data = await generateQueueEmbed(client, guild.id)
+              message.edit(data).catch((e) => {
+                //console.error(e)
+              })
+            }
+            break;
+            	case "Previous": {
+			if (!player.queue.previous){
+				return interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
+                			.setColor(es.wrongcolor)
+                			.setFooter(client.getFooter(es))
+                			.setTitle(handlemsg(client.la[ls].cmds.music.musicsystem.previoustitleerr))
+                			.setDescription(handlemsg(client.la[ls].cmds.music.musicsystem.previoussubtitleerr))
+              			]});
+			}else{
+			        let type = `skiptrack:youtube`;
+      				//if the previous was from soundcloud, then use type soundcloud
+      				if (player.queue.previous.uri?.includes(`soundcloud`)) type = `skiptrack:soundcloud`
+      				//adds/plays it
+      				playermanager(client, message, Array(player.queue.previous.uri), type);
+      				return interaction?.reply({embeds : [new MessageEmbed()
+                			.setColor(es.color)
+                			.setFooter(client.getFooter(es))
+                			.setTitle(handlemsg(client.la[ls].cmds.music.musicsystem.previoustitle))
+                			.setDescription(handlemsg(client.la[ls].cmds.music.musicsystem.previoussubtitle))
+              			]});
+			}
+		var data = await generateQueueEmbed(client, guild.id)
+                message.edit(data).catch((e) => {
+                //console.error(e)
+              })
+            }
+            break;
             }
           if (interaction.isSelectMenu()) {
             let link = "https://www.youtube.com/playlist?list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj";
@@ -541,7 +629,7 @@ module.exports = async (client) => {
               if (interaction.values[0].toLowerCase().startsWith("magic")) link = "https://www.youtube.com/watch?v=WvMc5_RbQNc&list=PLYUn4Yaogdagvwe69dczceHTNm0K_ZG3P"
               //metal
             //my
-              if (interaction.values[0].toLowerCase().startsWith("Cepheid")) link = "https://open.spotify.com/playlist/70Z2lb2F2g2LXaBkcpxABM?si=16e58d38908749cb";
+              if (interaction.values[0].toLowerCase().startsWith("cepheid")) link = "https://open.spotify.com/playlist/70Z2lb2F2g2LXaBkcpxABM?si=16e58d38908749cb";
               //music storage
               if (interaction.values[0].toLowerCase().startsWith("bandit")) link = "https://open.spotify.com/playlist/6gCc1MHzFZhjYhwRipKtFw?si=66797fa029ce4c24";
             }
@@ -569,6 +657,9 @@ module.exports = async (client) => {
         if(!message.guild) return;
         var data = await client.musicsettings.get(message.guild.id);
         if(!data) return
+        let settings = await client.settings.get(message.guild.id)
+        let es = settings.embed;
+        let ls = settings.language;
         var musicChannelId = data.channel;
         //if not setupped yet, return
         if(!musicChannelId || musicChannelId.length < 5) return;
@@ -639,7 +730,7 @@ async function generateQueueEmbed(client, guildId, leave) {
     .setFooter(client.getFooter(es))
     .setImage(guild.banner ? guild.bannerURL({
       size: 4096
-    }) : "https://media.discordapp.net/attachments/927258550185640026/963672134192869396/marshal_1.gif")
+    }) : "https://cdn.discordapp.com/attachments/968349976331694100/979686974338244628/Neon_Text_Effect.png")
     .setTitle(client.la[ls].cmds.music.musicsystem.title)
     .setDescription(client.la[ls].cmds.music.musicsystem.subtitle)
   ]
@@ -690,34 +781,47 @@ async function generateQueueEmbed(client, guildId, leave) {
     "🟫",
   ]
   //now we add the components!
+  let musicsettings = await client.musicsettings.get(guild.id)
   var musicmixMenu = new MessageSelectMenu()
-    .setCustomId("MessageSelectMenu")
-    .addOptions(["Strange-Fruits", "Gaming", "Chill", "Magic-Release", "MiYaGi playlist", "Default", "Cepheid's Spotify Playlist", "Bandit Camp Music Storage"].map((t, index) => {
-      return {
-        label: t.substr(0, 25),
-        value: t.substr(0, 25),
-        description: `${client.la[ls].cmds.music.musicsystem.load} "${t}"`.substr(0, 50),
-        emoji: Emojis[index]
-      }
-    }))
-  var stopbutton = new MessageButton().setStyle('DANGER').setCustomId('Stop').setEmoji(`⏹️`).setLabel(`${client.la[ls].cmds.music.musicsystem.stopbt}`).setDisabled()
-  var skipbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Skip').setEmoji(`⏭`).setLabel(`${client.la[ls].cmds.music.musicsystem.skipbt}`).setDisabled();
-  var shufflebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Shuffle').setEmoji('🔀').setLabel(`${client.la[ls].cmds.music.musicsystem.shuffbt}`).setDisabled();
-  var pausebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Pause').setEmoji('⏸').setLabel(`${client.la[ls].cmds.music.musicsystem.pausebt}`).setDisabled();
-  var autoplaybutton = new MessageButton().setStyle('SUCCESS').setCustomId('Autoplay').setEmoji('➡️').setLabel(`${client.la[ls].cmds.music.musicsystem.autoplbt}`).setDisabled();
-  var songbutton = new MessageButton().setStyle('SUCCESS').setCustomId('Song').setEmoji(`🔂`).setLabel(`${client.la[ls].cmds.music.musicsystem.slbt}`).setDisabled();
-  var queuebutton = new MessageButton().setStyle('SUCCESS').setCustomId('Queue').setEmoji(`🔁`).setLabel(`${client.la[ls].cmds.music.musicsystem.qlbt}`).setDisabled();
-  var rewindbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Rewind').setEmoji('⏪').setLabel(`${client.la[ls].cmds.music.musicsystem.rewbt}`).setDisabled();
-  var forwardbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Forward').setEmoji('⏩').setLabel(`${client.la[ls].cmds.music.musicsystem.forbt}`).setDisabled();
-  var lyricsbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Lyrics').setEmoji('🔄').setLabel(`${client.la[ls].cmds.music.musicsystem.replbt}`).setDisabled();
-  var volumeup = new MessageButton().setStyle('SECONDARY').setCustomId('Vol+').setEmoji('🔊').setLabel(`${client.la[ls].cmds.music.musicsystem.volpbt}`).setDisabled();
-  var volumedown = new MessageButton().setStyle('SECONDARY').setCustomId('Vol-').setEmoji('🔉').setLabel(`${client.la[ls].cmds.music.musicsystem.volmbt}`).setDisabled();
-  var volumemax = new MessageButton().setStyle('DANGER').setCustomId('Volmax').setEmoji('🔊').setLabel(`${client.la[ls].cmds.music.musicsystem.volmaxbt}`).setDisabled();
-  var volumemid = new MessageButton().setStyle('PRIMARY').setCustomId('Volmid').setEmoji('🔊').setLabel(`${client.la[ls].cmds.music.musicsystem.midvolbt}`).setDisabled();
-  var volumemin = new MessageButton().setStyle('PRIMARY').setCustomId('Volmin').setEmoji('🔉').setLabel(`${client.la[ls].cmds.music.musicsystem.volminbt}`).setDisabled();
-  var joinbutton = new MessageButton().setStyle('SUCCESS').setCustomId('Join').setEmoji(`👌`).setLabel(`${client.la[ls].cmds.music.musicsystem.joinbt}`).setDisabled(false);
-  var leavebutton = new MessageButton().setStyle('DANGER').setCustomId('Leave').setEmoji(`👋`).setLabel(`${client.la[ls].cmds.music.musicsystem.leavebt}`).setDisabled();
-
+  .setCustomId("MessageSelectMenu")
+  .addOptions(["Strange-Fruits", "Gaming", "Chill", "Magic-Release", "MiYaGi playlist", "Default", "Cepheid `s Spotify Playlist", "Bandit Camp Music Storage"].map((t, index) => {
+    return {
+      label: t.substr(0, 25),
+      value: t.substr(0, 25),
+      description: `${client.la[ls].cmds.music.musicsystem.load} "${t}"`.substr(0, 50),
+      emoji: Emojis[index]
+    }
+  }))
+  if(musicsettings.text == true){
+  
+  var stopbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Stop').setEmoji(`<:stop:978181805645656104>`).setLabel(`${client.la[ls].cmds.music.musicsystem.stopbt}`).setDisabled()
+  var skipbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Skip').setEmoji(`<:skip:978181805679185970>`).setLabel(`${client.la[ls].cmds.music.musicsystem.skipbt}`).setDisabled();
+  var shufflebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Shuffle').setEmoji('<:shuffle:978181805972803654>').setLabel(`${client.la[ls].cmds.music.musicsystem.shuffbt}`).setDisabled();
+  var pausebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Pause').setEmoji('<:pause:978181784925765684>').setLabel(`${client.la[ls].cmds.music.musicsystem.pausebt}`).setDisabled();
+  var autoplaybutton = new MessageButton().setStyle('SECONDARY').setCustomId('Autoplay').setEmoji('<:joines:978181806182531072>').setLabel(`${client.la[ls].cmds.music.musicsystem.autoplbt}`).setDisabled();
+  var songbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Song').setEmoji(`<:song_loop:978181804198617088>`).setLabel(`${client.la[ls].cmds.music.musicsystem.slbt}`).setDisabled();
+  var queuebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Queue').setEmoji(`<:queue_loop:978181805641449522>`).setLabel(`${client.la[ls].cmds.music.musicsystem.qlbt}`).setDisabled();
+  var rewindbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Rewind').setEmoji('<:rewind_1:978181785206808587>').setLabel(`${client.la[ls].cmds.music.musicsystem.rewbt}`).setDisabled();
+  var forwardbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Forward').setEmoji('<:forward_1:978181794933375006>').setLabel(`${client.la[ls].cmds.music.musicsystem.forbt}`).setDisabled();
+  var lyricsbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Lyrics').setEmoji('<:replay:978181795508015145>').setLabel(`${client.la[ls].cmds.music.musicsystem.replbt}`).setDisabled();
+  var volumeup = new MessageButton().setStyle('SECONDARY').setCustomId('Vol+').setEmoji('<:low_volume:978181794799157289>').setLabel(`${client.la[ls].cmds.music.musicsystem.volpbt}`).setDisabled();
+  var volumedown = new MessageButton().setStyle('SECONDARY').setCustomId('Vol-').setEmoji('<:volume:978221266345558056>').setLabel(`${client.la[ls].cmds.music.musicsystem.volmbt}`).setDisabled();
+  var volumemax = new MessageButton().setStyle('PRIMARY').setCustomId('Volmax').setEmoji('<:max_volume:978181806107021312>').setLabel(`${client.la[ls].cmds.music.musicsystem.volmaxbt}`).setDisabled();
+  var volumemid = new MessageButton().setStyle('PRIMARY').setCustomId('Volmid').setEmoji('<:low_volume:978181794799157289>').setLabel(`${client.la[ls].cmds.music.musicsystem.midvolbt}`).setDisabled();
+  var volumemin = new MessageButton().setStyle('PRIMARY').setCustomId('Volmin').setEmoji('<:volume:978221266345558056>').setLabel(`${client.la[ls].cmds.music.musicsystem.volminbt}`).setDisabled();
+  var joinbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Join').setEmoji(`<:join_vc:950885408290508821>`).setLabel(`${client.la[ls].cmds.music.musicsystem.joinbt}`).setDisabled(false);
+  var leavebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Leave').setEmoji(`<:home:981615902778851388>`).setLabel(`${client.la[ls].cmds.music.musicsystem.leavebt}`).setDisabled();
+  var textbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Text').setEmoji(`<:on_1:981615931283345478>`).setLabel(`${client.la[ls].cmds.music.musicsystem.textbt2}`).setDisabled(false);
+  var savebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Save').setEmoji(`<:save:981615630178471947>`).setLabel(`${client.la[ls].cmds.music.musicsystem.savebt}`).setDisabled();
+  var previousbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Previous').setEmoji(`<:prev:980838844398194758>`).setLabel(`${client.la[ls].cmds.music.musicsystem.prevbt}`).setDisabled();
+  
+  if (musicsettings.text == false) {
+    textbutton = textbutton.setEmoji(`<:off:977868613895741470>`).setLabel(`${client.la[ls].cmds.music.musicsystem.textbt1}`)
+  }
+  if (musicsettings.text == true) {
+    textbutton = textbutton.setEmoji(`<:on_1:981615931283345478>`).setLabel(`${client.la[ls].cmds.music.musicsystem.textbt2}`)
+  }
+  
   if (!leave && player && player.queue && player.queue.current) {
     skipbutton = skipbutton.setDisabled(false);
     shufflebutton = shufflebutton.setDisabled(false);
@@ -734,24 +838,28 @@ async function generateQueueEmbed(client, guildId, leave) {
     volumemax = volumemax.setDisabled(false);
     volumemin = volumemin.setDisabled(false);
     volumemid = volumemid.setDisabled(false);
+    savebutton = savebutton.setDisabled(false);
+    if (player.queue.previous){
+    	previousbutton = previousbutton.setDisabled(false)
+    }
+    if (!player.queue.previous){
+    	previousbutton = previousbutton.setDisabled(true)
+    }
     if (player.volume >= 91){
-      volumeup = volumeup.setStyle('DANGER')
-      volumeup = volumeup.setLabel('BOOST!')
+      volumeup = volumeup.setStyle('DANGER').setLabel('BOOST!').setEmoji('<:max_volume:978181806107021312>')
     }
     if (player.volume == 150){
-      volumemax = volumemax.setStyle('DANGER')
       volumemax = volumemax.setDisabled()
       volumeup = volumeup.setDisabled()
     }
     if (player.volume !== 150) {
-      volumemax = volumemax.setStyle('PRIMARY')
       volumemax = volumemax.setDisabled(false)
       volumeup = volumeup.setDisabled(false)
     }
-    if (player.volume == 90){
+    if (player.volume == 100){
       volumemid = volumemid.setDisabled()
     }
-    if (player.volume !== 90){
+    if (player.volume !== 100){
       volumemid = volumemid.setDisabled(false)
     }
     if (player.volume == 1){
@@ -763,32 +871,138 @@ async function generateQueueEmbed(client, guildId, leave) {
       volumedown = volumedown.setDisabled(false)
     }
     if (player.get("autoplay")) {
-      autoplaybutton = autoplaybutton.setStyle('SECONDARY')
+      autoplaybutton = autoplaybutton.setStyle('PRIMARY')
     }
     if (!player.playing) {
-      pausebutton = pausebutton.setStyle('SUCCESS').setEmoji('▶️').setLabel(`${client.la[ls].cmds.music.musicsystem.resumebt}`)
+      pausebutton = pausebutton.setStyle('PRIMARY').setEmoji('<:play:977868616282275860>').setLabel(`${client.la[ls].cmds.music.musicsystem.resumebt}`)
     }
     if (!player.queueRepeat && !player.trackRepeat) {
-      songbutton = songbutton.setStyle('SUCCESS')
-      queuebutton = queuebutton.setStyle('SUCCESS')
+      songbutton = songbutton.setStyle('SECONDARY')
+      queuebutton = queuebutton.setStyle('SECONDARY')
     }
     if (player.trackRepeat) {
-      songbutton = songbutton.setStyle('SECONDARY')
-      queuebutton = queuebutton.setStyle('SUCCESS')
+      songbutton = songbutton.setStyle('PRIMARY')
+      queuebutton = queuebutton.setStyle('SECONDARY')
     }
     if (player.queueRepeat) {
-      songbutton = songbutton.setStyle('SUCCESS')
-      queuebutton = queuebutton.setStyle('SECONDARY')
+      songbutton = songbutton.setStyle('SECONDARY')
+      queuebutton = queuebutton.setStyle('PRIMARY')
     }
   }
   if(player){
-    joinbutton = joinbutton.setDisabled()
+    joinbutton = joinbutton.setDisabled(true)
     leavebutton = leavebutton.setDisabled(false);
   }
-  if(leave){
+  if(!player){
     joinbutton = joinbutton.setDisabled(false)
     leavebutton = leavebutton.setDisabled(true);
   }
+}else{
+  var stopbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Stop').setEmoji(`<:stop:978181805645656104>`).setDisabled()
+  var skipbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Skip').setEmoji(`<:skip:978181805679185970>`).setDisabled();
+  var shufflebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Shuffle').setEmoji('<:shuffle:978181805972803654>').setDisabled();
+  var pausebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Pause').setEmoji('<:pause:978181784925765684>').setDisabled();
+  var autoplaybutton = new MessageButton().setStyle('SECONDARY').setCustomId('Autoplay').setEmoji('<:joines:978181806182531072>').setDisabled();
+  var songbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Song').setEmoji(`<:song_loop:978181804198617088>`).setDisabled();
+  var queuebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Queue').setEmoji(`<:queue_loop:978181805641449522>`).setDisabled();
+  var rewindbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Rewind').setEmoji('<:rewind_1:978181785206808587>').setDisabled();
+  var forwardbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Forward').setEmoji('<:forward_1:978181794933375006>').setDisabled();
+  var lyricsbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Lyrics').setEmoji('<:replay:978181795508015145>').setDisabled();
+  var volumeup = new MessageButton().setStyle('SECONDARY').setCustomId('Vol+').setEmoji('<:low_volume:978181794799157289>').setDisabled();
+  var volumedown = new MessageButton().setStyle('SECONDARY').setCustomId('Vol-').setEmoji('<:volume:978221266345558056>').setDisabled();
+  var volumemax = new MessageButton().setStyle('PRIMARY').setCustomId('Volmax').setEmoji('<:max_volume:978181806107021312>').setDisabled();
+  var volumemid = new MessageButton().setStyle('PRIMARY').setCustomId('Volmid').setEmoji('<:low_volume:978181794799157289>').setDisabled();
+  var volumemin = new MessageButton().setStyle('PRIMARY').setCustomId('Volmin').setEmoji('<:volume:978221266345558056>').setDisabled();
+  var joinbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Join').setEmoji(`<:join_vc:950885408290508821>`).setDisabled(false);
+  var leavebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Leave').setEmoji(`<:home:981615902778851388>`).setDisabled();
+  var textbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Text').setEmoji(`<:on_1:981615931283345478>`).setDisabled(false);
+  var savebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Save').setEmoji(`<:save:981615630178471947>`).setDisabled();
+  var previousbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Previous').setEmoji(`<:prev:980838844398194758>`).setDisabled();
+
+  if (musicsettings.text == false) {
+    textbutton = textbutton.setEmoji(`<:off:977868613895741470>`)
+  }
+  if (musicsettings.text == true) {
+    textbutton = textbutton.setEmoji(`<:on_1:981615931283345478>`)
+  }
+  
+  if (!leave && player && player.queue && player.queue.current) {
+    skipbutton = skipbutton.setDisabled(false);
+    shufflebutton = shufflebutton.setDisabled(false);
+    stopbutton = stopbutton.setDisabled(false);
+    songbutton = songbutton.setDisabled(false);
+    queuebutton = queuebutton.setDisabled(false);
+    forwardbutton = forwardbutton.setDisabled(false);
+    rewindbutton = rewindbutton.setDisabled(false);
+    autoplaybutton = autoplaybutton.setDisabled(false);
+    pausebutton = pausebutton.setDisabled(false);
+    lyricsbutton = lyricsbutton.setDisabled(false);
+    volumeup = volumeup.setDisabled(false);
+    volumedown = volumedown.setDisabled(false);
+    volumemax = volumemax.setDisabled(false);
+    volumemin = volumemin.setDisabled(false);
+    volumemid = volumemid.setDisabled(false);
+    savebutton = savebutton.setDisabled(false);
+    if (player.queue.previous){
+    	previousbutton = previousbutton.setDisabled(false)
+    }
+    if (!player.queue.previous){
+    	previousbutton = previousbutton.setDisabled(true)
+    }
+    if (player.volume >= 91){
+      volumeup = volumeup.setStyle('DANGER')
+      volumeup = volumeup.setEmoji('<:max_volume:978181806107021312>')
+    }
+    if (player.volume == 150){
+      volumemax = volumemax.setDisabled()
+      volumeup = volumeup.setDisabled()
+    }
+    if (player.volume !== 150) {
+      volumemax = volumemax.setDisabled(false)
+      volumeup = volumeup.setDisabled(false)
+    }
+    if (player.volume == 100){
+      volumemid = volumemid.setDisabled()
+    }
+    if (player.volume !== 100){
+      volumemid = volumemid.setDisabled(false)
+    }
+    if (player.volume == 1){
+      volumemin = volumemin.setDisabled()
+      volumedown = volumedown.setDisabled()
+    }
+    if (player.volume !== 1){
+      volumemin = volumemin.setDisabled(false)
+      volumedown = volumedown.setDisabled(false)
+    }
+    if (player.get("autoplay")) {
+      autoplaybutton = autoplaybutton.setStyle('PRIMARY')
+    }
+    if (!player.playing) {
+      pausebutton = pausebutton.setStyle('PRIMARY').setEmoji('<:play:977868616282275860>')
+    }
+    if (!player.queueRepeat && !player.trackRepeat) {
+      songbutton = songbutton.setStyle('SECONDARY')
+      queuebutton = queuebutton.setStyle('SECONDARY')
+    }
+    if (player.trackRepeat) {
+      songbutton = songbutton.setStyle('PRIMARY')
+      queuebutton = queuebutton.setStyle('SECONDARY')
+    }
+    if (player.queueRepeat) {
+      songbutton = songbutton.setStyle('SECONDARY')
+      queuebutton = queuebutton.setStyle('PRIMARY')
+    }
+  }
+  if(player){
+    joinbutton = joinbutton.setDisabled(true)
+    leavebutton = leavebutton.setDisabled(false);
+  }
+  if(!player){
+    joinbutton = joinbutton.setDisabled(false)
+    leavebutton = leavebutton.setDisabled(true);
+  }
+}
   //now we add the components!
   var components = [
     new MessageActionRow().addComponents([
@@ -796,28 +1010,31 @@ async function generateQueueEmbed(client, guildId, leave) {
     ]),
     new MessageActionRow().addComponents([
       joinbutton,
+      textbutton,
       leavebutton,
-    ]),
-    new MessageActionRow().addComponents([
-      skipbutton,
-      stopbutton,
-      pausebutton,
+      savebutton,
       autoplaybutton,
-      shufflebutton,
-    ]),
-    new MessageActionRow().addComponents([
-      songbutton,
-      queuebutton,
-      rewindbutton,
-      forwardbutton,
-      lyricsbutton,
     ]),
     new MessageActionRow().addComponents([
       volumedown,
+      previousbutton,
+      pausebutton,
+      skipbutton,
       volumeup,
+    ]),
+    new MessageActionRow().addComponents([
+      rewindbutton,
+      songbutton,
+      stopbutton,
+      queuebutton,
+      forwardbutton,
+    ]),
+    new MessageActionRow().addComponents([
+      lyricsbutton,
       volumemin,
       volumemid,
       volumemax,
+      shufflebutton,
     ]), 
   ]
   return {

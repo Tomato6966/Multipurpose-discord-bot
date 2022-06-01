@@ -16,7 +16,7 @@ const Fonts = "Genta, UbuntuMono, `DM Sans`, STIXGeneral, AppleSymbol, Arial, Ar
 const wideFonts = "`DM Sans`, STIXGeneral, AppleSymbol, Arial, ArialUnicode";
 module.exports = {
   name: "setup-welcome",
-  category: "Setup",
+  category: "💪 Setup",
   aliases: ["setupwelcome"],
   cooldown: 5,
   usage: "setup-welcome --> Follow Steps",
@@ -50,11 +50,11 @@ module.exports = {
             description: `Manage the Welcome Roles. Add/remove/list them!`,
             emoji: "895066900105674822"
           },
-      /*    {
+          {
             value: "Captcha System (Security)",
             description: `${GuildSettings?.welcome?.captcha ? "❌ Disable the Captcha-Security-System":"✅ Enable the Captcha-Security-System" }`,
             emoji: "866089515993792522"
-          },*/
+          },
           {
             value: `Test Welcome`,
             description: `Test the current welcome Message`,
@@ -105,11 +105,11 @@ module.exports = {
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
-          else menu?.reply({content: `<:redcheck:958374765716996136> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<:greencheck:958374779000356864> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
 
@@ -190,11 +190,11 @@ module.exports = {
                   let SetupNumber = menu?.values[0].split(" ")[0]
                   handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata)
                 }
-                else menu?.reply({content: `<:redcheck:958374765716996136> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+                else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
               });
               //Once the Collections ended edit the menu message
               collector.on('end', collected => {
-                menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<:greencheck:958374779000356864> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+                menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
               });
             }
             async function handle_the_picks_2(optionhandletype, SetupNumber, menuoptiondata){
@@ -349,11 +349,11 @@ module.exports = {
                         let SetupNumber = menu?.values[0].split(" ")[0]
                         handle_the_picks_3(menu?.values[0], SetupNumber, menuoptiondata)
                       }
-                      else menu?.reply({content: `<:redcheck:958374765716996136> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+                      else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
                     });
                     //Once the Collections ended edit the menu message
                     collector.on('end', collected => {
-                      menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<:greencheck:958374779000356864> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+                      menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
                     });
                   }
                   async function handle_the_picks_3(optionhandletype, SetupNumber, menuoptiondata){
@@ -604,7 +604,7 @@ module.exports = {
                         })
                         //Once the Collections ended edit the menu message
                         collector.on('end', collected => {
-                          tempmsg.edit({embeds: [tempmsg.embeds[0].setDescription(`~~${tempmsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().customId ? `<:greencheck:958374779000356864> **Selected the \`${collected.first().customId}\` Color**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+                          tempmsg.edit({embeds: [tempmsg.embeds[0].setDescription(`~~${tempmsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().customId ? `<a:yes:833101995723194437> **Selected the \`${collected.first().customId}\` Color**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
                         });
                         //Menu Collections
                         collector.on('collect', async button => {
@@ -734,11 +734,11 @@ module.exports = {
                   let SetupNumber = menu?.values[0].split(" ")[0]
                   handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata)
                 }
-                else menu?.reply({content: `<:redcheck:958374765716996136> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+                else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
               });
               //Once the Collections ended edit the menu message
               collector.on('end', collected => {
-                menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<:greencheck:958374779000356864> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+                menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
               });
             }
             async function handle_the_picks_2(optionhandletype, SetupNumber, menuoptiondata){
@@ -894,11 +894,11 @@ module.exports = {
                   let SetupNumber = menu?.values[0].split(" ")[0]
                   handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata)
                 }
-                else menu?.reply({content: `<:redcheck:958374765716996136> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+                else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
               });
               //Once the Collections ended edit the menu message
               collector.on('end', collected => {
-                menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<:greencheck:958374779000356864> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+                menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
               });
             }
             async function handle_the_picks_2(optionhandletype, SetupNumber, menuoptiondata){
@@ -1023,11 +1023,11 @@ module.exports = {
                         let SetupNumber = menu?.values[0].split(" ")[0]
                         handle_the_picks_3(menu?.values[0], SetupNumber, menuoptiondata)
                       }
-                      else menu?.reply({content: `<:redcheck:958374765716996136> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+                      else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
                     });
                     //Once the Collections ended edit the menu message
                     collector.on('end', collected => {
-                      menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<:greencheck:958374779000356864> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+                      menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
                     });
                   }
                   async function handle_the_picks_3(optionhandletype, SetupNumber, menuoptiondata){
@@ -1275,7 +1275,7 @@ module.exports = {
                         })
                         //Once the Collections ended edit the menu message
                         collector.on('end', collected => {
-                          tempmsg.edit({embeds: [tempmsg.embeds[0].setDescription(`~~${tempmsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().customId ? `<:greencheck:958374779000356864> **Selected the \`${collected.first().customId}\` Color**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+                          tempmsg.edit({embeds: [tempmsg.embeds[0].setDescription(`~~${tempmsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().customId ? `<a:yes:833101995723194437> **Selected the \`${collected.first().customId}\` Color**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
                         });
                         //Menu Collections
                         collector.on('collect', async button => {
@@ -1405,11 +1405,11 @@ module.exports = {
                   let SetupNumber = menu?.values[0].split(" ")[0]
                   handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata)
                 }
-                else menu?.reply({content: `<:redcheck:958374765716996136> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+                else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
               });
               //Once the Collections ended edit the menu message
               collector.on('end', collected => {
-                menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<:greencheck:958374779000356864> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+                menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
               });
             }
             async function handle_the_picks_2(optionhandletype, SetupNumber, menuoptiondata){
@@ -1512,7 +1512,7 @@ module.exports = {
               }
             }
           }break;
-/*          case "Captcha System (Security)":{
+          case "Captcha System (Security)":{
             await client.settings.set(`${message.guild.id}.welcome.captcha`, !GuildSettings?.welcome?.captcha)
             return message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-welcome"]["variable154"]))
@@ -1520,11 +1520,11 @@ module.exports = {
               .setDescription(`${GuildSettings?.welcome?.captcha ? "I will ask new Members to verify themself, then send welcome messages / add them the roles if they succeed, + I will kick them if they failed!..." : "I will not ask new Members to verify themself!"}`.substring(0, 2048))
               .setFooter(client.getFooter(es))
             ]});
-          }break;*/
+          }break;
           case `Test Welcome`:{
             var { member } = message;
             let welcome = GuildSettings.welcome;
-            let invitemessage = `Invited by ${member.user.tag ? `**${member.user.tag}**` : `<@${member.user.id}>`}\n🤝 **X Invites**\n[✔️ X Joins | ❌ X Leaves | <:redcheck:958374765716996136> X Fakes]`
+            let invitemessage = `Invited by ${member.user.tag ? `**${member.user.tag}**` : `<@${member.user.id}>`}\n<:Like:857334024087011378> **X Invites**\n[<:joines:866356465299488809> X Joins | <:leaves:866356598356049930> X Leaves | <:no:833101993668771842> X Fakes]`
             if(welcome){
               let themessage = String(welcome.secondmsg);
               if(!themessage || themessage.length == 0) themessage = ":wave: {user} **Welcome to our Server!** :v:";
@@ -1918,12 +1918,3 @@ module.exports = {
     }
   },
 };
-/**
- * @INFO
- * Bot Coded by cepheid#0001 | http://discord.gg/7PdChsBGKd
- * @INFO
- * Work for Marshal Development | https://marshalxp.xyz
- * @INFO
- * Please mention him / Marshal Development, when using this Code!
- * @INFO
- */

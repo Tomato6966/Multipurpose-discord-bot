@@ -48,7 +48,10 @@ var {
   };
 
   /*
+
 in top of run to make premium cmd
+
+
     var guildpremData = await client.premium.get(`${message.guild.id}.enabled`)
     if(guildpremData === false){
       return message.reply({embeds: [new MessageEmbed()
@@ -59,3 +62,4 @@ in top of run to make premium cmd
       ]});
     }
   */
+  

@@ -144,6 +144,7 @@ module.exports = {
           channel: "",
           channelname: "{user}' Lounge",
           guild: message.guild.id,
+          voicelimit: "0",
         };
         await dbEnsure(thedb, message.guild.id, Obj);
         
@@ -162,6 +163,11 @@ module.exports = {
             value: "Change the Temp Names",
             description: `Change the temporary Names of new VCS`,
             emoji: "😎"
+          },
+          {
+            value: "Change the Default Voice Channel Limit",
+            description: `Change Default Voice Channel Limit of new VCS`,
+            emoji: "1️⃣"
           },
           {
             value: "Cancel",
@@ -229,7 +235,7 @@ module.exports = {
             message.guild.channels.create("Join to Create", {
               type: 'GUILD_VOICE',
               bitrate: maxbitrate,
-              userLimit: 4,
+              userLimit: 1,
               permissionOverwrites: [ //update the permissions
                 { //the role "EVERYONE" is just able to VIEW_CHANNEL and CONNECT
                   id: message.guild.id,
@@ -298,6 +304,35 @@ module.exports = {
                 .setDescription(`Cancelled the Operation!`.substring(0, 2000))
                 .setFooter(client.getFooter(es))
               ]});
+          } break;
+          case "Change the Default Voice Channel Limit": {
+            var tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
+              .setTitle(client.la[ls]["cmds"]["setup"]["setup-jtc"]["dltitletemp"])
+              .setColor(es.color)
+              .setDescription(client.la[ls]["cmds"]["setup"]["setup-jtc"]["dlsubtitletemp"])
+              .setFooter(client.getFooter(es))]
+            })
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
+              max: 1,
+              time: 90000,
+              errors: ["time"]
+            })
+            .then(async collected => {
+              let newlimit = collected.first().content
+              if (newlimit>99){
+                return message.reply(client.la[ls]["cmds"]["setup"]["setup-jtc"]["dlerror"])
+              }
+              if (newlimit<0){
+                return message.reply(client.la[ls]["cmds"]["setup"]["setup-jtc"]["dlerror"])
+              }
+              await thedb?.set(message.guild.id+`.${pre}.voicelimit`, newlimit);
+              message.reply({embeds: [new Discord.MessageEmbed()
+                .setTitle(client.la[ls]["cmds"]["setup"]["setup-jtc"]["dltitle"])
+                .setColor(es.color)
+                .setDescription(client.la[ls]["cmds"]["setup"]["setup-jtc"]["dlsubtitle"] + `${await thedb?.get(message.guild.id+`.${pre}.voicelimit`)}`)
+                .setFooter(client.getFooter(es))
+              ]});
+            })
           } break;
         }
       }

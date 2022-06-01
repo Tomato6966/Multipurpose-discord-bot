@@ -15,6 +15,9 @@ module.exports = {
   parameters: {"type":"music", "activeplayer": true, },
   type: "music",
   run: async (client, message, args, user, text, prefix, player) => {
+    let settings = await client.settings.get(message.guild.id)
+    let es = settings.embed;
+    let ls = settings.language;
     try {
       await player.set(`afk`, !player.get(`afk`))
       return message.reply({embeds : [new MessageEmbed()

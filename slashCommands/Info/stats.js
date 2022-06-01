@@ -11,7 +11,7 @@ module.exports = {
   name: "stats",
   description: "Shows music Stats, like amount of Commands and played Songs etc.",
   run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
-    let GuildSettings = client.settings.get(`${interaction.guild.id}`)
+let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     //things u can directly access in an interaction!
     const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;
@@ -28,7 +28,7 @@ module.exports = {
         .addField(client.la[ls].cmds.info.stats.field3.title, handlemsg(client.la[ls].cmds.info.stats.field3.value, { guildcommands: guild.commands }), true)
         .addField(client.la[ls].cmds.info.stats.field4.title, handlemsg(client.la[ls].cmds.info.stats.field4.value, { guildsongs: guild.songs }), true)
         .setTitle(handlemsg(client.la[ls].cmds.info.stats.title, { botname: client.user.username }))
-        interaction?.reply({ephemeral: true, embeds: [embed]});
+      interaction?.reply({ephemeral: true, embeds: [embed]});
     } catch (e) {
       console.log(String(e.stack).grey.bgRed)
     }

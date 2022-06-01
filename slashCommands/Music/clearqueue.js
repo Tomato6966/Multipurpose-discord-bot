@@ -30,7 +30,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       //clear the QUEUE
       player.queue.clear();
       //Send Success Message
-      interaction?.reply({embeds : [new MessageEmbed()
+      interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
         .setTitle(client.la[ls].cmds.music.clearqueue.title)
         .setColor(es.color)
       ]});

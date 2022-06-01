@@ -38,7 +38,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       if(!args[0]) args = [interaction?.options.getString("song")]
       //if no args return error
       if (!args[0])
-        return interaction?.reply({embeds : [new MessageEmbed()
+        return interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setTitle(eval(client.la[ls]["cmds"]["music"]["playsc"]["variable1"]))
         ]});
@@ -46,7 +46,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       playermanager(client, message, args, `song:soundcloud`, interaction);
     } catch (e) {
       console.log(String(e.stack).dim.bgRed)
-      return message.reply({embeds :[new MessageEmbed()
+      return interaction?.reply({ephemeral: true, embeds :[new MessageEmbed()
         .setColor(es.wrongcolor)
 
         .setTitle(client.la[ls].common.erroroccur)

@@ -61,9 +61,8 @@ module.exports = async (client) => {
     let applytickets = `applytickets${index}`; 
     let ticketsetupapply = `ticket-setup-apply-${index}`; 
     let pre = `apply${index}`;
-    console.log("APPLY DB NUMBER: ".green, index);
-    var applyDbData = rawData.find(d => d.ID == guild.id)?.data?.[pre] || await apply_db.get(`${message.guild.id}.${pre}`);
     let apply_db = client.apply
+    var applyDbData = rawData.find(d => d.ID == guild.id)?.data?.[pre] || await apply_db.get(`${message.guild.id}.${pre}`);
     let buttonRow1 = new MessageActionRow().addComponents([Buttons.acceptbutton, Buttons.declinebutton, Buttons.ticketbutton]);
     let buttonRow2 = new MessageActionRow().addComponents([Buttons.emoji1button, Buttons.emoji2button, Buttons.emoji3button, Buttons.emoji4button, Buttons.emoji5button]);
     let allbuttons = [buttonRow1, buttonRow2];
@@ -539,7 +538,7 @@ module.exports = async (client) => {
           }
         }
         if(!index) {
-          return console.log(`NO DB FOUND`)
+          return 
         }
         let applyname = `apply${index}`;
         let applytickets = `applytickets${index}`; 
@@ -660,7 +659,7 @@ module.exports = async (client) => {
                 member.roles.add(roleid).catch((e)=>{channel_tosend.send(`I am Missing Permissions to grant the Role\n` + e.message)});
               }
             } catch (e) {
-              console.log(String(e).grey)
+              console.error(e)
               //if an error happens, show it
               interaction?.reply({content: eval(client.la[ls][`handlers`][`applyjs`][`apply`][`variable33`]),ephemeral:  true}).then(async msg=>{
                 setTimeout(()=>{

@@ -324,7 +324,7 @@ module.exports = {
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(`The Channel \`${channel.name}\` is now removed out of the Whitelisted Channels of this System`)
                     .setColor(es.color)
-                    .setDescription(`Every single Channel:\n> <#${antisettings.join(">\n> <#")}>\nis not checked by the System`.substring(0, 2048))
+                    .setDescription(`Every single Channel:\n> <#${antisettings}>\nis not checked by the System`.substring(0, 2048))
                     .setFooter(client.getFooter(es))]
                   });
                 } catch (e) {

@@ -107,9 +107,9 @@ const { handlemsg } = require(`../../handlers/functions`);
           }
 
           let embed = new MessageEmbed()
-            .setTitle(`Search result for: 🔎 **\`${filter.searchterm}`.substring(0, 256 - 3) + "`**")
+            .setTitle(`${client.la[ls]["cmds"]["music"]["searchradio"]["result"]} **\`${filter.searchterm}`.substring(0, 256 - 3) + "`**")
             .setColor(es.color)
-            .setFooter(client.getFooter(`Search-Request by: ${message.author.tag}`, message.author.displayAvatarURL({
+            .setFooter(client.getFooter(`${client.la[ls]["cmds"]["music"]["searchradio"]["srequest"]} ${message.author.tag}`, message.author.displayAvatarURL({
               dynamic: true
             })))
 

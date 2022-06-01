@@ -6,7 +6,8 @@ var config = require(`../../botconfig/config.json`);
 var ee = require(`../../botconfig/embed.json`);
 var emoji = require(`../../botconfig/emojis.json`);
 var {
-  dbEnsure
+  dbEnsure,
+  dbRemove,
 } = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
@@ -161,7 +162,7 @@ module.exports = {
                       });
                     }
                   } else {
-                    message.reply( "you didn't ping a valid Channel")
+                    message.reply("Send MESSAGE please")
                   }
                 }) .catch(e => {
                   console.error(e)
@@ -209,7 +210,7 @@ module.exports = {
               var channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
               if (channel) {
                 let antisettings = await client.settings.get(message.guild.id+ ".antispam.whitelistedchannels")
-                if (antisettings?.includes(channel.id)) return message.reply({embeds: [new Discord.MessageEmbed()
+                if (antisettings.includes(channel.id)) return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antidiscord"]["variable7"]))
                   .setColor(es.wrongcolor)
                   .setFooter(client.getFooter(es))]
@@ -219,7 +220,7 @@ module.exports = {
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(`The Channel \`${channel.name}\` is now got added to the Whitelisted Channels of this System`)
                     .setColor(es.color)
-                    .setDescription(`Every single Channel:\n<#${await client.settings.get(message.guild.id+ ".antispam.whitelistedchannels").join(">\n<#")}>\nis not checked by the System`.substring(0, 2048))
+                    .setDescription(`Every single Channel:\n<#${await client.settings.get(message.guild.id+ ".antispam.whitelistedchannels")}>\nis not checked by the System`.substring(0, 2048))
                     .setFooter(client.getFooter(es))]
                   });
                 } catch (e) {
@@ -267,11 +268,11 @@ module.exports = {
                   .setFooter(client.getFooter(es))]
                 });
                 try {
-                  await client.settings.remove(message.guild.id, channel.id, "antispam.whitelistedchannels");
+                  await dbRemove(client.settings, message.guild.id+`.antispam.whitelistedchannels`, channel.id)
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(`The Channel \`${channel.name}\` is now removed out of the Whitelisted Channels of this System`)
                     .setColor(es.color)
-                    .setDescription(`Every single Channel:\n> <#${await client.settings.get(message.guild.id+ ".antispam.whitelistedchannels").join(">\n> <#")}>\nis not checked by the System`.substring(0, 2048))
+                    .setDescription(`Every single Channel:\n> <#${await client.settings.get(message.guild.id+ ".antispam.whitelistedchannels")}>\nis not checked by the System`.substring(0, 2048))
                     .setFooter(client.getFooter(es))]
                   });
                 } catch (e) {

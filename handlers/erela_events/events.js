@@ -156,16 +156,16 @@ module.exports = (client) => {
               const { channel } = member.voice
               const player = client.manager.players.get(i?.guild.id);
               if (!player)
-                return i?.reply({content: ":x: Nothing Playing yet", ephemeral: true})
+                return i?.reply({content: `${client.la[ls].cmds.music.musicsystem.nothingplay}`, ephemeral: true})
                 
               if (!channel)
                 return i?.reply({
-                  content: `:x: **Please join a Voice Channel first!**`,
+                  content: `${client.la[ls].cmds.music.musicsystem.joinvc}`,
                   ephemeral: true
                 })                  
               if (channel.id !== player.voiceChannel)
                 return i?.reply({
-                  content: `:x: **Please join __my__ Voice Channel first! <#${player.voiceChannel}>**`,
+                  content: `${client.la[ls].cmds.music.musicsystem.joinmevc} <#${player.voiceChannel}>**`,
                   ephemeral: true
                 })
               const es = Settings.embed || ee;
@@ -174,8 +174,8 @@ module.exports = (client) => {
                 return i?.reply({embeds: [new MessageEmbed()
                   .setColor(es.wrongcolor)
                   .setFooter(client.getFooter(es))
-                  .setTitle(`:x: **You are not a DJ and not the Song Requester!**`)
-                  .setDescription(`**DJ-ROLES:**\n${dj}`)
+                  .setTitle(client.la[ls].cmds.music.musicsystem.djerr)
+                  .setDescription(`${client.la[ls].cmds.music.musicsystem.djroles}\n${dj}`)
                 ],
                 ephemeral: true});
               }
@@ -184,6 +184,7 @@ module.exports = (client) => {
               //skip
               if(i?.customId == "1") {
                 //if ther is nothing more to skip then stop music and leave the Channel
+                let ls = await client.settings.get(i?.guild.id+ ".language")
                 if (player.queue.size == 0) {
                   //if its on autoplay mode, then do autoplay before leaving...
                   if(player.get("autoplay")) return autoplay(client, player, "skip");
@@ -191,7 +192,7 @@ module.exports = (client) => {
                     embeds: [new MessageEmbed()
                     .setColor(es.color)
                     .setTimestamp()
-                    .setTitle(`⏹ **Stopped playing and left the Channel**`)
+                    .setTitle(client.la[ls].cmds.music.stop.variable1)
                     .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                   })
                   edited = true;
@@ -204,7 +205,7 @@ module.exports = (client) => {
                   embeds: [new MessageEmbed()
                   .setColor(es.color)
                   .setTimestamp()
-                  .setTitle(`⏭ **Skipped to the next Song!**`)
+                  .setTitle(client.la[ls].cmds.music.skip.title2)
                   .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
               }
@@ -213,12 +214,13 @@ module.exports = (client) => {
 
               //stop
               if(i?.customId == "2") {
+                let ls = await client.settings.get(i?.guild.id+ ".language")
                 //Stop the player
                 i?.reply({
                   embeds: [new MessageEmbed()
                   .setColor(es.color)
                   .setTimestamp()
-                  .setTitle(`⏹ **Stopped playing and left the Channel**`)
+                  .setTitle(client.la[ls].cmds.music.stop.variable1)
                   .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 }) 
                 edited = true;
@@ -229,13 +231,14 @@ module.exports = (client) => {
 
               //pause/resume
               if(i?.customId == "3") {
+                let ls = await client.settings.get(i?.guild.id+ ".language")
                 if (!player.playing){
                   player.pause(false);
                   i?.reply({
                     embeds: [new MessageEmbed()
                     .setColor(es.color)
                     .setTimestamp()
-                    .setTitle(`▶️ **Resumed!**`)
+                    .setTitle(client.la[ls].cmds.music.musicsystem.resume)
                     .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                   })
                 } else{
@@ -246,7 +249,7 @@ module.exports = (client) => {
                     embeds: [new MessageEmbed()
                     .setColor(es.color)
                     .setTimestamp()
-                    .setTitle(`⏸ **Paused!**`)
+                    .setTitle(client.la[ls].cmds.music.musicsystem.pause)
                     .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                   })
                 }
@@ -339,6 +342,7 @@ module.exports = (client) => {
 
               //Forward
               if(i?.customId == `8`){
+                let ls = await client.settings.get(i?.guild.id+ ".language")
                 //get the seektime variable of the user input
                 let seektime = Number(player.position) + 10 * 1000;
                 //if the userinput is smaller then 0, then set the seektime to just the player.position
@@ -352,7 +356,7 @@ module.exports = (client) => {
                   embeds: [new MessageEmbed()
                     .setColor(es.color)
                     .setTimestamp()
-                    .setTitle(`⏩ **Forwarded the song for \`10 Seconds\`!**`)
+                    .setTitle(client.la[ls].cmds.music.musicsystem.forward)
                     .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
               }
@@ -360,6 +364,7 @@ module.exports = (client) => {
               
               //Rewind
               if(i?.customId == `9`){
+                let ls = await client.settings.get(i?.guild.id+ ".language")
                 let seektime = player.position - 10 * 1000;
                 if (seektime >= player.queue.current.duration - player.position || seektime < 0) {
                   seektime = 0;
@@ -371,7 +376,7 @@ module.exports = (client) => {
                   embeds: [new MessageEmbed()
                     .setColor(es.color)
                     .setTimestamp()
-                    .setTitle(`⏪ **Rewinded the song for \`10 Seconds\`!**`)
+                    .setTitle(client.la[ls].cmds.music.musicsystem.rewind)
                     .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
               }
@@ -492,21 +497,21 @@ function generateQueueEmbed(client, player, track){
     embed.setAuthor(client.getAuthor(`${track.title}`, "https://images-ext-1.discordapp.net/external/DkPCBVBHBDJC8xHHCF2G7-rJXnTwj_qs78udThL8Cy0/%3Fv%3D1/https/cdn.discordapp.com/emojis/859459305152708630.gif", track.uri))
     embed.setThumbnail(`https://img.youtube.com/vi/${track.identifier}/mqdefault.jpg`)
     embed.setFooter(client.getFooter(`Requested by: ${track.requester.tag}`, track.requester.displayAvatarURL({dynamic: true})));
-  let skip = new MessageButton().setStyle('PRIMARY').setCustomId('1').setEmoji(`⏭`)
-  let stop = new MessageButton().setStyle('DANGER').setCustomId('2').setEmoji(`⏹️`)
-  let pause = new MessageButton().setStyle('SECONDARY').setCustomId('3').setEmoji('⏸')
+  let skip = new MessageButton().setStyle('PRIMARY').setCustomId('1').setEmoji(`<:skip:978181805679185970>`)
+  let stop = new MessageButton().setStyle('DANGER').setCustomId('2').setEmoji(`<:stop:978181805645656104>`)
+  let pause = new MessageButton().setStyle('SECONDARY').setCustomId('3').setEmoji('<:pause:978181784925765684>')
   let autoplay = new MessageButton().setStyle('SUCCESS').setCustomId('4').setEmoji('🔁').setLabel(`Autoplay`)
   let shuffle = new MessageButton().setStyle('PRIMARY').setCustomId('5').setEmoji('🔀').setLabel(`Shuffle`)
   if (!player.playing) {
-    pause = pause.setStyle('SUCCESS').setEmoji('▶️').setLabel(`Resume`)
-  }
+    pause = pause.setStyle('SUCCESS').setEmoji('<:play:977868616282275860>')
+  } 
   if (player.get("autoplay")) {
     autoplay = autoplay.setStyle('SECONDARY')
   }
   let songloop = new MessageButton().setStyle('SUCCESS').setCustomId('6').setEmoji(`🔁`).setLabel(`Song`)
   let queueloop = new MessageButton().setStyle('SUCCESS').setCustomId('7').setEmoji(`🔂`).setLabel(`Queue`)
-  let forward = new MessageButton().setStyle('PRIMARY').setCustomId('8').setEmoji('⏩')
-  let rewind = new MessageButton().setStyle('PRIMARY').setCustomId('9').setEmoji('⏪')
+  let forward = new MessageButton().setStyle('PRIMARY').setCustomId('8').setEmoji('<:forward_1:978181794933375006>')
+  let rewind = new MessageButton().setStyle('PRIMARY').setCustomId('9').setEmoji('<:rewind_1:978181785206808587>')
   let lyrics = new MessageButton().setStyle('PRIMARY').setCustomId('10').setEmoji('📝').setLabel(`Lyrics`).setDisabled();
   if (!player.queueRepeat && !player.trackRepeat) {
     songloop = songloop.setStyle('SUCCESS')
@@ -520,10 +525,9 @@ function generateQueueEmbed(client, player, track){
     songloop = songloop.setStyle('SUCCESS')
     queueloop = queueloop.setStyle('SECONDARY')
   }
-  const row = new MessageActionRow().addComponents([skip, stop, pause]);
-  const row2 = new MessageActionRow().addComponents([rewind, forward]);
+  const row = new MessageActionRow().addComponents([rewind, pause, stop, skip, forward]);
   return {
     embeds: [embed], 
-    components: [row, row2]
+    components: [row]
   }
 }

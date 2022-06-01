@@ -12,7 +12,7 @@
  * 8  LOAD_the_BOT_Functions
  * 9  Login_to_the_Bot
  * 
- *   BOT CODED BY: Cepheid
+ *   BOT CODED BY: cepheid
  *********************************************************/
 
 
@@ -62,8 +62,8 @@ const client = new Discord.Client({
     //Discord.Intents.FLAGS.DIRECT_MESSAGE_TYPING
   ],
   presence: {
-    activities: [{name: `Loading Shards`, type: config.status.type, url: config.status.url}],
-    status: "online"
+    activities: [{name: `Loading Shards or Shard is died...`, type: config.status.type, url: config.status.url}],
+    status: "dnd"
   }
 });
 const discordModals = require('discord-modals') // Define the discord-modals package!
@@ -93,8 +93,8 @@ Object.freeze(client.la)
  /**********************************************************
   * @param {6} Raise_the_Max_Listeners to 0 (default 10)
   *********************************************************/
-client.setMaxListeners(0);
-Events.defaultMaxListeners = 0;
+client.setMaxListeners(20);
+Events.defaultMaxListeners = 20;
 process.env.UV_THREADPOOL_SIZE = OS.cpus().length;
  
  
@@ -121,7 +121,8 @@ async function requirehandlers(){
     "clientvariables", 
     "events", 
     "erelahandler", 
-    "command", 
+    "command",
+    "anti_nuke",
     "loaddb", 
     "slashCommands"
   ]) {
@@ -186,12 +187,12 @@ requirehandlers();
  /**********************************************************
   * @param {9} Login_to_the_Bot
   *********************************************************/
+  
 client.cluster = new Cluster.Client(client); //Init the Client & So we can also access broadcastEval...
 client.login(config.token);
 
-
 //start the dashboard
- //require("/path/to/dashboard/index.js")(client);
+ //require("./dashboard/index.js")(client);
  
 
 

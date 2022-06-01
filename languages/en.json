@@ -9,21 +9,21 @@
                 "loading": "Getting the Bot-Information-Data",
                 "descriptionn": "\nName: {name} [{id}]\nBot Latency: {botPing}мс\nApi Latency: {apiping}мс\nRuntime: {uptime}",
                 "field1": {
-                    "title": "<a:arrow:943027097348227073> General -- Stats",
+                    "title": "General -- Stats",
                     "value": "Servers: {guildsamm}\nUsers: {usersamm}\nConnections: {connectedchannelsamount}\nClusters: {clustersamm}\nShards: {shardsamm}"
                 },
                 "field2": {
-                    "title": "<a:arrow:943027097348227073> Bot -- Stats"
+                    "title": "Bot -- Stats"
                 },
                 "field3": {
-                    "title": "<a:arrow:943027097348227073> System -- Stats",
+                    "title": "System -- Stats",
                     "value": "```yml\nOS: Linux | Debian\nCPU Usage: {cpu} %\nRAM Usage: {ram} MB```"
                 },
                 "field4": {
-                    "title": "<a:arrow:943027097348227073> Developer"
+                    "title": "Developer"
                 },
                 "field5": {
-                    "title": "<a:arrow:943027097348227073> Important Links",
+                    "title": "Important Links",
                     "value": "**[Invite Link]({invitelink})・[Support Server](http://discord.gg/7PdChsBGKd)**"
                 },
                 "variable1": "`\\`\\`\\`yml\\nName: ${client.user.tag} [${client.user.id}]\\nBot Latency: ${Math.round(Date.now() - message.createdTimestamp)}ms\\nApi Latency: ${Math.round(client.ws.ping)}ms\\nRuntime: ${duration(client.uptime).join(\"︲\")}\\`\\`\\``",
@@ -232,6 +232,10 @@
                 },
                 "variable1": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
+            "inviteslash": {
+                "click": "Click here to invite me!",
+                "clickwithout": "Click here to invite me __without__ Slash Commands!"
+            },
             "invites": {
                 "author": "Invites of: {usertag}",
                 "field1": {
@@ -239,7 +243,7 @@
                 },
                 "field2": {
                     "title": "💡 **That means he/she has:**",
-                    "value": "> <:joines:950878825254883378> {invites} Joins (When the Member Joins the Server)\n> <:leaves:950879337454895134> {leaves} Leaves (When the invited Member left the Server)\n> :x: {fake} Fakes (Alt Accounts / Rejoins)"
+                    "value": "> <:joines:978181806182531072> {invites} Joins (When the Member Joins the Server)\n> <:leaves:950879337454895134> {leaves} Leaves (When the invited Member left the Server)\n> :x: {fake} Fakes (Alt Accounts / Rejoins)"
                 },
                 "field3": {
                     "title": "📘 **To Calculate your Invites do:**"
@@ -332,7 +336,7 @@
                 "field12": "**<a:arrow:943027097348227073> Total Boosts:**",
                 "field13": "**<a:arrow:943027097348227073> Boost-Level:**",
                 "field14": "**<a:arrow:943027097348227073> Max-Talk-Bitrate:**",
-                "field15": "**<:arrow:950884679114952715> Premium Server:**",
+                "field15": "**<a:arrow:943027097348227073> Premium Server:**",
                 "variablex_1": "`<a:arrow:943027097348227073> [${message.guild.emojis.cache.size}] Emojis: `", "variable1":"\"> \"+message.guild.emojis.cache.size < 35 ? message.guild.emojis.cache.map(emoji => `${emoji}`).join(\"︲\") : message.guild.emojis.cache.size > 35 ? emojitrimarray(message.guild.emojis.cache.map(emoji => `${emoji}`)).substr(0, 2048) : 'No Emojis'",
                 "variablex_2": "`<a:arrow:943027097348227073> [${message.guild.roles.cache.size}] Roles: `", "variable2":"\"> \"+message.guild.roles.cache.size < 40 ? [...message.guild.roles.cache.values()].sort((a, b) => b.rawPosition - a.rawPosition).map(role => `<@&${role.id}>`).join(', ') : message.guild.roles.cache.size > 40 ? trimArray(message.guild.roles.cache) : 'None'",
                 "variable3": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
@@ -443,7 +447,7 @@
                 "loading": "Getting the Channel-Information-Data",
                 "error1": ":x: Please use a Valid Youtube Link",
                 "error2": ":x: **Only the one who typed {prefix}youtubeinfo is allowed to react!**",
-                "example": "Example Usage: `{prefix}youtubeinfo https://youtube.com/c/Tomato6966`",
+                "example": "Example Usage: `{prefix}youtubeinfo https://youtube.com/c/WindahBasudara`",
                 "field1": "**Subscribercount:**",
                 "field2": "**Tags:**",
                 "field3": "**Unlisted:**",
@@ -558,6 +562,7 @@
                 "variable5": "`\\`\\`\\`${e.message}\\`\\`\\``"
             },
             "nowplaying": {
+                "curt": "Current song playing:",
                 "variable1": "`:x: There is nothing playing`",
                 "variable2": "`${player.playing ? `${emoji.msg.resume}` : `${emoji.msg.pause}`} **${player.queue.current.title}**`",
                 "variable3": "`\\`\\`\\`${e.message}\\`\\`\\``"
@@ -615,12 +620,14 @@
                 "variable6": "`${e.message}`"
             },
             "radio": {
+                "searching": "Searching: ",
                 "variable1": "`:x: Not a valid radio station`",
                 "variable2": "`Please use a Number between \\`1\\` and \\`183\\``",
                 "variable3": "`${emoji.msg.ERROR} Volume Number out of Range`",
                 "variable4": "`Please use a Number between \\`1\\` and \\`150\\``",
-                "variable5": "`${emoji.msg.ERROR} Radio Station not found`",
+                "variable5": "`:x: Radio Station not found`",
                 "variable6": "`Please use a Station between \\`1\\` and \\`183\\``",
+                "variable6c": "`Please use a Station between \\`1\\` and `",
                 "variable7": "`\\`\\`\\`${e.message}\\`\\`\\``"
             },
             "reconnect": {
@@ -673,6 +680,8 @@
                 "variable2": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "searchradio": {
+                "srequest": "Search-Request by:",
+                "result": "Search result for: 🔎",
                 "variable1": "`:x: What should be the search Type`",
                 "variable2": "`Usage: \\`${prefix}searchradio <TYPE> <Seach Query>\\`\\nValid Types: \\`country\\`, \\`city\\`, \\`name\\`, \\`genre\\`\\nExample: \\`${prefix}searchradio tag jazz\\`\\nExample: \\`${prefix}searchradio state Austria\\``",
                 "variable3": "`${emoji.msg.ERROR} What should I search for?`",
@@ -767,9 +776,9 @@
                 "queueloopon": "**Enabled Queue Loop**",
                 "rewind": "⏪ **Rewinded the song for `10 Seconds`!**",
                 "replay": "🔊 **Replaying current song!**",
-                "volmax": "🔊 **Volume set to MAX**",
-                "volmin": "🔉 **Volume set to MIN**",
-                "volmid": "🔉 **Volume set to 90**",
+                "volmax": "🔊 **Volume set to MAX(boost to 150)**",
+                "volmin": "🔉 **Volume set to MIN(1)**",
+                "volmid": "🔉 **Volume set to MID(100)**",
                 "volp": "🔊 **Volume +10**",
                 "volm": "🔉 **Volume -10**",
                 "join": ":x: **Please join a Voice Channel first!**",
@@ -801,12 +810,30 @@
                 "volmbt": "- Vol",
                 "volmaxbt": "Max Vol",
                 "volminbt": "Min Vol",
-                "midvolbt": "90 Vol",
+                "midvolbt": "Mid Vol",
                 "resumebt": "Resume",
                 "songg": "Songs",
                 "shuffled": "🔀 **Shuffled",
                 "shuffleds": "Songs!**",
-                "actionby": "💢 Action by:"
+                "actionby": "💢 Action by:",
+                "alrmax": "🔊 **Volume already 150(Max)**",
+                "alrmin": "🔊 **Volume already 1(Min)**",
+                "alrmid": "🔊 **Volume already 100(Mid)**",
+                "djroles": "**DJ-ROLES:**",
+                "djerr": ":x: **You are not a DJ and not the Song Requester!**",
+                "joinmevc": ":x: **Please join __my__ Voice Channel first!",
+                "joinvc": ":x: **Please join Voice Channel first!",
+                "nothingplay": ":x: Nothing Playing yet",
+                "textbt1": "Enable text",
+                "textbt2": "Disable text",
+                "savebt": "Save song",
+                "savesubtitle": "Succesfully saved this song to your DMs",
+                "savetitle": "Check your DMs!",
+                "previoustitleerr": "No previous songs detected!",
+                "previoussubtitleerr": "Try again later",
+                "previoustitle": "⏮️ Previous song detected, trying to play!",
+                "previoussubtitle": "Playing previous played song",
+                "prevbt": "Prev. song"
             }
         },
         "programming": {
@@ -858,6 +885,14 @@
             }
         },
         "settings": {
+            "msbt": {
+                "title1": "Successfully __ENABLED__ text on musicsystem buttons",
+                "title2": "Successfully __DISABLED__ text on musicsystem buttons",
+                "subtitle1": "Now buttons will be like this: ⏹️ Stop",
+                "subtitle2": "Now buttons will be like this: ⏹️",
+                "err": "You haven't setup music system yet, do it by `setup-music`",
+                "errt": "Music system is not setuped"
+            },
             "addbotchat": {
                 "variable1": "`:x: Please add a Channel via ping, for example: #channel!`",
                 "variable2": "`:x: It seems that the Channel does not exist in this Server!`",
@@ -1569,7 +1604,7 @@
             "detailedeval": {
                 "variable1": "`${emoji.msg.ERROR}  Error | You are not allowed to run this command! Only the **\\`Cepheid#0001\\`** is allowed to run this Cmd`",
                 "variable2": "`${emoji.msg.ERROR}  Error | You have to at least include one evaluation arguments`",
-                "variable3": "`Cepheid | Evaluation`",
+                "variable3": "`cepheid | Evaluation`",
                 "variable4": "`\\`\\`\\`` + m + `\\`\\`\\``",
                 "variable5": "`${emoji.msg.ERROR}  ERROR | An error occurred!`",
                 "variable6": "`\\`\\`\\`${e.message}\\`\\`\\``"
@@ -1577,7 +1612,7 @@
             "eval": {
                 "variable1": "`${emoji.msg.ERROR}  Error | You are not allowed to run this command! Only the **\\`Cepheid#0001\\`** is allowed to run this Cmd`",
                 "variable2": "`${emoji.msg.ERROR}  Error | You have to at least include one evaluation arguments`",
-                "variable3": "`Cepheid | Evaluation`",
+                "variable3": "`cepheid | Evaluation`",
                 "variable4": "`\\`\\`\\`` + splitDescription[0] + `\\`\\`\\``",
                 "variable5": "`${emoji.msg.ERROR}  ERROR | An error occurred!`",
                 "variable6": "`\\`\\`\\`${e.message}\\`\\`\\``"
@@ -1835,37 +1870,37 @@
                 "variable23": "\":x: ERROR | Your Time ran out\"",
                 "variable24": "\"Which Role/User do you wanna add/remove?\"",
                 "variable25": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
-                "variable26": "`<:joines:950878825254883378> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Bot add__ Whitelist (module)!**`",
+                "variable26": "`<:joines:978181806182531072> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Bot add__ Whitelist (module)!**`",
                 "variablex_27": "\"__**Current Whitelisted Users:**__\"", "variable27": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.users\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.users\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.users\").slice(0, 15).map(x=>`<@${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.users\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.users\").map(x=>`<@${x}>`).join(\"︲\")}`",
                 "variablex_28": "\"__**Current Whitelisted Roles:**__\"", "variable28": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.roles\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.roles\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.roles\").slice(0, 15).map(x=>`<@&${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.roles\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.roles\").map(x=>`<@&${x}>`).join(\"︲\")}`",
                 "variable29": "\":x: ERROR | Your Time ran out\"",
                 "variable30": "\"Which Role/User do you wanna add/remove?\"",
                 "variable31": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
-                "variable32": "`<:joines:950878825254883378> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Kick/Ban__ Whitelist (module)!**`",
+                "variable32": "`<:joines:978181806182531072> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Kick/Ban__ Whitelist (module)!**`",
                 "variablex_33": "\"__**Current Whitelisted Users:**__\"", "variable33": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.users\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.users\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.users\").slice(0, 15).map(x=>`<@${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.users\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.users\").map(x=>`<@${x}>`).join(\"︲\")}`",
                 "variablex_34": "\"__**Current Whitelisted Roles:**__\"", "variable34": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.roles\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.roles\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.roles\").slice(0, 15).map(x=>`<@&${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.roles\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.roles\").map(x=>`<@&${x}>`).join(\"︲\")}`",
                 "variable35": "\":x: ERROR | Your Time ran out\"",
                 "variable36": "\"Which Role/User do you wanna add/remove?\"",
                 "variable37": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
-                "variable38": "`<:joines:950878825254883378> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Create Role__ Whitelist (module)!**`",
+                "variable38": "`<:joines:978181806182531072> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Create Role__ Whitelist (module)!**`",
                 "variablex_39": "\"__**Current Whitelisted Users:**__\"", "variable39": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.users\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.users\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.users\").slice(0, 15).map(x=>`<@${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.users\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.users\").map(x=>`<@${x}>`).join(\"︲\")}`",
                 "variablex_40": "\"__**Current Whitelisted Roles:**__\"", "variable40": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.roles\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.roles\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.roles\").slice(0, 15).map(x=>`<@&${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.roles\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.roles\").map(x=>`<@&${x}>`).join(\"︲\")}`",
                 "variable41": "\":x: ERROR | Your Time ran out\"",
                 "variable42": "\"Which Role/User do you wanna add/remove?\"",
                 "variable43": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
-                "variable44": "`<:joines:950878825254883378> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Delete Role__ Whitelist (module)!**`",
+                "variable44": "`<:joines:978181806182531072> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Delete Role__ Whitelist (module)!**`",
                 "variablex_45": "\"__**Current Whitelisted Users:**__\"", "variable45": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.users\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.users\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.users\").slice(0, 15).map(x=>`<@${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.users\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.users\").map(x=>`<@${x}>`).join(\"︲\")}`",
                 "variablex_46": "\"__**Current Whitelisted Roles:**__\"", "variable46": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.roles\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.roles\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.roles\").slice(0, 15).map(x=>`<@&${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.roles\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.roles\").map(x=>`<@&${x}>`).join(\"︲\")}`",
                 "variable47": "\":x: ERROR | Your Time ran out\"",
                 "variable48": "\"Which Role/User do you wanna add/remove?\"",
                 "variable49": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
-                "variable50": "`<:joines:950878825254883378> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Channel Create__ Whitelist (module)!**`",
+                "variable50": "`<:joines:978181806182531072> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Channel Create__ Whitelist (module)!**`",
                 "variablex_51": "\"__**Current Whitelisted Users:**__\"", "variable51": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.users\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.users\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.users\").slice(0, 15).map(x=>`<@${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.users\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.users\").map(x=>`<@${x}>`).join(\"︲\")}`",
                 "variablex_52": "\"__**Current Whitelisted Roles:**__\"", "variable52": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.roles\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.roles\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.roles\").slice(0, 15).map(x=>`<@&${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.roles\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.roles\").map(x=>`<@&${x}>`).join(\"︲\")}`",
                 "variable53": "\":x: ERROR | Your Time ran out\"",
                 "variable54": "\"Which Role/User do you wanna add/remove?\"",
                 "variable55": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
-                "variable56": "`<:joines:950878825254883378> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Channel Delete__ Whitelist (module)!**`",
+                "variable56": "`<:joines:978181806182531072> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Channel Delete__ Whitelist (module)!**`",
                 "variablex_57": "\"__**Current Whitelisted Users:**__\"", "variable57": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.users\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.users\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.users\").slice(0, 15).map(x=>`<@${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.users\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.users\").map(x=>`<@${x}>`).join(\"︲\")}`",
                 "variablex_58": "\"__**Current Whitelisted Roles:**__\"", "variable58": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.roles\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.roles\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.roles\").slice(0, 15).map(x=>`<@&${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.roles\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.roles\").map(x=>`<@&${x}>`).join(\"︲\")}`",
                 "variable59": "\":x: ERROR | Your Time ran out\"",
@@ -1903,7 +1938,7 @@
                 "variable91": "`${client.Anti_Nuke_System.get(message.guild.id, \"all.showwhitelistlog\") ? \"> :white_check_mark: **I will show it when a Whitelisted User/Role makes an Action**\\n> *But I won't do anything to him/her, cause he/she is whitelisted!*\": \"> :x: **I won't show it when a whitelisted User is doing something!**\\n> This doesn't affect your security! (He is whitelisted, from the YOU)\"}${client.Anti_Nuke_System.get(message.guild.id, \"all.quarantine\")?.length > 0 ? `\\n\\n> **I will add him/her the Quarantine Role: <@&${client.Anti_Nuke_System.get(message.guild.id, \"all.quarantine\")}> Role when removing the Roles!**` : \"*NO Quarantine Role set, I will just remove his/her Roles / KICK / BAN..!*\"}`",
                 "variable92": "\":x: **There is no Quarantine Role added yet!**\\n> To add it go to 'Manage Settings' and Add the Quarantine Role!\"",
                 "variable93": "`:x: **All Channels in this Guild are denied to View the Channel for the <@&${role}> Role**`",
-                "variable94": "`>>> :white_check_mark: **Now Denying the <@&${role}> for ${channels.size} Channels, to View it!**\\n\\n<a:Loading:950883677255118898> **This might take up to \\`${channels.size * 1.5} Seconds\\`**`",
+                "variable94": "`>>> :white_check_mark: **Now Denying the <@&${role}> for ${channels.size} Channels, to View it!**\\n\\n<a:Loading1:958415066972184636> **This might take up to \\`${channels.size * 1.5} Seconds\\`**`",
                 "variable95": "`:white_check_mark: **Adjusted the Permission for \\`${channels.size} Channels\\`**`",
                 "variable96": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
@@ -1919,7 +1954,7 @@
                 "variable8": "-",
                 "variable9": "\"What should be the embed color?\"",
                 
-                "variable9_1":"\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #ffee55)\"",
+                "variable9_1":"\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #238028)\"",
                 "variable10": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable11": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable12": "\":x: ERROR | Your Time ran out\"",
@@ -1956,7 +1991,7 @@
                 "variable40": "\":x: ERROR | TIME RAN OUT / INVALID INPUT | cancelled\"",
                 "variable41": "-",
                 "variable42": "\"What should be the embed color?\"",
-                "variable42_1": "\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #ffee55)\"",
+                "variable42_1": "\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #238028)\"",
                 "variable43": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable44": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable45": "\":x: ERROR | TIME RAN OUT / INVALID INPUT | cancelled\"",
@@ -2117,7 +2152,7 @@
                 "variable199": "\":x: ERROR | TIME RAN OUT / INVALID INPUT | cancelled\"",
                 "variable200": "-",
                 "variable201": "\"What should be the embed color?\"",
-                "variable201_1": "\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #ffee55)\"",
+                "variable201_1": "\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #238028)\"",
                 "variable202": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable203": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable204": "\":x: ERROR | TIME RAN OUT / INVALID INPUT | cancelled\"",
@@ -2293,11 +2328,11 @@
                 "variable3": "\":x: ERROR | Missing Permissions to add Reactions\"",
                 "variable4": "\":x: ERROR | Your Time ran out\"",
                 "variable5": "\"What Color do you want?\"",
-                "variable6": "`Send it now!\\n\\nMake sure to use a valid **HEX CODE** forexample: **\\`#ffee22\\`** __with__ the \\`#\\``",
+                "variable6": "`Send it now!\\n\\nMake sure to use a valid **HEX CODE** forexample: **\\`#238028\\`** __with__ the \\`#\\``",
                 "variable7": "\":x: ERROR | Please add a valid COLOR\"",
-                "variable8": "`Note that a HEX COLOR looks like that: \\`#ffee22\\``",
+                "variable8": "`Note that a HEX COLOR looks like that: \\`#238028\\``",
                 "variable9": "\":x: ERROR | Please add a valid COLOR\"",
-                "variable10": "`Note that a HEX COLOR looks like that: \\`#ffee22\\``",
+                "variable10": "`Note that a HEX COLOR looks like that: \\`#238028\\``",
                 "variable11": "`:white_check_mark: The new Embed Color is: \\`${es.color}\\``",
                 "variable12": "\":x: ERROR | An error occurred, please contact: `Cepheid#0001`\"",
                 "variable13": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``",
@@ -2326,7 +2361,12 @@
                 "variable36": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "setup-jtc": {
-                "variable1": "\"What do you want to do?\"",
+                "dltitle": "Succesfully changed default limit",
+                "dlsubtitle": "Now default limit will be: ",
+                "dltitletemp": "Provide new limit",
+                "dlsubtitletemp": "From 0(no limit) to 99",
+                "dlerror": "Provide number from 0(no limit) to 99 please!",
+                "variable1": "\"What do you want to do?\"", 
                 "variable2": "`1️⃣ **==** Manage the **first** Join to Create Setup\\n\\n2️⃣ **==** Manage the **second** Join to Create Setup\\n\\n3️⃣ **==** Manage the **third** Join to Create Setup\\n\\n\\n\\n*React with the Right Emoji according to the Right action*`",
                 "variable3": "\":x: ERROR | Missing Permissions to add Reactions\"",
                 "variable4": "\":x: ERROR | Your Time ran out\"",
@@ -2408,7 +2448,7 @@
                 "variable1": "\"***Select what you need in the `Selection` down Below!***\"",
                 "variable2": "\":x: Cancelled the Setup!\"",
                 "variable3": "\"Select your new Language\"",
-                "variable4": "`Current language is: **${languages[ls]}**\\n\\n***Note that this System is not finished yet!***\\n**Only partly working Languages are:**\\n> \\`English\\`, \\`India (Hindi)\\``",
+                "variable4": "`Current language is: **${languages[ls]}**\\n\\n***Note that this System is not finished yet!***\\n**Only partly working Languages are:**\\n> \\`Russian\\``",
                 "variable5": "`:white_check_mark: The new Language is **${languages[lang]}** (\\`${lang})\\``",
                 "variable6": "`:white_check_mark: Resetted the Language | The new Language is **🇬🇧 English** (en)`",
                 "variable7": "`📑 Current Language is ${thesettings}`",
@@ -2924,12 +2964,14 @@
                 "variable26": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "setup-twitch": {
+                "notitle": "This channel already added to twitch logger!",
+                "nosubtitle": "Please don't add same channel, add another",
                 "variable1": "\"What do you want to do?\"",
                 "variable2": "`1️⃣ **== Manage Channels** (Edit, Delete, etc.)\\n\\n2️⃣ **== Create/Set Twitch-Channel**\\n\\n3️⃣ **== Set Discord Twitch Logger Channel**\\n\\n4️⃣ **== Set ACTIVE LIVE STREAMING ROLE**\\n\\n5️⃣ **== Set Ghost Ping Role**\\n\\n\\n\\n*React with the Right Emoji according to the Right action*`",
                 "variable3": "\":x: ERROR | Missing Permissions to add Reactions\"",
                 "variable4": "\":x: ERROR | Your Time ran out\"",
                 "variable5": "\"Which Twitch Streamer do you wanna add?\"",
-                "variable6": "`Please send me just the link, for example: \\`https://www.twitch.tv/milratodiscordbot\\``",
+                "variable6": "`Please send me just the link, for example: \\`https://www.twitch.tv/obama\\``",
                 "variable7": "\"Which Discord User is he?\"",
                 "variable8": "`Please Ping the User now! For example: ${message.author}`",
                 "variable9": "\"Which Message should I post?\"",
@@ -2975,9 +3017,9 @@
                 "variable8": "\":x: ERROR | Missing Permissions to add Reactions\"",
                 "variable9": "\":x: ERROR | Your Time ran out\"",
                 "variable10": "\"Which account do you wanna use?\"",
-                "variable11": "`Please send me the TWITTER LINK like that: \\`https://twitter.com/MilratoDev\\``",
-                "variable12": "\"INVALID TWITTER LINK, a Twitter Link looks like that: \\`https://twitter.com/MilratoDev\\`\"",
-                "variable13": "\"INVALID TWITTER LINK, a Twitter Link looks like that: \\`https://twitter.com/MilratoDev\\`\"",
+                "variable11": "`Please send me the TWITTER LINK like that: \\`https://twitter.com/p_viendi\\``",
+                "variable12": "\"INVALID TWITTER LINK, a Twitter Link looks like that: \\`https://twitter.com/p_viendi\\`\"",
+                "variable13": "\"INVALID TWITTER LINK, a Twitter Link looks like that: \\`https://twitter.com/p_viendi\\`\"",
                 "variable14": "\":x: ERROR | Your Time ran out\"",
                 "variable15": "\"UNABLE TO FIND USER\"",
                 "variable16": "\"UNABLE TO FIND USER\"",
@@ -2997,7 +3039,7 @@
                 "variable30": "\"Which MEssage do you wanna send with the Twitter Post?\"",
                 "variable31": "`\\`{url}\\` Will be replaced with the Twitter POST LINK\\n\\n\\`{Twittername}\\` will be replaced with the TwitterAccountname`",
                 "variable32": "`:white_check_mark: I will now post The Twitter Messages with the Twitter Post: `",
-                "variable33": "`${collected.first().content.replace(\"{url}\", \"https://twitter.com/MilratoDev\").replace(\"{Twittername}\", \"Tomato6966\")}\\n\\nNote that this is just an **example**\\n\\nYou need to have The TWITTERNAME, TWITTERID, and DISCORDCHANNEl and MESSAGE to be right, so that the autoposter works!`",
+                "variable33": "`${collected.first().content.replace(\"{url}\", \"https://twitter.com/p_viendi\").replace(\"{Twittername}\", \"Tomato6966\")}\\n\\nNote that this is just an **example**\\n\\nYou need to have The TWITTERNAME, TWITTERID, and DISCORDCHANNEl and MESSAGE to be right, so that the autoposter works!`",
                 "variablex_34": "\"**NOTE THERE MIGHT BE AN UP TO 7 MINUTES DELAY!** (because of Rate limits)\"", "variable34": "\"When posting a new Twit\"",
                 "variable35": "\":x: ERROR | An error occurred, please contact: `Cepheid#0001`\"",
                 "variable36": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``",
@@ -3009,7 +3051,7 @@
                 "variable42": "`Go to: https://tweeterid.com to get your USERID and **ENTER IT __NOW__**`",
                 "variable43": "`You need to have The TWITTERNAME, TWITTERID, and DISCORDCHANNEl and MESSAGE to be right, so that the autoposter works!`",
                 "variable44": "\"What should be the new USERNAME of your TWITTER LOGGER?\"",
-                "variable45": "`That's your @, forexample: MilratoDev\\n\\nPlease **just** enter the Name!`",
+                "variable45": "`That's your @, forexample: CepheidDev\\n\\nPlease **just** enter the Name!`",
                 "variable46": "`${collected.first().content.replace(\"{url}\", `https://twitter.com/${collected.first().content}`).replace(\"{Twittername}\", collected.first().content)}\\n\\nNote that this is just an **example**\\n\\nYou need to have The TWITTERNAME, TWITTERID, and DISCORDCHANNEl and MESSAGE to be right, so that the autoposter works!`",
                 "variablex_47": "\"**NOTE THERE MIGHT BE AN UP TO 7 MINUTES DELAY!** (because of Rate limits)\"", "variable47": "\"When posting a new Twit\"",
                 "variable48": "\":x: ERROR | An error occurred, please contact: `Cepheid#0001`\"",
@@ -3798,7 +3840,7 @@
             "pussy": {
                 "variable1": "\"This Channel is not a NSFW Channel\"",
                 "variable2": "'You must use this command in an nsfw lounge!'",
-                "variable3": "`Please wait... <a:Loading1:958415066972184636>`",
+                "variable3": "`Please wait... <a:Loading:592829210054098944>`",
                 "variable4": "`:underage:\\n**[image not loading? click here](${response.body.message})**`"
             },
             "r34": {
@@ -4520,10 +4562,10 @@
             "manageinvites": {
                 "variable1": "\"MANAGE INVITES OF \" + user.tag, client.user.displayAvatarURL(), \"http://discord.gg/7PdChsBGKd\"",
                 "variable2": "`***Select what you want to do in the Selection down Below!***`",
-                "variablex_3": "`💡 **That means he has:**`","variable3":"`> <:joines:950878825254883378> ${invites} Joins (When the Member Joins the Server)\\n> <:leaves:950879337454895134> ${leaves} Leaves (When the invited Member left the Server)\\n> :x: ${fake} Fakes (Alt Accounts / Rejoins)`",
+                "variablex_3": "`💡 **That means he has:**`","variable3":"`> <:joines:978181806182531072> ${invites} Joins (When the Member Joins the Server)\\n> <:leaves:950879337454895134> ${leaves} Leaves (When the invited Member left the Server)\\n> :x: ${fake} Fakes (Alt Accounts / Rejoins)`",
                 "variable4": "\":x: Cancelled the Setup!\"",
                 "variable5": "\"NOT A NUMBER\"",
-                "variablex_6": "`💡 **That means he has:**`","variable6":"`> <:joines:950878825254883378> ${invites} Joins (When the Member Joins the Server)\\n> <:leaves:950879337454895134> ${leaves} Leaves (When the invited Member left the Server)\\n> :x: ${fake} Fakes (Alt Accounts / Rejoins)`",
+                "variablex_6": "`💡 **That means he has:**`","variable6":"`> <:joines:978181806182531072> ${invites} Joins (When the Member Joins the Server)\\n> <:leaves:950879337454895134> ${leaves} Leaves (When the invited Member left the Server)\\n> :x: ${fake} Fakes (Alt Accounts / Rejoins)`",
                 "variable7": "`\\`\\`\\`${String(message.content).substr(0, 2000)}\\`\\`\\``",
                 "variable8": "`Executed in: `, `<#${message.channel.id}> \\`${message.channel.name}\\``",
                 "variable9": "`Executed by: `, `<@${message.author.id}> (${message.author.tag})\\n\\`${message.author.tag}\\``",
@@ -4654,6 +4696,8 @@
                 "variable16": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "report": {
+                "title": "You __CAN'T__ report __YOURSELF__",
+                "subtitle": "Please report other, not yourself, if it's needed",
                 "variable1": "`:x: Report System is not setup yet!`",
                 "variable2": "`Set it up with: \\`${prefix}setup-reportlog\\``",
                 "variable3": "`:x: please ping a USER!`",

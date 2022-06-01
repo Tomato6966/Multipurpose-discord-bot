@@ -19,7 +19,7 @@ module.exports = {
   run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
     let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     //
-    
+
     if(GuildSettings.MUSIC === false) {
       return interaction?.reply({ephemeral: true, embed : [new MessageEmbed()
         .setColor(es.wrongcolor)
@@ -32,7 +32,7 @@ module.exports = {
       //toggle autoplay
       player.set(`autoplay`, !player.get(`autoplay`))
       //Send Success Message
-      return interaction?.reply({embeds :[new MessageEmbed()
+      return interaction?.reply({ephemeral: true, embeds :[new MessageEmbed()
         .setColor(es.color)
         .setTitle(eval(client.la[ls]["cmds"]["music"]["autoplay"]["variable1"]))
         .setDescription(eval(client.la[ls]["cmds"]["music"]["autoplay"]["variable2"]))

@@ -73,7 +73,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
           try {
             player.destroy();
           } catch {}
-          return interaction?.reply({embeds : [new MessageEmbed()
+          return interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
             .setTitle(client.la[ls].cmds.music.skip.title)
             .setColor(es.color)
           ]});
@@ -108,7 +108,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
         player.destroy();
       } catch {}
       //React with the emoji
-      return interaction?.reply({embeds : [new MessageEmbed()
+      return interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
         .setTitle(client.la[ls].cmds.music.skip.title)
         .setColor(es.color)
       ]});

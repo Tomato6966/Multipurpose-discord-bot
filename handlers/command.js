@@ -4,7 +4,7 @@ const {
 const { MessageEmbed } = require("discord.js")
 const serialize = require('serialize-javascript');
 const ee = require(`${process.cwd()}/botconfig/embed.json`);
-console.log("Welcome to SERVICE HANDLER /--/ By Cepheid".yellow);
+console.log("Welcome to SERVICE HANDLER /--/ By cepheid".yellow);
 module.exports = (client) => {
   let dateNow = Date.now();
   console.log(`${String("[x] :: ".magenta)}Now loading the Commands ...`.brightGreen)

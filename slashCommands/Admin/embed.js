@@ -21,7 +21,7 @@ module.exports = {
   ],
   memberpermissions: ["ADMINISTRATOR"],
   run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
-	let GuildSettings = client.settings.get(`${interaction.guild.id}`)
+let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     try{
 	    //console.log(interaction, StringOption)
 		

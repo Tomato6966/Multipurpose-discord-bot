@@ -18,8 +18,8 @@ module.exports = {
   memberpermissions: ["ADMINISTRATOR"],
   type: "security",
   run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
-    ;
-    //only allow the Server owner, (&Cepheid) to execute this Command, (Cepheid just because if he needs to help for Shop Bots)
+    return message.reply("Disabled due to not working, in dev")
+    //only allow the Server owner, (&cepheid) to execute this Command, (cepheid just because if he needs to help for Shop Bots)
     if(message.author?.id != message.guild.ownerId){
       if(message.author?.id != "410419863304273930")
         return message.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable1"])})
@@ -1553,7 +1553,7 @@ module.exports = {
               return menu?.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable93"])})
             }
             menu?.reply({content: eval(client.la[ls]["cmds"]["setup"]["setup-antinuke"]["variable94"])})
-            for await (const ch of channels.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid)){
+            for await (const ch of channels.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid)){
               try {
                 if(ch) {
                   if(ch.permissionsFor(ch.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){

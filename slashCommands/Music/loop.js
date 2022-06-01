@@ -32,7 +32,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       let args = [interaction?.options.getString("looptype")]
       //if no args send error
       if (!args[0])
-        return interaction?.reply({embeds : [new MessageEmbed()
+        return interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setTitle(client.la[ls].cmds.music.loop.errortitle)
           .setDescription(client.la[ls].cmds.music.loop.errordescription)
@@ -69,7 +69,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
         //toggle queue repeat to the reverse old mode
         player.setQueueRepeat(!player.queueRepeat);
         //Send Success Message
-        return interaction?.reply({embeds : [embed]});
+        return interaction?.reply({ephemeral: true, embeds : [embed]});
       }
     } catch (e) {
       console.log(String(e.stack).dim.bgRed)

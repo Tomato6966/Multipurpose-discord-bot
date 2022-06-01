@@ -173,7 +173,7 @@ module.exports = {
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-antilink"]["variable8"]))
                   .setColor(es.color)
-                  .setDescription(`Every single Channel:\n> <#${predata.join(">\n> <#")}>\nis not checked by the Anti Links System`.substring(0, 2048))
+                  .setDescription(`Every single Channel:\n> <#${predata}>\nis not checked by the Anti Links System`.substring(0, 2048))
                   .setFooter(client.getFooter(es))]
                 });
               } catch (e) {

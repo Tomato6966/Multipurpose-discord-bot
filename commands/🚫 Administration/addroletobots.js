@@ -74,7 +74,7 @@
            .setTitle(eval(client.la[ls]["cmds"]["administration"]["addroletoeveryone"]["variable7"]))
          ]});
        await message.guild.members.fetch().catch(() => null);
-       var members = message.guild.members.cache.filter(member => !member.roles.cache.has(role.id) && member.user.bot).map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid);
+       var members = message.guild.members.cache.filter(member => !member.roles.cache.has(role.id) && member.user.bot).map(this_Code_is_by_cepheid => this_Code_is_by_cepheid);
        if (!members || members.length == 0)
          return message.reply({embeds :[new MessageEmbed()
            .setColor(es.wrongcolor)

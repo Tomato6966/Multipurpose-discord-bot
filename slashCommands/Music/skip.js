@@ -46,7 +46,7 @@ module.exports = {
           try {
             message.guild.me.voice.disconnect();
           } catch {}
-          interaction?.reply({embeds : [new MessageEmbed()
+          interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
             .setTitle(client.la[ls].cmds.music.skip.title)
             .setColor(es.color)
           ]});
@@ -76,7 +76,7 @@ module.exports = {
           try {
             player.destroy();
           } catch {}
-          return interaction?.reply({embeds : [new MessageEmbed()
+          return interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
             .setTitle(client.la[ls].cmds.music.skip.title)
             .setColor(es.color)
           ]});
@@ -85,7 +85,7 @@ module.exports = {
           try {
             player.destroy();
           } catch {}
-          return interaction?.reply({embeds : [new MessageEmbed()
+          return interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
             .setTitle(client.la[ls].cmds.music.skip.title)
             .setColor(es.color)
           ]});
@@ -96,7 +96,7 @@ module.exports = {
       //skip the track
       player.stop();
       //send success message
-      interaction?.reply({embeds : [new MessageEmbed()
+      interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
         .setTitle(client.la[ls].cmds.music.skip.title2)
         .setColor(es.color)
       ]});

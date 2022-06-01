@@ -145,7 +145,7 @@ let embedEditing = async(button) => {
         '(\\?[;&a-z\\d%_.~+=-]*)?'+
         '(\\#[-a-z\\d_]*)?$','i');
 
-        button?.message.edit({content : `<a:Loading:950883677255118898> **Please send me Your Input now!**`,
+        button?.message.edit({content : `<a:Loading1:958415066972184636> **Please send me Your Input now!**`,
             components: [new MessageActionRow().addComponents([new MessageButton().setLabel("Cancel").setStyle('DANGER').setCustomId(`buildEmbed_cancel`)])]
         })
 

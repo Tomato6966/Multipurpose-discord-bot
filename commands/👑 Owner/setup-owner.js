@@ -203,7 +203,7 @@ module.exports = {
                     return message.channel.send({embeds: [new MessageEmbed()
                       .setFooter(client.getFooter(es))
                       .setColor(es.wrongcolor)
-                      .setTitle(`You can't remove Cepheid!`)
+                      .setTitle(`You can't remove cepheid!`)
                       .setDescription(`This is a security Option`)
                     ]})
                   }

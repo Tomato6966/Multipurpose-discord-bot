@@ -18,7 +18,7 @@ module.exports = async (client) => {
       console.log(`     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`.bold.brightGreen)
     } catch { /* */ }
     console.table({ 
-      //'info': `${client.guilds.cache.get("880881865114935296")?.name} SERVER`,
+      //'info': `${client.guilds.cache.get("782358733752762398")?.name} SERVER`,
       'Cluster:' : `#${client.cluster.id}` ,
       'Shards:' : `${client.cluster.ids.map(d => `#${d.id}`).join(", ")}` ,
       'Bot User:' : `${client.user.tag}` ,
@@ -31,9 +31,15 @@ module.exports = async (client) => {
       'Plattform:' : `${process.platform} ${process.arch}` ,
       'Memory:' : `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB / ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)} MB`
     });
-    
+    client.user.setPresence( { 
+      activities: [ { 
+      name: ".help" , 
+    type: 'LISTENING' 
+  } 
+  ], 
+    status: "idle" // online, idle, invisible, dnd 
+  } )
     change_status(client);
-    client.giveawaysManager.refreshStorage()
     //loop through the status per each 10 minutes
     setInterval(()=>{
       change_status(client);

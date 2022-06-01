@@ -160,11 +160,11 @@ module.exports = {
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
             menuselection(menu)
           }
-          else menu?.reply({content: `:x: You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `:white_check_mark: **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:950884027320135711> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
       async function second_layer(SetupNumber, menuoptiondata){
@@ -273,7 +273,7 @@ module.exports = {
             if (menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
             menuselection(menu)
           } else menu?.reply({
-            content: `:x: You are not allowed to do that! Only: <@${cmduser.id}>`,
+            content: `<:no:951013282607685632> You are not allowed to do that! Only: <@${cmduser.id}>`,
             ephemeral: true
           });
         });
@@ -282,7 +282,7 @@ module.exports = {
           menumsg.edit({
             embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
             components: [],
-            content: `${collected && collected.first() && collected.first().values ? `:white_check_mark: **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`
+            content: `${collected && collected.first() && collected.first().values ? `<a:yes:950884027320135711> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`
           })
         });
       }
@@ -794,7 +794,7 @@ module.exports = {
       }
 
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({
         embeds: [new MessageEmbed()
           .setColor(es.wrongcolor).setFooter(client.getFooter(es))

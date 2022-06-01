@@ -8,10 +8,10 @@ const {
   autoplay
 } = require(`../../handlers/functions`);
 const { handlemsg } = require(`../../handlers/functions`);
-/*module.exports = {
+module.exports = {
   name: `voteskip`,
   category: `🎶 Music`,
-  aliases: [`skip`, `vs`, `s`],
+  aliases: [`vs`],
   description: `Skips the track, but if there is a DJ Setup u will have to vote first!`,
   usage: `voteskip`,
   parameters: {
@@ -21,15 +21,6 @@ const { handlemsg } = require(`../../handlers/functions`);
   },
   run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    
-    if(GuildSettings.MUSIC === false) {
-      return message.reply({embeds : [new MessageEmbed()
-        .setColor(es.wrongcolor)
-        .setFooter(client.getFooter(es))
-        .setTitle(client.la[ls].common.disabled.title)
-        .setDescription(handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
-      ]});
-    }
     if(GuildSettings.MUSIC === false) {
       return message.reply({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor)
@@ -39,6 +30,7 @@ const { handlemsg } = require(`../../handlers/functions`);
       ]});
     }
     try {
+      return message.reply("In development")
       //Check if there is a Dj Setup
       if (client.settings.get(message.guild.id, `djroles`).toString() !== ``) {
 
@@ -112,4 +104,4 @@ const { handlemsg } = require(`../../handlers/functions`);
     }
   }
 };
-*/
+

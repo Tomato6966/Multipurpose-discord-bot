@@ -22,7 +22,7 @@ module.exports = {
     
     
     try {
-      let themsg = await message.reply("<a:Loading:950883677255118898> Getting the Shop-Data")
+      let themsg = await message.reply("<a:Loading1:958415066972184636> Getting the Shop-Data")
       const shop = new Canvas.FortniteShop();
       const image = await shop.setToken(process.env.fnbr || config.fnbr).setBackground("#23272A").toAttachment();
       let attachment = new Discord.MessageAttachment(image, "FortniteShop.png");

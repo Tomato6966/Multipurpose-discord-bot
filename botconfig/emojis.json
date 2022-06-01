@@ -48,7 +48,8 @@
     "autoplay_mode": "♾",
     "shuffle": "🔀",
     "show_queue": "📑",
-    "show_current_track": "🩸"
+    "show_current_track": "🩸",
+    "arrow": "<a:arrow:943027097348227073>"
   },
   "react": {
 

@@ -282,8 +282,8 @@ module.exports = {
   :file_folder: Работаю на **${allGuilds} серверах(ов)**
   ⌚️ **${duration(client.uptime).map(i=> `\`${i}\``).join("︲")} Непрерывной работы**
   📶 **\`${Math.floor(client.ws.ping)}мс\` Пинг**
-  :green_circle: **\`${Math.floor(await client.database.ping())}ms\` Пинг базы данных**
-    Сделан [**Cepheid**](http://discord.gg/7PdChsBGKd)`)
+  <:online:970050105338130433> **\`${Math.floor(await client.database.ping())}ms\` Пинг базы данных**
+    Сделан [**cepheid**](http://discord.gg/7PdChsBGKd)`)
   .addField("Как пользоватся?", `>>> **\` 1. Путь \`** *Используйте кнопки для переключения вкладок*\n**\` 2. Путь \`** *Используйте меню выбора, чтобы посмотреть команды сразу на нужной страничке*\n**\` 3. Путь \`** *Можешь поплакать)*`)
         }
         else{
@@ -299,14 +299,14 @@ module.exports = {
   :no_entry_sign: **Administration** and **Auto-Moderation** and way much more!`)
           .addField(":question: **__How do you use me?__**",
   `>>> \`${prefix}setup\` and choose for the right action,
-  but you can also do \`${prefix}setup-music\` e.g. \`${prefix}setup-music\``)
+  but you can also do \`${prefix}setup-SYSTEM\` e.g. \`${prefix}setup-welcome\``)
   .addField(":chart_with_upwards_trend: **__STATS:__**",
   `>>> :gear: **${client.commands.map(a=>a).length} Commands**
   :file_folder: on **${allGuilds} Guilds**
   ⌚️ **${duration(client.uptime).map(i=> `\`${i}\``).join("︲")} Uptime**
   📶 **\`${Math.floor(client.ws.ping)}ms\` Ping**
-  :green_circle: **\`${Math.floor(await client.database.ping())}ms\` DB-Ping**
-    Made by [**Cepheid**](http://discord.gg/7PdChsBGKd)`)
+  <:online:970050105338130433> **\`${Math.floor(await client.database.ping())}ms\` DB-Ping**
+    Made by [**cepheid**](http://discord.gg/7PdChsBGKd)`)
   .addField("How to get help?", `>>> **\` 1. Way \`** *Use the Buttons, to swap the Pages*\n**\` 2. Way \`** *Use the Menu to select all Help Pages, you want to display*\n**\` 3. Way \`** *Cry)*`)
         }
         let err = false;

@@ -17,7 +17,7 @@ module.exports = {
 		//{"StringChoices": { name: "what_ping", description: "What Ping do you want to get?", required: true, choices: [["Bot", "botping"], ["Discord Api", "api"]] }}, //here the second array input MUST BE A STRING // TO USE IN THE CODE: interacton.getString("what_ping")
   ],
   run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
-    let GuildSettings = client.settings.get(`${interaction.guild.id}`)
+let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     //things u can directly access in an interaction!
 		const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;

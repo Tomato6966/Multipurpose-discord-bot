@@ -30,7 +30,7 @@ const { handlemsg } = require(`../../handlers/functions`);
     }
     try {
       try {
-        let channel = message.guild.channels.cache.get(client.settings.get(message.guild.id, `channel`))
+        let channel = message.guild.channels.cache.get(client.settings.get(message.guild.id+`.channel`))
         if (!channel) return message.reply({content : eval(client.la[ls]["cmds"]["music"]["reconnect"]["variable1"])});
         //get the player instance
         const player = client.manager.players.get(message.guild.id);

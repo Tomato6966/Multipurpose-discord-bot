@@ -245,7 +245,7 @@ module.exports = async (client) => {
         try {
             if (!member.guild) return;
             await antinuke_databasing(member.guild.id)
-            let ls = await client.settings.get(member.guild.id+ ".language") || "en";
+            let ls = await client.settings.get(member.guild.id+".language") || "en";
             const eventsTimestamp = Date.now().toString()
             let data = await client.Anti_Nuke_System.get(member.guild.id)
             if (!data.all.enabled || !data.antibot.enabled) return;

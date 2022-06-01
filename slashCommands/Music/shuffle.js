@@ -31,7 +31,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       //shuffle the Queue
       player.queue.shuffle();
       //send informational message
-      interaction?.reply({embeds: [new MessageEmbed()
+      interaction?.reply({ephemeral: true, embeds: [new MessageEmbed()
         .setColor(es.color)
         .setTitle(`${emoji?.msg.shuffle} Shuffled the Queue!`)
       ]})

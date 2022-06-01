@@ -19,7 +19,9 @@ module.exports = {
           .setTitle(client.la[ls].common.premium.title)
           .setDescription(handlemsg(client.la[ls].common.premium.description))
         ]});
-      }    
+      }
+      
+      
       //run the code of togglepruning
       let { run } = require("./playmsg");
       run(client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings);

@@ -10,7 +10,7 @@ module.exports = {
   name: "ping",
   description: "Gives you information on how fast the Bot can respond to you",
   run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
-    let GuildSettings = client.settings.get(`${interaction.guild.id}`)
+let GuildSettings = client.settings.get(`${interaction.guild.id}`)
     //things u can directly access in an interaction!
 		const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;

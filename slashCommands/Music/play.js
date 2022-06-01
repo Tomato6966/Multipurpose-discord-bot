@@ -34,7 +34,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       let args = [interaction?.options.getString("what_song")]
       if(!args[0]) args = [interaction?.options.getString("song")]
       //Send information
-      interaction?.reply({content: `Searching and attempting to play: **${args[0]}** from \`Youtube\`!`})
+      interaction?.reply({ephemeral: true, content: `Searching and attempting to play: **${args[0]}** from \`Youtube\`!`})
       //play the SONG from YOUTUBE
       playermanager(client, message, args, `song:youtube`, interaction);
     } catch (e) {

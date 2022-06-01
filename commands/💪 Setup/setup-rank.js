@@ -124,7 +124,7 @@ module.exports = {
                 var channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
                 if (channel) {
                   try {
-                    await client.points.set(message.guild.id+".channel", channel.id, )
+                    await client.points.set(message.guild.id+".channel", channel.id)
                     await client.points.set(message.guild.id+".disabled", false)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-rank"]["variable7"]))

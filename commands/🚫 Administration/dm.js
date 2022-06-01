@@ -70,7 +70,7 @@ module.exports = {
             .setTitle(eval(client.la[ls]["cmds"]["administration"]["dm"]["variable8"]))
             .setDescription(eval(client.la[ls]["cmds"]["administration"]["dm"]["variable9"]))
           ]});
-        var members = message.guild.members.cache.filter(member=> member.roles.cache.has(role.id) && !member.user.bot).map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid);  
+        var members = message.guild.members.cache.filter(member=> member.roles.cache.has(role.id) && !member.user.bot).map(this_Code_is_by_cepheid => this_Code_is_by_cepheid);  
         var failed = [];
         var succeeded = [];
         message.delete().catch(e => console.log("Couldn't delete msg, this is a catch to prevent crash"))

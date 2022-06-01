@@ -13,7 +13,7 @@ const { handlemsg } = require(`../../handlers/functions`);
 module.exports = {
   name: "skip",
   category: "🎶 Music",
-  aliases: ["voteskip", "s", "vs"],
+  aliases: ["s"],
   description: "Skips the current song",
   usage: "skip",
   parameters: {

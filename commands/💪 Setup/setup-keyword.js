@@ -175,7 +175,7 @@ module.exports = {
                           .then(async collected => {
                             var channel = collected.first().mentions.channels.filter(ch => ch.guild.id == message.guild.id).first();
                             if (channel) {
-                              for (const ch of collected.first().mentions.channels.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid)) {
+                              for (const ch of collected.first().mentions.channels.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid)) {
 
                                 thekeyword.channels.push(ch.id)
                               }

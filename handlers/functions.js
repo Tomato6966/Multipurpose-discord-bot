@@ -40,6 +40,7 @@ module.exports = {
   stations,
   swap_pages,
   swap_pages2,
+  swap_pagesMessageData,
   swap_pages2_interaction,
   swap_pages_data,
   escapeRegex,
@@ -220,7 +221,7 @@ function isValidURL(string) {
   return url;
 };
 async function GetUser(message, arg){
-  var errormessage = ":x: I failed finding that User...";
+  var errormessage = "<:no:833101993668771842> I failed finding that User...";
   return new Promise(async (resolve, reject) => {
     var args = arg, client = message.client;
     if(!client || !message) return reject("CLIENT IS NOT DEFINED")
@@ -231,7 +232,6 @@ async function GetUser(message, arg){
       if(!user) return reject(errormessage)
       return resolve(user);
     }
-
     
     else if(!user && args[0]){
       let alluser = message.guild.members.cache.map(member=> String(member.user.tag).toLowerCase())
@@ -254,7 +254,7 @@ async function GetUser(message, arg){
   })
 }
 async function GetRole(message, arg){
-  var errormessage = ":x: I failed finding that Role...";
+  var errormessage = "<:no:833101993668771842> I failed finding that Role...";
   return new Promise(async (resolve, reject) => {
     var args = arg, client = message.client;
     if(!client || !message) return reject("CLIENT IS NOT DEFINED")
@@ -281,7 +281,7 @@ async function GetRole(message, arg){
 }
 
 async function GetGlobalUser(message, arg){
-  var errormessage = ":x: I failed finding that User...";
+  var errormessage = "<:no:833101993668771842> I failed finding that User...";
   return new Promise(async (resolve, reject) => {
     var args = arg, client = message.client;
     if(!client || !message) return reject("CLIENT IS NOT DEFINED")
@@ -296,7 +296,7 @@ async function GetGlobalUser(message, arg){
       let alluser = [], allmembers = [];
       var guilds = [...client.guilds.cache.values()];
       for await (const g of guilds){
-        var members = g.members.cache.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid);
+        var members = g.members.cache.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid);
         for await (const m of members) { alluser.push(m.user.tag); allmembers.push(m); }
       }
       user = alluser.find(user => user.startsWith(args.join(" ").toLowerCase()))
@@ -339,7 +339,7 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
     //get the EMBED SETTINGS
     //if the rosterchannel is not valid, then send error + return
     if (data.rosterchannel == "notvalid")
-      return //console.log("Roster Channel not valid | :: | " + data.rosterchannel);
+      return 
     //get the channel from the guild
     let channel = guild.channels.cache.get(data.rosterchannel)
     //get the channel from the client if not found from the guild
@@ -347,10 +347,10 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
       channel = client.channels.cache.get(data.rosterchannel);
     //if the rosterchannel is not found, then send error + return
     if (!channel) 
-      return //console.log("Roster Channel not found | :: | " + data.rosterchannel);
+      return 
     //if the defined message length is less then 2 try return error (not setupped)
     if(data.rostermessage.length < 5) 
-      return //console.log("Roster Message not valid | :: | " + data.rostermessage);
+      return 
     //fetch the message from the channel
     let message = channel.messages.cache.get(data.rostermessage) || await channel.messages.fetch(data.rostermessage).catch(() => null) || false;
     //if the message is undefined, then send the message ;)
@@ -392,14 +392,14 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
           if (rosterembed.length > 5000) break;
           if (!guildData[pre].showallroles || memberarray.length < 20)
             try { 
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024) + `${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024) + `${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
             } catch (e) {
               console.error(e)
             }
@@ -421,14 +421,14 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
           if (rosterembed.length > 5000) break;
           if (!guildData[pre].showallroles || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
             } catch (e) {
               console.error(e)
             }
@@ -450,14 +450,14 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
           if (rosterembed.length > 5000) break;
           if (!guildData[pre].showallroles || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
             } catch (e) {
               console.error(e)
             }
@@ -470,7 +470,6 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
             console.error(e)
           }
         }
-
         
       } else if (data.rosterstyle == "4") {
         //define the memberarray
@@ -481,14 +480,14 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
           if (rosterembed.length > 5000) break;
           if (!guildData[pre].showallroles || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
             } catch (e) {
               console.error(e)
             }
@@ -510,13 +509,13 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
           if (rosterembed.length > 5000) break;
           if (!guildData[pre].showallroles || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
             } catch (e) {
               console.error(e)
             }
@@ -541,14 +540,14 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
           if (!thearray) return;
           if (!guildData[pre].showallroles || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
             } catch (e) {
               console.error(e)
             }
@@ -570,14 +569,14 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
           if (rosterembed.length > 5000) break;
           if (!guildData[pre].showallroles || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
             } catch (e) {
               console.error(e)
             }
@@ -604,14 +603,14 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
           }
           if (!guildData[pre].showallroles || memberarray.length < 20)
             try {
-              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
+              rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
               break;
             } catch (e) {
               console.error(e)
             }
           else
             try {
-              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
+              rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
             } catch (e) {
               console.error(e)
             }
@@ -627,13 +626,13 @@ async function edit_Roster_msg(client, guild, the_roster_db, pre) {
       }
 
       //if a totalbreak happened, then return + edit the message
-      if (totalbreak) return message.edit({embeds: [rosterembed]}).catch(e => console.log("could not edit roster 1"  + e));
+      if (totalbreak) return message.edit({embeds: [rosterembed]}).catch(e => null);
     }
     //after the loop, edit the message
-    message.edit({embeds: [rosterembed]}).catch(e => console.log("! Could not edit roster 1" + e));
+    message.edit({embeds: [rosterembed]}).catch(e => null);
     
   }catch (e){
-    console.log("ROSTER_COULD NOT FIND THE MESSAGE".grey, e)
+    
   }
 }
 async function send_roster_msg(client, guild, the_roster_db, pre) {
@@ -688,14 +687,14 @@ async function send_roster_msg(client, guild, the_roster_db, pre) {
       }
       if (!guildData[pre].showallroles || memberarray.length < 20)
         try {
-          rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
+          rosterembed.addField(`**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024)+ `${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20 > 0 ? `\n${guildData[pre].rosteremoji} ***\`${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length - 20}\` other Members have this Role ...***`: ""}`.substring(0, 1024), guildData[pre].inline)
           break;
         } catch (e) {
           console.error(e)
         }
       else
         try {
-          rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
+          rosterembed.addField(i < 20 ? `**__${role.name.toUpperCase()} [${role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length}]__**` : `\u200b`, role.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).length == 0 ? "> No one has this Role" : thearray.slice(i, i + 20).join("\n").substring(0, leftnum <= 1024 ? leftnum : 1024), guildData[pre].inline)
         } catch (e) {
           console.error(e)
         }
@@ -714,7 +713,7 @@ async function send_roster_msg(client, guild, the_roster_db, pre) {
     setTimeout(() => {
       edit_Roster_msg(client, guild, the_roster_db, pre)
     }, 500)
-  }).catch(e => console.log("Couldn't send a message, give the Bot permissions or smt!"))
+  }).catch(e => null)
 }
 
 async function create_transcript_buffer(Messages, Channel, Guild){
@@ -750,7 +749,7 @@ async function create_transcript_buffer(Messages, Channel, Guild){
                 subcontent += `<div class="content"><div class="markdown"><span class="preserve-whitespace">${markdowntohtml(String(msg.cleanContent ? msg.cleanContent : msg.content).replace(/\n/ig, "<br/>"))}</div></div>` 
               } 
               if (msg.embeds[0]){
-                  subcontent += `<div class="embed"><div class=embed-color-pill style=background-color:"${msg.embeds[0].color ? msg.embeds[0].color : "transparent"}"></div><div class=embed-content-container><div class=embed-content><div class=embed-text>` 
+                  subcontent += `<div class="embed"><div class=embed-color-pill style="background-color: ${msg.embeds[0].color ? msg.embeds[0].color : "transparent"}"></div><div class="embed-content-container"><div class="embed-content"><div class="embed-text">` 
                   
                   if(msg.embeds[0].author){
                     subcontent += `<div class="embed-ath">`;
@@ -802,7 +801,7 @@ async function create_transcript_buffer(Messages, Channel, Guild){
               }
               if (msg.reactions && msg.reactions.cache.size > 0){
                 subcontent += `<div class="reactions">`
-                for await (const reaction of msg.reactions.cache.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid)){                      
+                for await (const reaction of msg.reactions.cache.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid)){                      
                   subcontent += `<div class=reaction>${reaction.emoji?.url ? `<img class="emoji emoji--small" src="${reaction.emoji?.url}" alt="${"<" + reaction.emoji?.animated ? "a" : "" + ":" + reaction.emoji?.name + ":" + reaction.emoji?.id + ">"}">` : reaction.emoji?.name.toString()}<span class="reaction-count">${reaction.count}</span></div>`
                 }
                 subcontent += `</div>`
@@ -834,10 +833,10 @@ async function create_transcript_buffer(Messages, Channel, Guild){
         fs.writeFileSync(`${process.cwd()}/${Channel.name}.html`, baseHTML); //write everything in the docx file
         resolve(`${process.cwd()}/${Channel.name}.html`);
         return;
-        async function markdowntohtml(tomarkdown){
+        function markdowntohtml(tomarkdown){
           mentionReplace(tomarkdown.split(" "));
-          async function mentionReplace(splitted){
-            for await (arg of splitted){
+          function mentionReplace(splitted){
+            for (arg of splitted){
               const memberatches = arg.match(/<@!?(\d+)>/);
               const rolematches = arg.match(/<@&(\d+)>/);
               const channelmatches = arg.match(/<#(\d+)>/);
@@ -923,7 +922,7 @@ async function create_transcript_buffer(Messages, Channel, Guild){
               type: INLINE,
             },
           ];
-          async function parse(string) {
+          function parse(string) {
             output = "\n" + string + "\n";
             parseMap.forEach(function(p) {
               output = output.replace(p.pattern, function() {
@@ -931,11 +930,13 @@ async function create_transcript_buffer(Messages, Channel, Guild){
               });
             });
             output = clean(output);
-            output = output?.trim();
-            output = output?.replace(/[\n]{1,}/g, "\n");
+            try {
+              output = output?.toString()?.trim();
+              output = output?.replace(/[\n]{1,}/g, "\n");
+            } catch (_) { }
             return output || "\n" + string?.trim().replace(/[\n]{1,}/g, "\n") + "\n";
           }
-          async function replace(matchList, replacement, type) {
+          function replace(matchList, replacement, type) {
             var i, $$;
             for (i in matchList) {
               if(!matchList.hasOwnProperty(i)) {
@@ -949,7 +950,7 @@ async function create_transcript_buffer(Messages, Channel, Guild){
             }
             return replacement;
           }
-          async function clean(string) {
+          function clean(string) {
             var cleaningRuleArray = [
               {
                 match: /<\/([uo]l)>\s*<\1>/g,
@@ -988,7 +989,7 @@ function shuffle(a) {
     }
     return a;
   } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
   }
 }
 
@@ -996,7 +997,7 @@ function formatDate(date) {
   try {
     return new Intl.DateTimeFormat("en-US").format(date);
   } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
   }
 }
 
@@ -1070,7 +1071,7 @@ async function delay(delayInms) {
       }, delayInms);
     });
   } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
   }
 }
 
@@ -1078,7 +1079,7 @@ function getRandomInt(max) {
   try {
     return Math.floor(Math.random() * Math.floor(max));
   } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
   }
 }
 
@@ -1086,7 +1087,7 @@ function getRandomNum(min, max) {
   try {
     return Math.floor(Math.random() * Math.floor((max - min) + min));
   } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
   }
 }
 
@@ -1283,7 +1284,7 @@ async function stations(client, prefix, message) {
     embeds.push(stationsembed4)
     return require("./functions").swap_pages2(client, message, embeds);
   } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
   }
 }
 
@@ -1292,7 +1293,7 @@ function escapeRegex(str) {
     if(!str || typeof str != "string") return "";
     return str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
   } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
   }
 }
 
@@ -1346,12 +1347,12 @@ async function autoplay(client, player, type) {
                     }
                   }).catch(() => null);
               } catch (e) {
-                console.log(String(e.stack).grey.yellow);
+                console.error(e)
               }
               player.destroy();
             }
           } catch (e) {
-            console.log(String(e.stack).grey.yellow);
+            console.error(e)
           }
         }, config.settings.LeaveOnEmpty_Queue.time_delay);
       } else {
@@ -1361,7 +1362,7 @@ async function autoplay(client, player, type) {
     player.queue.add(response.tracks.filter(r => r.identifier != previoustrack.identifier)[Math.floor(Math.random() * Math.floor(response.tracks.length))]);
     return player.play();
   } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
   }
 }
 
@@ -1376,7 +1377,7 @@ function arrayMove(array, from, to) {
     }
     return array;
   } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
   }
 }
 function nFormatter(num, digits = 2) {
@@ -1402,7 +1403,6 @@ async function swap_pages(client, message, description, TITLE) {
   let prefix = settings.prefix
   let ls = settings.language;
   let cmduser = message.author;
-
 
   let currentPage = 0;
   //GET ALL EMBEDS
@@ -1462,18 +1462,18 @@ async function swap_pages(client, message, description, TITLE) {
   //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
   collector.on('collect', async b => {
       if(b?.user.id !== message.author?.id)
-        return b?.reply({content: `:x: **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
+        return b?.reply({content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
         //page forward
         if(b?.customId == "1") {
           collector.resetTimer();
           //b?.reply("***Swapping a PAGE FORWARD***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage !== 0) {
               currentPage -= 1
-              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
               await b?.deferUpdate();
             } else {
                 currentPage = embeds.length - 1
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
                 await b?.deferUpdate();
             }
         }
@@ -1482,7 +1482,7 @@ async function swap_pages(client, message, description, TITLE) {
           collector.resetTimer();
           //b?.reply("***Going Back home***, *please wait 2 Seconds for the next Input*", true)
             currentPage = 0;
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
             await b?.deferUpdate();
         } 
         //go forward
@@ -1491,31 +1491,31 @@ async function swap_pages(client, message, description, TITLE) {
           //b?.reply("***Swapping a PAGE BACK***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage < embeds.length - 1) {
                 currentPage++;
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
                 await b?.deferUpdate();
             } else {
                 currentPage = 0
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
                 await b?.deferUpdate();
             }
         
         } 
         //go forward
         else if(b?.customId == "stop"){
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, true)}).catch(() => null);
             await b?.deferUpdate();
             collector.stop("stopped");
         }
   });
   collector.on("end", (reason) => {
     if(reason != "stopped"){
-      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
+      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, true)}).catch(() => null);
     }
   })
 
 
 }
-async function swap_pages_data(client, message, description, TITLE, T_cmd = "unknown") {
+async function swap_pages_data(client, message, description, TITLE, T_cmd = "Unkown") {
   let cmduser = message.author;
   let currentPage = 0;
   //GET ALL EMBEDS
@@ -1569,18 +1569,18 @@ async function swap_pages_data(client, message, description, TITLE, T_cmd = "unk
   //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
   collector.on('collect', async b => {
       if(b?.user.id !== message.author?.id)
-        return b?.reply({content: `:x: **Only the one who typed the cmd is allowed to react!**`, ephemeral: true})
+        return b?.reply({content: `<:no:833101993668771842> **Only the one who typed the cmd is allowed to react!**`, ephemeral: true})
         //page forward
         if(b?.customId == "1") {
           collector.resetTimer();
           //b?.reply("***Swapping a PAGE FORWARD***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage !== 0) {
               currentPage -= 1
-              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
               await b?.deferUpdate();
             } else {
                 currentPage = embeds.length - 1
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
                 await b?.deferUpdate();
             }
         }
@@ -1589,7 +1589,7 @@ async function swap_pages_data(client, message, description, TITLE, T_cmd = "unk
           collector.resetTimer();
           //b?.reply("***Going Back home***, *please wait 2 Seconds for the next Input*", true)
             currentPage = 0;
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
             await b?.deferUpdate();
         } 
         //go forward
@@ -1598,25 +1598,25 @@ async function swap_pages_data(client, message, description, TITLE, T_cmd = "unk
           //b?.reply("***Swapping a PAGE BACK***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage < embeds.length - 1) {
                 currentPage++;
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
                 await b?.deferUpdate();
             } else {
                 currentPage = 0
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
                 await b?.deferUpdate();
             }
         
         } 
         //go forward
         else if(b?.customId == "stop"){
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, true)}).catch(() => null);
             await b?.deferUpdate();
             collector.stop("stopped");
         }
   });
   collector.on("end", (reason) => {
     if(reason != "stopped"){
-      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
+      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, true)}).catch(() => null);
     }
   })
 
@@ -1655,18 +1655,18 @@ async function swap_pages2(client, message, embeds, tempmsg = false) {
   //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
   collector.on('collect', async b => {
       if(b?.user.id !== message.author?.id)
-        return b?.reply({content: `:x: **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
+        return b?.reply({content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
         //page forward
         if(b?.customId == "1") {
           collector.resetTimer();
           //b?.reply("***Swapping a PAGE FORWARD***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage !== 0) {
               currentPage -= 1
-              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
               await b?.deferUpdate();
             } else {
                 currentPage = embeds.length - 1
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
                 await b?.deferUpdate();
             }
         }
@@ -1675,7 +1675,7 @@ async function swap_pages2(client, message, embeds, tempmsg = false) {
           collector.resetTimer();
           //b?.reply("***Going Back home***, *please wait 2 Seconds for the next Input*", true)
             currentPage = 0;
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
             await b?.deferUpdate();
         } 
         //go forward
@@ -1684,34 +1684,115 @@ async function swap_pages2(client, message, embeds, tempmsg = false) {
           //b?.reply("***Swapping a PAGE BACK***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage < embeds.length - 1) {
                 currentPage++;
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
                 await b?.deferUpdate();
             } else {
                 currentPage = 0
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
                 await b?.deferUpdate();
             }
         
         } 
         //go forward
         else if(b?.customId == "stop"){
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, true)}).catch(() => null);
             await b?.deferUpdate();
             collector.stop("stopped");
         }
   });
   collector.on("end", (reason) => {
     if(reason != "stopped"){
-      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
+      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, true)}).catch(() => null);
     }
   })
 
 }
-function getDisabledComponents (MessageComponents) {
+async function swap_pagesMessageData(client, message, messageDatas, tempmsg = false) {
+  let currentPage = 0;
+  let cmduser = message.author;
+  if (messageDatas.length === 1) {
+    if(tempmsg) tempmsg.edit(messageDatas[0]).catch(() => null)
+    else message.channel.send(messageDatas[0]).catch(() => null)
+    return
+  }
+  let button_back = new MessageButton().setStyle('SUCCESS').setCustomId('1').setEmoji("833802907509719130").setLabel("Back")
+  let button_home = new MessageButton().setStyle('DANGER').setCustomId('2').setEmoji("🏠").setLabel("Home")
+  let button_forward = new MessageButton().setStyle('SUCCESS').setCustomId('3').setEmoji('832598861813776394').setLabel("Forward")
+  let button_blank = new MessageButton().setStyle('SECONDARY').setCustomId('button_blank').setLabel("\u200b").setDisabled();
+  let button_stop = new MessageButton().setStyle('DANGER').setCustomId('stop').setEmoji("🛑").setLabel("Stop")
+  const allbuttons = [new MessageActionRow().addComponents([button_back, button_home, button_forward, button_blank, button_stop])]
+  let prefix = await client.settings.get(message.guild.id+".prefix");
+  //Send message with buttons
+  let swapmsg;
+  const DisabledMessageDatas = messageDatas.map(data => {data.components = getDisabledComponents(allbuttons, true); return data});
+  const enabledMessageDatas = messageDatas.map(data => {data.components = getDisabledComponents(allbuttons, false); return data});
+
+  console.log(enabledMessageDatas[0])
+  
+  if(tempmsg) swapmsg = await tempmsg.edit(enabledMessageDatas[0]).catch(() => null)
+  else swapmsg = await message.channel.send(enabledMessageDatas[0]);
+  //create a collector for the thinggy
+  const collector = swapmsg.createMessageComponentCollector({filter: (i) => i?.isButton() && i?.user && i?.user.id == cmduser.id && i?.message.author?.id == client.user.id, time: 180e3 }); //collector for 5 seconds
+  //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
+  collector.on('collect', async b => {
+      if(b?.user.id !== message.author?.id)
+        return b?.reply({content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
+        //page forward
+        if(b?.customId == "1") {
+          collector.resetTimer();
+          //b?.reply("***Swapping a PAGE FORWARD***, *please wait 2 Seconds for the next Input*", true)
+            if (currentPage !== 0) {
+              currentPage -= 1
+              await swapmsg.edit(enabledMessageDatas[currentPage]).catch(() => null);
+              await b?.deferUpdate();
+            } else {
+                currentPage = enabledMessageDatas.length - 1
+                await swapmsg.edit(enabledMessageDatas[currentPage]).catch(() => null);
+                await b?.deferUpdate();
+            }
+        }
+        //go home
+        else if(b?.customId == "2"){
+          collector.resetTimer();
+          //b?.reply("***Going Back home***, *please wait 2 Seconds for the next Input*", true)
+            currentPage = 0;
+            await swapmsg.edit(enabledMessageDatas[currentPage]).catch(() => null);
+            await b?.deferUpdate();
+        } 
+        //go forward
+        else if(b?.customId == "3"){
+          collector.resetTimer();
+          //b?.reply("***Swapping a PAGE BACK***, *please wait 2 Seconds for the next Input*", true)
+            if (currentPage < enabledMessageDatas.length - 1) {
+                currentPage++;
+                await swapmsg.edit(enabledMessageDatas[currentPage]).catch(() => null);
+                await b?.deferUpdate();
+            } else {
+                currentPage = 0
+                await swapmsg.edit(enabledMessageDatas[currentPage]).catch(() => null);
+                await b?.deferUpdate();
+            }
+        
+        } 
+        //go forward
+        else if(b?.customId == "stop"){
+            await swapmsg.edit(DisabledMessageDatas[currentPage]).catch(() => null);
+            await b?.deferUpdate();
+            collector.stop("stopped");
+        }
+  });
+  collector.on("end", (reason) => {
+    if(reason != "stopped"){
+      swapmsg.edit(DisabledMessageDatas[currentPage]).catch(() => null);
+    }
+  })
+
+}
+function getDisabledComponents (MessageComponents, disabled = true) {
   if(!MessageComponents) return []; // Returning so it doesn't crash
   return MessageComponents.map(({components}) => {
       return new MessageActionRow()
-          .addComponents(components.map(c => c.setDisabled(true)))
+          .addComponents(components.map(c => c.setDisabled(disabled)))
   });
 }
 async function swap_pages2_interaction(client, interaction, embeds) {
@@ -1737,18 +1818,18 @@ async function swap_pages2_interaction(client, interaction, embeds) {
   //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
   collector.on('collect', async b => {
       if(b?.user.id !== cmduser.id)
-        return b?.reply({content: `:x: **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
+        return b?.reply({content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
         //page forward
         if(b?.customId == "1") {
           collector.resetTimer();
           //b?.reply("***Swapping a PAGE FORWARD***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage !== 0) {
               currentPage -= 1
-              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+              await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
               await b?.deferUpdate();
             } else {
                 currentPage = embeds.length - 1
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
                 await b?.deferUpdate();
             }
         }
@@ -1757,7 +1838,7 @@ async function swap_pages2_interaction(client, interaction, embeds) {
           collector.resetTimer();
           //b?.reply("***Going Back home***, *please wait 2 Seconds for the next Input*", true)
             currentPage = 0;
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
             await b?.deferUpdate();
         } 
         //go forward
@@ -1766,25 +1847,25 @@ async function swap_pages2_interaction(client, interaction, embeds) {
           //b?.reply("***Swapping a PAGE BACK***, *please wait 2 Seconds for the next Input*", true)
             if (currentPage < embeds.length - 1) {
                 currentPage++;
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
                 await b?.deferUpdate();
             } else {
                 currentPage = 0
-                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents[swapmsg.components]}).catch(() => null);
+                await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, false)}).catch(() => null);
                 await b?.deferUpdate();
             }
         
         } 
         //go forward
         else if(b?.customId == "stop"){
-            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
+            await swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, true)}).catch(() => null);
             await b?.deferUpdate();
             collector.stop("stopped");
         }
   });
   collector.on("end", (reason) => {
     if(reason != "stopped"){
-      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components)}).catch(() => null);
+      swapmsg.edit({embeds: [embeds[currentPage]], components: getDisabledComponents(swapmsg.components, true)}).catch(() => null);
     }
   })
 
@@ -1794,14 +1875,12 @@ async function databasing(client, guildid, userid) {
   if(!client || client == undefined || !client.user || client.user == undefined) return res(true);
     try {
       if (guildid) {
-        
         await dbEnsure(client.customcommands, guildid, {
           commands: []
-        })
+        }).catch(() => null);
         await dbEnsure(client.keyword, guildid, {
           commands: []
-        })
-
+        }).catch(() => null);
         await dbEnsure(client.social_log, guildid, {
           tiktok: {
             channels: [],
@@ -1834,15 +1913,14 @@ async function databasing(client, guildid, userid) {
             roleID_GIVE: "",
             channels: [],
           }
-        })
+        }).catch(() => null);
         await dbEnsure(client.stats, guildid, {
           commands: 0,
           songs: 0
-        });
+        }).catch(() => null);
         await dbEnsure(client.premium, guildid, {
           enabled: false,
-          days: "0",
-        })
+        }).catch(() => null);
         const ensureData = {
           textchannel: "0",
           voicechannel: "0",
@@ -1873,12 +1951,12 @@ async function databasing(client, guildid, userid) {
             adminroles: []
           }
         }
-        await dbEnsure(client.setups, guildid, ensureData);
+        await dbEnsure(client.setups, guildid, ensureData).catch(() => null);
         await dbEnsure(client.blacklist, guildid, {
           words: [],
           mute_amount: 5,
           whitelistedchannels: [],
-        });
+        }).catch(() => null);
         await dbEnsure(client.settings, guildid, {
           prefix: config.prefix,
           pruning: true,
@@ -1910,8 +1988,6 @@ async function databasing(client, guildid, userid) {
               */
             ]
           },
-
-
 
           showdisabled: true,
 
@@ -2022,8 +2098,6 @@ async function databasing(client, guildid, userid) {
               "giphy.com/gifs",
               "c.tenor.com",
               "tenor.com/view",
-              "milrato.dev",
-              "milrato.eu",
               "github?.com",
               "mozilla.org",
               "w3schools.com",],
@@ -2033,7 +2107,6 @@ async function databasing(client, guildid, userid) {
             enabled: false,
             whitelistedchannels: [],
             whitelistedlinks: [
-              "dsc.gg/banditcamp",
               "discord.gg/djs",],
             mute_amount: 2,
           },
@@ -2134,7 +2207,6 @@ async function databasing(client, guildid, userid) {
       if (userid) {
         await dbEnsure(client.premium, userid, {
           enabled: false,
-          days: "0",
         })
         await dbEnsure(client.queuesaves, userid, {
           "TEMPLATEQUEUEINFORMATION": ["queue", "sadasd"]
@@ -2204,7 +2276,7 @@ async function check_voice_channels(client) {
       if(!channel) continue;
       
       try{
-        let members = channel.members.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid);
+        let members = channel.members.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid);
         if (!members || members.length == 0) continue;
         for await (const member of members) {
           let themember = await guild.members.fetch(member).catch(() => null);
@@ -2230,7 +2302,6 @@ async function check_created_voice_channels(client) {
       if(!vcs || vcs.length == 0) continue;
       for await (const vc of vcs) {
         try{
-          console.log(`CHECK CREATED :: CHECKMEMBERS ${vc.name}`)
           await client.jointocreatemap.delete(`tempvoicechannel_${vc.guild.id}_${vc.id}`);
           await client.jointocreatemap.delete(`owner_${vc.guild.id}_${vc.id}`);
           //move user
@@ -2257,8 +2328,9 @@ async function check_created_voice_channels(client) {
 
 async function create_join_to_create_Channel(client, voiceState, prekey) {
   let ls = await client.settings.get(voiceState.member.guild.id+".language") || "en"
-  let chname = await client.jtcsettings.get(voiceState.member.guild.id + `.${prekey}.channelname`) || "{user}'s Room";
-  console.log(chname)
+  let chname = await client.jtcsettings.get(voiceState.member.guild.id+`.${prekey}.channelname`) || "{user}'s Room"
+  let chlimit = await client.jtcsettings.get(voiceState.member.guild.id+`.${prekey}.voicelimit`) || 0;
+  
   //CREATE THE CHANNEL
   if (!voiceState.guild.me.permissions.has("MANAGE_CHANNELS")) {
     try {
@@ -2282,7 +2354,7 @@ async function create_join_to_create_Channel(client, voiceState, prekey) {
         id: voiceState.guild.id,
         allow: ['VIEW_CHANNEL', "CONNECT"],
       } ],
-      userLimit: 0,
+      userLimit: chlimit,
       bitrate: voiceState.channel.bitrate,
     };
     //if there is a parent with enough size
@@ -2357,10 +2429,9 @@ async function create_transcript(message, client, msglimit) {
     if (channelMessages) //if its true
       messageCollection = messageCollection.concat(channelMessages); //add them to the collection
   }
-  let msgs = messageCollection.map(this_Code_is_by_Cepheid => this_Code_is_by_Cepheid).reverse(); //reverse the array to have it listed like the discord chat
+  let msgs = messageCollection.map(this_Code_is_by_cepheid => this_Code_is_by_cepheid).reverse(); //reverse the array to have it listed like the discord chat
   message.channel.send({files: [await create_transcript_buffer(msgs, message.channel, message.guild)]}).catch(() => null);
 }
-
 //usage: await dbEnsure(QuickMongoDatabase, "key", { foo: "bar", data: ...Data });
 async function dbEnsure(db, key, data, debug = false) {
   return new Promise(async (res) => {
@@ -2389,13 +2460,14 @@ async function dbEnsure(db, key, data, debug = false) {
               _.set(masterData, path, newPathData);
               await db.set(key, masterData);
               await delay(extraDelay);
+              return res({ changed: true });
             } 
             return res(true);
           }
           _.set(masterData, path, data)
           await db.set(key, masterData);
           await delay(extraDelay);
-          return res(true);
+          return res({ changed: true });
         }
         // if its not an object
         if(!_.isObject(masterData)) {
@@ -2409,6 +2481,7 @@ async function dbEnsure(db, key, data, debug = false) {
           Object.assign(masterData, newData);
           await db.set(key, masterData);
           await delay(extraDelay);
+          return res({ changed: true });
         } 
         
         return res(true); 
@@ -2489,23 +2562,23 @@ async function simple_databasing(client, guildid, userid) {
         ticket: [],
         says: [],
         warn: [],
-      })
+      }).catch(() => null);
       
     }
     if(userid){
-      await dbEnsure(client.settings, userid, { dm: true,})
+      await dbEnsure(client.settings, userid, { dm: true,}).catch(() => null);
     }
     if (guildid) { 
       
-      await dbEnsure(client.musicsettings, guildid, {"channel": "","message": ""});
-      await dbEnsure(client.stats, guildid, {commands: 0,songs: 0});
+      await dbEnsure(client.musicsettings, guildid, {"channel": "","message": ""}).catch(() => null);
+      await dbEnsure(client.stats, guildid, {commands: 0,songs: 0}).catch(() => null);
       
       await dbEnsure(client.settings, guildid, {
         prefix: config.prefix,
         pruning: true,
         requestonly: true,
         autobackup: false,
-        unknowncmdmessage: false,
+        unkowncmdmessage: false,
         defaultvolume: 30,
         channel: "773836425678422046",
         language: "en",
@@ -2630,12 +2703,12 @@ async function simple_databasing(client, guildid, userid) {
         djroles: [],
         djonlycmds: ["autoplay", "clearqueue", "forward", "loop", "jump", "loopqueue", "loopsong", "move", "pause", "resume", "removetrack", "removedupe", "restart", "rewind", "seek", "shuffle", "skip", "stop", "volume"],
         botchannel: [],
-      });
-      await dbEnsure(client.customcommands, guildid, {commands: []});
+      }).catch(() => null);
+      await dbEnsure(client.customcommands, guildid, {commands: []}).catch(() => null);
     }
     return;
   } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
   }
 }
 
@@ -2666,7 +2739,7 @@ async function ensure_economy_user(client, guildid, userid){
           multiplier: 1
         }
       }
-    })
+    }).catch(() => null);
     let data = await client.economy.get(`${guildid}_${userid}`)
     //reset the blackmarket Booster if it's over!
     if(data.black_market.boost.time !== 0 && (86400000 * 2) - (Date.now() - data.black_market.boost.time) <= 0)
@@ -2821,7 +2894,6 @@ const channelInfo = (url, options = {}) => __awaiter(void 0, void 0, void 0, fun
     } catch (err) {
         throw new Error(`Failed to parse data from script tag. (${err})`);
     }
-
     
     const channel = {
         name: initialData &&

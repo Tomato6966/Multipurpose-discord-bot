@@ -21,7 +21,8 @@ module.exports = {
         //I AM NOW MAKING A MUSIC REQUEST SYSTEM FOR A BOT!
         await dbEnsure(client.musicsettings, message.guild.id, {
           "channel": "",
-          "message": ""
+          "message": "",
+          "text": true
         })
         //first declare all embeds
         var Emojis = [
@@ -53,7 +54,7 @@ module.exports = {
           new MessageEmbed()
             .setColor(es.color)
             .setFooter(client.getFooter(es))
-            .setImage(message.guild.banner ? message.guild.bannerURL({size: 4096}) : "https://media.discordapp.net/attachments/927258550185640026/963672134192869396/marshal_1.gif")
+            .setImage(message.guild.banner ? message.guild.bannerURL({size: 4096}) : "https://cdn.discordapp.com/attachments/968349976331694100/979686974338244628/Neon_Text_Effect.png")
             .setTitle(`Start Listening to Music, by connecting to a Voice Channel and sending either the **SONG LINK** or **SONG NAME** in this Channel!`)
             .setDescription(`> *I support Youtube, Spotify, Soundcloud and direct MP3 Links!*`)
         ]
@@ -62,7 +63,7 @@ module.exports = {
           new MessageActionRow().addComponents([
             new MessageSelectMenu()
             .setCustomId("MessageSelectMenu")
-            .addOptions(["Strange-Fruits", "Gaming", "Chill", "Magic-Release", "MiYaGi playlist", "Default", "Cepheid's Spotify Playlist", "Bandit Camp Music Storage"].map((t, index) => {
+            .addOptions(["Strange-Fruits", "Gaming", "Chill", "Magic-Release", "MiYaGi playlist", "Default", "Cepheid `s Spotify Playlist", "Bandit Camp Music Storage"].map((t, index) => {
               return {
                 label: t.substr(0, 25),
                 value: t.substr(0, 25),
@@ -71,30 +72,32 @@ module.exports = {
               }
             }))
           ]),
-          new MessageActionRow().addComponents([
-            new MessageButton().setStyle('SUCCESS').setCustomId('Join').setEmoji(`👌`).setLabel(`Join`).setDisabled(false),
-            new MessageButton().setStyle('DANGER').setCustomId('Leave').setEmoji(`👋`).setLabel(`Leave`).setDisabled(),
+            new MessageActionRow().addComponents([
+            new MessageButton().setStyle('PRIMARY').setCustomId('Join').setEmoji(`<:join_vc:950885408290508821>`).setLabel(`${client.la[ls].cmds.music.musicsystem.joinbt}`).setDisabled(false),
+            new MessageButton().setStyle('PRIMARY').setCustomId('Leave').setEmoji(`<:home:981615902778851388>`).setLabel(`${client.la[ls].cmds.music.musicsystem.leavebt}`).setDisabled(),
+            new MessageButton().setStyle('PRIMARY').setCustomId('Text').setEmoji(`<:on_1:981615931283345478>`).setLabel(`${client.la[ls].cmds.music.musicsystem.textbt2}`).setDisabled(false),
+            new MessageButton().setStyle('PRIMARY').setCustomId('Save').setEmoji(`<:save:981615630178471947>`).setLabel(`${client.la[ls].cmds.music.musicsystem.save}`).setDisabled(),
           ]),
           new MessageActionRow().addComponents([
-            new MessageButton().setStyle('PRIMARY').setCustomId('Skip').setEmoji(`⏭`).setLabel(`Skip`).setDisabled(),
-            new MessageButton().setStyle('PRIMARY').setCustomId('Stop').setEmoji(`⏹️`).setLabel(`Stop`).setDisabled(),
-            new MessageButton().setStyle('SECONDARY').setCustomId('Pause').setEmoji('⏸').setLabel(`Pause`).setDisabled(),
-            new MessageButton().setStyle('SUCCESS').setCustomId('Autoplay').setEmoji('➡️').setLabel(`Autoplay`).setDisabled(),
-            new MessageButton().setStyle('PRIMARY').setCustomId('Shuffle').setEmoji('🔀').setLabel(`Shuffle`).setDisabled(),
+            new MessageButton().setStyle('SECONDARY').setCustomId('Vol-').setEmoji('<:volume:978221266345558056>').setLabel(`${client.la[ls].cmds.music.musicsystem.volmbt}`).setDisabled(),
+            new MessageButton().setStyle('SECONDARY').setCustomId('Rewind').setEmoji('<:rewind_1:978181785206808587>').setLabel(`${client.la[ls].cmds.music.musicsystem.rewbt}`).setDisabled(),
+            new MessageButton().setStyle('SECONDARY').setCustomId('Pause').setEmoji('<:pause:978181784925765684>').setLabel(`${client.la[ls].cmds.music.musicsystem.pausebt}`).setDisabled(),
+            new MessageButton().setStyle('SECONDARY').setCustomId('Forward').setEmoji('<:forward_1:978181794933375006>').setLabel(`${client.la[ls].cmds.music.musicsystem.forbt}`).setDisabled(),
+            new MessageButton().setStyle('SECONDARY').setCustomId('Vol+').setEmoji('<:low_volume:978181794799157289>').setLabel(`${client.la[ls].cmds.music.musicsystem.volpbt}`).setDisabled(),
           ]),
           new MessageActionRow().addComponents([
-            new MessageButton().setStyle('SUCCESS').setCustomId('Song').setEmoji(`🔁`).setLabel(`Song Loop`).setDisabled(),
-            new MessageButton().setStyle('SUCCESS').setCustomId('Queue').setEmoji(`🔂`).setLabel(`Queue Loop`).setDisabled(),
-            new MessageButton().setStyle('PRIMARY').setCustomId('Rewind').setEmoji('⏪').setLabel(`-10 Sec`).setDisabled(),
-            new MessageButton().setStyle('PRIMARY').setCustomId('Forward').setEmoji('⏩').setLabel(`+10 Sec`).setDisabled(),
-            new MessageButton().setStyle('PRIMARY').setCustomId('Lyrics').setEmoji('🔄').setLabel(`Replay`).setDisabled(),
+            new MessageButton().setStyle('SECONDARY').setCustomId('Lyrics').setEmoji('<:replay:978181795508015145>').setLabel(`${client.la[ls].cmds.music.musicsystem.replbt}`).setDisabled(),
+            new MessageButton().setStyle('SECONDARY').setCustomId('Song').setEmoji(`<:song_loop:978181804198617088>`).setLabel(`${client.la[ls].cmds.music.musicsystem.slbt}`).setDisabled(),
+            new MessageButton().setStyle('PRIMARY').setCustomId('Stop').setEmoji(`<:stop:978181805645656104>`).setLabel(`${client.la[ls].cmds.music.musicsystem.stopbt}`).setDisabled(),
+            new MessageButton().setStyle('SECONDARY').setCustomId('Queue').setEmoji(`<:queue_loop:978181805641449522>`).setLabel(`${client.la[ls].cmds.music.musicsystem.qlbt}`).setDisabled(),
+            new MessageButton().setStyle('SECONDARY').setCustomId('Skip').setEmoji(`<:skip:978181805679185970>`).setLabel(`${client.la[ls].cmds.music.musicsystem.skipbt}`).setDisabled(),
           ]),
           new MessageActionRow().addComponents([
-            new MessageButton().setStyle('SECONDARY').setCustomId('Vol-').setEmoji('🔉').setLabel(`- Vol`).setDisabled(),
-            new MessageButton().setStyle('SECONDARY').setCustomId('Vol+').setEmoji('🔊').setLabel(`+ Vol`).setDisabled(),
-            new MessageButton().setStyle('PRIMARY').setCustomId('Volmin').setEmoji('🔉').setLabel(`Min Vol`).setDisabled(),
-            new MessageButton().setStyle('PRIMARY').setCustomId('Volmid').setEmoji('🔉').setLabel(`90 Vol`).setDisabled(),
-            new MessageButton().setStyle('DANGER').setCustomId('Volmax').setEmoji('🔉').setLabel(`Max Vol`).setDisabled(),
+            new MessageButton().setStyle('SECONDARY').setCustomId('Shuffle').setEmoji('<:shuffle:978181805972803654>').setLabel(`${client.la[ls].cmds.music.musicsystem.shuffbt}`).setDisabled(),
+            new MessageButton().setStyle('PRIMARY').setCustomId('Volmin').setEmoji('<:volume:978221266345558056>').setLabel(`${client.la[ls].cmds.music.musicsystem.volminbt}`).setDisabled(),
+            new MessageButton().setStyle('PRIMARY').setCustomId('Volmid').setEmoji('<:low_volume:978181794799157289>').setLabel(`${client.la[ls].cmds.music.musicsystem.midvolbt}`).setDisabled(),
+            new MessageButton().setStyle('PRIMARY').setCustomId('Volmax').setEmoji('<:max_volume:978181806107021312>').setLabel(`${client.la[ls].cmds.music.musicsystem.volmaxbt}`).setDisabled(),
+            new MessageButton().setStyle('SECONDARY').setCustomId('Autoplay').setEmoji('<:joines:978181806182531072>').setLabel(`${client.la[ls].cmds.music.musicsystem.autoplbt}`).setDisabled(),
           ]),
         ]
         let channel = message.mentions.channels.first();
@@ -103,6 +106,7 @@ module.exports = {
         channel.send({embeds, components}).then(async (msg) => {
           await client.musicsettings.set(message.guild.id+".channel", channel.id);
           await client.musicsettings.set(message.guild.id+".message", msg.id);
+          await client.musicsettings.set(message.guild.id+".text", true);
           //send a success message
           return message.reply(`✅ **Successfully setupped the Music System in:** <#${channel.id}>`)
         });

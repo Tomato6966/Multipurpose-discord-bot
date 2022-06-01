@@ -36,7 +36,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       let args = [interaction?.options.getInteger("seconds")]
 
       if (!args[0])
-        return interaction?.reply({embeds : [new MessageEmbed()
+        return interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setTitle(eval(client.la[ls]["cmds"]["music"]["rewind"]["variable1"]))
         ]});
@@ -47,7 +47,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
       //seek to the right time
       player.seek(Number(seektime));
       //send success message
-      return interaction?.reply({embeds : [new MessageEmbed()
+      return interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
         .setTitle(eval(client.la[ls]["cmds"]["music"]["rewind"]["variable2"]))
         .addField(`${emoji?.msg.time} Progress: `, createBar(player))
         .setColor(es.color)
