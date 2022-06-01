@@ -245,7 +245,7 @@ module.exports = async (client) => {
                 if (player.trackRepeat) {
                   player.setTrackRepeat(false);
                 }
-                //set track repeat to revers of old track repeat
+
                 player.setQueueRepeat(!player.queueRepeat);
                 interaction?.reply({
                   embeds: [new MessageEmbed()
@@ -254,7 +254,7 @@ module.exports = async (client) => {
                   .setTitle(`${player.queueRepeat ? `:white_check_mark: ${client.la[ls].cmds.music.musicsystem.queueloopon}`: `:x: ${client.la[ls].cmds.music.musicsystem.queueloopoff}`}`)
                   .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
-                //edit the message so that it's right!
+
                 var data = await generateQueueEmbed(client, guild.id)
                 message.edit(data).catch((e) => {
                   //console.error(e)
