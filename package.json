@@ -4,7 +4,7 @@
   "description": "A Discord Bot made by: Tomato#6966",
   "main": "index.js",
   "dependencies": {
-    "@discordjs/builders": "^0.13.0",
+    "@discordjs/builders": "^0.12.0",
     "@discordjs/opus": "^0.7.0",
     "@discordjs/voice": "^0.9.0",
     "anime-actions": "^1.0.6",
