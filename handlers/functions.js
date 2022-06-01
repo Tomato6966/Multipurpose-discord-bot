@@ -5,14 +5,15 @@ const {
   MessageEmbed,
   MessageAttachment, Permissions, MessageButton, MessageActionRow, MessageSelectMenu
 } = require("discord.js");
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
+const { Util: UtilClass } = require("quickmongo");
+const lodash = require("lodash");
+const emoji = require(`../botconfig/emojis.json`);
+const config = require(`../botconfig/config.json`);
+const ee = require(`../botconfig/embed.json`);
 const radios = require("../botconfig/radiostations.json");
 const ms = require("ms")
 const moment = require("moment")
 const fs = require('fs')
-const _ = require("lodash");
 
 module.exports = {
   dbRemove,
@@ -108,7 +109,7 @@ async function dbRemove(db, key, filter) {
       }
       if (!Array.isArray(Data)) return res(null)
       // allow db.remove(key, d); and: db.remove(key, data => data.foo == "bar") 
-      const Findfunction = _.isFunction(filter) ? filter : (v) => filter === v;
+      const Findfunction = lodash.isFunction(filter) ? filter : (v) => filter === v;
       const DataIndex = Data.findIndex(Findfunction);
       // If index found, remove it
       if (DataIndex > -1) {
@@ -1754,8 +1755,6 @@ async function swap_pagesMessageData(client, message, messageDatas, tempmsg = fa
   const DisabledMessageDatas = messageDatas.map(data => {data.components = getDisabledComponents(allbuttons, true); return data});
   const enabledMessageDatas = messageDatas.map(data => {data.components = getDisabledComponents(allbuttons, false); return data});
 
-  console.log(enabledMessageDatas[0])
-  
   if(tempmsg) swapmsg = await tempmsg.edit(enabledMessageDatas[0]).catch(() => null)
   else swapmsg = await message.channel.send(enabledMessageDatas[0]);
   //create a collector for the thinggy
@@ -1900,14 +1899,23 @@ async function swap_pages2_interaction(client, interaction, embeds) {
 async function databasing(client, guildid, userid) {
   return new Promise(async (res) => {
   if(!client || client == undefined || !client.user || client.user == undefined) return res(true);
+  let ress = [], respones;
     try {
       if (guildid) {
-        await dbEnsure(client.customcommands, guildid, {
+        respones = await dbEnsure(client.customcommands, guildid, {
           commands: []
-        }).catch(() => null);
-        await dbEnsure(client.keyword, guildid, {
+        }).catch(() => null)
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
+        respones = await dbEnsure(client.keyword, guildid, {
           commands: []
-        }).catch(() => null);
+        }).catch(() => null)
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
         /**
          * @INFO
          * Bot Coded by Tomato#6966 | https://discord.gg/milrato
@@ -1917,7 +1925,7 @@ async function databasing(client, guildid, userid) {
          * Please mention him / Milrato Development, when using this Code!
          * @INFO
          */
-        await dbEnsure(client.social_log, guildid, {
+        respones = await dbEnsure(client.social_log, guildid, {
           tiktok: {
             channels: [],
             dc_channel: ""
@@ -1949,14 +1957,26 @@ async function databasing(client, guildid, userid) {
             roleID_GIVE: "",
             channels: [],
           }
-        }).catch(() => null);
-        await dbEnsure(client.stats, guildid, {
+        }).catch(() => null)
+        
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
+        respones = await dbEnsure(client.stats, guildid, {
           commands: 0,
           songs: 0
-        }).catch(() => null);
-        await dbEnsure(client.premium, guildid, {
+        }).catch(() => null)
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
+        respones = await dbEnsure(client.premium, guildid, {
           enabled: false,
-        }).catch(() => null);
+        }).catch(() => null)
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
         const ensureData = {
           textchannel: "0",
           voicechannel: "0",
@@ -1987,13 +2007,22 @@ async function databasing(client, guildid, userid) {
             adminroles: []
           }
         }
-        await dbEnsure(client.setups, guildid, ensureData).catch(() => null);
-        await dbEnsure(client.blacklist, guildid, {
+        
+        respones = await dbEnsure(client.setups, guildid, ensureData).catch(() => null)
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
+        respones = await dbEnsure(client.blacklist, guildid, {
           words: [],
           mute_amount: 5,
           whitelistedchannels: [],
         }).catch(() => null);
-        await dbEnsure(client.settings, guildid, {
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
+        respones = await dbEnsure(client.settings, guildid, {
           prefix: config.prefix,
           pruning: true,
           requestonly: true,
@@ -2242,28 +2271,54 @@ async function databasing(client, guildid, userid) {
           djroles: [],
           djonlycmds: ["autoplay", "clearqueue", "forward", "loop", "jump", "loopqueue", "loopsong", "move", "pause", "resume", "removetrack", "removedupe", "restart", "rewind", "seek", "shuffle", "skip", "stop", "volume"],
           botchannel: [],
-        });
-        await dbEnsure(client.jtcsettings, guildid, {
+        })
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
+        respones = await dbEnsure(client.jtcsettings, guildid, {
           prefix: ".",
           channel: "",
           channelname: "{user}' Room",
           guild: guildid,
-        });
-        await dbEnsure(client.musicsettings, guildid, {"channel": "","message": ""});
-        await dbEnsure(client.stats, guildid, {commands: 0,songs: 0});
-        
+        })
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
+        respones = await dbEnsure(client.musicsettings, guildid, {"channel": "","message": ""})
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
+        respones = await dbEnsure(client.stats, guildid, {commands: 0,songs: 0})
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)       
       }
       if (userid) {
-        await dbEnsure(client.premium, userid, {
+        respones = await dbEnsure(client.premium, userid, {
           enabled: false,
         })
-        await dbEnsure(client.queuesaves, userid, {
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
+        respones = await dbEnsure(client.queuesaves, userid, {
           "TEMPLATEQUEUEINFORMATION": ["queue", "sadasd"]
-        });
-        await dbEnsure(client.settings, userid, {
+        })
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
+        respones = await dbEnsure(client.settings, userid, {
           dm: true,
         })
-        await dbEnsure(client.stats, guildid + userid, {
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
+        respones = await dbEnsure(client.stats, guildid + userid, {
           ban: [],
           kick: [],
           mute: [],
@@ -2271,9 +2326,12 @@ async function databasing(client, guildid, userid) {
           says: [],
           warn: [],
         })
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
       }
       if (userid && guildid) {
-        await dbEnsure(client.stats, guildid + userid, {
+        respones = await dbEnsure(client.stats, guildid + userid, {
           ban: [],
           kick: [],
           mute: [],
@@ -2281,16 +2339,25 @@ async function databasing(client, guildid, userid) {
           says: [],
           warn: [],
         })
-        await dbEnsure(client.userProfiles, userid, {
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
+
+        respones = await dbEnsure(client.userProfiles, userid, {
           id: userid,
           guild: guildid,
           totalActions: 0,
           warnings: [],
           kicks: []
-        });
+        })
+
+        if(respones && respones.changed) await delay(5000);
+        ress.push(respones)
       }
-      return res(e);;
+      console.log(ress, "DATABASING CHANGES / NO CHANGES")
+      return res(ress);
     } catch (e) {
+      console.error(e);
       res(e);
     }
     return res(true)
@@ -2490,6 +2557,91 @@ async function create_transcript(message, client, msglimit) {
  * @INFO
  */
 //usage: await dbEnsure(QuickMongoDatabase, "key", { foo: "bar", data: ...Data });
+
+async function dbEnsure(db, key, defaultObject) {
+  return new Promise(async (res) => {
+    if(lodash.isNil(defaultObject)) {
+        throw new Error(`No default value for for "${key}"`)
+    }
+    
+    //if(db.model.collection.name !== "settings") return res({changed: false});
+
+    const newData = defaultObject;
+    console.log(newData, "newData")
+    const r = UtilClass.getKeyMetadata(key);
+    // get the current master data if 
+    let dbData = await db.get(r.master) || {};
+    if(typeof dbData != "object") {
+      console.error("No dbdata object , force setting it to one");
+      dbData = {};
+    }
+    console.log(dbData);
+    // if there is a target, check for the target
+    if(r.target) {
+        if(lodash.has(dbData, r.target)) {
+            const pathData = lodash.get(dbData, r.target)
+            const newPathData = await checkObjectDeep(pathData, newData);
+            // something has changed
+            if(newPathData) {
+              lodash.set(dbData, r.target, newPathData);
+              await db.set(r.master, dbData);
+              console.log("CHANGES IN HERE 1");
+              return res({ changed: true });
+            }
+            return res({ changed: false }); 
+        }
+        // if it's not in the dbData, then set it
+        lodash.set(dbData, r.target, newData)
+        console.log("CHANGES IN HERE 2");
+        await db.set(r.master, dbData);
+        return res({ changed: true });
+    }
+    // check for non-targets object changes
+    /*
+      dbData = {1: "c", 4: "d"}
+      newData = {1: "a", 2: "b"}
+
+      return {1: "c", 2: "b", 4: "d"}
+     */
+    const newPathData = await checkObjectDeep(dbData, newData);
+    // something has changed
+    if(newPathData) {
+        await db.set(r.master, newPathData);
+        console.log("CHANGES IN HERE 3");
+        return res({ changed: true });
+    } 
+    // return something
+    return res({ changed: false }); 
+  })
+}
+async function checkObjectDeep(dd, data) {
+  return new Promise(async (res) => {
+      let changed = false;
+
+      const visitNodes = (obj, visitor, stack = []) => {
+        if (typeof obj === 'object') {
+          for (let key in obj) {
+            visitNodes(obj[key], visitor, [...stack, key]);
+          }
+        } else {
+          visitor(stack.join('.').replace(/(?:\.)(\d+)(?![a-z_])/ig, '[$1]'), obj);
+        }
+      }
+      
+      visitNodes(data, (path, value) => {
+        if(!lodash.has(dd, path)) {
+          lodash.set(dd, path, value);
+          changed = true;
+          console.log(`NO PATH: ${path}`);
+        }
+      });
+
+      if(changed) return res(dd);
+      return res(false);
+  })        
+}
+
+/*
 async function dbEnsure(db, key, data, debug = false) {
   return new Promise(async (res) => {
     const extraDelay = 5; //ms
@@ -2502,32 +2654,32 @@ async function dbEnsure(db, key, data, debug = false) {
           path = key.split(".").slice(1).join(".")
           key = key.split(".")[0];
         }
-        if(_.isNil(data)) {
+        if(lodash.isNil(data)) {
           return rej("No default value provided")
         }
         const masterData = await db.get(key) || {};
         // if there is a path do this
-        if(!_.isNil(path)) {
+        if(!lodash.isNil(path)) {
           // dbEnsure(db, key, {}); // Make sure there is an object
-          if(_.has(masterData, path)) {
-            const pathData =  _.get(masterData, path)
+          if(lodash.has(masterData, path)) {
+            const pathData =  lodash.get(masterData, path)
             const newPathData = checkObjectDeep(pathData, data);
             // something has changed
             if(newPathData) {
-              _.set(masterData, path, newPathData);
+              lodash.set(masterData, path, newPathData);
               await db.set(key, masterData);
               await delay(extraDelay);
               return res({ changed: true });
             } 
             return res(true);
           }
-          _.set(masterData, path, data)
+          lodash.set(masterData, path, data)
           await db.set(key, masterData);
           await delay(extraDelay);
           return res({ changed: true });
         }
         // if its not an object
-        if(!_.isObject(masterData)) {
+        if(!lodash.isObject(masterData)) {
           debug ? console.log("Masterdata not an object") : null;
           return res(true);
         }
@@ -2597,12 +2749,12 @@ async function dbEnsure(db, key, data, debug = false) {
       res(true);
     }
   })
-}
+}*/
 //usage: with callback function: 
 //const keys = await dbKeys(QuickMongoDB, d => d.data == "a" || d.guildId == message.guild.id);
 async function dbKeys(db, filter = null) {
   const Data = await db.all();
-  if(filter && _.isFunction(filter)) {        
+  if(filter && lodash.isFunction(filter)) {        
     return Data.filter(filter).map(d => d.ID);
   } else {
     return Data.map(d => d.ID);   
@@ -2771,7 +2923,7 @@ async function simple_databasing(client, guildid, userid) {
 
 
 async function ensure_economy_user(client, guildid, userid){
-    await dbEnsure(client.economy, `${guildid}_${userid}`, {
+    respones = await dbEnsure(client.economy, `${guildid}_${userid}`, {
       user: userid,
       work: 0,
       balance: 0,
@@ -3031,7 +3183,7 @@ async function CheckGuild(client, key) {
         client.checking[key] = true;
         console.log("First-Time-Setting: ", key)
         // ensure 
-        client.database.set(key, true);
+        await client.database.set(key, true);
         await databasing(client, key);
         console.log("First-Time-Setting: DONE ", key)
         client.checking[key] = false

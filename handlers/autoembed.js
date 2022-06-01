@@ -2,7 +2,7 @@ const Discord = require("discord.js")
 let url = "";
 const ee = require("../botconfig/embed.json");
 const { dbEnsure, dbKeys, dbRemove, delay } = require("./functions")
-module.exports = async client => {
+module.exports.run = async client => {
     module.exports.messageCreate = (client, message, guild_settings) => {
       autoEmbed(client, message, guild_settings);
     }

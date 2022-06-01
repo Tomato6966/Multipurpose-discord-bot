@@ -4,7 +4,7 @@ const { Client, Collection, MessageEmbed, MessageAttachment } = require(`discord
 } = require('discord.js');
 const ee = require(`${process.cwd()}/botconfig/embed.json`);
 const { dbEnsure, dbRemove, dbKeys } = require("./functions")
-module.exports = (client) => {
+module.exports.run = (client) => {
   module.exports.messageCreate = async (client, message, guild_settings) => {
     if (message.author?.bot) return;
     if (!message.guild) return;

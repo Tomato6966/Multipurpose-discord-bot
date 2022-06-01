@@ -1,11 +1,9 @@
 
 const { mongoUri } = require("../databaseUri.json");
 const { Database } = require("quickmongo");
+const ee = require("../botconfig/embed.json")
 const { dbEnsure, delay } = require("./functions")
-const OS = require("os");
-const { MessageEmbed } = require("discord.js");
-const { GiveawaysManager } = require('discord-giveaways');
-module.exports = async client => {
+module.exports = async (client, enableGiveaways = true, redisOptions = false) => {
     return new Promise(async (res) => {
 
         const connectionOptions = {
@@ -21,18 +19,22 @@ module.exports = async client => {
         process.env.DB_cache_all = 0; // Delete the cache after X ms | < 0 === never delete [DEFAULT: 600_000]
         // You can also add: db.get(key, true) // to force-fetch the db
 
-
         /*
             if you have several Pools, mongo can use them to send data to them without "blocking" the sending from other datas
             Aka it will be faster, but needs more ram...
         */
         let dateNow = Date.now();
         console.log(`${String("[x] :: ".magenta)}Now loading the Database ...`.brightGreen)
+        
         client.database = new Database(mongoUri, connectionOptions);
+        
+        if(redisOptions) {
+            console.log("CONNECT TO REDIS");
+            await client.database.connectToRedis(redisOptions)
+        }
+
         // when the db is ready
         client.database.on("ready", async () => {
-            const DbPing = await client.database.ping();
-            console.log(`[x] :: `.magenta + `LOADED THE DATABASE after: `.brightGreen + `${Date.now() - dateNow}ms\n       Database got a ${DbPing}ms ping`.green)
             // Creating the Tables
             client.notes = new client.database.table("notes");
 
@@ -105,6 +107,11 @@ module.exports = async client => {
             client.backupDB = new client.database.table("backupDB");
 
             client.giveawayDB = new client.database.table("giveawayDB");
+            
+            const DbPing = await client.database.ping();
+            
+            console.log(`[x] :: `.magenta + `LOADED THE DATABASE after: `.brightGreen + `${Date.now() - dateNow}ms\n       Database got a ${DbPing}ms ping`.green)
+            
             await dbEnsure(client.stats, "global", {
                 commands: 0,
                 songs: 0
@@ -123,7 +130,7 @@ module.exports = async client => {
             }
 
             await dbEnsure(client.setups, "TICKETS", obj);
-            manageGiveaways()
+            if(enableGiveaways) manageGiveaways()
             res(true);
         });
 
@@ -154,6 +161,8 @@ module.exports = async client => {
         // top-level awaits
         await client.database.connect();
         async function manageGiveaways() {
+            const { MessageEmbed } = require("discord.js");
+            const { GiveawaysManager } = require('discord-giveaways');
             const CustomGiveawayManager = class extends GiveawaysManager {
                 async getAllGiveaways() {
                     return await client.giveawayDB.all(true);

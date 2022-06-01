@@ -85,7 +85,7 @@ module.exports = (client) => {
                         await reaction.message.fetch().catch(() => null);
                         const userReactions = reaction.message.reactions.cache;
                         try {
-                            for (const reaction of userReactions.values()) {
+                            for (const reaction of [...userReactions.values()]) {
                                 if (reaction.users.cache.has(user.id) && oldreact.emoji?.name != reaction.emoji?.name) {
                                     reaction.users.remove(user.id);
                                 }

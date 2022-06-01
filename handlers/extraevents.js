@@ -5,9 +5,10 @@ const { spawn } = require('child_process');
 module.exports = async (client) => {
   
   client.disableComponentMessage = (C) => {
+    try {
     if(C && C.message && C.message.components.length > 0) {
       if(C.replied) {
-        C.edit({
+        C.message.edit({
           components: client.getDisabledComponents(C.message.components)
         }).catch(() => null);
       } else {
@@ -19,7 +20,51 @@ module.exports = async (client) => {
     } else {
       return;
     }
+    } catch (_) {
+      return;
+    }
   }
+  
+ 
+  client.receiveBotInfo = async () => {
+    const cluster = client.cluster.id;
+    const shards = client.cluster.ids.map(d => `#${d.id}`).join(", ");
+    const guilds = client.guilds.cache.size;
+    const members = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
+    const ram = (process.memoryUsage().heapUsed/1024/1024).toFixed(0);
+    const rssRam = (process.memoryUsage().rss/1024/1024).toFixed(0);
+    const ping = client.ws.ping;
+    const dbPing = await client.database.ping().catch(() => null) || undefined;
+    const players = client.manager.players.size;
+    const uptime = client.uptime;
+    return { cluster, shards, guilds, members, ram, rssRam, ping, dbPing, players, uptime };
+  };
+
+  client.testInfo = async (command) => {
+    return `WOW-${command}`;
+  };
+
+  client.testInfoObject = async () => {
+    return { data:`WOW-${command}` };
+  };
+
+  client.reloadCommand = async (command) => {
+    const thecmd = client.commands.get(command.toLowerCase()) || client.commands.get(client.aliases.get(command.toLowerCase()));
+    console.log(thecmd)
+    if(thecmd){
+      try {
+        delete require.cache[require.resolve(`${process.cwd()}/commands/${thecmd.category}/${thecmd.name}`)] // usage !reload <name>
+        client.commands.delete(thecmd.name)
+        const pull = require(`${process.cwd()}/commands/${thecmd.category}/${thecmd.name}`)
+        client.commands.set(thecmd.name, pull)
+        return { success: true, error: false };
+      } catch (e) {
+        console.error(e)
+        return { success: false, error: e };
+      }
+    }
+  };
+
   client.getDisabledComponents = (MessageComponents) => {
     if(!MessageComponents) return []; // Returning so it doesn't crash
 
@@ -27,7 +72,7 @@ module.exports = async (client) => {
         return new MessageActionRow()
             .addComponents(components.map(c => c.setDisabled(true)))
     });
-  }
+  };
   client.consoleExec = (_, cmd) => {
       if(!_) return;
       if(!cmd) return _.reply("Please provide the command!")
@@ -48,13 +93,13 @@ module.exports = async (client) => {
               _.reply({embeds: [embed] });
           }
       });
-  }
+  };
   client.skipMusic = (guildId) => {
     const p = client.manager.players.get(guildId);
     if(!p) return null;
     p.stop();
     return true;
-  }
+  };
   client.pauseMusic = (guildId) => {
     const p = client.manager.players.get(guildId);
     if(!p) return null;
@@ -107,7 +152,7 @@ module.exports = async (client) => {
   }
   client.getPlayerData = (guildId) => {
     const p = client.manager.players.get(guildId);
-    if(!p) return "o player";
+    if(!p) return null;
     else return {
         voiceChannel: p.voiceChannel,
         queue: p.queue ? {
@@ -143,15 +188,19 @@ module.exports = async (client) => {
     return member?.roles?.cache.map(r => r.id) || false;
   }
 
+  client.updateDbCache = async (db, key, guildId) => {
+    if(!client.guilds.cache.has(guildId)) return true;
+    
+    if(key.includes(".")) await client[db]?.get(key.split(".")[0], true); 
+    // fetch the T_Key
+    await client[db]?.get(key, true);
+    // return some value 
+    return true; 
+  }
+
   client.updateClusterDbCache = async (db, key, guildId) => {
     // update db-cache on that Cluster
-    await client.cluster.evalOnCluster((c, data) => {
-        if(data.key.includes(".")) c[data.db]?.get(data.key.split(".")[0], true); 
-        // fetch the T_Key
-        c[data.db]?.get(data.key, true);
-        // return some value 
-        return true; 
-    }, { guildId: guildId, context: { db, key } }).catch(console.error);
+    await client.machine.broadcastEval(`this.updateDbCache("${db}", "${key}", "${guildId}")`).then(d => d.flat().filter(Boolean)[0]).catch(console.error);
     return true;
   }
 
@@ -169,7 +218,7 @@ module.exports = async (client) => {
     return new Promise((res, rej) => {
       if(!guildId) rej(new Error("No guildId Provided"));
       if(client.guilds.cache.has(id)) return res(client.guilds.cache.get(guildId));
-      client.cluster.evalOnCluster(`this.guilds.cache.get('${guildId}')`, { guildId }).catch(rej).then(d => res(d))
+      client.machine.broadcastEval(`this.guilds.cache.get('${guildId}') || []`).catch(rej).then(d => res(d.flat().flat().filter(Boolean)[0]))
     })
   }
   // on this shard
@@ -192,15 +241,19 @@ module.exports = async (client) => {
       if(user) res(user); else rej(new Error("No User found"))
     })
   }
+  client.getUserDataOnCluster = async (id) => {
+    return client.users.cache.get(id) || await client.users.fetch(id).catch(() => null)
+  }
   // on all shards
   client.getUserData = (id) => {
     return new Promise(async (res, rej) => {
       if(!id) rej(new Error("No userId Provided"));
       let user = client.users.cache.get(id) || await client.users.fetch(id).catch(() => null);
-      if(user) res(user); else {
-        await client.cluster.broadcastEval(async (c, ctx) => c.users.cache.get(ctx) || await c.users.fetch(ctx).catch(() => null), {context: id
-        }).catch(rej).then(d => res(d.filter(Boolean)[0]))
-        rej(new Error("No User found"))
+      if(user) return res(user); 
+      else {
+        const result = await client.machine.broadcastEval(`this.getUserDataOnCluster("${id}")`).catch(rej).then(d => d.flat().filter(Boolean)[0])
+        if(result) return res(result)
+        return rej(new Error("No User found"))
       }
     })
   }
@@ -212,15 +265,19 @@ module.exports = async (client) => {
       if(channel) res(channel); else rej(new Error("No Channel found"))
     })
   }
+  client.getChannelClusterData = async (id) => {
+    return c.channels.cache.get(ctx) || await c.channels.fetch(ctx).catch(() => null);
+  }
   // on all shards
   client.getChannelData = (id) => {
     return new Promise(async (res, rej) => {
       if(!id) rej(new Error("No channelId Provided"));
       let channel = client.channels.cache.get(id) || await client.channels.fetch(id).catch(() => null);
-      if(channel) res(channel); else {
-        await client.cluster.broadcastEval(async (c, ctx) => c.channels.cache.get(ctx) || await c.channels.fetch(ctx).catch(() => null), {context: id
-        }).catch(rej).then(d => res(d.filter(Boolean)[0]))
-        rej(new Error("No Channel found"))
+      if(channel) res(channel); 
+      else {
+        const result = await client.cluster.broadcastEval(`this.getChannelClusterData("${id}")`).catch(rej).then(d => d.flat().filter(Boolean)[0])
+        if(result) return res(result);
+        return rej(new Error("No Channel found"))
       }
     })
   }

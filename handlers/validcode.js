@@ -1,5 +1,5 @@
 const { dbEnsure } = require("./functions")
-module.exports = async (client) => {
+module.exports.run = async (client) => {
     module.exports.messageCreate = async (client, message, guild_settings) => {
         ValidCode(client, message, guild_settings)
     }

@@ -41,9 +41,9 @@ var {
       }
       //require the other events
       require("./node_events")(client)
-      require("./client_events")(client)
-      require("./events")(client)
-      require("./musicsystem")(client)
+      //require("./client_events")(client)
+      //require("./events")(client)
+      //require("./musicsystem")(client)
       
   };
   /**

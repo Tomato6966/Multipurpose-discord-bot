@@ -9,7 +9,7 @@ var {
 const { databasing, delay, dbEnsure } = require(`./functions`)
 const countermap = new Map()
 const tempcounter = new Map();
-module.exports = async (client) => {
+module.exports.run = async (client) => {
     module.exports.messageCreate = (client, message, guild_settings) => {
         checkAntiMention(client, message, guild_settings);
     }
@@ -98,7 +98,7 @@ module.exports = async (client) => {
             if (!message.content) return;
             try {
                 let rolementions = message.mentions.roles.size;
-                let usermentions = message.mentions.users.size;
+                let usermentions = message.mentions.users.filter(u => !u.bot).size;
                 let allmentions = rolementions + usermentions;
                 let oldVal = tempcounter.get(message.author.id) || 0;
                 

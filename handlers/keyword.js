@@ -5,7 +5,7 @@ var {
 } = require(`discord.js`);
 const { escapeRegex, dbEnsure } = require(`./functions`)
 const map = new Map()
-module.exports = async (client) => {
+module.exports.run = async (client) => {
 
     module.exports.messageCreate = async (client, message, guild_settings) => {
         if (!message.guild || message.guild.available === false || message.author?.bot) return;

@@ -8,7 +8,7 @@ var {
 } = require(`discord.js`);
 let countermap = new Map();
 const { dbEnsure } = require("./functions");
-module.exports = async (client) => {
+module.exports.run = async (client) => {
     const {
         isValidURL, delay
     } = require(`./functions`);

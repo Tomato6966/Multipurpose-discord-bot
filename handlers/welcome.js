@@ -112,7 +112,7 @@ module.exports = async (client) => {
       // Fetch guild and member data from the db
       await EnsureInviteDB(member.guild, member.user)
 
-      const allData = DbAllCache.get(member.guild.id) || await client.invitesdb.all().then(v => v.data?.guildId == member.guild.id) || [];
+      const allData = DbAllCache.get(member.guild.id) || await client.invitesdb.all().then(v => v.filter(d => d.data?.guildId == member.guild.id)) || [];
       DbAllCache.set(member.guild.id, allData);
 
       const memberData = allData.find(v => v.data?.id == member.id && v.data?.guildId == member.guild.id && v.data?.bot == member.user.bot)?.data || {};
@@ -270,10 +270,10 @@ module.exports = async (client) => {
         console.log("ELSE - NO INVITE INFOS ");
         invitemessage = "\u200b"
       }
-      
+
       // Update the invitation cache
       (async() => {
-        const allInvitesData = await client.invitesdb.all().then(v => v.data?.guildId == member.guild.id) || DbAllCache.get(member.guild.id) || [];
+        const allInvitesData = await client.invitesdb.all().then(v => v.filter(d => d.data?.guildId == member.guild.id)) || DbAllCache.get(member.guild.id) || [];
         DbAllCache.set(member.guild.id, allInvitesData);
       })();
 

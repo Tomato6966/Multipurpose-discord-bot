@@ -8,7 +8,7 @@ var {
 } = require(`discord.js`);
 const { dbEnsure, dbKeys, dbRemove, delay } = require("./functions")
 const countermap = new Map();
-module.exports = async (client) => {
+module.exports.run = async (client) => {
     module.exports.messageCreate = async (client, message, guild_settings) => {
         Blacklist(client, message, guild_settings);
     }

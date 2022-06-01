@@ -9,7 +9,7 @@ var {
 const { databasing, delay, dbEnsure} = require(`./functions`)
 const countermap = new Map()
 const messagesmap = new Map()
-module.exports = async (client) => {
+module.exports.run = async (client) => {
   module.exports.messageCreate = (client, message, guild_settings) => {
     checkAntiSpam(client, message, guild_settings);
   }

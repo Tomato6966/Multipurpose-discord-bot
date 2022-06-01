@@ -1,6 +1,6 @@
 const { Permissions } = require("discord.js")
 const { dbEnsure, dbKeys, dbRemove, delay } = require("./functions")
-module.exports = async (client, options) => {
+module.exports.run = async (client, options) => {
   module.exports.messageCreate = (client, message, guild_settings) => {
     Counter(client, message, guild_settings);
   }

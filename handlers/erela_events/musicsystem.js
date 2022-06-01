@@ -401,7 +401,7 @@ async function generateQueueEmbed(client, guildId, leave){
             .addField(`${emoji?.msg.time} Duration: `, `\`${format(player?.queue?.current.duration).split(" | ")[0]}\` | \`${format(player?.queue?.current.duration).split(" | ")[1]}\``, true)
             .addField(`${emoji?.msg.song_by} Song By: `, `\`${player?.queue?.current.author}\``, true)
             .addField(`${emoji?.msg.repeat_mode} Queue length: `, `\`${player?.queue?.length} Songs\``, true)
-            .setAuthor(`${player?.queue?.current.title}`, "https://images-ext-1.discordapp.net/external/DkPCBVBHBDJC8xHHCF2G7-rJXnTwj_qs78udThL8Cy0/%3Fv%3D1/https/cdn.discordapp.com/emojis/859459305152708630.gif", player?.queue?.current.uri)
+            .setAuthor(client.getAuthor(`${player?.queue?.current.title}`, "https://images-ext-1.discordapp.net/external/DkPCBVBHBDJC8xHHCF2G7-rJXnTwj_qs78udThL8Cy0/%3Fv%3D1/https/cdn.discordapp.com/emojis/859459305152708630.gif", player?.queue?.current.uri))
         delete embeds[1].description;
         delete embeds[1].title;
         //get the right tracks of the current tracks

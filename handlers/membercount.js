@@ -17,11 +17,11 @@ module.exports = function (client, options) {
         return false;
       }
     }) || [];
-    console.log(`${guilds.length} (${guilds.filter(g => client.guilds.cache.has(g))}) MEMBERCOUNTERs - GUILDS`)
+    console.log(`${guilds.length} (${guilds.filter(g => client.guilds.cache.has(g)).length}) MEMBERCOUNTERs - GUILDS`)
     //Loop through all guilds and send a random auto-generated-nsfw setup
     for await (const guildid of guilds.filter(g => client.guilds.cache.has(g))){
         memberCount(guildid)
-        await delay(1000);
+        await delay(2_500);
     }
   }, null, true, 'Europe/Berlin');
 

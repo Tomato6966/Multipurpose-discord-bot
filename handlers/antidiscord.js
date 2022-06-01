@@ -10,7 +10,7 @@ const ms = require("ms");
 const { dbEnsure } = require("./functions");
 // link of scam urls taken from: https://github.com/nikolaischunk/discord-phishing-links
 const ScamUrls = require("./scamurls.json").links;
-module.exports = async (client) => {
+module.exports.run = async (client) => {
     module.exports.messageCreate = (client, message, guild_settings) => {
         checkAntiDiscord(client, message, guild_settings);
         checkAntiDiscordScam(client, message, guild_settings);

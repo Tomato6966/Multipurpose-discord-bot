@@ -8,7 +8,7 @@ var {
 const { databasing, dbEnsure } = require(`./functions`)
 const fetch = require("node-fetch")
 
-module.exports = async (client) => {
+module.exports.run = async (client) => {
     // CMD
     
     module.exports.messageCreate = (client, message, guild_settings, setups) => {

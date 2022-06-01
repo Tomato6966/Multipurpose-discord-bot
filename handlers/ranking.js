@@ -63,7 +63,14 @@ async function run (client) {
       else if (!newState.channel) {
         var now = new Date();
         var joined = voiceStates.voicerank[id] || new Date();
-        var connectedTime = now.getTime() - joined.getTime();
+        var connectedTime = null;
+        try {
+            var connectedTime = now.getTime() - joined.getTime();
+        } catch (e){
+            console.error(e);
+            console.log(joined);
+            var connectedTime = now.getTime()
+        }
         //Grant Coints!
         if(connectedTime > 60000){
             if (newState.member.user?.bot || !newState.guild) return;
@@ -90,7 +97,7 @@ async function run (client) {
                 voicetime: 0,
                 oldmessage: "",
             });
-            if(newState.member.user && newState.member.user.tag) await client.points.set(`${key}.usertag`, newState.member.user.tag); 
+            if(newState.member && newState.member.user && newState.member.user.tag) await client.points.set(`${key}.usertag`, newState.member.user.tag); 
             let VoicePoints = Math.floor(connectedTime / 60000)
             await client.points.add(`${key}.voicetime`, Math.floor(connectedTime / 60000)); 
             

@@ -8,7 +8,7 @@ var {
 const { databasing, delay, dbEnsure } = require(`./functions`)
 const countermap = new Map()
 const ms = require("ms");
-module.exports = async (client) => {
+module.exports.run = async (client) => {
     // CMD
     module.exports.messageCreate = (client, message, guild_settings) => {
         checkAntiCaps(client, message, guild_settings);

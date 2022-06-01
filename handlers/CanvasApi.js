@@ -257,8 +257,8 @@ async function rankCard(data) {
                         flags.push("1_MONTH")
                     }
                 }
-                if(flags.includes("EARLY_VERIFIED_DEVELOPER")){
-                    const index = flags.indexOf("EARLY_VERIFIED_DEVELOPER");
+                if(flags.includes("EARLY_VERIFIED_DEVELOPER") || flags.includes("EARLY_VERIFIED_BOT_DEVELOPER") ){
+                    const index = flags.indexOf("EARLY_VERIFIED_BOT_DEVELOPER");
                     if(index > -1){
                         flags.splice(index, 1);
                     }
@@ -494,7 +494,7 @@ async function leaderBoardCard (data) {
     ctx.font = "75px UbuntuMono";
     ctx.fillStyle = "#2697FF";
 
-    const bgimg = await Canvas.loadImage(`./assets/${data.type == "voice" ? "voice" : "first"}_leaderboard.png`);
+    const bgimg = await Canvas.loadImage(`${process.cwd()}/assets/${data.type == "voice" ? "voice" : "first"}_leaderboard.png`);
     ctx.drawImage(bgimg, 0, 0, canvas.width, canvas.height);
     
     const usernames = data.usernames.slice(0, 10);
@@ -602,20 +602,20 @@ async function welcomeDm(data) {
             var framecolor = data.welcomeSettings.framecolordm.toUpperCase();
             if (framecolor == "WHITE") framecolor = "#FFFFF9";
             if (data.welcomeSettings.discriminatordm && data.welcomeSettings.servernamedm)
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome3frame.png`);
+                background = await Canvas.loadImage(`${process.cwd()}/assets/welcome/${framecolor}/welcome3frame.png`);
 
             else if (data.welcomeSettings.discriminatordm)
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome2frame_unten.png`);
+                background = await Canvas.loadImage(`${process.cwd()}/assets/welcome/${framecolor}/welcome2frame_unten.png`);
 
             else if (data.welcomeSettings.servernamedm)
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome2frame_oben.png`);
+                background = await Canvas.loadImage(`${process.cwd()}/assets/welcome/${framecolor}/welcome2frame_oben.png`);
 
             else
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1frame.png`);
+                background = await Canvas.loadImage(`${process.cwd()}/assets/welcome/${framecolor}/welcome1frame.png`);
 
             ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
             if (data.welcomeSettings.pbdm) {
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1framepb.png`);
+                background = await Canvas.loadImage(`${process.cwd()}/assets/welcome/${framecolor}/welcome1framepb.png`);
                 ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
             }
         }
@@ -712,20 +712,20 @@ async function welcomeChannel(data) {
             var framecolor = data.welcomeSettings.framecolor.toUpperCase();
             if (framecolor == "WHITE") framecolor = "#FFFFF9";
             if (data.welcomeSettings.discriminator && (data.welcomeSettings.servername || data.welcomeSettings.servernam))
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome3frame.png`);
+                background = await Canvas.loadImage(`${process.cwd()}/assets/welcome/${framecolor}/welcome3frame.png`);
 
             else if (data.welcomeSettings.discriminator)
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome2frame_unten.png`);
+                background = await Canvas.loadImage(`${process.cwd()}/assets/welcome/${framecolor}/welcome2frame_unten.png`);
 
             else if (data.welcomeSettings.servername || data.welcomeSettings.servernam)
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome2frame_oben.png`);
+                background = await Canvas.loadImage(`${process.cwd()}/assets/welcome/${framecolor}/welcome2frame_oben.png`);
 
             else
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1frame.png`);
+                background = await Canvas.loadImage(`${process.cwd()}/assets/welcome/${framecolor}/welcome1frame.png`);
 
             ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
             if (data.welcomeSettings.pb) {
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1framepb.png`);
+                background = await Canvas.loadImage(`${process.cwd()}/assets/welcome/${framecolor}/welcome1framepb.png`);
                 ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
             }
         }
