@@ -22,14 +22,16 @@
  const Discord = require("discord.js");
  const colors = require("colors");
  const Cluster = require("discord-hybrid-sharding");
+ const { Shard } = require('discord-cross-hosting');
  const fs = require("fs"); 
  const OS = require("os");
  const Events = require("events");
+ const ee = require("./botconfig/embed.json")
  const emojis = require("./botconfig/emojis.json")
  const config = require("./botconfig/config.json")
  const advertisement = require("./botconfig/advertisement.json")
- const { delay } = require("./handlers/functions")
- 
+ const { delay, dbEnsure, clearDBData,} = require("./handlers/functions")
+ const { redis } = require("../Bridge/config.json");
  
  /**********************************************************
   * @param {2} CREATE_THE_DISCORD_BOT_CLIENT with some default settings
@@ -122,13 +124,28 @@ async function requirehandlers(){
     "events", 
     "erelahandler", 
     "command", 
-    "loaddb", 
     "slashCommands"
   ]) {
     try{
       await require(`./handlers/${handler}`)(client);
      }catch (e){ console.error(e) }
-  }
+  };
+
+  await require(`./handlers/loaddb`)(client, true, {
+    password: redis.password, 
+    url: redis.url, 
+    retry_strategy: () => 1000
+  });
+  
+
+
+
+  console.log(await client.settings.get("940221247218909244"))
+  await clearDBData(client, "940221247218909244")
+  console.log(await client.settings.get("940221247218909244"))
+
+
+  return;
   //social logs
   [
     "twitterfeed",
@@ -141,60 +158,81 @@ async function requirehandlers(){
   });
   //handlers
   [
-    "aichat",
-    "anticaps",
-    "antidiscord",
-    "antilinks",
-    "antimention",
     "anti_nuke",
-    "antiselfbot",
-    "antispam",
     "apply",
     "autobackup",
-        "autoembed",
         "automeme",
         "autonsfw",
-        "blacklist",
         "boostlog",
         "counter",
         "dailyfact",
         "epicgamesverification",
-        "ghost_ping_detector",
-    "jointocreate",                            // highers the memory
+      "jointocreate",                            // highers the memory
         "joinvc",
-        "keyword",
         "leave",
         "logger",
         "membercount",
     "mute",                                     // highers the memory
     "reactionrole",
     "roster",
-    "suggest",
     "ticket",
     "ticketevent",
     "timedmessages",
-    "validcode",
     "welcome", 
   ].forEach(handler => {
     try{ require(`./handlers/${handler}`)(client); }catch (e){ console.error(e) }
   });
   //handlers with .run
   [
+    "aichat",
+    "anticaps",
+    "antidiscord",
+    "antilinks",
+    "antimention",
+    "antiselfbot",
+    "antispam",
+    "autoembed",
+    "blacklist",
+    "ghost_ping_detector",
+    "keyword",
     "ranking",
-  ].forEach(handler => {
+    "suggest",
+    "validcode",
+    ].forEach(handler => {
     try{ require(`./handlers/${handler}`).run(client); }catch (e){ console.error(e) }
   });
 }
 requirehandlers();
  
- 
+// example client function
+client.testFunction = (data) => {
+  console.log("testFunctionCalled", String(data))
+  return "data " + String(data);
+}
+// example thingy
+client.testPromiseFunction = async (data) => {
+  await new Promise(r => setTimeout(() => r(2), 3000));
+  return "promise-data: " + String(data);
+}
+
+
+client.on('ready', () => {
+  console.log(`Client is ready #${client.cluster.id}: ${[...client.cluster.ids.keys()].join(",")}`);
+  //setInterval(() => {
+      //client.machine.request({ ack: true, message: 'Are you alive?' })
+        //.then(e => console.log('Are you alive?', e && e.message ? e.message : e));
+  //}, 10000);
+});
+
+
  /**********************************************************
   * @param {9} Login_to_the_Bot
   *********************************************************/
 client.cluster = new Cluster.Client(client); //Init the Client & So we can also access broadcastEval...
+client.machine = new Shard(client.cluster); // Initialize Cluster
 client.login(config.token);
 //start the dashboard
-require("/home/Milrato_Network/Dashboard_Milrato_Developers/index.js")(client);
+//require("/home/Milrato_Network/Dashboard_Milrato_Developers/index.js")(client);
  
  /**********************************************************
   * @INFO
@@ -210,6 +248,7 @@ require("/home/Milrato_Network/Dashboard_Milrato_Developers/index.js")(client);
    * NEEDED TO HAVE DMS WORKING (for receiving messages and interaction)
    */
 client.cluster.on("message", async (msg) => {
+  return;
   if(!msg._sCustom) return
   if(msg.dm && msg.message) {
     client.actions.MessageCreate.handle(msg.packet); //handle the raw api data, so that djs can use it
@@ -218,6 +257,25 @@ client.cluster.on("message", async (msg) => {
     client.actions.InteractionCreate.handle(msg.packet); //handle the raw api data, so that djs can use it
   }
 })
+
+client.cluster.on('message', message => {
+  return;
+  if (!message._sRequest) return;
+  if (message.guildId && !message.eval && !message.songRequest && !message.dm) {
+    const guild = client.guilds.cache.get(message.guildId);
+    const customGuild = {};
+    customGuild.id = guild.id;
+    customGuild.name = guild.name;
+    customGuild.icon = guild.icon;
+    customGuild.ownerId = guild.ownerId;
+    customGuild.roles = [...guild.roles.cache.values()];
+    customGuild.channels = [...guild.channels.cache.values()];
+    message.reply({ data: customGuild });
+  } else if(message.guildId && !message.eval) {
+    console.log(message);
+  }
+});                                                         
+
 client.on("raw", (packet) => {
   if (client.cluster.id !== 0) return; // if not on the shard 0, return
   if (packet.t === "MESSAGE_CREATE" && !packet.d.guild_id) {
@@ -229,6 +287,7 @@ client.on("raw", (packet) => {
   }
 })
 client.on("interactionCreate", (interaction) => {
+  return;
   if(client.cluster.id !== 0) return; // if not on the shard 0, return
   if(interaction.isSelectMenu() && !interaction.guildId && interaction.user.id != client.user?.id) {
     // all of the component types
@@ -310,75 +369,74 @@ client.on("interactionCreate", (interaction) => {
   }
 });
 
-client.cluster.on('message', async (message) => {
-  
-  if(message._sRequest && message.songRequest){
-    const { guildId, userId, songRequest } = message;
+client.requestASong = async (songRequest, userId, guildId) => {
+  const guild = client.guilds.cache.get(guildId);
+  if(!guild) return false
+  const member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
+  if(!member) return false
+  // if member not in a vc
+  if(!member?.voice?.channel?.id) return false
 
-    const guild = client.guilds.cache.get(guildId);
-    if(!guild) return message.reply({ data: false });
-    const member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
-    if(!member) return message.reply({ data: false })
-    // if member not in a vc
-    if(!member?.voice?.channel?.id) return message.reply({ data: false });
-
-    var player = client.manager.players.get(guildId);
-    //if no node, connect it 
+  var player = client.manager.players.get(guildId);
+  //if no node, connect it 
+  if (player && player.node && !player.node.connected) await player.node.connect()
+  //if no player create it
+  if (!player) {
+    player = await client.manager.create({
+      guild: guildId,
+      voiceChannel: member.voice.channel.id,
+      textChannel: null,
+      selfDeafen: true,
+    });
     if (player && player.node && !player.node.connected) await player.node.connect()
-    //if no player create it
-    if (!player) {
-      player = await client.manager.create({
-        guild: guildId,
-        voiceChannel: member.voice.channel.id,
-        textChannel: null,
-        selfDeafen: true,
-      });
-      if (player && player.node && !player.node.connected) await player.node.connect()
-    }
-    let state = player.state;
-    if (state !== "CONNECTED") {
-      player.set("playerauthor", member.id);
-      player.connect();
-      player.stop();
-    }
-
-    res = await client.manager.search(songRequest, member.user);
-    // Check the load type as this command is not that advanced for basics
-    let data = null;
-    if (res.loadType === "LOAD_FAILED") {
-      throw res.exception;
-    } else if (res.loadType === "PLAYLIST_LOADED") {
-      if(res.tracks[0]) data = res.tracks
-      else data = false;
-    } else {
-      if(res.tracks[0]) data = res.tracks[0];
-      else data = false;
-    }
-    if(data) {
-      //if the player is not connected, then connect and create things
-      if (player.state !== "CONNECTED") {
-        //set the variables
-        player.set("playerauthor", member.id);
-        player.connect();
-        //add track
-        player.queue.add(data);
-        //play track
-        player.play();
-        player.pause(false);
-      } else if (!player.queue || !player.queue.current) {
-        //add track
-        player.queue.add(data);
-        //play track
-        player.play();
-        player.pause(false);
-      }
-      //otherwise
-      else {
-        //add track
-        player.queue.add(data);
-      }
-    }
-    message.reply({ data: true });
-
   }
-})
+  let state = player.state;
+  if (state !== "CONNECTED") {
+    await player.set("playerauthor", member.id);
+    await player.connect();
+    await player.stop();
+  }
+
+  res = await client.manager.search(songRequest, member.user);
+  // Check the load type as this command is not that advanced for basics
+  let data = null;
+  if (res.loadType === "LOAD_FAILED") {
+    throw res.exception;
+  } else if (res.loadType === "PLAYLIST_LOADED") {
+    if(res.tracks[0]) data = res.tracks
+    else data = false;
+  } else {
+    if(res.tracks[0]) data = res.tracks[0];
+    else data = false;
+  }
+  if(data) {
+    //if the player is not connected, then connect and create things
+    if (player.state !== "CONNECTED") {
+      //set the variables
+      await player.set("playerauthor", member.id);
+      await player.connect();
+      //add track
+      await player.queue.add(data);
+      //play track
+      await player.play();
+      await player.pause(false);
+    } else if (!player.queue || !player.queue.current) {
+      //add track
+      await player.queue.add(data);
+      //play track
+      await player.play();
+      await player.pause(false);
+    }
+    //otherwise
+    else {
+      //add track
+      await player.queue.add(data);
+    }
+    return res.tracks[0];
+  } else {
+    console.error("COULD NOT FIND THE SONG");
+    return { error: "COULD NOT FIND THE SONG" };
+  }
+
+
+}

@@ -1,16 +1,26 @@
 const { Manager } = require("discord-hybrid-sharding");
+const { Client } = require('discord-cross-hosting');
 const config = require("./botconfig/config.json");
 const colors = require("colors");
 const OS = require("os");
-const clusterAmount = 4;
-const shardsPerCluster = 4; // suggested is: 2-8
-const totalShards = clusterAmount * shardsPerCluster; // suggested is to make it that 600-900 Servers are per shard, if u want to stay save, make it that it"s 400 servers / shard, and once it reached the ~1k mark, change the amount and restart
+const { authToken, settings: BridgeSettings } = require("../Bridge/config.json");
+
+const client = new Client({
+    agent: 'bot',
+    host: '193.milrato.dev', // Domain without https
+    port: 19273, // Proxy Connection (Replit) needs Port 443
+    handshake: true, // When Replit or any other Proxy is used
+    authToken: authToken,
+    retries: 360,
+    rollingRestarts: false, // Enable, when bot should respawn when cluster list changes.
+});
+
+client.on('debug', console.log);
+client.connect();
 
 const manager = new Manager("./bot.js", { 
-    token: config.token,    
-    // shardList: [ 0, 1, 2, 3, 4, 5 ], // if only those shards on that host etc.
-    totalShards: totalShards, // amount or: "auto"
-    shardsPerClusters: shardsPerCluster || 2, // amount of shards / cluster
+    token: config.token,     
+    totalShards: BridgeSettings.totalShards,
     mode: "process", // "process" or: "worker"
     respawn: true, 
     usev13: true,
@@ -32,6 +42,15 @@ manager.on("clusterCreate", cluster => {
         if (msg.dm) {
             const { interaction, message, dm, packet } = msg
             await manager.broadcast({ interaction, message, dm, packet })
+        }
+    })
+
+    cluster.on("message", async (message) => {
+        return;
+        if (!message._sRequest) return;
+        if (message.guildId && !message.eval) {
+            console.log("MANAGER - received message for guildId", message.guildId);
+            await manager.broadcast({ guildId: message.guildId })
         }
     })
 
@@ -72,6 +91,37 @@ manager.on('clientRequest', async (message) => {
 })
 
 // Log the creation of the debug
-manager.once("debug", (d) => d.includes("[CM => Manager] [Spawning Clusters]") ? console.log(d) : "")
+manager.on("debug", (d) => console.log(d))
 
-manager.spawn({timeout: -1});
+client.listen(manager);
+client.requestShardData().then(e => {
+    if (!e) return;
+    if (!e.shardList) return;
+    manager.totalShards = e.totalShards;
+    manager.totalClusters = e.shardList.length;
+    manager.shardList = e.shardList;
+    manager.clusterList = e.clusterList;
+    console.table({ shards: manager.shardList, cluster: manager.clusterList })
+    manager.spawn({ timeout: -1 });
+}).catch(console.error);
+/*
+setInterval(() => {
+
+    client.requestToGuild({ guildId: "773668217163218944" })
+        .then(e => console.log(e))
+        .catch(e => console.log(e));
+}, 30_000)
+*/
+client.on('bridgeMessage', message => {
+    return;
+    if (!message._sCustom) return; // If message is a Internal Message
+    console.log("BRIDGE-INDEX-MESSAGE", message);
+});
+
+client.on('bridgeRequest', message => {
+    return;
+    if (!message._sCustom && !message._sRequest) return; // If message is a Internal Message
+    console.log("BRIDGE-INDEX-REQUEST", message);
+    if (message.ack) return message.reply({ message: 'I am alive!' });
+    message.reply({ data: 'Hello World' });
+});
