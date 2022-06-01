@@ -730,7 +730,7 @@ async function generateQueueEmbed(client, guildId, leave) {
     .setFooter(client.getFooter(es))
     .setImage(guild.banner ? guild.bannerURL({
       size: 4096
-    }) : "https://cdn.discordapp.com/attachments/968349976331694100/979686974338244628/Neon_Text_Effect.png")
+    }) : "https://cdn.discordapp.com/attachments/938731929509961798/953757890177548328/marshal_1.gif")
     .setTitle(client.la[ls].cmds.music.musicsystem.title)
     .setDescription(client.la[ls].cmds.music.musicsystem.subtitle)
   ]
@@ -813,7 +813,7 @@ async function generateQueueEmbed(client, guildId, leave) {
   var leavebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Leave').setEmoji(`<:home:981615902778851388>`).setLabel(`${client.la[ls].cmds.music.musicsystem.leavebt}`).setDisabled();
   var textbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Text').setEmoji(`<:on_1:981615931283345478>`).setLabel(`${client.la[ls].cmds.music.musicsystem.textbt2}`).setDisabled(false);
   var savebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Save').setEmoji(`<:save:981615630178471947>`).setLabel(`${client.la[ls].cmds.music.musicsystem.savebt}`).setDisabled();
-  var previousbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Previous').setEmoji(`<:prev:980838844398194758>`).setLabel(`${client.la[ls].cmds.music.musicsystem.prevbt}`).setDisabled();
+  var previousbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Previous').setEmoji(`<:prev:981657888445571152>`).setLabel(`${client.la[ls].cmds.music.musicsystem.prevbt}`).setDisabled();
   
   if (musicsettings.text == false) {
     textbutton = textbutton.setEmoji(`<:off:977868613895741470>`).setLabel(`${client.la[ls].cmds.music.musicsystem.textbt1}`)
@@ -917,7 +917,7 @@ async function generateQueueEmbed(client, guildId, leave) {
   var leavebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Leave').setEmoji(`<:home:981615902778851388>`).setDisabled();
   var textbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Text').setEmoji(`<:on_1:981615931283345478>`).setDisabled(false);
   var savebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Save').setEmoji(`<:save:981615630178471947>`).setDisabled();
-  var previousbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Previous').setEmoji(`<:prev:980838844398194758>`).setDisabled();
+  var previousbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Previous').setEmoji(`<:prev:981657888445571152>`).setDisabled();
 
   if (musicsettings.text == false) {
     textbutton = textbutton.setEmoji(`<:off:977868613895741470>`)

@@ -54,7 +54,7 @@ module.exports = {
           new MessageEmbed()
             .setColor(es.color)
             .setFooter(client.getFooter(es))
-            .setImage(message.guild.banner ? message.guild.bannerURL({size: 4096}) : "https://cdn.discordapp.com/attachments/968349976331694100/979686974338244628/Neon_Text_Effect.png")
+            .setImage(message.guild.banner ? message.guild.bannerURL({size: 4096}) : "https://cdn.discordapp.com/attachments/938731929509961798/953757890177548328/marshal_1.gif")
             .setTitle(`Start Listening to Music, by connecting to a Voice Channel and sending either the **SONG LINK** or **SONG NAME** in this Channel!`)
             .setDescription(`> *I support Youtube, Spotify, Soundcloud and direct MP3 Links!*`)
         ]
