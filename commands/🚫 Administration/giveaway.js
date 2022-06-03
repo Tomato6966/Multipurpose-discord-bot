@@ -136,7 +136,7 @@ module.exports = {
                     botsCanWin: false,
                     embedColor: require("discord.js").Util.resolveColor(es.color) ? require("discord.js").Util.resolveColor(es.color) : 3932049,
                     embedColorEnd: require("discord.js").Util.resolveColor(es.wrongcolor) ? require("discord.js").Util.resolveColor(es.wrongcolor) : 16731451,
-                    reaction: '943873660580692038',
+                    reaction: '950481226765066311',
                     lastChance: {
                         enabled: true,
                         content: '⚠️ **LAST CHANCE TO ENTER!** ⚠️',
@@ -151,13 +151,13 @@ module.exports = {
                     },
                     bonusEntries: [],
                     messages: {
-                        inviteToParticipate: "***React with <a:Tada_purple:943873660580692038> to participate!***\n",
+                        inviteToParticipate: "***React with <a:Tada_Yellow:950481226765066311> to participate!***\n",
                         drawing: "> Ends: {timestamp}\n",
                         hostedBy: "**Hosted by:** {this.hostedBy}",
-                        dropMessage: "Be the first to react with <a:Tada_purple:943873660580692038>",
+                        dropMessage: "Be the first to react with <a:Tada_Yellow:950481226765066311>",
                         noWinner: "\n**Giveaway cancelled!**\n> No valid participations. :cry:",
                         endedAt: "Ends at", 
-                        giveaway: '<a:Tada_purple:943873660580692038> **GIVEAWAY STARTED** <a:Tada_purple:943873660580692038>',
+                        giveaway: '<a:Tada_Yellow:950481226765066311> **GIVEAWAY STARTED** <a:Tada_Yellow:950481226765066311>',
                         giveawayEnded: '<a:Tada_Green:867721862858539048> **GIVEAWAY ENDED** <a:Tada_Green:867721862858539048>',
                         winMessage: '**Congrats** {winners}!\n> You won **{this.prize}**!\n> **Jump:** {this.messageURL}\nHosted by: {this.hostedBy}',
                         embedFooter: '{this.winnerCount} Winner{this.winnerCount > 1 ? "s" : ""}'

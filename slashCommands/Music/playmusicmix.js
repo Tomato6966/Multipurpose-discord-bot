@@ -29,7 +29,7 @@ blues, oldgaming, pop, remixes, rock, strange-fruits-gaming
       ["Miyagi playlist", "miyagi"], 
       ["Chill Mix", "chill"], 
       ["Default Mix", "default"], 
-      ["Cepheid `s Spotify Playlist", "cepheid's-playlist"], 
+      ["Cepheid's Spotify Playlist", "cepheid's-playlist"], 
       ["Gaming Mix", "gaming"], 
       ["Magic-Release Mix", "magic-release"], 
       ["Strange-Fruits Mix", "strange-fruits-gaming"], 

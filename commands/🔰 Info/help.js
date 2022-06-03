@@ -121,7 +121,7 @@ module.exports = {
           {
             label: `${client.la[ls].cmds.info.help.sixlb}`,
             value: "Overview",
-            emoji: "833101995723194437",
+            emoji: "950884027320135711",
             description: `${client.la[ls].cmds.info.help.six}`
           },
           {
@@ -263,52 +263,13 @@ module.exports = {
         let SelectionRow = new MessageActionRow().addComponents([menuSelection])
         const allbuttons = [buttonRow, SelectionRow]
         //define default embed
-        if(ls == "ru"){
           var OverviewEmbed = new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-          .setFooter(client.getFooter("Страница осмотра | "+ client.user.username, client.user.displayAvatarURL()))
-          .setTitle(`Информация о __${client.user.username}__`)
-          .addField(":muscle: **__Мои возможности__**",
-  `>>> **58+ Систем**, например: **Авто-постер ютуба** 
-  **Заявки-**, Тикеты-, **Изображения "добро пожаловать"-** и роли по реакции-, ... системы
-  :notes: Можная **Музыкальная система** с **Фильтрами**
-  :video_game: Много **Миниигр** и :joystick: **Фан** команд (150+)
-  :no_entry_sign: **Администрация** и **Авто-Модерация** и много чего другого!`)
-          .addField(":question: **__Как меня использовать?__**",
-  `>>> \`${prefix}setup\` и выбирайте то что нужно!,
-  Также можно настроить отдельные системы так: \`${prefix}setup-SYSTEM\` например \`${prefix}setup-welcome\``)
-  .addField(":chart_with_upwards_trend: **__Статистика:__**",
-  `>>> :gear: **${client.commands.map(a=>a).length} Команд**
-  :file_folder: Работаю на **${allGuilds} серверах(ов)**
-  ⌚️ **${duration(client.uptime).map(i=> `\`${i}\``).join("︲")} Непрерывной работы**
-  📶 **\`${Math.floor(client.ws.ping)}мс\` Пинг**
-  <:online:970050105338130433> **\`${Math.floor(await client.database.ping())}ms\` Пинг базы данных**
-    Сделан [**cepheid**](http://discord.gg/7PdChsBGKd)`)
-  .addField("Как пользоватся?", `>>> **\` 1. Путь \`** *Используйте кнопки для переключения вкладок*\n**\` 2. Путь \`** *Используйте меню выбора, чтобы посмотреть команды сразу на нужной страничке*\n**\` 3. Путь \`** *Можешь поплакать)*`)
-        }
-        else{
-          var OverviewEmbed = new MessageEmbed()
-          .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-          .setFooter(client.getFooter("Page Overview | "+ client.user.username, client.user.displayAvatarURL()))
-          .setTitle(`Information about __${client.user.username}__`)
-          .addField(":muscle: **__My Features__**",
-  `>>> **58+ Systems**, like: **Twitter-** & **Youtube-Auto-Poster** 
-  **Application-**, Ticket-, **Welcome-Images-** and Reaction Role-, ... Systems
-  :notes: An advanced **Music System** with **Audio Filtering**
-  :video_game: Many **Minigames** and :joystick: **Fun** Commands (150+)
-  :no_entry_sign: **Administration** and **Auto-Moderation** and way much more!`)
-          .addField(":question: **__How do you use me?__**",
-  `>>> \`${prefix}setup\` and choose for the right action,
-  but you can also do \`${prefix}setup-SYSTEM\` e.g. \`${prefix}setup-welcome\``)
-  .addField(":chart_with_upwards_trend: **__STATS:__**",
-  `>>> :gear: **${client.commands.map(a=>a).length} Commands**
-  :file_folder: on **${allGuilds} Guilds**
-  ⌚️ **${duration(client.uptime).map(i=> `\`${i}\``).join("︲")} Uptime**
-  📶 **\`${Math.floor(client.ws.ping)}ms\` Ping**
-  <:online:970050105338130433> **\`${Math.floor(await client.database.ping())}ms\` DB-Ping**
-    Made by [**cepheid**](http://discord.gg/7PdChsBGKd)`)
-  .addField("How to get help?", `>>> **\` 1. Way \`** *Use the Buttons, to swap the Pages*\n**\` 2. Way \`** *Use the Menu to select all Help Pages, you want to display*\n**\` 3. Way \`** *Cry)*`)
-        }
+          .setFooter(client.getFooter(`${client.la[ls].cmds.info.help.pgoverview} `+ client.user.username, client.user.displayAvatarURL()))
+          .setTitle(`${client.la[ls].cmds.info.help.firsttitle} __${client.user.username}__`)
+          .addField(`${client.la[ls].cmds.info.help.thirdtitle}`, `${client.la[ls].cmds.info.help.thirdsubtitle}`)
+          .addField(`${client.la[ls].cmds.info.help.secondtitle}`, `${handlemsg(client.la[ls].cmds.info.help.secondsubtitle, {allGuilds: allGuilds, uptime: duration(client.uptime).map(i=> `\`${i}\``).join("︲")})}`)
+          .setImage(`https://cdn.discordapp.com/attachments/927258550185640026/963672134192869396/marshal_1.gif`)
         let err = false;
         //Send message with buttons
         let helpmsg = await message.reply({   
@@ -428,9 +389,9 @@ module.exports = {
             .addField("\u200b", `__**${client.la[ls].cmds.info.help.subcat}:**__`)
             .addField(`🙂 **${client.la[ls].cmds.info.help.usrcmds}**`, ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "user").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
             .addField(`🕹️ **${client.la[ls].cmds.info.help.gamsrelcmds}**`,  ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "games").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            .addField(`<:Discord:943116778618376222> **${client.la[ls].cmds.info.help.serverrelcmds}**`,  ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "server").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            .addField(`<:Bot_Flag:943116768602378290> **${client.la[ls].cmds.info.help.botrelcmds}**`,  ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "bot").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            .addField(`<:Builder:943116466234986517> **${client.la[ls].cmds.info.help.utilrelcmds}**`, ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "util").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<:Discord:950886430421418004> **${client.la[ls].cmds.info.help.serverrelcmds}**`,  ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "server").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<:Bot_Flag:950886570041430016> **${client.la[ls].cmds.info.help.botrelcmds}**`,  ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "bot").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<:Builder:950886706519875644> **${client.la[ls].cmds.info.help.utilrelcmds}**`, ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "util").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
           embeds.push(embed0)
 
           //ECONOMY COMMANDS
@@ -440,7 +401,7 @@ module.exports = {
             .addField("\u200b", `__**${client.la[ls].cmds.info.help.subcat}:**__`)
             .addField(`${client.la[ls].cmds.info.help.mgte}`,  ">>> " + client.commands.filter((cmd) => cmd.category === "💸 Economy" && cmd.type === "game").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
             .addField(`:clock1: **Repeatingly earn 💸 via Event(s)**`,  ">>> " + client.commands.filter((cmd) => cmd.category === "💸 Economy" && cmd.type === "earn").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            .addField(`<:Builder:943116466234986517> **Information & Manage 💸**`,  ">>> " + client.commands.filter((cmd) => cmd.category === "💸 Economy" && cmd.type === "info").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<:Builder:950886706519875644> **Information & Manage 💸**`,  ">>> " + client.commands.filter((cmd) => cmd.category === "💸 Economy" && cmd.type === "info").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
             if(!filterdisabled || settings.ECONOMY || settings.showdisabled) embeds.push(embed1)
 
           //SCHOOL COMMANDS
@@ -457,7 +418,7 @@ module.exports = {
             .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "🎶 Music").size}\`] 🎶 ${client.la[ls].cmds.info.help.tenlb} 🎶 | ${settings.MUSIC ? `:white_check_mark: ${client.la[ls].cmds.info.help.enabledtxt}` : `:x: ${client.la[ls].cmds.info.help.disabledtxt}`}`)
             .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "🎶 Music").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
             .addField("\u200b", `__**${client.la[ls].cmds.info.help.subcat}:**__`)
-            .addField(`<a:Playing_Audio:943116563681275904> ${client.la[ls].cmds.info.help.queuecmds}`, "> "+client.commands.filter((cmd) => cmd.category === "🎶 Music").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<a:Playing_Audio:950884337669275658> ${client.la[ls].cmds.info.help.queuecmds}`, "> "+client.commands.filter((cmd) => cmd.category === "🎶 Music").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
           if(!filterdisabled || settings.MUSIC || settings.showdisabled) embeds.push(embed3)
 
           //FILTER COMMANDS
@@ -479,10 +440,10 @@ module.exports = {
             .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "🚫 Administration").size}\`] 🚫 ${client.la[ls].cmds.info.help.thirteenlb} 🚫`)
             .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "🚫 Administration").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
             .addField("\u200b", `__**${client.la[ls].cmds.info.help.subcat}:**__`)
-            .addField(`<:Discord:943116778618376222> **${client.la[ls].cmds.info.help.serverrelcmds}**`, "> "+client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("server")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            .addField(`<:Channel:943116450573455420> ${client.la[ls].cmds.info.help.channelrelated}`, "> "+client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("channel")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            .addField(`<:ThreadChannel:943116441337606184> ${client.la[ls].cmds.info.help.threadrel}`, "> "+client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("thread")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            .addField(`<:Roles:943116430700855326> ${client.la[ls].cmds.info.help.rolerel}`, "> "+client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("role")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<:Discord:950886430421418004> **${client.la[ls].cmds.info.help.serverrelcmds}**`, "> "+client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("server")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<:Channel:950886908106506251> ${client.la[ls].cmds.info.help.channelrelated}`, "> "+client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("channel")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<:ThreadChannel:950887024884326421> ${client.la[ls].cmds.info.help.threadrel}`, "> "+client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("thread")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<:Roles:950887149337722911> ${client.la[ls].cmds.info.help.rolerel}`, "> "+client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("role")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
             .addField(`${client.la[ls].cmds.info.help.memberrel}`, "> "+client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("member")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
           embeds.push(embed6)
 
@@ -494,7 +455,7 @@ module.exports = {
             .addField(`${client.la[ls].cmds.info.help.setupsent}`, "> "+client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type.includes("fun")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
             .addField(`${client.la[ls].cmds.info.help.infman}`, "> "+client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type.includes("info")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
             .addField(`${client.la[ls].cmds.info.help.mostused}`, "> "+client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type.includes("system")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            .addField(`<:Builder:943116466234986517> ${client.la[ls].cmds.info.help.secsyst}`, "> "+client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type.includes("security")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<:Builder:950886706519875644> ${client.la[ls].cmds.info.help.secsyst}`, "> "+client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type.includes("security")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
           embeds.push(embed7)
           
           //Settings
@@ -503,7 +464,7 @@ module.exports = {
             .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "⚙️ Settings").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
             .addField("\u200b", `__**${client.la[ls].cmds.info.help.subcat}:**__`)
             .addField(`${client.la[ls].cmds.info.help.userrel}`, "> "+client.commands.filter((cmd) => cmd.category === "⚙️ Settings" && cmd.type.includes("user")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            .addField(`<:Bot_Flag:943116768602378290> **${client.la[ls].cmds.info.help.botrelcmds}**`, "> "+client.commands.filter((cmd) => cmd.category === "⚙️ Settings" && cmd.type.includes("bot")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<:Bot_Flag:950886570041430016> **${client.la[ls].cmds.info.help.botrelcmds}**`, "> "+client.commands.filter((cmd) => cmd.category === "⚙️ Settings" && cmd.type.includes("bot")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
             .addField(`${client.la[ls].cmds.info.help.musicrel}`, "> "+client.commands.filter((cmd) => cmd.category === "⚙️ Settings" && cmd.type.includes("music")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
           embeds.push(embed8)
           
@@ -512,8 +473,8 @@ module.exports = {
             .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "👑 Owner").size}\`] 👑 ${client.la[ls].cmds.info.help.sixteenlb} 👑`)
             .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "👑 Owner").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
             .addField("\u200b", `__**${client.la[ls].cmds.info.help.subcat}:**__`)
-            .addField(`<:Discord:943116778618376222> ${client.la[ls].cmds.info.help.infmanage}`, "> "+client.commands.filter((cmd) => cmd.category === "👑 Owner" && cmd.type.includes("info")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
-            .addField(`<:Bot_Flag:943116768602378290> ${client.la[ls].cmds.info.help.adj}`, "> "+client.commands.filter((cmd) => cmd.category === "👑 Owner" && cmd.type.includes("bot")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<:Discord:950886430421418004> ${client.la[ls].cmds.info.help.infmanage}`, "> "+client.commands.filter((cmd) => cmd.category === "👑 Owner" && cmd.type.includes("info")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
+            .addField(`<:Bot_Flag:950886570041430016> ${client.la[ls].cmds.info.help.adj}`, "> "+client.commands.filter((cmd) => cmd.category === "👑 Owner" && cmd.type.includes("bot")).sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲"))
             embeds.push(embed9)
           
           //Programming Commands
@@ -527,7 +488,7 @@ module.exports = {
             .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "📈 Ranking").size}\`] 📈 ${client.la[ls].cmds.info.help.nineteenlb} 📈 | ${settings.RANKING ? `:white_check_mark: ${client.la[ls].cmds.info.help.enabledtxt}` : `:x: ${client.la[ls].cmds.info.help.disabledtxt}`}`)
             .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "📈 Ranking").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
             .addField("\u200b", `__**${client.la[ls].cmds.info.help.subcat}:**__`)
-            .addField(`<:Builder:943116466234986517> ${client.la[ls].cmds.info.help.rankmanage}`, `> ${client.commands.filter((cmd) => cmd.category === "📈 Ranking" && cmd.type === "manage").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}`)
+            .addField(`<:Builder:950886706519875644> ${client.la[ls].cmds.info.help.rankmanage}`, `> ${client.commands.filter((cmd) => cmd.category === "📈 Ranking" && cmd.type === "manage").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}`)
             .addField(`${client.la[ls].cmds.info.help.rankinf}`, `> ${client.commands.filter((cmd) => cmd.category === "📈 Ranking" && cmd.type === "info").sort((a,b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}`)
           if(!filterdisabled || settings.RANKING || settings.showdisabled) embeds.push(embed11)
           

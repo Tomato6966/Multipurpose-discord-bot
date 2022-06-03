@@ -31,7 +31,7 @@ module.exports = {
             footer: es.footertext,
             timestamp: true,
           },
-          word: ['Cepheid'],
+          word: ['Milrato'],
           button: { cancel: 'Cancel', reshuffle: 'Reshuffle' },
           startMessage:
             'I shuffled a word it is **`{{word}}`**. You have **{{time}}** to find the correct word!',

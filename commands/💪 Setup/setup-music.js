@@ -54,7 +54,7 @@ module.exports = {
           new MessageEmbed()
             .setColor(es.color)
             .setFooter(client.getFooter(es))
-            .setImage(message.guild.banner ? message.guild.bannerURL({size: 4096}) : "https://cdn.discordapp.com/attachments/938731929509961798/953757890177548328/marshal_1.gif")
+            .setImage(message.guild.banner ? message.guild.bannerURL({size: 4096}) : "https://cdn.discordapp.com/attachments/927258550185640026/963672134192869396/marshal_1.gif")
             .setTitle(`Start Listening to Music, by connecting to a Voice Channel and sending either the **SONG LINK** or **SONG NAME** in this Channel!`)
             .setDescription(`> *I support Youtube, Spotify, Soundcloud and direct MP3 Links!*`)
         ]
@@ -63,7 +63,7 @@ module.exports = {
           new MessageActionRow().addComponents([
             new MessageSelectMenu()
             .setCustomId("MessageSelectMenu")
-            .addOptions(["Strange-Fruits", "Gaming", "Chill", "Magic-Release", "MiYaGi playlist", "Default", "Cepheid `s Spotify Playlist", "Bandit Camp Music Storage"].map((t, index) => {
+            .addOptions(["Strange-Fruits", "Gaming", "Chill", "Magic-Release", "MiYaGi playlist", "Default", "Cepheid's Spotify Playlist", "Bandit Camp Music Storage"].map((t, index) => {
               return {
                 label: t.substr(0, 25),
                 value: t.substr(0, 25),
@@ -76,7 +76,7 @@ module.exports = {
             new MessageButton().setStyle('PRIMARY').setCustomId('Join').setEmoji(`<:join_vc:950885408290508821>`).setLabel(`${client.la[ls].cmds.music.musicsystem.joinbt}`).setDisabled(false),
             new MessageButton().setStyle('PRIMARY').setCustomId('Leave').setEmoji(`<:home:981615902778851388>`).setLabel(`${client.la[ls].cmds.music.musicsystem.leavebt}`).setDisabled(),
             new MessageButton().setStyle('PRIMARY').setCustomId('Text').setEmoji(`<:on_1:981615931283345478>`).setLabel(`${client.la[ls].cmds.music.musicsystem.textbt2}`).setDisabled(false),
-            new MessageButton().setStyle('PRIMARY').setCustomId('Save').setEmoji(`<:save:981615630178471947>`).setLabel(`${client.la[ls].cmds.music.musicsystem.save}`).setDisabled(),
+            new MessageButton().setStyle('PRIMARY').setCustomId('Save').setEmoji(`<:save:978918412673753098>`).setLabel(`${client.la[ls].cmds.music.musicsystem.save}`).setDisabled(),
           ]),
           new MessageActionRow().addComponents([
             new MessageButton().setStyle('SECONDARY').setCustomId('Vol-').setEmoji('<:volume:978221266345558056>').setLabel(`${client.la[ls].cmds.music.musicsystem.volmbt}`).setDisabled(),
@@ -97,17 +97,17 @@ module.exports = {
             new MessageButton().setStyle('PRIMARY').setCustomId('Volmin').setEmoji('<:volume:978221266345558056>').setLabel(`${client.la[ls].cmds.music.musicsystem.volminbt}`).setDisabled(),
             new MessageButton().setStyle('PRIMARY').setCustomId('Volmid').setEmoji('<:low_volume:978181794799157289>').setLabel(`${client.la[ls].cmds.music.musicsystem.midvolbt}`).setDisabled(),
             new MessageButton().setStyle('PRIMARY').setCustomId('Volmax').setEmoji('<:max_volume:978181806107021312>').setLabel(`${client.la[ls].cmds.music.musicsystem.volmaxbt}`).setDisabled(),
-            new MessageButton().setStyle('SECONDARY').setCustomId('Autoplay').setEmoji('<:joines:978181806182531072>').setLabel(`${client.la[ls].cmds.music.musicsystem.autoplbt}`).setDisabled(),
+            new MessageButton().setStyle('SECONDARY').setCustomId('Autoplay').setEmoji('<:joines:950878825254883378>').setLabel(`${client.la[ls].cmds.music.musicsystem.autoplbt}`).setDisabled(),
           ]),
         ]
         let channel = message.mentions.channels.first();
         if(!channel) return message.reply(":x: **You forgot to ping a Text-Channel!**")
-
+        //send the data in the channel
         channel.send({embeds, components}).then(async (msg) => {
           await client.musicsettings.set(message.guild.id+".channel", channel.id);
           await client.musicsettings.set(message.guild.id+".message", msg.id);
           await client.musicsettings.set(message.guild.id+".text", true);
-
+          //send a success message
           return message.reply(`✅ **Successfully setupped the Music System in:** <#${channel.id}>`)
         });
         } catch (e) {

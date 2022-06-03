@@ -5,26 +5,78 @@
                 "author": "Avatar from: {usertag}",
                 "variable1": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
+            "botfaq": {
+                "notallowed": ":x: You are not allowed to do that! Only: <@{cmduserid}>",
+                "placeholder": "Click me to make a Selection!",
+                "menuembed": {
+                    "title": "Bot Help",
+                    "description": "***Select what you need in the `Selection` down Below!***"
+                },
+                "menuoptions": [
+                    {
+                        "value": "Creator / Features",
+                        "description": "Who is my Creator? / What are my Features?",
+                        "replymsg": " **cepheid made me!**\n> <:Like:950879167380090880> **Their Website:** https://milrato.eu\n> <:Discord:950886430421418004> **Their Discord:** http://discord.gg/7PdChsBGKd\n``` ```***__You can join their Discord Server and get yourself a Bot like me, for FREE/CHEAP!__***\n``` ```:muscle: **__My Features__**\n>>> **68+ Systems**, like: **Twitter-** & **Youtube-Auto-Poster** \n**Application-**, Ticket-, **Welcome-Images-** and Reaction Role-, ... Systems\n:notes: An advanced  **Music System** with **Audio Filtering**\n:video_game: Many **Minigames** and :joystick: **Fun** Commands (150+)\n:no_entry_sign: **Administration** and **Auto-Moderation** and way much more!\n\n**The Developer is: `Cepheid#0001`, Contact him if you wanna hire him!**",
+                        "emoji": "840259659163893820"
+                    },
+                    {
+                        "value": "Stats",
+                        "description": "See my Statistics!",
+                        "replymsg": "**__📈 Stats!__**\n>>> :gear: **{commandcount} Commands**\n:file_folder: on **{guildcount} Guilds**\n⌚️ **{uptime} Uptime**\n📶 **`{ping}ms` Ping**",
+                        "emoji": "📈"
+                    },
+                    {
+                        "value": "How to use me",
+                        "description": "Let me explain you!",
+                        "replymsg": "**__❓ How do you use me?__**\n> My Prefix is: `{prefix}` but you can always **Ping** me instead!\n\n**Just use one of my {commandcount} Commands by typing:**\n> `{prefix}commandname`\n**Example:**\n> `{prefix}help`\n\n__**I have setups, this is how you manage them:**__\n>>> `{prefix}setup` and react with the Emoji for the right action,\nbut you can also do `{prefix}setup-SYSTEM` e.g. `{prefix}setup-welcome`\n\n\n**Very important is this Command:**\n`{prefix}setup-antinuke`, because it protects you from NUKES!",
+                        "emoji": "❓"
+                    },
+                    {
+                        "value": "Sponsor / Support us",
+                        "description": "Thanks for everything, you'll get something back!",
+                        "replymsg": "**__There are several Sponsor Options:__**\n\n> <:PAYPAL:861207258846330880> **Paypal:**\n> https://paypal.me/MilratoDevelopment\n\n> <:PATREON:861207934070816849> **Patreon:**\n> https://www.patreon.com/MilratoDevelopment?fan_landing=true\n\n> 💸 **Donate via Paysafe, Sofort or others: (1/2)**\n> https://bero-host.de/spenden/qgswlxrzgtll\n\n> 💸 **Donate via Paysafe, Sofort or others: (2/2)**\n> https://mc-host24.de/donate/tomato\n\n> **Every donator** gets the **@DONATOR Role** on:\n> http://discord.gg/7PdChsBGKd\n\n\n> **Every Donator** with more then **10€** Gets a **Free Bot** of his **Choice*!",
+                        "emoji": "861207258846330880"
+                    },
+                    {
+                        "value": "Partners / Sponsors",
+                        "description": "We are really proud of our Sponsors and Partners!",
+                        "replymsg": "<:BeroHost:852970925695041646> Our First/Main Sponsor is **Bero-Host.de** <:BeroHost:852970925695041646>\n> <:Like:950879167380090880> **Their Website:** https://bero-host.de\n> <:Discord:950886430421418004> **Their Discord:** https://discord.bero-host.de\n> *They provide us several HIGH QUALTIY __Servers__ which we are using for our HOSTING! **CHECK THEM OUT**!*\n``` ```<:Bittmax:840370610755862529> Our Second Sponsor is **Bittmax.de** <:Bittmax:840370610755862529>\n> <:Like:950879167380090880> **Their Website:** https://bittmax.de\n> <:Discord:950886430421418004> **Their Discord:** https://discord.gg/GgjJZCyYKD\n> *They provide us several __Servers__ which we are using for our PUBLIC BOT HOSTING! **CHECK THEM OUT**!*\n``` ```**__Partners__**\n> ***We currently have `{partnercount} Partners`, which get at least 1 FREE OP BOT***\n``` ```Wanna be a Partner/Sponsor too? Contact us in our <:Discord:950886430421418004> **Discord:** http://discord.gg/7PdChsBGKd and open a Ticket in <#840491251278676008>",
+                        "emoji": "866089513436315698"
+                    },
+                    {
+                        "value": "My Bot doesnt work",
+                        "description": "If your Bot is not working do this:",
+                        "replymsg": "Contact us in Milrato Development <:Discord:950886430421418004> **Discord:** http://discord.gg/7PdChsBGKd and open a Ticket in <#840332764603351101>\n\n***If it still responds with messages but doesn't work right, then you can try to do: `{prefix}reloadbot` / `{prefix}cmdreload [CMDNAME]`***\n\nMake sure that I have enough Permissions, as well as that the highest Role is high enough!",
+                        "emoji": "😓"
+                    },
+                    {
+                        "value": "Change the Bot?",
+                        "description": "There are several ways to adjust this Bot...",
+                        "replymsg": "If you are one of the OWNERs of **{clientusertag}**, then those Commands are available for you:\n\n>>> `{prefix}changename` -- http://discord.gg/7PdChsBGKd To Change the Bot Name\n`{prefix}changeavatar` -- To Change the Bot Avatar\n`{prefix}prefix` -- To Change the Bot Server-Prefix\n`{prefix}changestatus` -- To Change the Bot Status\n`{prefix}setup-owner` -- To Change the Bot Owners\n`{prefix}setup-advertise` -- To Enable/Disable Our ADS\n`{prefix}setup-embed` -- To Change the Embed Design in this SERVER",
+                        "emoji": "⚙️"
+                    }
+                ],
+                "variable1": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
+            },
             "botinfo": {
                 "loading": "Getting the Bot-Information-Data",
-                "descriptionn": "\nName: {name} [{id}]\nBot Latency: {botPing}мс\nApi Latency: {apiping}мс\nRuntime: {uptime}",
                 "field1": {
-                    "title": "General -- Stats",
-                    "value": "Servers: {guildsamm}\nUsers: {usersamm}\nConnections: {connectedchannelsamount}\nClusters: {clustersamm}\nShards: {shardsamm}"
+                    "title": "<a:arrow:943027097348227073> General -- Stats",
+                    "value": "```yml\nServers: {totalGuilds}\nUsers: {totalMembers}\nConnections: {connectedchannelsamount}```"
                 },
                 "field2": {
-                    "title": "Bot -- Stats"
+                    "title": "<a:arrow:943027097348227073> Bot -- Stats"
                 },
                 "field3": {
-                    "title": "System -- Stats",
+                    "title": "<a:arrow:943027097348227073> System -- Stats",
                     "value": "```yml\nOS: Linux | Debian\nCPU Usage: {cpu} %\nRAM Usage: {ram} MB```"
                 },
                 "field4": {
-                    "title": "Developer"
+                    "title": "<a:arrow:943027097348227073> Developer"
                 },
                 "field5": {
-                    "title": "Important Links",
-                    "value": "**[Invite Link]({invitelink})・[Support Server](http://discord.gg/7PdChsBGKd)**"
+                    "title": "<a:arrow:943027097348227073> Important Links",
+                    "value": "**[Invite Link]({invitelink})・[Support Server](http://discord.gg/7PdChsBGKd)・[Website](https://milrato.eu)**\n**[Get Free Bots](http://discord.gg/7PdChsBGKd)・[Invite Public Version](https://discord.com/api/oauth2/authorize?client_id=924922244436750406&permissions=8&scope=bot)**"
                 },
                 "variable1": "`\\`\\`\\`yml\\nName: ${client.user.tag} [${client.user.id}]\\nBot Latency: ${Math.round(Date.now() - message.createdTimestamp)}ms\\nApi Latency: ${Math.round(client.ws.ping)}ms\\nRuntime: ${duration(client.uptime).join(\"︲\")}\\`\\`\\``",
                 "variable2": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
@@ -41,8 +93,18 @@
                 "description": ":gear: **[`{catcount}`] Categories**\n:gear: **[`{lines}`] Lines of Code**\n<a:Valid_Code_Developer:950885796297211976> **[`{letters}`] Letters of Code**",
                 "variable1": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
+            "developer": {
+                "buttons": {
+                    "invite": "Invite Public Version",
+                    "dc": "Get yourself a own Bot",
+                    "botlist": "Public Bot-List-Website"
+                },
+                "title": "Cepheid#0001 | Dev of 4 Orgs | Developer of 1200+ BOTS",
+                "description": "<a:arrow:943027097348227073> Hello I am **Tomato** <@410419863304273930> *(`Cepheid#0001`)*, and i made more then 1200 different Discord Bots: [My Bot List](https://botlist.milrato.eu)\n\n<a:arrow:943027097348227073> I am very proud for all of my verified and not verified Discord Bots, but the Bot I am the most proud of is: [**LAVA MUSIC** | `2021's Best Music Bot`](https://lava.milrato.eu) <@742672021422342165>\n\n<a:arrow:943027097348227073> I made this Bot, and you can get a free Bot too! Just go to: [My Service](https://dc.milrato)\n\n<a:arrow:943027097348227073> I am also a **Website** Developer and **Plugin** dev. I made **Modules** like a **SPEECH Module** [SEE IT](https://cdn.discordapp.com/attachments/778714123785076768/801606374105546782/2021-01-21_01-15-50.mp4)\n\n<a:arrow:943027097348227073> Yeah i hope you like my stuff :v: <3",
+                "variable1": "`\\`\\`\\`${String(e.stack).substr(0, 2000)}\\`\\`\\``"
+            },
             "djmode": {
-                "nodjroles": "No Dj Roles, all Users are Djs",
+                "nodjroles": "no Dj Roles, aka all Users are Djs",
                 "description": "If a Command is listed here, and at least one role exists, then it means that you have to have this Role, in order to be able to use these listed Commands!",
                 "field1": "<a:arrow:943027097348227073> Dj Only Commands active for:",
                 "field2": "<a:arrow:943027097348227073> Dj Roles",
@@ -86,6 +148,16 @@
             "getinvitechannel": {
                 "error": ":x: You didn't provided a Channel"
             },
+            "github": {
+                "buttons": {
+                    "invite": "Invite Public Version",
+                    "dc": "Get yourself a own Bot",
+                    "botlist": "Public Bot-List-Website"
+                },
+                "title": "Cepheid#0001 | Dev of 4 Orgs | Developer of 1200+ BOTS",
+                "description": "<a:arrow:943027097348227073> Hello I am **Tomato** <@410419863304273930> *(`Cepheid#0001`)*, and i made more then 1200 different Discord Bots: [My Bot List](https://botlist.milrato.eu)\n\n<a:arrow:943027097348227073> I am very proud for all of my verified and not verified Discord Bots, but the Bot I am the most proud of is: [**LAVA MUSIC** | `2021's Best Music Bot`](https://lava.milrato.eu) <@742672021422342165>\n\n<a:arrow:943027097348227073> I made this Bot, and you can get a free Bot too! Just go to: [My Service](https://dc.milrato)\n\n<a:arrow:943027097348227073> I am also a **Website** Developer and **Plugin** dev. I made **Modules** like a **SPEECH Module** [SEE IT](https://cdn.discordapp.com/attachments/778714123785076768/801606374105546782/2021-01-21_01-15-50.mp4)\n\n<a:arrow:943027097348227073> Yeah i hope you like my stuff :v: <3",
+                "variable1": "`\\`\\`\\`${String(e.stack).substr(0, 2000)}\\`\\`\\``"
+            },
             "help": {
                 "error1": "NO CUSTOM COMMANDS DEFINED YET, do it with: `setup-customcommands`",
                 "nocustom": "No custom information for the Custom Commands ;(",
@@ -103,8 +175,7 @@
                 "buttons": {
                     "home": "Home",
                     "back": "Back",
-                    "forward": "Forward",
-                    "server": "Support Server"
+                    "forward": "Forward"
                 },
                 "overview": {
                     "title": ":gear: **__Command Category Overview__**",
@@ -116,7 +187,7 @@
                 "variable2": "`HELP-MENU 🔰 **${category.toUpperCase()} [${items.length}]**`",
                 "variable3": "`**${category.toUpperCase()} [${items.length}]**`, `> \\`${items[0]}\\`\\n\\n**Usage:**\\n> \\`${cmd.usage}\\``",
                 "variable4": "`${items.join(\"︲\")}`",
-                "variable5": "`Information about the <:Bot_Flag:943116768602378290> Bot: __**${client.user.username}**__`",
+                "variable5": "`Information about the <:Bot_Flag:950886570041430016> Bot: __**${client.user.username}**__`",
                 "variable6": "`🔰 Information Commands 🔰`",
                 "variable7": "`> ${client.commands.filter((cmd) => cmd.category === \"🔰 Info\").map((cmd) => `\\`${cmd.name}\\``).join(\"︲\")}`",
                 "variable8": "`🎶 Music Related Commands :notes:`",
@@ -137,91 +208,8 @@
                 "variable23": "\"🦾 Custom Commands\"",
                 "variable24": "`🦾 **Custom Commands [${cuc[0].includes(\"NO\") ? 0 : items.length}]**`",
                 "variable25": "\" Bot Creator Company Advertisment\"",
-                "variablex_26": "` **__Bot Creator Information__**`", "variable26": "`>>> 💯 This Bot has been made by:\\nCepheid・[Discord](http://discord.gg/7PdChsBGKd)<:Discord:943116778618376222>`",
-                "variable27": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``",
-                "first": "***Click on the __Buttons__ to swap the Help-Pages***",
-                "second": "Click me to view Help-Menu-Category-Page(s)",
-                "third": ":x: I couldn't send help? Maybe I am missing the Permission to **EMBED LINKS**",
-                "four": "NO CUSTOM COMMANDS DEFINED YET, do it with: `!setup-customcommands`",
-                "five": "To see command Descriptions and Information, type:",
-                "six": "Home page",
-                "sixlb": "Overview",
-                "sevenlb": "Information",
-                "seven": "Commands to share Information",
-                "nine": "Commands useful for School and work!",
-                "ten": "Commands to play Music / add Filter",
-                "eleven": "Commands to add Filters to the Music",
-                "twelve": "Commands to Save Queues and Manage them",
-                "thirteen": "Commands to Administrate the Server",
-                "fourteen": "Commands to Setup Systems",
-                "fifteen": "Commands to change Server Settings",
-                "sixteen": "Commands to to manage the Bot",
-                "eighteen": "Commands useful for Programming",
-                "ninelb": "School",
-                "tenlb": "Music",
-                "elevenlb": "Filters",
-                "twelvelb": "Custom queue",
-                "thirteenlb": "Admin",
-                "fourteenlb": "Setup",
-                "fifteenlb": "Settings",
-                "sixteenlb": "Owner",
-                "eighteenlb": "Programming",
-                "nineteen": "Commands to mange and show Ranks",
-                "nineteenlb": "Ranking",
-                "twentylb": "Soundboard",
-                "twenty": "Commands for Voice Soundboard",
-                "twentyonelb": "Voice",
-                "twentyone": "Commands for Voice Channels Management",
-                "twentytwolb": "Fun",
-                "twentytwo": "Commands for Fun (Image) uses",
-                "twentythreelb": "Minigames",
-                "twentythree": "Commands for Minigames with the Bot",
-                "twentyfourlb": "Anime-Emotions",
-                "twentyfour": "Commands to show your Emotions with Anime style",
-                "twentyfivelb": "Nsfw",
-                "twentyfive": "Commands for Nsfw (underage) Content.",
-                "swentysixlb": "Customcommand",
-                "swentysix": "Custom Commands of this Server",
-                "eightlb": "Economy",
-                "eight": "Commands to use the Economy System",
-                "subcat": "Sub-Categorized Commands",
-                "usrcmds": "User Commands",
-                "gamsrelcmds": "Games Related Commands",
-                "serverrelcmds": "Server Related Commands",
-                "botrelcmds": "Bot Related Commands",
-                "utilrelcmds": "Util Related Commands",
-                "enabledtxt": "ENABLED",
-                "disabledtxt": "DISABLED",
-                "mgte": "🕹️ **Mini Game to earn 💸**",
-                "mathcmds": ":school: **Mathematics**",
-                "timemgmt": ":clock1: **Time Management**",
-                "queuecmds": "**Music Commands**",
-                "songcmds": "**Song Commands**",
-                "botcmds": "**Bot Commands**",
-                "usage": "**Usage**",
-                "channelrelated": "**Channel Related Commands**",
-                "threadrel": "**Thread Related Commands**",
-                "rolerel": "**Role Related Commands**",
-                "memberrel": "🙂 **Member Related Commands**",
-                "setupsent": "😛 **Setups for Entertainment**",
-                "infman": "💡 **Information & Manage (Bot/Server) Settings**",
-                "mostused": "**Most used Systems**",
-                "secsyst": "**Security Systems**",
-                "userrel": "🙂 **User Related Commands**",
-                "musicrel": "🎶 **Music Related Commands**",
-                "infmanage": "**Information & Manage**",
-                "adj": "**Adjust the Bot**",
-                "rankmanage": "**Manage Rank**",
-                "rankinf": "📈 **Rank Information**",
-                "funf": "🙂 **Fun User Image Commands**",
-                "funs": "🙂💬 **Fun User Image-Text Commands**",
-                "funt": "💬 **Fun Text Commands**",
-                "minigamesf": "💬 **Text Based Minigames**",
-                "minigamess": "🔘 **Button(s) Minigames**",
-                "animef": "😳 **Anime-Mention-Emotions (or Self.)**",
-                "animes": "😳 **Anime-Self-Emotions**",
-                "nsfwf": "😳 **Animated (Hentai, Neko, SFW, ...)**",
-                "nsfws": "🔞 **Reallife (Porn, Erotik, etc.)**"
+                "variablex_26": "` **__Bot Creator Information__**`", "variable26": "`>>> 💯 This Bot has been made by:\\n[**Milrato Development**](https://milrato.eu)・[Discord](https://discord.com/invite/milrato)<:Discord:950886430421418004> [Click here to order yourself a own one](https://discord.com/invite/milrato)`",
+                "variable27": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "invite": {
                 "title": "Click here to invite me",
@@ -232,10 +220,6 @@
                 },
                 "variable1": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
-            "inviteslash": {
-                "click": "Click here to invite me!",
-                "clickwithout": "Click here to invite me __without__ Slash Commands!"
-            },
             "invites": {
                 "author": "Invites of: {usertag}",
                 "field1": {
@@ -243,7 +227,7 @@
                 },
                 "field2": {
                     "title": "💡 **That means he/she has:**",
-                    "value": "> <:joines:978181806182531072> {invites} Joins (When the Member Joins the Server)\n> <:leaves:950879337454895134> {leaves} Leaves (When the invited Member left the Server)\n> :x: {fake} Fakes (Alt Accounts / Rejoins)"
+                    "value": "> <:joines:950878825254883378> {invites} Joins (When the Member Joins the Server)\n> <:leaves:950879337454895134> {leaves} Leaves (When the invited Member left the Server)\n> :x: {fake} Fakes (Alt Accounts / Rejoins)"
                 },
                 "field3": {
                     "title": "📘 **To Calculate your Invites do:**"
@@ -336,7 +320,6 @@
                 "field12": "**<a:arrow:943027097348227073> Total Boosts:**",
                 "field13": "**<a:arrow:943027097348227073> Boost-Level:**",
                 "field14": "**<a:arrow:943027097348227073> Max-Talk-Bitrate:**",
-                "field15": "**<a:arrow:943027097348227073> Premium Server:**",
                 "variablex_1": "`<a:arrow:943027097348227073> [${message.guild.emojis.cache.size}] Emojis: `", "variable1":"\"> \"+message.guild.emojis.cache.size < 35 ? message.guild.emojis.cache.map(emoji => `${emoji}`).join(\"︲\") : message.guild.emojis.cache.size > 35 ? emojitrimarray(message.guild.emojis.cache.map(emoji => `${emoji}`)).substr(0, 2048) : 'No Emojis'",
                 "variablex_2": "`<a:arrow:943027097348227073> [${message.guild.roles.cache.size}] Roles: `", "variable2":"\"> \"+message.guild.roles.cache.size < 40 ? [...message.guild.roles.cache.values()].sort((a, b) => b.rawPosition - a.rawPosition).map(role => `<@&${role.id}>`).join(', ') : message.guild.roles.cache.size > 40 ? trimArray(message.guild.roles.cache) : 'None'",
                 "variable3": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
@@ -378,6 +361,12 @@
                 "variablex_1": "\"\\u200b\"", "variable1": "\"\\u200b\"",
                 "variable2": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
+            "support": {
+                "title": ":tickets: You need help? **JOIN OUR SUPPORT SERVER**",
+                "variable1": "`**[Invite Public Bot](https://discord.com/api/oauth2/authorize?client_id=784364932149280778&permissions=8&scope=bot)  •  [WEBSITE](https://milrato.eu)  •  [Support Server/Get your Own Bot](https://discord.com/invite/milrato)**`",
+                "variable2": "-",
+                "variable3": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
+            },
             "tiktokinfo": {
                 "title": "Information about: **`{name}`**",
                 "description": "**Nickname:** `{nickName}`\n**Bio:**\n> {signature}\n\n> **`{fans} Followers` | `{following} Follows` | `{video}Posts`**",
@@ -413,7 +402,7 @@
                 "field6": {
                     "title": "Location"
                 },
-                "title": "Twitter Information about: `{name}`",
+                "title": "Twitterinformation about: `{name}`",
                 "variable1": "`\\`\\`\\`${user.description}\\`\\`\\``",
                 "variable2": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
@@ -447,7 +436,7 @@
                 "loading": "Getting the Channel-Information-Data",
                 "error1": ":x: Please use a Valid Youtube Link",
                 "error2": ":x: **Only the one who typed {prefix}youtubeinfo is allowed to react!**",
-                "example": "Example Usage: `{prefix}youtubeinfo https://youtube.com/c/WindahBasudara`",
+                "example": "Example Usage: `{prefix}youtubeinfo https://youtube.com/c/Tomato6966`",
                 "field1": "**Subscribercount:**",
                 "field2": "**Tags:**",
                 "field3": "**Unlisted:**",
@@ -509,10 +498,6 @@
                 "variable3": "`Channel: <#${player.voiceChannel}>`",
                 "variable4": "`\\`\\`\\`${e.message}\\`\\`\\``"
             },
-            "leave": {
-                "title": ":white_check_mark: **Left the Channel**",
-                "title1": "`⏹ **Stopped playing and left the Channel**`"
-            },
             "jump": {
                 "error1": ":x: **Please include to which track you want to Jump**",
                 "error2": ":x: **It has to be a `Queue Number`**",
@@ -562,7 +547,6 @@
                 "variable5": "`\\`\\`\\`${e.message}\\`\\`\\``"
             },
             "nowplaying": {
-                "curt": "Current song playing:",
                 "variable1": "`:x: There is nothing playing`",
                 "variable2": "`${player.playing ? `${emoji.msg.resume}` : `${emoji.msg.pause}`} **${player.queue.current.title}**`",
                 "variable3": "`\\`\\`\\`${e.message}\\`\\`\\``"
@@ -620,14 +604,12 @@
                 "variable6": "`${e.message}`"
             },
             "radio": {
-                "searching": "Searching: ",
                 "variable1": "`:x: Not a valid radio station`",
                 "variable2": "`Please use a Number between \\`1\\` and \\`183\\``",
                 "variable3": "`${emoji.msg.ERROR} Volume Number out of Range`",
                 "variable4": "`Please use a Number between \\`1\\` and \\`150\\``",
-                "variable5": "`:x: Radio Station not found`",
+                "variable5": "`${emoji.msg.ERROR} Radio Station not found`",
                 "variable6": "`Please use a Station between \\`1\\` and \\`183\\``",
-                "variable6c": "`Please use a Station between \\`1\\` and `",
                 "variable7": "`\\`\\`\\`${e.message}\\`\\`\\``"
             },
             "reconnect": {
@@ -680,8 +662,6 @@
                 "variable2": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "searchradio": {
-                "srequest": "Search-Request by:",
-                "result": "Search result for: 🔎",
                 "variable1": "`:x: What should be the search Type`",
                 "variable2": "`Usage: \\`${prefix}searchradio <TYPE> <Seach Query>\\`\\nValid Types: \\`country\\`, \\`city\\`, \\`name\\`, \\`genre\\`\\nExample: \\`${prefix}searchradio tag jazz\\`\\nExample: \\`${prefix}searchradio state Austria\\``",
                 "variable3": "`${emoji.msg.ERROR} What should I search for?`",
@@ -718,7 +698,7 @@
                 "variable2": "`\\`\\`\\`${e.message}\\`\\`\\``"
             },
             "stop": {
-                "variable1": "`Stopped and left your Channel`",
+                "variable1": "`${emoji.msg.stop} Stopped and left your Channel`",
                 "variable2": "`:x: **No song is currently playing in this guild.**`",
                 "variable3": "`:x: **No song is currently playing in this guild.**`",
                 "variable4": "`\\`\\`\\`${e.message}\\`\\`\\``"
@@ -763,77 +743,6 @@
             },
             "playprevious": {
                 "variable1": "`\\`\\`\\`${e.message}\\`\\`\\``"
-            },
-            "musicsystem": {
-                "forward": "⏩ **Forwarded the song for `10 Seconds`!**",
-                "pause": "⏸ **Paused!**",
-                "resume": "▶️ **Resumed!**",
-                "autoplayon": "**Enabled Autoplay**",
-                "autoplayoff": "**Disabled Autoplay**",
-                "songloopon": "**Enabled Song Loop**",
-                "songloopoff": "**Disabled Song Loop**",
-                "queueloopoff": "**Disabled Queue Loop**",
-                "queueloopon": "**Enabled Queue Loop**",
-                "rewind": "⏪ **Rewinded the song for `10 Seconds`!**",
-                "replay": "🔊 **Replaying current song!**",
-                "volmax": "🔊 **Volume set to MAX(boost to 150)**",
-                "volmin": "🔉 **Volume set to MIN(1)**",
-                "volmid": "🔉 **Volume set to MID(100)**",
-                "volp": "🔊 **Volume +10**",
-                "volm": "🔉 **Volume -10**",
-                "join": ":x: **Please join a Voice Channel first!**",
-                "joinch": ":x: **Please join __my__ Voice Channel first!",
-                "qof": "📃 Queue of ",
-                "osongs": "**Currently there are __0 Songs__ in the Queue**",
-                "title": "Start Listening to Music, by connecting to a Voice Channel and sending either the **SONG LINK** or **SONG NAME** in this Channel!",
-                "subtitle": "> *I support Youtube, Spotify, Soundcloud and direct MP3 Links!*",
-                "by": "Requested by:",
-                "dur": "Duration:",
-                "ql": "Queue length:",
-                "cvol": "Current volume:",
-                "ot": "other Tracks",
-                "curt": "CURRENT TRACK",
-                "load": "Load a Music-Playlist:",
-                "stopbt": "Stop",
-                "joinbt": "Join",
-                "leavebt": "Leave",
-                "skipbt": "Skip",
-                "shuffbt": "Shuffle",
-                "pausebt": "Pause",
-                "autoplbt": "Autoplay",
-                "slbt": "Song Loop",
-                "qlbt": "Queue Loop",
-                "rewbt": "-10 Sec",
-                "forbt": "+10 Sec",
-                "replbt": "Replay",
-                "volpbt": "+ Vol",
-                "volmbt": "- Vol",
-                "volmaxbt": "Max Vol",
-                "volminbt": "Min Vol",
-                "midvolbt": "Mid Vol",
-                "resumebt": "Resume",
-                "songg": "Songs",
-                "shuffled": "🔀 **Shuffled",
-                "shuffleds": "Songs!**",
-                "actionby": "💢 Action by:",
-                "alrmax": "🔊 **Volume already 150(Max)**",
-                "alrmin": "🔊 **Volume already 1(Min)**",
-                "alrmid": "🔊 **Volume already 100(Mid)**",
-                "djroles": "**DJ-ROLES:**",
-                "djerr": ":x: **You are not a DJ and not the Song Requester!**",
-                "joinmevc": ":x: **Please join __my__ Voice Channel first!",
-                "joinvc": ":x: **Please join Voice Channel first!",
-                "nothingplay": ":x: Nothing Playing yet",
-                "textbt1": "Enable text",
-                "textbt2": "Disable text",
-                "savebt": "Save song",
-                "savesubtitle": "Succesfully saved this song to your DMs",
-                "savetitle": "Check your DMs!",
-                "previoustitleerr": "No previous songs detected!",
-                "previoussubtitleerr": "Try again later",
-                "previoustitle": "⏮️ Previous song detected, trying to play!",
-                "previoussubtitle": "Playing previous played song",
-                "prevbt": "Prev. song"
             }
         },
         "programming": {
@@ -885,14 +794,6 @@
             }
         },
         "settings": {
-            "msbt": {
-                "title1": "Successfully __ENABLED__ text on musicsystem buttons",
-                "title2": "Successfully __DISABLED__ text on musicsystem buttons",
-                "subtitle1": "Now buttons will be like this: ⏹️ Stop",
-                "subtitle2": "Now buttons will be like this: ⏹️",
-                "err": "You haven't setup music system yet, do it by `setup-music`",
-                "errt": "Music system is not setuped"
-            },
             "addbotchat": {
                 "variable1": "`:x: Please add a Channel via ping, for example: #channel!`",
                 "variable2": "`:x: It seems that the Channel does not exist in this Server!`",
@@ -1604,7 +1505,7 @@
             "detailedeval": {
                 "variable1": "`${emoji.msg.ERROR}  Error | You are not allowed to run this command! Only the **\\`Cepheid#0001\\`** is allowed to run this Cmd`",
                 "variable2": "`${emoji.msg.ERROR}  Error | You have to at least include one evaluation arguments`",
-                "variable3": "`cepheid | Evaluation`",
+                "variable3": "`Milrato Development | Evaluation`",
                 "variable4": "`\\`\\`\\`` + m + `\\`\\`\\``",
                 "variable5": "`${emoji.msg.ERROR}  ERROR | An error occurred!`",
                 "variable6": "`\\`\\`\\`${e.message}\\`\\`\\``"
@@ -1612,7 +1513,7 @@
             "eval": {
                 "variable1": "`${emoji.msg.ERROR}  Error | You are not allowed to run this command! Only the **\\`Cepheid#0001\\`** is allowed to run this Cmd`",
                 "variable2": "`${emoji.msg.ERROR}  Error | You have to at least include one evaluation arguments`",
-                "variable3": "`cepheid | Evaluation`",
+                "variable3": "`Milrato Development | Evaluation`",
                 "variable4": "`\\`\\`\\`` + splitDescription[0] + `\\`\\`\\``",
                 "variable5": "`${emoji.msg.ERROR}  ERROR | An error occurred!`",
                 "variable6": "`\\`\\`\\`${e.message}\\`\\`\\``"
@@ -1870,37 +1771,37 @@
                 "variable23": "\":x: ERROR | Your Time ran out\"",
                 "variable24": "\"Which Role/User do you wanna add/remove?\"",
                 "variable25": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
-                "variable26": "`<:joines:978181806182531072> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Bot add__ Whitelist (module)!**`",
+                "variable26": "`<:joines:950878825254883378> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Bot add__ Whitelist (module)!**`",
                 "variablex_27": "\"__**Current Whitelisted Users:**__\"", "variable27": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.users\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.users\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.users\").slice(0, 15).map(x=>`<@${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.users\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.users\").map(x=>`<@${x}>`).join(\"︲\")}`",
                 "variablex_28": "\"__**Current Whitelisted Roles:**__\"", "variable28": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.roles\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.roles\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.roles\").slice(0, 15).map(x=>`<@&${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.roles\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antibot.whitelisted.roles\").map(x=>`<@&${x}>`).join(\"︲\")}`",
                 "variable29": "\":x: ERROR | Your Time ran out\"",
                 "variable30": "\"Which Role/User do you wanna add/remove?\"",
                 "variable31": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
-                "variable32": "`<:joines:978181806182531072> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Kick/Ban__ Whitelist (module)!**`",
+                "variable32": "`<:joines:950878825254883378> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Kick/Ban__ Whitelist (module)!**`",
                 "variablex_33": "\"__**Current Whitelisted Users:**__\"", "variable33": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.users\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.users\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.users\").slice(0, 15).map(x=>`<@${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.users\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.users\").map(x=>`<@${x}>`).join(\"︲\")}`",
                 "variablex_34": "\"__**Current Whitelisted Roles:**__\"", "variable34": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.roles\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.roles\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.roles\").slice(0, 15).map(x=>`<@&${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.roles\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.whitelisted.roles\").map(x=>`<@&${x}>`).join(\"︲\")}`",
                 "variable35": "\":x: ERROR | Your Time ran out\"",
                 "variable36": "\"Which Role/User do you wanna add/remove?\"",
                 "variable37": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
-                "variable38": "`<:joines:978181806182531072> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Create Role__ Whitelist (module)!**`",
+                "variable38": "`<:joines:950878825254883378> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Create Role__ Whitelist (module)!**`",
                 "variablex_39": "\"__**Current Whitelisted Users:**__\"", "variable39": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.users\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.users\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.users\").slice(0, 15).map(x=>`<@${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.users\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.users\").map(x=>`<@${x}>`).join(\"︲\")}`",
                 "variablex_40": "\"__**Current Whitelisted Roles:**__\"", "variable40": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.roles\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.roles\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.roles\").slice(0, 15).map(x=>`<@&${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.roles\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"anticreaterole.whitelisted.roles\").map(x=>`<@&${x}>`).join(\"︲\")}`",
                 "variable41": "\":x: ERROR | Your Time ran out\"",
                 "variable42": "\"Which Role/User do you wanna add/remove?\"",
                 "variable43": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
-                "variable44": "`<:joines:978181806182531072> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Delete Role__ Whitelist (module)!**`",
+                "variable44": "`<:joines:950878825254883378> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Delete Role__ Whitelist (module)!**`",
                 "variablex_45": "\"__**Current Whitelisted Users:**__\"", "variable45": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.users\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.users\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.users\").slice(0, 15).map(x=>`<@${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.users\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.users\").map(x=>`<@${x}>`).join(\"︲\")}`",
                 "variablex_46": "\"__**Current Whitelisted Roles:**__\"", "variable46": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.roles\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.roles\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.roles\").slice(0, 15).map(x=>`<@&${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.roles\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antideleterole.whitelisted.roles\").map(x=>`<@&${x}>`).join(\"︲\")}`",
                 "variable47": "\":x: ERROR | Your Time ran out\"",
                 "variable48": "\"Which Role/User do you wanna add/remove?\"",
                 "variable49": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
-                "variable50": "`<:joines:978181806182531072> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Channel Create__ Whitelist (module)!**`",
+                "variable50": "`<:joines:950878825254883378> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Channel Create__ Whitelist (module)!**`",
                 "variablex_51": "\"__**Current Whitelisted Users:**__\"", "variable51": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.users\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.users\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.users\").slice(0, 15).map(x=>`<@${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.users\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.users\").map(x=>`<@${x}>`).join(\"︲\")}`",
                 "variablex_52": "\"__**Current Whitelisted Roles:**__\"", "variable52": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.roles\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.roles\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.roles\").slice(0, 15).map(x=>`<@&${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.roles\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antichanneldelete.whitelisted.roles\").map(x=>`<@&${x}>`).join(\"︲\")}`",
                 "variable53": "\":x: ERROR | Your Time ran out\"",
                 "variable54": "\"Which Role/User do you wanna add/remove?\"",
                 "variable55": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
-                "variable56": "`<:joines:978181806182531072> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Channel Delete__ Whitelist (module)!**`",
+                "variable56": "`<:joines:950878825254883378> **Added \\`[${addedroles.length}] Roles\\` and \\`[${addedusers.length}] Users\\` to the __Anti Channel Delete__ Whitelist (module)!**`",
                 "variablex_57": "\"__**Current Whitelisted Users:**__\"", "variable57": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.users\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.users\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.users\").slice(0, 15).map(x=>`<@${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.users\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.users\").map(x=>`<@${x}>`).join(\"︲\")}`",
                 "variablex_58": "\"__**Current Whitelisted Roles:**__\"", "variable58": "`>>> ${client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.roles\").length == 0 ? \"**No One**\" : client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.roles\").length > 15 ? client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.roles\").slice(0, 15).map(x=>`<@&${x}>`).join(\"︲\") + ` ***and ${client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.roles\").length - 15} more...***`: client.Anti_Nuke_System.get(message.guild.id, \"antichannelcreate.whitelisted.roles\").map(x=>`<@&${x}>`).join(\"︲\")}`",
                 "variable59": "\":x: ERROR | Your Time ran out\"",
@@ -1938,7 +1839,7 @@
                 "variable91": "`${client.Anti_Nuke_System.get(message.guild.id, \"all.showwhitelistlog\") ? \"> :white_check_mark: **I will show it when a Whitelisted User/Role makes an Action**\\n> *But I won't do anything to him/her, cause he/she is whitelisted!*\": \"> :x: **I won't show it when a whitelisted User is doing something!**\\n> This doesn't affect your security! (He is whitelisted, from the YOU)\"}${client.Anti_Nuke_System.get(message.guild.id, \"all.quarantine\")?.length > 0 ? `\\n\\n> **I will add him/her the Quarantine Role: <@&${client.Anti_Nuke_System.get(message.guild.id, \"all.quarantine\")}> Role when removing the Roles!**` : \"*NO Quarantine Role set, I will just remove his/her Roles / KICK / BAN..!*\"}`",
                 "variable92": "\":x: **There is no Quarantine Role added yet!**\\n> To add it go to 'Manage Settings' and Add the Quarantine Role!\"",
                 "variable93": "`:x: **All Channels in this Guild are denied to View the Channel for the <@&${role}> Role**`",
-                "variable94": "`>>> :white_check_mark: **Now Denying the <@&${role}> for ${channels.size} Channels, to View it!**\\n\\n<a:Loading1:958415066972184636> **This might take up to \\`${channels.size * 1.5} Seconds\\`**`",
+                "variable94": "`>>> :white_check_mark: **Now Denying the <@&${role}> for ${channels.size} Channels, to View it!**\\n\\n<a:Loading:950883677255118898> **This might take up to \\`${channels.size * 1.5} Seconds\\`**`",
                 "variable95": "`:white_check_mark: **Adjusted the Permission for \\`${channels.size} Channels\\`**`",
                 "variable96": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
@@ -2361,12 +2262,7 @@
                 "variable36": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "setup-jtc": {
-                "dltitle": "Succesfully changed default limit",
-                "dlsubtitle": "Now default limit will be: ",
-                "dltitletemp": "Provide new limit",
-                "dlsubtitletemp": "From 0(no limit) to 99",
-                "dlerror": "Provide number from 0(no limit) to 99 please!",
-                "variable1": "\"What do you want to do?\"", 
+                "variable1": "\"What do you want to do?\"",
                 "variable2": "`1️⃣ **==** Manage the **first** Join to Create Setup\\n\\n2️⃣ **==** Manage the **second** Join to Create Setup\\n\\n3️⃣ **==** Manage the **third** Join to Create Setup\\n\\n\\n\\n*React with the Right Emoji according to the Right action*`",
                 "variable3": "\":x: ERROR | Missing Permissions to add Reactions\"",
                 "variable4": "\":x: ERROR | Your Time ran out\"",
@@ -2448,7 +2344,7 @@
                 "variable1": "\"***Select what you need in the `Selection` down Below!***\"",
                 "variable2": "\":x: Cancelled the Setup!\"",
                 "variable3": "\"Select your new Language\"",
-                "variable4": "`Current language is: **${languages[ls]}**\\n\\n***Note that this System is not finished yet!***\\n**Only partly working Languages are:**\\n> \\`Russian\\``",
+                "variable4": "`Current language is: **${languages[ls]}**\\n\\n***Note that this System is not finished yet!***\\n**Only partly working Languages are:**\\n> \\`Russian\\`",
                 "variable5": "`:white_check_mark: The new Language is **${languages[lang]}** (\\`${lang})\\``",
                 "variable6": "`:white_check_mark: Resetted the Language | The new Language is **🇬🇧 English** (en)`",
                 "variable7": "`📑 Current Language is ${thesettings}`",
@@ -2964,14 +2860,12 @@
                 "variable26": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "setup-twitch": {
-                "notitle": "This channel already added to twitch logger!",
-                "nosubtitle": "Please don't add same channel, add another",
                 "variable1": "\"What do you want to do?\"",
                 "variable2": "`1️⃣ **== Manage Channels** (Edit, Delete, etc.)\\n\\n2️⃣ **== Create/Set Twitch-Channel**\\n\\n3️⃣ **== Set Discord Twitch Logger Channel**\\n\\n4️⃣ **== Set ACTIVE LIVE STREAMING ROLE**\\n\\n5️⃣ **== Set Ghost Ping Role**\\n\\n\\n\\n*React with the Right Emoji according to the Right action*`",
                 "variable3": "\":x: ERROR | Missing Permissions to add Reactions\"",
                 "variable4": "\":x: ERROR | Your Time ran out\"",
                 "variable5": "\"Which Twitch Streamer do you wanna add?\"",
-                "variable6": "`Please send me just the link, for example: \\`https://www.twitch.tv/obama\\``",
+                "variable6": "`Please send me just the link, for example: \\`https://www.twitch.tv/milratodiscordbot\\``",
                 "variable7": "\"Which Discord User is he?\"",
                 "variable8": "`Please Ping the User now! For example: ${message.author}`",
                 "variable9": "\"Which Message should I post?\"",
@@ -3017,9 +2911,9 @@
                 "variable8": "\":x: ERROR | Missing Permissions to add Reactions\"",
                 "variable9": "\":x: ERROR | Your Time ran out\"",
                 "variable10": "\"Which account do you wanna use?\"",
-                "variable11": "`Please send me the TWITTER LINK like that: \\`https://twitter.com/p_viendi\\``",
-                "variable12": "\"INVALID TWITTER LINK, a Twitter Link looks like that: \\`https://twitter.com/p_viendi\\`\"",
-                "variable13": "\"INVALID TWITTER LINK, a Twitter Link looks like that: \\`https://twitter.com/p_viendi\\`\"",
+                "variable11": "`Please send me the TWITTER LINK like that: \\`https://twitter.com/MilratoDev\\``",
+                "variable12": "\"INVALID TWITTER LINK, a Twitter Link looks like that: \\`https://twitter.com/MilratoDev\\`\"",
+                "variable13": "\"INVALID TWITTER LINK, a Twitter Link looks like that: \\`https://twitter.com/MilratoDev\\`\"",
                 "variable14": "\":x: ERROR | Your Time ran out\"",
                 "variable15": "\"UNABLE TO FIND USER\"",
                 "variable16": "\"UNABLE TO FIND USER\"",
@@ -3039,7 +2933,7 @@
                 "variable30": "\"Which MEssage do you wanna send with the Twitter Post?\"",
                 "variable31": "`\\`{url}\\` Will be replaced with the Twitter POST LINK\\n\\n\\`{Twittername}\\` will be replaced with the TwitterAccountname`",
                 "variable32": "`:white_check_mark: I will now post The Twitter Messages with the Twitter Post: `",
-                "variable33": "`${collected.first().content.replace(\"{url}\", \"https://twitter.com/p_viendi\").replace(\"{Twittername}\", \"Tomato6966\")}\\n\\nNote that this is just an **example**\\n\\nYou need to have The TWITTERNAME, TWITTERID, and DISCORDCHANNEl and MESSAGE to be right, so that the autoposter works!`",
+                "variable33": "`${collected.first().content.replace(\"{url}\", \"https://twitter.com/MilratoDev\").replace(\"{Twittername}\", \"Tomato6966\")}\\n\\nNote that this is just an **example**\\n\\nYou need to have The TWITTERNAME, TWITTERID, and DISCORDCHANNEl and MESSAGE to be right, so that the autoposter works!`",
                 "variablex_34": "\"**NOTE THERE MIGHT BE AN UP TO 7 MINUTES DELAY!** (because of Rate limits)\"", "variable34": "\"When posting a new Twit\"",
                 "variable35": "\":x: ERROR | An error occurred, please contact: `Cepheid#0001`\"",
                 "variable36": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``",
@@ -3051,7 +2945,7 @@
                 "variable42": "`Go to: https://tweeterid.com to get your USERID and **ENTER IT __NOW__**`",
                 "variable43": "`You need to have The TWITTERNAME, TWITTERID, and DISCORDCHANNEl and MESSAGE to be right, so that the autoposter works!`",
                 "variable44": "\"What should be the new USERNAME of your TWITTER LOGGER?\"",
-                "variable45": "`That's your @, forexample: CepheidDev\\n\\nPlease **just** enter the Name!`",
+                "variable45": "`That's your @, forexample: MilratoDev\\n\\nPlease **just** enter the Name!`",
                 "variable46": "`${collected.first().content.replace(\"{url}\", `https://twitter.com/${collected.first().content}`).replace(\"{Twittername}\", collected.first().content)}\\n\\nNote that this is just an **example**\\n\\nYou need to have The TWITTERNAME, TWITTERID, and DISCORDCHANNEl and MESSAGE to be right, so that the autoposter works!`",
                 "variablex_47": "\"**NOTE THERE MIGHT BE AN UP TO 7 MINUTES DELAY!** (because of Rate limits)\"", "variable47": "\"When posting a new Twit\"",
                 "variable48": "\":x: ERROR | An error occurred, please contact: `Cepheid#0001`\"",
@@ -3865,10 +3759,6 @@
             }
         },
         "fun": {
-            "choose": {
-                "no":"Nothing to choose",
-                "yes": "I choose..."
-            },
             "8ball": {
                 "variable1": "`:x: Please Add a Question`",
                 "variable2": "\"Can't get 8ball replies, try again later.\"",
@@ -4562,10 +4452,10 @@
             "manageinvites": {
                 "variable1": "\"MANAGE INVITES OF \" + user.tag, client.user.displayAvatarURL(), \"http://discord.gg/7PdChsBGKd\"",
                 "variable2": "`***Select what you want to do in the Selection down Below!***`",
-                "variablex_3": "`💡 **That means he has:**`","variable3":"`> <:joines:978181806182531072> ${invites} Joins (When the Member Joins the Server)\\n> <:leaves:950879337454895134> ${leaves} Leaves (When the invited Member left the Server)\\n> :x: ${fake} Fakes (Alt Accounts / Rejoins)`",
+                "variablex_3": "`💡 **That means he has:**`","variable3":"`> <:joines:950878825254883378> ${invites} Joins (When the Member Joins the Server)\\n> <:leaves:950879337454895134> ${leaves} Leaves (When the invited Member left the Server)\\n> :x: ${fake} Fakes (Alt Accounts / Rejoins)`",
                 "variable4": "\":x: Cancelled the Setup!\"",
                 "variable5": "\"NOT A NUMBER\"",
-                "variablex_6": "`💡 **That means he has:**`","variable6":"`> <:joines:978181806182531072> ${invites} Joins (When the Member Joins the Server)\\n> <:leaves:950879337454895134> ${leaves} Leaves (When the invited Member left the Server)\\n> :x: ${fake} Fakes (Alt Accounts / Rejoins)`",
+                "variablex_6": "`💡 **That means he has:**`","variable6":"`> <:joines:950878825254883378> ${invites} Joins (When the Member Joins the Server)\\n> <:leaves:950879337454895134> ${leaves} Leaves (When the invited Member left the Server)\\n> :x: ${fake} Fakes (Alt Accounts / Rejoins)`",
                 "variable7": "`\\`\\`\\`${String(message.content).substr(0, 2000)}\\`\\`\\``",
                 "variable8": "`Executed in: `, `<#${message.channel.id}> \\`${message.channel.name}\\``",
                 "variable9": "`Executed by: `, `<@${message.author.id}> (${message.author.tag})\\n\\`${message.author.tag}\\``",
@@ -4696,8 +4586,6 @@
                 "variable16": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "report": {
-                "title": "You __CAN'T__ report __YOURSELF__",
-                "subtitle": "Please report other, not yourself, if it's needed",
                 "variable1": "`:x: Report System is not setup yet!`",
                 "variable2": "`Set it up with: \\`${prefix}setup-reportlog\\``",
                 "variable3": "`:x: please ping a USER!`",
@@ -4940,7 +4828,7 @@
         "cooldown": ":x: Please wait {time} more second(s) before reusing the `{commandname}` command.",
         "premium": {
             "title": ":x: **This Command is Premium Only!**",
-            "description": "> *This means, you need to **pay** in Order to be able to use this Command!*\n\n>[Pay through here](http://discord.gg/7PdChsBGKd)"
+            "description": "> *This means, you need to **pay** in Order to be able to use this Command!*\n\n> [Website](https://milrato.eu) - [Pay through here](http://discord.gg/7PdChsBGKd)"
         },
         "permissions": {
             "title": ":x: **You are not allowed to run this command!**",
@@ -5456,9 +5344,9 @@
                 "variable1": "\"Don't unmute me!, i muted my self again! This safes Data so it gives you a faster and smoother experience\"",
                 "variable2": "\"Don't unmute me!, i muted my self again! This safes Data so it gives you a faster and smoother experience\"",
                 "variable3": "`<a:Join_vc:950885408290508821> Joined a new Guild | ${guild.name}`",
-                "variable4": "`> **${guild.name} (\\`${guild.id}\\`)**\\n\\n> **Owner:** \\`${theowner ? `${theowner.tag} (${theowner.id})` : `${theowner} (${guild.ownerId})`}\\`\\n\\n> **Members:** \\`${guild.memberCount}\\`\\n\\n> **Servers Bot is in:** \\`${client.guilds.cache.size}\\``",
+                "variable4": "`> **${guild.name} (\\`${guild.id}\\`)**\\n\\n> **Owner:** \\`${guild.owner ? guild.owner.tag : guild.ownerID}\\`\\n\\n> **Members:** \\`${guild.memberCount}\\`\\n\\n> **Servers Bot is in:** \\`${client.guilds.cache.size}\\``",
                 "variable5": "`<:leaves:950879337454895134> Left a Guild | ${guild.name}`",
-                "variable6": "`> **${guild.name} (\\`${guild.id}\\`)**\\n\\n> **Owner:** \\`${theowner ? `${theowner.tag} (${theowner.id})` : `${theowner} (${guild.ownerId})`}\\`\\n\\n> **Members:** \\`${guild.memberCount}\\`\\n\\n> **Servers Bot is in:** \\`${client.guilds.cache.size}\\``"
+                "variable6": "`> **${guild.name} (\\`${guild.id}\\`)**\\n\\n> **Owner:** \\`${guild.owner ? guild.owner.tag : guild.ownerID}\\`\\n\\n> **Members:** \\`${guild.memberCount}\\`\\n\\n> **Servers Bot is in:** \\`${client.guilds.cache.size}\\``"
             }
         },
         "functionsjs": {
@@ -5581,7 +5469,7 @@
                 "variable12": "\"You are not allowed to run this cmd!\"",
                 "variable13": "`UNKNOWN COMMAND! Try: \\`${prefix}levelinghelp\\``",
                 "variable14": "\"PLEASE ADD A RANKUSER!\"",
-                "variable15": "Getting the Rank-Data of: **{rankuser}** ...",
+                "variable15": "`Getting the Rank-Data of: **${rankuser.tag}** ...`",
                 "variable16": "\"NO BOTS!\"",
                 "variable17": "\"PLEASE ADD A RANKUSER!\"",
                 "variable18": "`\\`${message.guild.name}\\` | Leaderboard | ${i<orilent?i:orilent} / ${orilent}`",
@@ -5656,13 +5544,7 @@
                 "variable87": "\"You cant add more then 10000\"",
                 "variable88": "`Successfully added ${args[0]} Points to  everyone`",
                 "variable89": "`\\`${message.guild.name}\\` | Ranking Commands`",
-                "variable90": "`> **HELP:**  \\`${prefix}levelinghelp\\``",
-                "conntime": "**User's Connected Time:**",
-                "note": "*`You only gain Points, if you leave the Channel!`*",
-                "leaderboardget": "📊 *Getting the __Leaderboard Data__ of:",
-                "lvlup": " leveled up!",
-                "newlevel": "New Level:",
-                "newrank": " New Rank:"
+                "variable90": "`> **HELP:**  \\`${prefix}levelinghelp\\``"
             }
         },
         "requestcmdsjs": {
@@ -5833,9 +5715,9 @@
                 "variable1": "`**${member.guild.name} IS PROTECT BY A CAPTCHA SYSTEM**`",
                 "variable2": "`<@${member.user.id}> please send me (type) the Captcha Code (Text) in the next 30 Seconds, otherwise, you will be not verified and kicked!`",
                 "variable3": "`✅ Successfully verified for: **${member.guild.name}**`",
-                "variable4": "\"Because you failed the Captcha, the Bot kicked you! HERE IS AN INVITE: \" + invite.url).catch(e => console.log(\"prevented bug\"",
-                "variable5": "\"Because you failed the Captcha, the Bot kicked you!\").catch(e => console.log(\"prevented bug\"",
-                "variable6": "`✅ Successfully verified for: **${member.guild.name}**\\n\\nDELETING CHANNEL in 15 SECONDS, *only if no one else joins until then!*`",
+                "variable4": "\"BECAUSE U FAILED THE CAPTCHA, I KICKED U! HERE IS AN INVITE: \" + invite.url).catch(e => console.log(\"prevented bug\"",
+                "variable5": "\"BECAUSE U FAILED THE CAPTCHA, I KICKED U!\").catch(e => console.log(\"prevented bug\"",
+                "variable6": "`✅ Successfully verified for: **${member.guild.name}**\\n\\nDELETING CHANNEL in 15 SECONDS, *only if noone else joins until then!*`",
                 "variable7": "`**Welcome to ${member.guild.name}!**`",
                 "variablex_8": "\"\\u200b\"","variable8": "invitemessage && !invitemessage.includes(undefined) ? invitemessage : \"\\u200b\"",
                 "variable9": "`**Welcome to ${member.guild.name}!**`",

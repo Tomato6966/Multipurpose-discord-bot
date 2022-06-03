@@ -26,7 +26,7 @@ if(ls == "ru"){
   .setColor(es.color)
   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable2"]))
   .setDescription(`
-  **Как настроить роль Cepheid Reaction!**
+  **Как настроить роль Marshal Reaction!**
   > 1. Отреагировать на сообщение __НИЖЕ__ **этого** сообщения
   
   > 2. Затем появляется новое сообщение! После этого вы должны пингануть РОЛЬ для отреагированного эмодзи
@@ -51,7 +51,7 @@ if(ls == "ru"){
   .setColor(es.color)
   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-reactionrole"]["variable2"]))
   .setDescription(`
-**How to setup Cepheid Reaction Role!**
+**How to setup Marshal Reaction Role!**
 > 1. React to message __BELOW__ **this** message
 
 > 2. Then, afterwards a new message appears! After that, you can PING the ROLE for the reacted EMOJI

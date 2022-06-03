@@ -915,7 +915,7 @@ module.exports = {
                 {
                   value: await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled") ? "Disable complete AntiNuke": "Enable complete Anti Nuke",
                   description: await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled") ? "I will not work anymore": "I will be enabled",
-                  emoji: await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled") ? "833101993668771842": "833101995723194437"
+                  emoji: await client.Anti_Nuke_System.get(message.guild.id+ ".all.enabled") ? "951013282607685632": "950884027320135711"
                 },
                 {
                   value: "Set Logger",
@@ -925,7 +925,7 @@ module.exports = {
                 {
                   value: await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog") ? "Disable Whitelisted Log": "Enable Whitelisted Log",
                   description: await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog") ? "I will not show when a whitelisted User makes smt": "I will show when a whitelisted User makes smt (I won't do smt tho)",
-                  emoji: await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog") ? "833101993668771842": "833101995723194437"
+                  emoji: await client.Anti_Nuke_System.get(message.guild.id+ ".all.showwhitelistlog") ? "951013282607685632": "950884027320135711"
                 },
                 {
                   value: "Modify Quarantine Role",
@@ -1159,7 +1159,7 @@ module.exports = {
                         {
                           value: await client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`) ? `Disable ${thename}`: `Enable ${thename}`,
                           description: await client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`) ? `${thename} will stop working`: `${thename} will be working`,
-                          emoji: await client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`) ? "833101993668771842": "833101995723194437"
+                          emoji: await client.Anti_Nuke_System.get(message.guild.id, `${thekey}.enabled`) ? "951013282607685632": "950884027320135711"
                         },
                         {
                           value: "Remove Roles / Day",

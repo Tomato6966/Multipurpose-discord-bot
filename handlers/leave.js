@@ -3,14 +3,14 @@ const Discord = require("discord.js");
 const Canvas = require("canvas");
 const canvacord = require("canvacord");
 //Load fonts
-Canvas.registerFont( "./assets/fonts/DMSans-Bold.ttf" , { family: "DM Sans", weight: "bold" } );
-Canvas.registerFont( "./assets/fonts/DMSans-Regular.ttf" , { family: "DM Sans", weight: "regular" } );
-Canvas.registerFont( "./assets/fonts/STIXGeneral.ttf" , { family: "STIXGeneral" } );
-Canvas.registerFont( "./assets/fonts/AppleSymbol.ttf" , { family: "AppleSymbol" } );
-Canvas.registerFont( "./assets/fonts/Arial.ttf"       , { family: "Arial" } );
-Canvas.registerFont( "./assets/fonts/ArialUnicode.ttf", { family: "ArielUnicode" } );
-Canvas.registerFont(`./assets/fonts/Genta.ttf`, { family: `Genta` } );
-Canvas.registerFont("./assets/fonts/UbuntuMono.ttf", { family: "UbuntuMono" } );
+//Canvas.registerFont( "./assets/fonts/DMSans-Bold.ttf" , { family: "DM Sans", weight: "bold" } );
+//Canvas.registerFont( "./assets/fonts/DMSans-Regular.ttf" , { family: "DM Sans", weight: "regular" } );
+//Canvas.registerFont( "./assets/fonts/STIXGeneral.ttf" , { family: "STIXGeneral" } );
+//Canvas.registerFont( "./assets/fonts/AppleSymbol.ttf" , { family: "AppleSymbol" } );
+//Canvas.registerFont( "./assets/fonts/Arial.ttf"       , { family: "Arial" } );
+//Canvas.registerFont( "./assets/fonts/ArialUnicode.ttf", { family: "ArielUnicode" } );
+//Canvas.registerFont(`./assets/fonts/Genta.ttf`, { family: `Genta` } );
+//Canvas.registerFont("./assets/fonts/UbuntuMono.ttf", { family: "UbuntuMono" } );
 //require functions from files
 const config = require(`${process.cwd()}/botconfig/config.json`);
 const ee = require(`${process.cwd()}/botconfig/embed.json`);
@@ -19,8 +19,6 @@ const { dbEnsure } = require("./functions");
 const Fonts = "Genta, UbuntuMono, `DM Sans`, STIXGeneral, AppleSymbol, Arial, ArialUnicode";
 const wideFonts = "`DM Sans`, STIXGeneral, AppleSymbol, Arial, ArialUnicode";
 let invitemessage = "\u200b";
-const { inviteationCache, DbAllCache } = require("./caches");
-
 //Start the module
 module.exports = async (client) => {
 
@@ -30,10 +28,7 @@ module.exports = async (client) => {
     // Fetch guild and member data from the db
     await EnsureInviteDB(member.guild, member.user)
 
-    
-    let rawDBData = DbAllCache.get(member.guild.id) || await client.invitesdb.all() || [];
-    DbAllCache.set(member.guild.id, rawDBData);
-
+    let rawDBData = await client.invitesdb.all();
     let memberData = rawDBData.find(v => v.data?.id == member.id && v.data?.guildId == member.guild.id && v.data?.bot == member.user.bot)?.data || {};
     if (!memberData.joinData) {
       memberData.joinData = {
@@ -43,7 +38,6 @@ module.exports = async (client) => {
     }
     const leftInviterData = rawDBData.find(v => v.data?.guildId == member.guild.id && v.data?.invited && Array.isArray(v.data?.invited) && v.data?.invited.includes(member.id))?.data || null;
     const leftInviterDataKey = rawDBData.find(v => v.data?.guildId == member.guild.id && v.data?.invited && Array.isArray(v.data?.invited) && v.data?.invited.includes(member.id))?.ID || null;
-    
     // If the member was a rejoin, remove it from whom invited him before
     if (leftInviterData) {
       //make sure that the inviter Data is an array 
@@ -64,7 +58,7 @@ module.exports = async (client) => {
         invites,
         fake,
         leaves
-      } = leftInviterData || await client.invitesdb.get(leftInviterDataKey);
+      } = await client.invitesdb.get(leftInviterDataKey);
       if(fake < 0) fake *= -1;
       if(leaves < 0) leaves *= -1;
       if(invites < 0) invites *= -1;
@@ -85,10 +79,9 @@ module.exports = async (client) => {
           invitemessage = `Invited by a **Vanity Link!**`;
         }
       } else {
-        invitemessage = `Invited by an **unkown Member!**`
+        invitemessage = `Invited by an **unknown Member!**`
       }
     }
-
     message(member);
   })
 
@@ -136,7 +129,7 @@ module.exports = async (client) => {
       //send the leave embed to there
       channel.send({
         embeds: [leaveembed]
-      }).catch(e => null)
+      }).catch(e => console.log("This catch prevents a crash"))
     }
     async function dm_msg_withoutimg(member) {
 
@@ -153,7 +146,7 @@ module.exports = async (client) => {
       //send the leave embed to there
       member.user.send({
         embeds: [leaveembed]
-      }).catch(e => null)
+      }).catch(e => console.log("This catch prevents a crash"))
     }
 
 
@@ -172,7 +165,7 @@ module.exports = async (client) => {
       //send the leave embed to there
       member.user.send({
         embeds: [leaveembed]
-      }).catch(e => null)
+      }).catch(e => console.log("This catch prevents a crash"))
     }
     async function msg_withimg(member) {
       let leavechannel = leave.channel;
@@ -194,7 +187,7 @@ module.exports = async (client) => {
       //send the leave embed to there
       channel.send({
         embeds: [leaveembed]
-      }).catch(e => null)
+      }).catch(e => console.log("This catch prevents a crash"))
     }
 
     async function dm_msg_autoimg(member) {
@@ -310,7 +303,7 @@ module.exports = async (client) => {
         member.user.send({
           embeds: [leaveembed.setImage(`attachment://leave-image.png`)],
           files: [attachment]
-        }).catch(e => null)
+        }).catch(e => console.log("This catch prevents a crash"))
         //member roles add on leave every single role
       } catch {}
     }
@@ -432,7 +425,7 @@ module.exports = async (client) => {
         channel.send({
           embeds: [leaveembed.setImage(`attachment://leave-image.png`)],
           files: [attachment]
-        }).catch(e => null)
+        }).catch(e => console.log("This catch prevents a crash"))
         //member roles add on leave every single role
       } catch (e) {
         console.error(e)
@@ -440,8 +433,7 @@ module.exports = async (client) => {
     }
   }
   async function EnsureInviteDB(guild, user) {
-    
-    const res = await dbEnsure(client.invitesdb, guild.id + user.id, {
+    await dbEnsure(client.invitesdb, guild.id + user.id, {
       /* REQUIRED */
       id: user.id, // Discord ID of the user
       guildId: guild.id,
@@ -461,13 +453,6 @@ module.exports = async (client) => {
       /* BOT */
       bot: user.bot
     });
-
-    if(res && res.changed) {
-      DbAllCache.set(guild.id, false);
-      DbAllCache.delete(guild.id);
-    }
-
-    return true;
   }
 }
 

@@ -39,12 +39,12 @@ module.exports = {
           {
             value: `Enable & Set Anti Spam`,
             description: "Enable and limit the allowed Messages / 10 Seconds",
-            emoji: "833101995723194437"
+            emoji: "950884027320135711"
           },
           {
             value: `Disable Anti Spam`,
             description: "Don't prevent Spamming",
-            emoji: "833101993668771842"
+            emoji: "951013282607685632"
           },
           {
             value: "Settings",

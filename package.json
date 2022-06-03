@@ -1,6 +1,6 @@
 {
-  "name": "Cepheid",
-  "version": "5.7.0",
+  "name": "Marshal",
+  "version": "2.7.5",
   "description": "A Discord Bot made by: Cepheid#0001",
   "main": "index.js",
   "dependencies": {
@@ -79,7 +79,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Tomato6966/Multipurpose-discord-bot.git"
+    "url": "git+https://github.com/lunaticsm/Multipurpose-discord-bot.git"
   },
   "keywords": [
     "lavalink",
@@ -102,7 +102,7 @@
     "reactions"
   ],
   "bugs": {
-    "url": "https://google.com"
+    "url": "https://github.com/lunaticsm/Multipurpose-discord-bot/issues"
   },
-  "homepage": "cepheid.sytes.net"
+  "homepage": "google.com"
 }

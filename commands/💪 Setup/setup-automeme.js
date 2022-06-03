@@ -19,7 +19,7 @@ module.exports = {
   memberpermissions: ["ADMINISTRATOR"],
   type: "fun",
   run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
-    return message.reply("Disabled due to not working, in dev")
+    
     try {
       first_layer()
       async function first_layer(){

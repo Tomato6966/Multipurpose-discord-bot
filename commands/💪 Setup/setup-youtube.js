@@ -167,7 +167,7 @@ module.exports = {
               var msg = collected.first();
               if(msg && msg.content ){
                 if((msg.content.length > 0 && msg.content.length < 50) &&!msg.content.toLowerCase().includes("youtube") && (!msg.content.toLowerCase().includes("channel") || !msg.content.toLowerCase().includes("c")))
-                  return message.reply("YOU DID NOT SEND A VALID YOUTUBE CHANNEL\nNote, such links doesn't work: `https://youtube.com/windahbasudara` / `https://youtube.com/c/windahbasudara`\nIt must be something like this: `https://www.youtube.com/channel/UC1egotpFHNhzolUtAjPgZqQ`")
+                  return message.reply("YOU DID NOT SEND A VALID YOUTUBE CHANNEL\nNote, such links doesn't work: `https://youtube.com/Tomato6966` / `https://youtube.com/c/Tomato6966`\nIt must be something like this: `https://www.youtube.com/channel/UC1AgotpFHNhzolUtAjPgZqQ`")
                 let dddata = await client.social_log.get(message.guild.id+".youtube.channels")
                 if(dddata.includes(msg.content))
                   return message.reply({embeds: [new Discord.MessageEmbed()

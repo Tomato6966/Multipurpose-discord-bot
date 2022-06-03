@@ -93,7 +93,7 @@ module.exports = {
       message.reply({embeds :[new MessageEmbed()
         .setColor(es.color)
         .setFooter(client.getFooter(es))
-        .setDescription(`<a:yes:833101995723194437> **Successfully locked \`${success.length} Channels\`**${failed.length > 0 ? `\nFailed at: ${failed.map(c => `<#${c}>`).join(" | ")}` : ``}`.substring(0, 2000))
+        .setDescription(`<a:yes:950884027320135711> **Successfully locked \`${success.length} Channels\`**${failed.length > 0 ? `\nFailed at: ${failed.map(c => `<#${c}>`).join(" | ")}` : ``}`.substring(0, 2000))
       ]});
 
 

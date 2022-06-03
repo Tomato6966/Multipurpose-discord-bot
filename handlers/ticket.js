@@ -200,8 +200,8 @@ module.exports = (client, preindex) => {
     /**
      * CREATE THE CHANNEL
      */
-    if(!interaction.replied) await interaction.reply({ content: `<a:Loading1:958415066972184636> **Creating your Ticket...** (Usually takes 0-2 Seconds)`, ephemeral: true }).catch(console.warn);
-    else await interaction.editReply({ content: `<a:Loading1:958415066972184636> **Creating your Ticket...** (Usually takes 0-2 Seconds)`, ephemeral: true }).catch(console.warn);
+    if(!interaction.replied) await interaction.reply({ content: `<a:Loading:950883677255118898> **Creating your Ticket...** (Usually takes 0-2 Seconds)`, ephemeral: true }).catch(console.warn);
+    else await interaction.editReply({ content: `<a:Loading:950883677255118898> **Creating your Ticket...** (Usually takes 0-2 Seconds)`, ephemeral: true }).catch(console.warn);
     guild.channels.create(channelname.substring(0, 31), optionsData).then(async ch => {
       let settings = await client.settings.get(guild.id)
       let es = settings.embed || ee

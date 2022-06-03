@@ -153,7 +153,7 @@ async function requirehandlers(){
     "apply",
     "autobackup",
         "autoembed",
-        "automeme",
+//        "automeme",
         "autonsfw",
         "blacklist",
         "boostlog",

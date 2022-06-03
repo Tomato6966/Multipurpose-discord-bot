@@ -46,7 +46,7 @@ module.exports = {
           {
             value: !GuildSettings.autobackup ? "Enable Auto-Backups" : "Disable Auto-Backups",
             description: !GuildSettings.autobackup ? "Make a Backup every 2nd Day" : "Don't make automated Server Backups anymore",
-            emoji: !GuildSettings.autobackup ? "833101995723194437" : "833101993668771842"
+            emoji: !GuildSettings.autobackup ? "950884027320135711" : "951013282607685632"
           },
           {
             value: "Cancel",

@@ -245,7 +245,7 @@ module.exports = async (client) => {
                 if (player.trackRepeat) {
                   player.setTrackRepeat(false);
                 }
-
+                //set track repeat to revers of old track repeat
                 player.setQueueRepeat(!player.queueRepeat);
                 interaction?.reply({
                   embeds: [new MessageEmbed()
@@ -254,7 +254,7 @@ module.exports = async (client) => {
                   .setTitle(`${player.queueRepeat ? `:white_check_mark: ${client.la[ls].cmds.music.musicsystem.queueloopon}`: `:x: ${client.la[ls].cmds.music.musicsystem.queueloopoff}`}`)
                   .setFooter(client.getFooter(`${client.la[ls].cmds.music.musicsystem.actionby} ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
-
+                //edit the message so that it's right!
                 var data = await generateQueueEmbed(client, guild.id)
                 message.edit(data).catch((e) => {
                   //console.error(e)
@@ -546,6 +546,8 @@ module.exports = async (client) => {
             }
             break;
             case "Save": {
+              let settingss = await client.settings.get(player.guild)
+              let prefixx = settingss.prefix
               interaction?.user.send({embeds : [new MessageEmbed()
                 .setAuthor(client.la[ls].cmds.music.grab?.author, message.author.displayAvatarURL({
                   dynamic: true
@@ -557,7 +559,7 @@ module.exports = async (client) => {
                 .addField(client.la[ls].cmds.music.grab?.field1, `\`${format(player.queue.current.duration)}\``, true)
                 .addField(client.la[ls].cmds.music.grab?.field2, `\`${player.queue.current.author}\``, true)
                 .addField(client.la[ls].cmds.music.grab?.field3, `\`${player.queue.length} ${client.la[ls]["cmds"]["music"]["musicsystem"]["songg"]}\``, true)
-                .addField(client.la[ls].cmds.music.grab?.field4, `\`${client.prefix}play ${player.queue.current.uri}\``)
+                .addField(client.la[ls].cmds.music.grab?.field4, `\`${prefixx}play ${player.queue.current.uri}\``)
                 .addField(client.la[ls].cmds.music.grab?.field5, `<#${message.channel.id}>`)
                 .setFooter(
                   handlemsg(client.la[ls].cmds.music.grab?.footer, { usertag: player.queue.current.requester.tag, guild: message.guild.name + " | " + message.guild.id})
@@ -730,7 +732,7 @@ async function generateQueueEmbed(client, guildId, leave) {
     .setFooter(client.getFooter(es))
     .setImage(guild.banner ? guild.bannerURL({
       size: 4096
-    }) : "https://cdn.discordapp.com/attachments/938731929509961798/953757890177548328/marshal_1.gif")
+    }) : "https://cdn.discordapp.com/attachments/927258550185640026/963672134192869396/marshal_1.gif")
     .setTitle(client.la[ls].cmds.music.musicsystem.title)
     .setDescription(client.la[ls].cmds.music.musicsystem.subtitle)
   ]
@@ -784,7 +786,7 @@ async function generateQueueEmbed(client, guildId, leave) {
   let musicsettings = await client.musicsettings.get(guild.id)
   var musicmixMenu = new MessageSelectMenu()
   .setCustomId("MessageSelectMenu")
-  .addOptions(["Strange-Fruits", "Gaming", "Chill", "Magic-Release", "MiYaGi playlist", "Default", "Cepheid `s Spotify Playlist", "Bandit Camp Music Storage"].map((t, index) => {
+  .addOptions(["Strange-Fruits", "Gaming", "Chill", "Magic-Release", "MiYaGi playlist", "Default", "Cepheid's Spotify Playlist", "Bandit Camp Music Storage"].map((t, index) => {
     return {
       label: t.substr(0, 25),
       value: t.substr(0, 25),
@@ -798,7 +800,7 @@ async function generateQueueEmbed(client, guildId, leave) {
   var skipbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Skip').setEmoji(`<:skip:978181805679185970>`).setLabel(`${client.la[ls].cmds.music.musicsystem.skipbt}`).setDisabled();
   var shufflebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Shuffle').setEmoji('<:shuffle:978181805972803654>').setLabel(`${client.la[ls].cmds.music.musicsystem.shuffbt}`).setDisabled();
   var pausebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Pause').setEmoji('<:pause:978181784925765684>').setLabel(`${client.la[ls].cmds.music.musicsystem.pausebt}`).setDisabled();
-  var autoplaybutton = new MessageButton().setStyle('SECONDARY').setCustomId('Autoplay').setEmoji('<:joines:978181806182531072>').setLabel(`${client.la[ls].cmds.music.musicsystem.autoplbt}`).setDisabled();
+  var autoplaybutton = new MessageButton().setStyle('SECONDARY').setCustomId('Autoplay').setEmoji('<:joines:950878825254883378>').setLabel(`${client.la[ls].cmds.music.musicsystem.autoplbt}`).setDisabled();
   var songbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Song').setEmoji(`<:song_loop:978181804198617088>`).setLabel(`${client.la[ls].cmds.music.musicsystem.slbt}`).setDisabled();
   var queuebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Queue').setEmoji(`<:queue_loop:978181805641449522>`).setLabel(`${client.la[ls].cmds.music.musicsystem.qlbt}`).setDisabled();
   var rewindbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Rewind').setEmoji('<:rewind_1:978181785206808587>').setLabel(`${client.la[ls].cmds.music.musicsystem.rewbt}`).setDisabled();
@@ -812,8 +814,8 @@ async function generateQueueEmbed(client, guildId, leave) {
   var joinbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Join').setEmoji(`<:join_vc:950885408290508821>`).setLabel(`${client.la[ls].cmds.music.musicsystem.joinbt}`).setDisabled(false);
   var leavebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Leave').setEmoji(`<:home:981615902778851388>`).setLabel(`${client.la[ls].cmds.music.musicsystem.leavebt}`).setDisabled();
   var textbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Text').setEmoji(`<:on_1:981615931283345478>`).setLabel(`${client.la[ls].cmds.music.musicsystem.textbt2}`).setDisabled(false);
-  var savebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Save').setEmoji(`<:save:981615630178471947>`).setLabel(`${client.la[ls].cmds.music.musicsystem.savebt}`).setDisabled();
-  var previousbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Previous').setEmoji(`<:prev:981657888445571152>`).setLabel(`${client.la[ls].cmds.music.musicsystem.prevbt}`).setDisabled();
+  var savebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Save').setEmoji(`<:save:978918412673753098>`).setLabel(`${client.la[ls].cmds.music.musicsystem.savebt}`).setDisabled();
+  var previousbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Previous').setEmoji(`<:prev:980838844398194758>`).setLabel(`${client.la[ls].cmds.music.musicsystem.prevbt}`).setDisabled();
   
   if (musicsettings.text == false) {
     textbutton = textbutton.setEmoji(`<:off:977868613895741470>`).setLabel(`${client.la[ls].cmds.music.musicsystem.textbt1}`)
@@ -902,7 +904,7 @@ async function generateQueueEmbed(client, guildId, leave) {
   var skipbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Skip').setEmoji(`<:skip:978181805679185970>`).setDisabled();
   var shufflebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Shuffle').setEmoji('<:shuffle:978181805972803654>').setDisabled();
   var pausebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Pause').setEmoji('<:pause:978181784925765684>').setDisabled();
-  var autoplaybutton = new MessageButton().setStyle('SECONDARY').setCustomId('Autoplay').setEmoji('<:joines:978181806182531072>').setDisabled();
+  var autoplaybutton = new MessageButton().setStyle('SECONDARY').setCustomId('Autoplay').setEmoji('<:joines:950878825254883378>').setDisabled();
   var songbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Song').setEmoji(`<:song_loop:978181804198617088>`).setDisabled();
   var queuebutton = new MessageButton().setStyle('SECONDARY').setCustomId('Queue').setEmoji(`<:queue_loop:978181805641449522>`).setDisabled();
   var rewindbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Rewind').setEmoji('<:rewind_1:978181785206808587>').setDisabled();
@@ -916,8 +918,8 @@ async function generateQueueEmbed(client, guildId, leave) {
   var joinbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Join').setEmoji(`<:join_vc:950885408290508821>`).setDisabled(false);
   var leavebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Leave').setEmoji(`<:home:981615902778851388>`).setDisabled();
   var textbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Text').setEmoji(`<:on_1:981615931283345478>`).setDisabled(false);
-  var savebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Save').setEmoji(`<:save:981615630178471947>`).setDisabled();
-  var previousbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Previous').setEmoji(`<:prev:981657888445571152>`).setDisabled();
+  var savebutton = new MessageButton().setStyle('PRIMARY').setCustomId('Save').setEmoji(`<:save:978918412673753098>`).setDisabled();
+  var previousbutton = new MessageButton().setStyle('SECONDARY').setCustomId('Previous').setEmoji(`<:prev:980838844398194758>`).setDisabled();
 
   if (musicsettings.text == false) {
     textbutton = textbutton.setEmoji(`<:off:977868613895741470>`)

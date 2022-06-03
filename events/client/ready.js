@@ -18,7 +18,7 @@ module.exports = async (client) => {
       console.log(`     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`.bold.brightGreen)
     } catch { /* */ }
     console.table({ 
-      //'info': `${client.guilds.cache.get("782358733752762398")?.name} SERVER`,
+      //'info': `${client.guilds.cache.get("880881865114935296")?.name} SERVER`,
       'Cluster:' : `#${client.cluster.id}` ,
       'Shards:' : `${client.cluster.ids.map(d => `#${d.id}`).join(", ")}` ,
       'Bot User:' : `${client.user.tag}` ,

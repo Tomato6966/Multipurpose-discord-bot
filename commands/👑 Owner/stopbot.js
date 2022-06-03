@@ -27,8 +27,8 @@ module.exports = {
       ]});
     try {
       let clientapp = client.application ? await client.application.fetch().catch(e=>false) : false;
-      let guild = client.guilds.cache.get("782358733752762398")
-      require("child_process").exec(`pm2 stop Cepheid`, (error, stdout, stderr) => {
+      let guild = client.guilds.cache.get("880881865114935296")
+      require("child_process").exec(`pm2 stop Marshal`, (error, stdout, stderr) => {
         client.destroy()
         if (error) {
           console.error(`exec error: ${error}`);

@@ -26,7 +26,7 @@ let GuildSettings = client.settings.get(`${interaction.guild.id}`)
                   return interaction?.reply({embeds: [x], ephemeral: true});
             }
 
-            //////////if (!message.channel.nsfw) return interaction?.reply({content:eval(client.la[ls]["cmds"]["nsfw"]["2danal"]["variable1"]), empheral: true})
+            if (!interaction?.channel.nsfw) return interaction?.reply({content:eval(client.la[ls]["cmds"]["nsfw"]["2danal"]["variable1"]), ephemeral: true})
 
             let owo = (await neko.sfw.waifu());
             interaction?.reply({content: `${owo.url}`,

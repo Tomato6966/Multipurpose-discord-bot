@@ -30,10 +30,10 @@ let GuildSettings = client.settings.get(`${interaction.guild.id}`)
           prefix: prefix
         }))
       return interaction?.reply({
-        embeds: [x], empheral: true
+        embeds: [x], ephemeral: true
       });
     }
-    ////////if (!message.channel.nsfw) return interaction?.reply({content : eval(client.la[ls]["cmds"]["nsfw"]["anal"]["variable2"]), empheral: true})
+    if (!interaction?.channel.nsfw) return interaction?.reply({content:eval(client.la[ls]["cmds"]["nsfw"]["anal"]["variable2"]), ephemeral: true})
     return rp.get('http://api.obutts.ru/butts/0/1/random').then(JSON.parse).then(function (res) {
       return rp.get({
         url: 'http://media.obutts.ru/' + res[0].preview,

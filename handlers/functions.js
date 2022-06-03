@@ -221,7 +221,7 @@ function isValidURL(string) {
   return url;
 };
 async function GetUser(message, arg){
-  var errormessage = "<:no:833101993668771842> I failed finding that User...";
+  var errormessage = "<:no:951013282607685632> I failed finding that User...";
   return new Promise(async (resolve, reject) => {
     var args = arg, client = message.client;
     if(!client || !message) return reject("CLIENT IS NOT DEFINED")
@@ -254,7 +254,7 @@ async function GetUser(message, arg){
   })
 }
 async function GetRole(message, arg){
-  var errormessage = "<:no:833101993668771842> I failed finding that Role...";
+  var errormessage = "<:no:1993668771842> I failed finding that Role...";
   return new Promise(async (resolve, reject) => {
     var args = arg, client = message.client;
     if(!client || !message) return reject("CLIENT IS NOT DEFINED")
@@ -281,7 +281,7 @@ async function GetRole(message, arg){
 }
 
 async function GetGlobalUser(message, arg){
-  var errormessage = "<:no:833101993668771842> I failed finding that User...";
+  var errormessage = "<:no:951013282607685632> I failed finding that User...";
   return new Promise(async (resolve, reject) => {
     var args = arg, client = message.client;
     if(!client || !message) return reject("CLIENT IS NOT DEFINED")
@@ -1462,7 +1462,7 @@ async function swap_pages(client, message, description, TITLE) {
   //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
   collector.on('collect', async b => {
       if(b?.user.id !== message.author?.id)
-        return b?.reply({content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
+        return b?.reply({content: `<:no:951013282607685632> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
         //page forward
         if(b?.customId == "1") {
           collector.resetTimer();
@@ -1569,7 +1569,7 @@ async function swap_pages_data(client, message, description, TITLE, T_cmd = "Unk
   //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
   collector.on('collect', async b => {
       if(b?.user.id !== message.author?.id)
-        return b?.reply({content: `<:no:833101993668771842> **Only the one who typed the cmd is allowed to react!**`, ephemeral: true})
+        return b?.reply({content: `<:no:951013282607685632> **Only the one who typed the cmd is allowed to react!**`, ephemeral: true})
         //page forward
         if(b?.customId == "1") {
           collector.resetTimer();
@@ -1655,7 +1655,7 @@ async function swap_pages2(client, message, embeds, tempmsg = false) {
   //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
   collector.on('collect', async b => {
       if(b?.user.id !== message.author?.id)
-        return b?.reply({content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
+        return b?.reply({content: `<:no:951013282607685632> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
         //page forward
         if(b?.customId == "1") {
           collector.resetTimer();
@@ -1736,7 +1736,7 @@ async function swap_pagesMessageData(client, message, messageDatas, tempmsg = fa
   //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
   collector.on('collect', async b => {
       if(b?.user.id !== message.author?.id)
-        return b?.reply({content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
+        return b?.reply({content: `<:no:951013282607685632> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
         //page forward
         if(b?.customId == "1") {
           collector.resetTimer();
@@ -1818,7 +1818,7 @@ async function swap_pages2_interaction(client, interaction, embeds) {
   //array of all embeds, here simplified just 10 embeds with numbers 0 - 9
   collector.on('collect', async b => {
       if(b?.user.id !== cmduser.id)
-        return b?.reply({content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
+        return b?.reply({content: `<:no:951013282607685632> **Only the one who typed ${prefix}help is allowed to react!**`, ephemeral: true})
         //page forward
         if(b?.customId == "1") {
           collector.resetTimer();
@@ -2098,6 +2098,8 @@ async function databasing(client, guildid, userid) {
               "giphy.com/gifs",
               "c.tenor.com",
               "tenor.com/view",
+              "milrato.dev",
+              "milrato.eu",
               "github?.com",
               "mozilla.org",
               "w3schools.com",],
@@ -2107,6 +2109,7 @@ async function databasing(client, guildid, userid) {
             enabled: false,
             whitelistedchannels: [],
             whitelistedlinks: [
+              "discord.gg/milrato",
               "discord.gg/djs",],
             mute_amount: 2,
           },

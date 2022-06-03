@@ -37,7 +37,7 @@ module.exports = {
           {
             value: `${GuildSettings.validcode ? "Disable" : "Enable"} Valid Code`,
             description: GuildSettings.validcode ? "Don't do anything with Messages containing Code" : "React to messages containing a Valid Code Snippet",
-            emoji: GuildSettings.validcode ? "833101993668771842" : "833101995723194437"
+            emoji: GuildSettings.validcode ? "951013282607685632" : "950884027320135711"
           },
           {
             value: "Settings",

@@ -31,10 +31,10 @@ let GuildSettings = client.settings.get(`${interaction.guild.id}`)
                     prefix: prefix
                 }))
             return message.reply({
-                embeds: [x], empheral: true
+                embeds: [x], ephemeral: true
             });
         }
-        ////////if (!message.channel.nsfw) return message.reply({content:eval(client.la[ls]["cmds"]["nsfw"]["anal"]["variable2"]), empheral: true})
+        if (!interaction?.channel.nsfw) return interaction?.reply({content:eval(client.la[ls]["cmds"]["nsfw"]["anal"]["variable2"]), ephemeral: true})
         var query = interaction?.options.getString("query");
         booru.search('rule34', [query], {
                 nsfw: true,

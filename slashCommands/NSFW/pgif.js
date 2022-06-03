@@ -31,10 +31,10 @@ let GuildSettings = client.settings.get(`${interaction.guild.id}`)
           prefix: prefix
         }))
       return interaction?.reply({
-        embeds: [x], empheral: true
+        embeds: [x], ephemeral: true
       });
     }
-    ////////if (!message.channel.nsfw) return interaction?.reply({content:eval(client.la[ls]["cmds"]["nsfw"]["pussy"]["variable2"]), empheral: true})
+    if (!interaction?.channel.nsfw) return interaction?.reply({content:eval(client.la[ls]["cmds"]["nsfw"]["anal"]["variable2"]), ephemeral: true})
 
     superagent.get('https://nekobot.xyz/api/image').query({
       type: 'pgif'

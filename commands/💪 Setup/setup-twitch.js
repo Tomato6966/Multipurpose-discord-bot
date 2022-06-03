@@ -186,7 +186,7 @@ module.exports = {
               collector.stop();
               for await (const value of menu?.values) {
                 let menuoptiondataIndex = menuoptions.findIndex(v=> v.value == value)
-                await dbRemove(client.social_log+".twitch.channels", message.guild.id, d=> d.ChannelName == channels[menuoptiondataIndex].ChannelName)
+                await dbRemove(client.social_log, message.guild.id+".twitch.channels", d=> d.ChannelName == channels[menuoptiondataIndex].ChannelName)
               }
               menu?.reply(`✅ **Successfully removed ${menu?.values.length} Twitch Accounts!**`)
             }

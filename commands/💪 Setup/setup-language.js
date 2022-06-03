@@ -19,7 +19,7 @@ module.exports = {
   memberpermissions: ["ADMINISTRATOR"],
   type: "info",
   run: async (client, message, args, cmduser, text, prefix, player, es, Tls) => {
-    return message.reply("Disabled due to not working, in dev")
+    
     let ls = Tls;
     
     try {
@@ -47,12 +47,12 @@ module.exports = {
           {
             value: `Change Language`,
             description: "Change the Language of the Bot",
-            emoji: "833101995723194437"
+            emoji: "950884027320135711"
           },
           {
             value: `Reset Language`,
             description: "Reset to the Default Language (English)",
-            emoji: "833101993668771842"
+            emoji: "951013282607685632"
           },
           {
             value: "Settings",

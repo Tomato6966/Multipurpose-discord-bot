@@ -13,7 +13,9 @@ module.exports = {
   type: "text",
   run: async (client, message, args, cmduser, text, prefix) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+            let settings = await client.settings.get(message.guild.id)
+        let es = settings.embed;
+        let ls = settings.language;
     if(!client.settings.get(message.guild.id, "FUN")){
       const embed1 = new MessageEmbed()
         .setColor(es.wrongcolor)

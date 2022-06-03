@@ -45,7 +45,7 @@ module.exports = {
           {
             value: `${GuildSettings?.antidiscordscam?.enabled ? "Disable" : "Enable"} Anti Scam Links`,
             description: `${GuildSettings?.antidiscordscam?.enabled ? "Don't delete other Scam Links" : "Delete other Scam Links"}`,
-            emoji: `${GuildSettings?.antidiscordscam?.enabled ? "833101993668771842" : "833101995723194437"}`
+            emoji: `${GuildSettings?.antidiscordscam?.enabled ? "951013282607685632" : "950884027320135711"}`
           },
           {
             value: "Settings",

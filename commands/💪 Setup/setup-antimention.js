@@ -38,12 +38,12 @@ module.exports = {
           {
             value: `Enable & Set Anti Mention`,
             description: "Enable and limit the allowed Mentions / Message",
-            emoji: "833101995723194437"
+            emoji: "950884027320135711"
           },
           {
             value: `Disable Anti Mention`,
             description: "Don't prevent mass mentions",
-            emoji: "833101993668771842"
+            emoji: "951013282607685632"
           },
           {
             value: "Settings",

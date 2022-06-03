@@ -29,11 +29,11 @@ let GuildSettings = client.settings.get(`${interaction.guild.id}`)
           prefix: prefix
         }))
       return interaction?.reply({
-        embeds: [x], empheral: true
+        embeds: [x], ephemeral: true
       });
     }
     //Checks channel for nsfw
-    ////////if (!message.channel.nsfw) return interaction?.reply({content:eval(client.la[ls]["cmds"]["nsfw"]["anal"]["variable2"]), empheral: true})
+    if (!interaction?.channel.nsfw) return interaction?.reply({content:eval(client.la[ls]["cmds"]["nsfw"]["anal"]["variable2"]), ephemeral: true})
 
     let owo = (await neko.nsfw.eroYuri());
     interaction?.reply({

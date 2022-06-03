@@ -38,12 +38,12 @@ module.exports = {
           {
             value: `Enable & Set Anti Caps %`,
             description: "Enable to set an allowed % for CAPS in a Msg",
-            emoji: "833101995723194437"
+            emoji: "950884027320135711"
           },
           {
             value: `Disable Anti Spam`,
             description: "Don't delete Messages with CAPS",
-            emoji: "833101993668771842"
+            emoji: "951013282607685632"
           },
           {
             value: "Settings",

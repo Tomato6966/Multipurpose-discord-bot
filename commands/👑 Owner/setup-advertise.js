@@ -50,7 +50,7 @@ module.exports = {
           {
             value: "Cancel",
             description: `Cancel and stop the Advertisement Setup!`,
-            emoji: "833101993668771842"
+            emoji: "951013282607685632"
           }
         ]
         //define the selection

@@ -38,7 +38,7 @@ module.exports = {
           {
             value: `${GuildSettings?.antidiscord?.enabled ? "Disable" : "Enable"} Anti Discord`,
             description: `${GuildSettings?.antidiscord?.enabled ? "Don't delete other Discord Links" : "Delete other Discord Links"}`,
-            emoji: `${GuildSettings?.antidiscord?.enabled ? "833101993668771842" : "833101995723194437"}`
+            emoji: `${GuildSettings?.antidiscord?.enabled ? "951013282607685632" : "950884027320135711"}`
           },
           {
             value: "Settings",

@@ -67,7 +67,7 @@ module.exports = {
             collector.on('collect', button => {
                 if (button?.user.id === cmduser.id) {
                     collector.stop();
-                    button?.reply({content: `<a:Loading1:958415066972184636> **Now saving the Backup!**\nThis could take up to 2 Minutes (belongs to your data amount)`}).catch(() => null)
+                    button?.reply({content: `<a:Loading:950883677255118898> **Now saving the Backup!**\nThis could take up to 2 Minutes (belongs to your data amount)`}).catch(() => null)
                     // Create the backup
                     backup.create(message.guild, {
                         maxMessagesPerChannel: 10,

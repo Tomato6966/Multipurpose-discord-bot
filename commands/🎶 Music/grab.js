@@ -54,7 +54,7 @@ const { handlemsg } = require(`../../handlers/functions`);
       ]}).catch(e => {
         return message.reply({content : client.la[ls].common.dms_disabled})
       })
-      message.react("<:save:981615630178471947>").catch(e => console.log("Could not react"))
+      message.react("<:save:978918412673753098>").catch(e => console.log("Could not react"))
     } catch (e) {
       console.log(String(e.stack).dim.bgRed)
       return message.reply({embeds : [new MessageEmbed()

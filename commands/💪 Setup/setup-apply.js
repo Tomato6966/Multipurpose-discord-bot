@@ -24,7 +24,7 @@ module.exports = {
   type: "system",
   run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     let theemoji = "📜";
-    let MilratoGuild = client.guilds.cache.get("782358733752762398");
+    let MilratoGuild = client.guilds.cache.get("880881865114935296");
     if (MilratoGuild) theemoji = "877653386747605032";
     let allbuttons = [new MessageActionRow().addComponents([new MessageButton().setStyle('SUCCESS').setEmoji(theemoji).setCustomId("User_Apply").setLabel("Apply")])]
     let apply_for_here = client.apply;
@@ -160,7 +160,7 @@ module.exports = {
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:929001012830806016> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:950884027320135711> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       } catch (e) {
         console.log(String(e.stack).grey.bgRed)
@@ -314,7 +314,7 @@ module.exports = {
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:929001012830806016> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:950884027320135711> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       } catch (e) {
         console.log(String(e.stack).grey.bgRed)
@@ -2646,11 +2646,14 @@ module.exports = {
               }))
               .setTimestamp()
 
-            for (var i = 0; i < Questions.length; i++) {
-              try {
-                embed.addField(`**${Object.keys(Questions[i])}.**`, `>>> ${Object.values(Questions[i])}`)
-              } catch (e) {
-                console.error(e)
+            if (await apply_for_here.get(`${message.guild.id}.${pre}.applytype`) == `modal`){
+              for (var i = 0; i < Questions.length; i++) {
+              ii = i+1
+              embed.addField(`**${Object.keys(Questions[i])}.**`, `>>> ${await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.${i}.${ii}.content`)}`)
+              }
+            }else{
+              for (var i = 0; i < Questions.length; i++) {
+              embed.addField(`**${Object.keys(Questions[i])}.**`, `>>> ${Object.values(Questions[i])}`)
               }
             }
 
@@ -2684,6 +2687,322 @@ module.exports = {
                     }).then(async collected => {
                       var index = Number(quindex);
                       var obj;
+                      if (await apply_for_here.get(`${message.guild.id}.${pre}.applytype`) == `modal`){
+                      switch (Number(index)) {
+                        case 1:
+                          let modalquestion1 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.0.1.modalquestion`)
+                          let minlength1 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.0.1.minlength`)
+                          let maxlength1 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.0.1.maxlength`)
+                          obj = {
+                            "1": {
+                              "modalquestion": `${modalquestion1}`,
+                              "content": collected.first().content,
+                              "minlength": minlength1,
+                              "maxlength": maxlength1
+                            }
+                          };
+                          break;
+                        case 2:
+                          let modalquestion2 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.1.2.modalquestion`)
+                          let minlength2 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.1.2.minlength`)
+                          let maxlength2 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.1.2.maxlength`)
+                          obj = {
+                            "2": {
+                              "modalquestion": `${modalquestion2}`,
+                              "content": collected.first().content,
+                              "minlength": minlength2,
+                              "maxlength": maxlength2
+                            }
+                          };
+                          break;
+                        case 3:
+                          let modalquestion3 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.2.3.modalquestion`)
+                          let minlength3 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.2.3.minlength`)
+                          let maxlength3 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.2.3.maxlength`)
+                          obj = {
+                            "3": {
+                              "modalquestion": `${modalquestion3}`,
+                              "content": collected.first().content,
+                              "minlength": minlength3,
+                              "maxlength": maxlength3
+                            }
+                          };
+                          break;
+                        case 4:
+                          let modalquestion4 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.3.4.modalquestion`)
+                          let minlength4 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.3.4.minlength`)
+                          let maxlength4 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.3.4.maxlength`)
+                          obj = {
+                            "4": {
+                              "modalquestion": `${modalquestion4}`,
+                              "content": collected.first().content,
+                              "minlength": minlength4,
+                              "maxlength": maxlength4
+                            }
+                          };
+                          break;
+                        case 5:
+                          let modalquestion5 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.4.5.modalquestion`)
+                          let minlength5 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.4.5.minlength`)
+                          let maxlength5 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.4.5.maxlength`)
+                          obj = {
+                            "5": {
+                              "modalquestion": `${modalquestion5}`,
+                              "content": collected.first().content,
+                              "minlength": minlength5,
+                              "maxlength": maxlength5
+                            }
+                          };
+                          break;
+                        case 6:
+                          let modalquestion6 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.5.6.modalquestion`)
+                          let minlength6 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.5.6.minlength`)
+                          let maxlength6 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.5.6.maxlength`)
+                          obj = {
+                            "6": {
+                              "modalquestion": `${modalquestion6}`,
+                              "content": collected.first().content,
+                              "minlength": minlength6,
+                              "maxlength": maxlength6
+                            }
+                          };
+                          break;
+                        case 7:
+                          let modalquestion7 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.6.7.modalquestion`)
+                          let minlength7 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.6.7.minlength`)
+                          let maxlength7 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.6.7.maxlength`)
+                          obj = {
+                            "7": {
+                              "modalquestion": `${modalquestion7}`,
+                              "content": collected.first().content,
+                              "minlength": minlength7,
+                              "maxlength": maxlength7
+                            }
+                          };
+                          break;
+                        case 8:
+                          let modalquestion8 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.7.8.modalquestion`)
+                          let minlength8 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.7.8.minlength`)
+                          let maxlength8 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.7.8.maxlength`)
+                          obj = {
+                            "8": {
+                              "modalquestion": `${modalquestion8}`,
+                              "content": collected.first().content,
+                              "minlength": minlength8,
+                              "maxlength": maxlength8
+                            }
+                          };
+                          break;
+                        case 9:
+                          let modalquestion9 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.8.9.modalquestion`)
+                          let minlength9 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.8.9.minlength`)
+                          let maxlength9 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.8.9.maxlength`)
+                          obj = {
+                            "9": {
+                              "modalquestion": `${modalquestion9}`,
+                              "content": collected.first().content,
+                              "minlength": minlength9,
+                              "maxlength": maxlength9
+                            }
+                          };
+                          break;
+                        case 10:
+                          let modalquestion10 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.9.10.modalquestion`)
+                          let minlength10 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.9.10.minlength`)
+                          let maxlength10 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.9.10.maxlength`)
+                          obj = {
+                            "10": {
+                              "modalquestion": `${modalquestion10}`,
+                              "content": collected.first().content,
+                              "minlength": minlength10,
+                              "maxlength": maxlength10
+                            }
+                          };
+                          break;
+                        case 11:
+                          let modalquestion11 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.10.11.modalquestion`)
+                          let minlength11 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.10.11.minlength`)
+                          let maxlength11 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.10.11.maxlength`)
+                          obj = {
+                            "11": {
+                              "modalquestion": `${modalquestion11}`,
+                              "content": collected.first().content,
+                              "minlength": minlength11,
+                              "maxlength": maxlength11
+                            }
+                          };
+                          break;
+                        case 12:
+                          let modalquestion12 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.11.12.modalquestion`)
+                          let minlength12 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.11.12.minlength`)
+                          let maxlength12 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.11.12.maxlength`)
+                          obj = {
+                            "12": {
+                              "modalquestion": `${modalquestion12}`,
+                              "content": collected.first().content,
+                              "minlength": minlength12,
+                              "maxlength": maxlength12
+                            }
+                          };
+                          break;
+                        case 13:
+                          let modalquestion13 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.12.13.modalquestion`)
+                          let minlength13 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.12.13.minlength`)
+                          let maxlength13 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.12.13.maxlength`)
+                          obj = {
+                            "13": {
+                              "modalquestion": `${modalquestion13}`,
+                              "content": collected.first().content,
+                              "minlength": minlength13,
+                              "maxlength": maxlength13
+                            }
+                          };
+                          break;
+                        case 14:
+                          let modalquestion14 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.13.14.modalquestion`)
+                          let minlength14 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.13.14.minlength`)
+                          let maxlength14 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.13.14.maxlength`)
+                          obj = {
+                            "14": {
+                              "modalquestion": `${modalquestion14}`,
+                              "content": collected.first().content,
+                              "minlength": minlength14,
+                              "maxlength": maxlength14
+                            }
+                          };
+                          break;
+                        case 15:
+                          let modalquestion15 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.14.15.modalquestion`)
+                          let minlength15 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.14.15.minlength`)
+                          let maxlength15 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.14.15.maxlength`)
+                          obj = {
+                            "15": {
+                              "modalquestion": `${modalquestion15}`,
+                              "content": collected.first().content,
+                              "minlength": minlength15,
+                              "maxlength": maxlength15
+                            }
+                          };
+                          break;
+                        case 16:
+                          let modalquestion16 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.15.16.modalquestion`)
+                          let minlength16 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.15.16.minlength`)
+                          let maxlength16 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.15.16.maxlength`)
+                          obj = {
+                            "16": {
+                              "modalquestion": `${modalquestion16}`,
+                              "content": collected.first().content,
+                              "minlength": minlength16,
+                              "maxlength": maxlength16
+                            }
+                          };
+                          break;
+                        case 17:
+                          let modalquestion17 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.16.17.modalquestion`)
+                          let minlength17 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.16.17.minlength`)
+                          let maxlength17 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.16.17.maxlength`)
+                          obj = {
+                            "17": {
+                              "modalquestion": `${modalquestion17}`,
+                              "content": collected.first().content,
+                              "minlength": minlength17,
+                              "maxlength": maxlength17
+                            }
+                          };
+                          break;
+                        case 18:
+                          let modalquestion18 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.17.18.modalquestion`)
+                          let minlength18 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.17.18.minlength`)
+                          let maxlength18 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.17.18.maxlength`)
+                          obj = {
+                            "18": {
+                              "modalquestion": `${modalquestion18}`,
+                              "content": collected.first().content,
+                              "minlength": minlength18,
+                              "maxlength": maxlength18
+                            }
+                          };
+                          break;
+                        case 19:
+                          let modalquestion19 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.18.19.modalquestion`)
+                          let minlength19 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.18.19.minlength`)
+                          let maxlength19 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.18.19.maxlength`)
+                          obj = {
+                            "19": {
+                              "modalquestion": `${modalquestion19}`,
+                              "content": collected.first().content,
+                              "minlength": minlength19,
+                              "maxlength": maxlength19
+                            }
+                          };
+                          break;
+                        case 20:
+                          let modalquestion20 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.19.20.modalquestion`)
+                          let minlength20 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.19.20.minlength`)
+                          let maxlength20 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.19.20.maxlength`)
+                          obj = {
+                            "20": {
+                              "modalquestion": `${modalquestion20}`,
+                              "content": collected.first().content,
+                              "minlength": minlength20,
+                              "maxlength": maxlength20
+                            }
+                          };
+                          break;
+                        case 21:
+                          let modalquestion21 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.20.21.modalquestion`)
+                          let minlength21 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.20.21.minlength`)
+                          let maxlength21 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.20.21.maxlength`)
+                          obj = {
+                            "21": {
+                              "modalquestion": `${modalquestion21}`,
+                              "content": collected.first().content,
+                              "minlength": minlength21,
+                              "maxlength": maxlength21
+                            }
+                          };
+                          break;
+                        case 22:
+                          let modalquestion22 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.21.22.modalquestion`)
+                          let minlength22 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.21.22.minlength`)
+                          let maxlength22 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.21.22.maxlength`)
+                          obj = {
+                            "22": {
+                              "modalquestion": `${modalquestion22}`,
+                              "content": collected.first().content,
+                              "minlength": minlength22,
+                              "maxlength": maxlength22
+                            }
+                          };
+                          break;
+                        case 23:
+                          let modalquestion23 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.22.23.modalquestion`)
+                          let minlength23 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.22.23.minlength`)
+                          let maxlength23 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.22.23.maxlength`)
+                          obj = {
+                            "23": {
+                              "modalquestion": `${modalquestion23}`,
+                              "content": collected.first().content,
+                              "minlength": minlength23,
+                              "maxlength": maxlength23
+                            }
+                          };
+                          break;
+                        case 24:
+                          let modalquestion24 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.23.24.modalquestion`)
+                          let minlength24 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.23.24.minlength`)
+                          let maxlength24 = await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.23.24.maxlength`)
+                          obj = {
+                            "24": {
+                              "modalquestion": `${modalquestion24}`,
+                              "content": collected.first().content,
+                              "minlength": minlength24,
+                              "maxlength": maxlength24
+                            }
+                          };
+                          break;
+                      }
+                    }else{
                       switch (Number(index)) {
                         case 1:
                           obj = {
@@ -2806,8 +3125,10 @@ module.exports = {
                           };
                           break;
                       }
+                    }
+                      
                       arr[index - 1] = obj;
-                      await apply_for_here.set(`${message.guild.id}.${pre}.QUESTIONS`, arr)
+                        await apply_for_here.set(`${message.guild.id}.${pre}.QUESTIONS`, arr)
                       Questions = arr
                       var new_embed = new Discord.MessageEmbed().setFooter(client.getFooter(es))
                         .setColor(es.color)
@@ -2816,11 +3137,16 @@ module.exports = {
                           dynamic: true
                         })))
                         .setTimestamp()
-                      for (var i = 0; i < Questions.length; i++) {
-                        try {
+                        if (await apply_for_here.get(`${message.guild.id}.${pre}.applytype`) == `modal`){
+                          for (var i = 0; i < Questions.length; i++) {
+                          ii = i+1
+                          new_embed.addField(`**${Object.keys(Questions[i])}.**`, `>>> ${await apply_for_here.get(`${message.guild.id}.${pre}.QUESTIONS.${i}.${ii}.content`)}`)
+                          }
+                        }else{
+                          for (var i = 0; i < Questions.length; i++) {
                           new_embed.addField(`**${Object.keys(Questions[i])}.**`, `>>> ${Object.values(Questions[i])}`)
-                        } catch {}
-                      }
+                          }
+                        }
                       message.reply({
                         embeds: [new_embed]
                       });

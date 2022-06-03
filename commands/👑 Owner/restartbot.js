@@ -18,11 +18,13 @@ module.exports = {
   description: "Restarts the Bot, if it`s not working as intended or so..",
   run: async (client, message, args, cmduser, text, prefix) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+            let settings = await client.settings.get(message.guild.id)
+        let es = settings.embed;
+        let ls = settings.language;
     if (config.ownerIDS.some(r => r.includes(message.author.id))){
       try {
         await message.reply("NOW RESTARTING!");
-        require("child_process").exec(`pm2 restart Cepheid --update-env`, (error, stdout, stderr) => {
+        require("child_process").exec(`pm2 restart Marshal --update-env`, (error, stdout, stderr) => {
           if (error) {
             console.error(`exec error: ${error}`);
             message.reply({content : eval(client.la[ls]["cmds"]["owner"]["restartbot"]["variable4"])})

@@ -43,14 +43,14 @@ module.exports = {
         }
       }
       if(loadSlashsGlobal){
-        let themsg = await message.reply(`<a:Loading1:958415066972184636> **Attempting to set the Global Slash Commands in \`${client.guilds.cache.size} Guilds\`...**`)
+        let themsg = await message.reply(`<a:Loading:950883677255118898> **Attempting to set the Global Slash Commands in \`${client.guilds.cache.size} Guilds\`...**`)
         client.application.commands.set(client.allCommands)
           .then(slashCommandsData => {
             themsg.edit(`**\`${slashCommandsData.size} Slash-Commands\`** (\`${slashCommandsData.map(d => d.options).flat().length} Subcommands\`) loaded for all **possible Guilds**\n> Those Guilds are those, who invited me with the **SLASH COMMAND INVITE LINK** from \`${prefix}invite\`\n> *Because u are using Global Settings, it can take up to 1 hour until the Commands are changed!*`); 
           }).catch(() => null);
       } else {
         let guild = client.guilds.cache.get(guildId);
-        let themsg = await message.reply(`<a:Loading1:958415066972184636> **Attempting to set the GUILD Slash Commands in \`${guild.name}\`...**`)
+        let themsg = await message.reply(`<a:Loading:950883677255118898> **Attempting to set the GUILD Slash Commands in \`${guild.name}\`...**`)
         await guild.commands.set(client.allCommands).then((slashCommandsData) => {
           themsg.edit(`**\`${slashCommandsData.size} Slash-Commands\`** (\`${slashCommandsData.map(d => d.options).flat().length} Subcommands\`) loaded for all **${guild.name}**\n> Those Guilds are those, who invited me with the **SLASH COMMAND INVITE LINK** from \`${prefix}invite\`\n> *Because u are using Global Settings, it can take up to 1 hour until the Commands are changed!*`); 
         }).catch((e) => {

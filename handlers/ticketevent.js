@@ -1252,14 +1252,14 @@ module.exports = async (client) => {
                     .setFooter(client.getFooter(`To close/manage this ticket react with the buttons\nYou can also type: ${guild_settings.prefix || config.prefix}ticket`, es.footericon))
                     .setAuthor(client.getAuthor(`Ticket for: ${user.tag}`, user.displayAvatarURL({
                     dynamic: true
-                    }), "http://discord.gg/7PdChsBGKd"))
+                    }), "https://discord.gg/milrato"))
                     .setDescription(replyMsg.replace(/\{user\}/igu, `${user}`).substring(0, 2000))
                 var ticketembeds = [ticketembed]
                 if(settings.claim.enabled){
                     var claimEmbed = new MessageEmbed()
                     .setColor("ORANGE").setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
                     .setFooter(client.getFooter(es))
-                    .setAuthor(client.getAuthor(`A Staff Member will claim the Ticket soon!`, "https://cdn.discordapp.com/emojis/833101350623117342.gif?size=44", "http://discord.gg/7PdChsBGKd"))
+                    .setAuthor(client.getAuthor(`A Staff Member will claim the Ticket soon!`, "https://cdn.discordapp.com/emojis/833101350623117342.gif?size=44", "https://discord.gg/milrato"))
                     .setDescription(settings.claim.messageOpen.replace(/\{user\}/igu, `${user}`).substring(0, 2000))
                     ticketembeds.push(claimEmbed)
                 }
@@ -1297,7 +1297,7 @@ module.exports = async (client) => {
                         })
                     }
                 }
-                await interaction?.editReply({content: `<a:yes:833101995723194437> **Your Ticket is created!** <#${ch.id}>`, ephemeral: true});
+                await interaction?.editReply({content: `<a:yes:950884027320135711> **Your Ticket is created!** <#${ch.id}>`, ephemeral: true});
                 })
             }
         }

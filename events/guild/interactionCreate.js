@@ -158,10 +158,10 @@ module.exports = async (client, interaction) => {
         }
         
         if(channel && !mechannel) {
-          if(!channel?.permissionsFor(message.guild?.me)?.has(Permissions.FLAGS.CONNECT)) 
-            return interaction.reply({ ephemeral: true, content: "<:no:833101993668771842> **I'm missing the Permission to Connect to your Voice-Channel!**"}).catch(() => null);
-          if(!channel?.permissionsFor(message.guild?.me)?.has(Permissions.FLAGS.SPEAK)) 
-            return interaction.reply({ ephemeral: true, content: "<:no:833101993668771842> **I'm missing the Permission to Speak in your Voice-Channel!**"}).catch(() => null);
+          if(!channel?.permissionsFor(interaction?.guild?.me)?.has(Permissions.FLAGS.CONNECT)) 
+            return interaction.reply({ ephemeral: true, content: "<:no:951013282607685632> **I'm missing the Permission to Connect to your Voice-Channel!**"}).catch(() => null);
+          if(!channel?.permissionsFor(interaction?.guild?.me)?.has(Permissions.FLAGS.SPEAK)) 
+            return interaction.reply({ ephemeral: true, content: "<:no:951013282607685632> **I'm missing the Permission to Speak in your Voice-Channel!**"}).catch(() => null);
         }
 
         //If there is no player, then kick the bot out of the channel, if connected to
@@ -169,16 +169,15 @@ module.exports = async (client, interaction) => {
           await guild.me.voice.disconnect().catch(e=>{});
           await delay(350);
         }
-        if(player && player.queue && player.queue.current && command.parameters.check_dj){
-          if(check_if_dj(client, interaction?.member, player.queue.current)) {
-            return interaction?.reply({embeds: [new MessageEmbed()
-              .setColor(ee.wrongcolor)
-              .setFooter({text: `${ee.footertext}`, iconURL: `${ee.footericon}`})
-              .setTitle(` <: no: 833101993668771842 > ** You are not a DJ and not the Song Requester! ** `)
-              .setDescription(` ** DJ - ROLES: ** \n${check_if_dj(client, interaction?.member, player.queue.current)}`)
-            ],
-            ephemeral: true});
-          }
+        const dj = await check_if_dj(client, member, player?.queue?.current);
+        if(player && player.queue && player.queue.current && command.parameters.check_dj && dj){
+                return interaction?.reply({embeds: [new MessageEmbed()
+                  .setColor(ee.wrongcolor)
+                  .setFooter({text: `${ee.footertext}`, iconURL: `${ee.footericon}`})
+                  .setTitle(client.la[ls].cmds.music.musicsystem.djerr)
+                  .setDescription(`${client.la[ls].cmds.music.musicsystem.djroles}\n${dj}`)
+                ],
+                ephemeral: true});
         }
         //if no player available return error | aka not playing anything
         if(command.parameters.activeplayer){

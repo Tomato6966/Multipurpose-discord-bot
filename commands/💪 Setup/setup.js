@@ -47,7 +47,7 @@ module.exports = {
             {
               value: "setup-antidiscord",
               description: `Setup a Anit-DISCORD System to prevent DC-LINKS`,
-              emoji: "<:Discord:943116778618376222>"
+              emoji: "<:Discord:950886430421418004>"
             },
             {
               value: "setup-antilink",

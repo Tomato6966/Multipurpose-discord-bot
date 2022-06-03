@@ -29,13 +29,13 @@ let GuildSettings = client.settings.get(`${interaction.guild.id}`)
           prefix: prefix
         }))
       return interaction?.reply({
-        embeds: [x], empheral: true
+        embeds: [x], ephemeral: true
       });
     }
 
 
     var superagent = require('superagent');
-    ////////if (!message.channel.nsfw) return interaction?.reply({content:eval(client.la[ls]["cmds"]["nsfw"]["anal"]["variable2"]), empheral: true})
+    if (!interaction?.channel.nsfw) return interaction?.reply({content:eval(client.la[ls]["cmds"]["nsfw"]["anal"]["variable2"]), ephemeral: true})
     superagent.get('https://nekobot.xyz/api/image').query({
       type: 'anal'
     }).end((err, response) => {

@@ -15,7 +15,8 @@ module.exports = {
     const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;    
     try{
-      let es = await client.settings.get(message.guild.id+ ".embed") 
+      let es = await client.settings.get(interaction?.guild.id+ ".embed") 
+      let ls = await client.settings.get(interaction?.guild.id+ ".language") 
       let tempmsg = await interaction?.reply({embeds: [new Discord.MessageEmbed().setColor(es.color)
       .setAuthor(client.getAuthor(client.la[ls].cmds.info.botinfo.loading, "https://cdn.discordapp.com/emojis/756773010123522058.gif", "http://discord.gg/7PdChsBGKd"))], ephemeral: true})
       cpuStat.usagePercent(function (e, percent, seconds) {
@@ -46,7 +47,7 @@ module.exports = {
             .addField(emoji.msg.arrow+client.la[ls].cmds.info.botinfo.field3.title, handlemsg(client.la[ls].cmds.info.botinfo.field3.value, {cpu: percent.toFixed(2), ram: (process.memoryUsage().heapUsed/1024/1024).toFixed(2)}))
             .addField(emoji.msg.arrow+client.la[ls].cmds.info.botinfo.field4.title, `\`\`\`yml\nName: Cepheid#0001\nID: [410419863304273930]\`\`\``, true)
             .addField(emoji.msg.arrow+client.la[ls].cmds.info.botinfo.field5.title, handlemsg(client.la[ls].cmds.info.botinfo.field5.value, {invitelink: `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`}))
-            .setFooter(client.getFooter(es) + ` ︲ You're on Cluster #${client.cluster.id} and Shard #${message.guild.shard.id}`, es.footericon);
+            .setFooter(es.footertext + ` ︲ You're on Cluster #${client.cluster.id} and Shard #${message.guild.shard.id}`, es.footericon);
             interaction?.editReply({embeds: [botinfo], ephemeral: true});
       });
     } catch (e) {

@@ -38,7 +38,7 @@ module.exports = {
           {
             value: `${GuildSettings?.antilink?.enabled ? "Disable" : "Enable"} Anti Links`,
             description: `${GuildSettings?.antilink?.enabled ? "Don't delete other Links" : "Delete other Links"}`,
-            emoji: `${GuildSettings?.antilink?.enabled ? "833101993668771842" : "833101995723194437"}`
+            emoji: `${GuildSettings?.antilink?.enabled ? "951013282607685632" : "950884027320135711"}`
           },
           {
             value: "Settings",
