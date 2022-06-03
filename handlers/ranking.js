@@ -335,7 +335,7 @@ module.exports = async function (client) {
                 const canvas = Canvas.createCanvas(1802, 430);
                 const ctx = canvas.getContext("2d");
                 ctx.font = "100px UbuntuMono";
-                ctx.fillStyle = "#2697FF";
+                ctx.fillStyle = "#c5c8c9";
                 const bgimg = await Canvas.loadImage("./assets/levelup.png");
                 ctx.drawImage(bgimg, 0, 0, canvas.width, canvas.height);
                 //USERNAME
@@ -679,7 +679,7 @@ module.exports = async function (client) {
                                 const NameY = 1530;
                                 let fontsize = 250;
                                 ctx.font = `bold ${fontsize}px ${Fonts}`;
-                                ctx.fillStyle = "#2697FF"
+                                ctx.fillStyle = "#c5c8c9"
                                 const name = rankuser.username;
                                 while(ctx.measureText(name).width > 1200-fontsize){
                                     const newFont = `bold ${ fontsize-- }px ${Fonts}`
@@ -705,7 +705,7 @@ module.exports = async function (client) {
                                 const TextRankY = 660;
                                 const VoiceRankX = 1985;
                                 const VoiceRankY = 1755;
-                                ctx.fillStyle = "#2697FF";
+                                ctx.fillStyle = "#c5c8c9";
                                 ctx.font = `bold italic 150px ${Fonts}`;
                                 ctx.fillText(xp_data.text.rank, TextRankX , TextRankY);
                                 ctx.fillText(xp_data.voice.rank, VoiceRankX , VoiceRankY);
@@ -717,7 +717,7 @@ module.exports = async function (client) {
                                 const TextLevelY = 660;
                                 const VoiceLevelX = 3105;
                                 const VoiceLevelY = 1755;
-                                ctx.fillStyle = "#2697FF";
+                                ctx.fillStyle = "#c5c8c9";
                                 ctx.font = `bold italic 150px ${Fonts}`;
                                 ctx.fillText(xp_data.text.cur_level, TextLevelX , TextLevelY);
                                 ctx.fillText(xp_data.voice.cur_level, VoiceLevelX , VoiceLevelY);
@@ -872,7 +872,7 @@ module.exports = async function (client) {
                 const canvas = Canvas.createCanvas(830, 1030);
                 const ctx = canvas.getContext("2d");
                 ctx.font = "75px UbuntuMono";
-                ctx.fillStyle = "#2697FF";
+                ctx.fillStyle = "#c5c8c9";
     
                 var bgimg = await Canvas.loadImage(`./assets/${type == "voice" ? "voice" : "first"}_leaderboard.png`);
                 ctx.drawImage(bgimg, 0, 0, canvas.width, canvas.height);
@@ -882,7 +882,7 @@ module.exports = async function (client) {
                         try{
                             ctx.save();
                             ctx.font = "75px UbuntuMono";
-                            ctx.fillStyle = "#2697FF";
+                            ctx.fillStyle = "#c5c8c9";
                             
                             //USERNAME
                             var text = `${array_usernames[i]}`.trim();
@@ -897,7 +897,7 @@ module.exports = async function (client) {
     
                             //LEVEL TEXT
                             ctx.font = "40px UbuntuMono";
-                            ctx.fillStyle = "#6caae7"; 
+                            ctx.fillStyle = "#686869"; 
                             var text4 = `LVL ${array_level[i]}`.trim();
                             canvacord.Util.renderEmoji(ctx, text4, 275, 100 + i * 100 - 22.5);
             
@@ -972,7 +972,7 @@ module.exports = async function (client) {
                     const canvas2 = Canvas.createCanvas(830, 1030);
                     const ctx2 = canvas2.getContext("2d");
                     ctx2.font = "75px UbuntuMono";
-                    ctx2.fillStyle = "#2697FF";
+                    ctx2.fillStyle = "#c5c8c9";
         
                     var bgimg = await Canvas.loadImage(`./assets/voice_leaderboard.png`);
                     ctx2.drawImage(bgimg, 0, 0, canvas2.width, canvas2.height);
@@ -982,7 +982,7 @@ module.exports = async function (client) {
                             try{
                                 ctx2.save();
                                 ctx2.font = "75px UbuntuMono";
-                                ctx2.fillStyle = "#2697FF";
+                                ctx2.fillStyle = "#c5c8c9";
                                 
                                 //USERNAME
                                 var text = `${array_usernames[i]}`.trim();
@@ -997,7 +997,7 @@ module.exports = async function (client) {
         
                                 //LEVEL TEXT
                                 ctx2.font = "40px UbuntuMono";
-                                ctx2.fillStyle = "#6caae7"; 
+                                ctx2.fillStyle = "#686869"; 
                                 var text4 = `LVL ${array_level[i]}`.trim();
                                 canvacord.Util.renderEmoji(ctx2, text4, 275, 100 + i * 100 - 22.5);
                 
