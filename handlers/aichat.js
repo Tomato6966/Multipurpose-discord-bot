@@ -31,7 +31,7 @@ module.exports = async (client) => {
                   return message.channel.send("I CANNOT READ FILES!")
               }
               try{
-                fetch(`http://api.brainshop.ai/get?bid=166923&key=UHH4ewDAMkrhzWQT&uid=1&msg=${encodeURIComponent(message)}`)
+                fetch(`http://api.brainshop.ai/get?bid=164804&key=oXcVogJoJHDAr5Xz&key=UHH4ewDAMkrhzWQT&uid=1&msg=${encodeURIComponent(message)}`)
                 .then(res => res.json())
                 .then(data => {
                   message.channel.send({content: data.cnt}).catch(() => null)
