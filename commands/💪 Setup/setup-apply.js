@@ -65,64 +65,7 @@ module.exports = {
               return Obj;
             })
           )
-        )
-        //define the selection
-        let row2 = new MessageActionRow().addComponents(new MessageSelectMenu()
-          .setCustomId('MenuSelection2')
-          .setMaxValues(1) //OPTIONAL, this is how many values you can have at each selection
-          .setMinValues(1) //OPTIONAL , this is how many values you need to have at each selection
-          .setPlaceholder('Click me to setup the Application System(s)!')
-          .addOptions(
-            menuoptions.slice(25, 50).map(option => {
-              let Obj = {
-                label: option.label ? option.label.substring(0, 50) : option.value.substring(0, 50),
-                value: option.value.substring(0, 50),
-                description: option.description.substring(0, 50),
-              }
-              if (option.emoji) Obj.emoji = option.emoji;
-              return Obj;
-            })
-          )
-        )
-
-        //define the selection
-        let row3 = new MessageActionRow().addComponents(new MessageSelectMenu()
-          .setCustomId('MenuSelection3')
-          .setMaxValues(1) //OPTIONAL, this is how many values you can have at each selection
-          .setMinValues(1) //OPTIONAL , this is how many values you need to have at each selection
-          .setPlaceholder('Click me to setup the Application System(s)!')
-          .addOptions(
-            menuoptions.slice(50, 75).map(option => {
-              let Obj = {
-                label: option.label ? option.label.substring(0, 50) : option.value.substring(0, 50),
-                value: option.value.substring(0, 50),
-                description: option.description.substring(0, 50),
-              }
-              if (option.emoji) Obj.emoji = option.emoji;
-              return Obj;
-            })
-          )
-        )
-    
-        //define the selection
-        let row4 = new MessageActionRow().addComponents(new MessageSelectMenu()
-          .setCustomId('MenuSelection4')
-          .setMaxValues(1) //OPTIONAL, this is how many values you can have at each selection
-          .setMinValues(1) //OPTIONAL , this is how many values you need to have at each selection
-          .setPlaceholder('Click me to setup the Application System(s)!')
-          .addOptions(
-            menuoptions.slice(75, 100).map(option => {
-              let Obj = {
-                label: option.label ? option.label.substring(0, 50) : option.value.substring(0, 50),
-                value: option.value.substring(0, 50),
-                description: option.description.substring(0, 50),
-              }
-              if (option.emoji) Obj.emoji = option.emoji;
-              return Obj;
-            })
-          )
-        )
-    
+        )    
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
@@ -131,10 +74,7 @@ module.exports = {
         let used1 = false;
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [
-          row1,
-          row2,
-          row3,
-          row4
+          row1
         ]})
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 

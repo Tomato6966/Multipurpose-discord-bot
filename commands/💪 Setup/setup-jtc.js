@@ -49,65 +49,13 @@ module.exports = {
             })
           )
         )
-        let row2 = new MessageActionRow().addComponents(new MessageSelectMenu()
-          .setCustomId('MenuSelection2')
-          .setMaxValues(1) //OPTIONAL, this is how many values you can have at each selection
-          .setMinValues(1) //OPTIONAL , this is how many values you need to have at each selection
-          .setPlaceholder('Click me to setup the Join-to-Create System!')
-          .addOptions(
-            menuoptions.slice(25, 50).map(option => {
-              let Obj = {
-                label: option.label ? option.label.substring(0, 50) : option.value.substring(0, 50),
-                value: option.value.substring(0, 50),
-                description: option.description.substring(0, 50),
-              }
-              if (option.emoji) Obj.emoji = option.emoji;
-              return Obj;
-            })
-          )
-        )
-        let row3 = new MessageActionRow().addComponents(new MessageSelectMenu()
-          .setCustomId('MenuSelection3')
-          .setMaxValues(1) //OPTIONAL, this is how many values you can have at each selection
-          .setMinValues(1) //OPTIONAL , this is how many values you need to have at each selection
-          .setPlaceholder('Click me to setup the Join-to-Create System!')
-          .addOptions(
-            menuoptions.slice(50, 75).map(option => {
-              let Obj = {
-                label: option.label ? option.label.substring(0, 50) : option.value.substring(0, 50),
-                value: option.value.substring(0, 50),
-                description: option.description.substring(0, 50),
-              }
-              if (option.emoji) Obj.emoji = option.emoji;
-              return Obj;
-            })
-          )
-        )
-        let row4 = new MessageActionRow().addComponents(new MessageSelectMenu()
-          .setCustomId('MenuSelection4')
-          .setMaxValues(1) //OPTIONAL, this is how many values you can have at each selection
-          .setMinValues(1) //OPTIONAL , this is how many values you need to have at each selection
-          .setPlaceholder('Click me to setup the Join-to-Create System!')
-          .addOptions(
-            menuoptions.slice(75, 100).map(option => {
-              let Obj = {
-                label: option.label ? option.label.substring(0, 50) : option.value.substring(0, 50),
-                value: option.value.substring(0, 50),
-                description: option.description.substring(0, 50),
-              }
-              if (option.emoji) Obj.emoji = option.emoji;
-              return Obj;
-            })
-          )
-        )
-        
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
         .setColor(es.color)
         .setAuthor(client.getAuthor('Join-to-Create Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/joypixels/291/studio-microphone_1f399-fe0f.png', 'http://discord.gg/7PdChsBGKd'))
         .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
-        let menumsg = await message.reply({embeds: [MenuEmbed], components: [row1, row2, row3, row4]})
+        let menumsg = await message.reply({embeds: [MenuEmbed], components: [row1]})
         //function to handle the menuselection
         function menuselection(menu) {
           let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
