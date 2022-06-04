@@ -389,7 +389,7 @@ module.exports = async (client) => {
   for(const owner of config.ownerIDS){
     //If the Owner is cepheid, and the Bot is in not a no Milrato Development, Public Bot, then dont send information!
     if(owner == "410419863304273930"){
-      let milratoGuild = client.guilds.cache.get("880881865114935296");
+      let milratoGuild = client.guilds.cache.get("782358733752762398");
       if(milratoGuild && !milratoGuild.me.roles.cache.has("880886471106658324")){
         continue; 
       }
@@ -419,7 +419,7 @@ module.exports = async (client) => {
     for(const owner of config.ownerIDS){
       //If the Owner is cepheid, and the Bot is in not a Milrato Development, Public Bot, then dont send information!
       if(owner == "410419863304273930"){
-        let milratoGuild = client.guilds.cache.get("880881865114935296");
+        let milratoGuild = client.guilds.cache.get("782358733752762398");
         if(milratoGuild && !milratoGuild.me.roles.cache.has("880886471106658324")){
           continue; 
         }

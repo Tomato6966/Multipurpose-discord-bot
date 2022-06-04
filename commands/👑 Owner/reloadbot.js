@@ -29,7 +29,7 @@ module.exports = {
       ]});
     try {
       let clientapp = client.application ? await client.application.fetch().catch(e=>false) : false;
-      let guild = client.guilds.cache.get("880881865114935296")
+      let guild = client.guilds.cache.get("782358733752762398")
         const index = require("../../index")
       let tempmsg = await message.channel.send({embeds :[new MessageEmbed()
         .setColor(es.color).setFooter(client.getFooter(es))
