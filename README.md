@@ -13,7 +13,7 @@ If you want you can add a DASHBOARD too, an example how to start it, is listed i
 First of all, thanks for using this Source Code, it was and is a ton of work to create and maintain it!
 That's why I'm asking everyone to [**donate a little bit of money**](https://donate.milrato.dev) or if that's not possible, then join my [Discord Server](https://discord.gg/dcdev)!
 
-# Installation Guide 🔥
+# Installation Guid 🔥
 
 ## ✅ Hosting Requirements
 
