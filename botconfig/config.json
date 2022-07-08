@@ -1,5 +1,5 @@
 {
-    "token": "GET from: https://discord.com/developers/applications",
+    "token": "ODUyOTgyNDgwNTY3NDAyNDk3.GE6miG.YKBcnGrQsAx4Dm55Yu3NM4rZ-a02CzqCKaFeh8",
     "prefix": "//",
     "ownerIDS": [
         "442355791412854784"
@@ -16,8 +16,8 @@
     "clientsettings": {
         "nodes": [
             {
-                "host": "localhost",
-                "port": 2333,
+                "host": "lava.link",
+                "port": 80,
                 "password": "youshallnotpass"
             }
         ]
