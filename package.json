@@ -63,6 +63,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
+"engines":{
+  "node":"16.x",
+  "npm": "8.x"
+  },
   "author": "Tomato#6966",
   "license": "MIT",
   "repository": {
