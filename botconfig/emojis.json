@@ -2,11 +2,11 @@
   "msg": {
     "COMMENT": "IF YOU DECIDE TO USE CUSTOM EMOJIS, USE THE NAME AND THE ID IN MSG, EXAMPLE: ⬜ --> <:progressbar_left_filled:818558865268408341>",
 
-    "ERROR" : "<:no:833101993668771842>",
-    "SUCCESS" : "<a:yes:833101995723194437>",
+    "ERROR" : "<:no:990786942348193843>",
+    "SUCCESS" : "<a:Yes:964306724821536768>",
 
-    "disabled" : "<:no:833101993668771842>",
-    "enabled" : "<a:yes:833101995723194437>",
+    "disabled" : "<:no:990786942348193843>",
+    "enabled" : "<a:Yes:964306724821536768>",
 
     "progress_bar": {
       "leftindicator": "[",

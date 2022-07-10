@@ -1,30 +1,31 @@
 {
-    "token": "GET from: https://discord.com/developers/applications",
+    "token": "",
     "prefix": "//",
     "ownerIDS": [
-        "442355791412854784"
+        "663442537222242306",
+        "544272782557446194"
     ],
-    "fnbr": "GET from: https://fnbr.co",
-    "fortnitetracker": "GET from: https://fortnitetracker.com",
-    "memer_api": "GET from: https://discord.gg/Mc2FudJkgP",
+    "fnbr": "43549683-4cdb-4eb5-8f1c-1b88dc82d910",
+    "fortnitetracker": "ac53a1db-3988-4cf5-888f-2518a1501abb",
+    "memer_api": "OAX58L8AY10",
     "status": {
-        "text": "{prefix}help | on {guildcount} Servers, with {membercount} Members | Played: {songsplayed} Songs",
-        "text2": "By: discord.gg/dcdev",
+        "text": "By: discord.gg/roverdev",
+        "text2": "By: discord.gg/milrato",
         "type": "PLAYING",
         "url": "https://twitch.tv/milratodiscordbot"
     },
     "clientsettings": {
         "nodes": [
             {
-                "host": "localhost",
+                "host": "node1.roverdev.xyz",
                 "port": 2333,
-                "password": "youshallnotpass"
+                "password": "discord.gg/roverdev"
             }
         ]
     },
     "spotify": {
-        "clientSecret": "GET from: https://developers.spotify.com",
-        "clientID": "GET from: https://developers.spotify.com"
+        "clientSecret": "561dbd04c99a430891926de9d2a3c007",
+        "clientID": "1613db80ba9f4790bba00ad65841cb93"
     },
     "settings": {
         "COMMENT": "time_delay 0 === insta leave",

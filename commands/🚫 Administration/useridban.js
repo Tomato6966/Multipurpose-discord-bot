@@ -64,7 +64,7 @@ module.exports = {
         })
         message.reply({ embeds: [new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-          .setTitle(`<a:yes:833101995723194437> Banned ${ban.tag || user}`)
+          .setTitle(`<a:Yes:964306724821536768> Banned ${ban.tag || user}`)
           .setDescription(`**Reason**: ${reason}`)]
         });
       } catch (e) {

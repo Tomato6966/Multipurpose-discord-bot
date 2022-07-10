@@ -16,6 +16,15 @@ module.exports = client => {
       console.log(`     ┃ `.bold.brightGreen + ` /--/ ${client.user.tag} /--/ `.bold.brightGreen+ " ".repeat(-1+stringlength-` ┃ `.length-` /--/ ${client.user.tag} /--/ `.length)+ "┃".bold.brightGreen)
       console.log(`     ┃ `.bold.brightGreen + " ".repeat(-1+stringlength-` ┃ `.length)+ "┃".bold.brightGreen)
       console.log(`     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`.bold.brightGreen)
+      setTimeout(() => {
+        console.log("\n")
+        console.log(`     ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓`.bold.brightYellow)
+        console.log(`     ┃ `.bold.brightYellow + " ".repeat(-1+stringlength-` ┃ `.length)+ "┃".bold.brightYellow)
+        console.log(`     ┃ `.bold.brightYellow + `Thanks COMPLEX#0001 & Deadpool#1234 `.bold.brightYellow + " ".repeat(-1+stringlength-` ┃ `.length-`Thanks COMPLEX#0001 & Deadpool#1234`.length)+"┃".bold.brightYellow)
+        console.log(`     ┃ `.bold.brightYellow + ` /--/ Discord.gg/roverdev /--/ `.bold.brightYellow+ " ".repeat(-1+stringlength-` ┃ `.length-` /--/ Discord.gg/roverdev /--/ `.length)+ "┃".bold.brightYellow)
+        console.log(`     ┃ `.bold.brightYellow + " ".repeat(-1+stringlength-` ┃ `.length)+ "┃".bold.brightYellow)
+        console.log(`     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`.bold.brightYellow)
+      }, 1000);
     } catch { /* */ }
 
     console.table({ 

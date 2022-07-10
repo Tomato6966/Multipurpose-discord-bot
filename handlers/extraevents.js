@@ -34,7 +34,7 @@ module.exports = client => {
 
     let text = embedData.footertext;
     let iconURL = embedData.footericon;
-    if(!text || text.length < 1) text = `${client.user.username} | By: Tomato#6966`;
+    if(!text || text.length < 1) text = `${client.user.username} | By: Tomato#6966 | Modifyed By Roverdev`;
     if(!iconURL || iconURL.length < 1) iconURL = `${client.user.displayAvatarURL()}`;
     
     //Change the lengths

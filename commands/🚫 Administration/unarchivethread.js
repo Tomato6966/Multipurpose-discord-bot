@@ -47,13 +47,13 @@ module.exports = {
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
-          .setTitle(`<:no:833101993668771842> **This Channel is not a Thread**`)
+          .setTitle(`<:no:990786942348193843> **This Channel is not a Thread**`)
         ]});
       await channel.setArchived(false);
       message.reply({embeds :[new MessageEmbed()
         .setColor(es.color)
         .setFooter(client.getFooter(es))
-        .setTitle(`<a:yes:833101995723194437> **Successfully unarchived \`${channel.name}\`**`)
+        .setTitle(`<a:Yes:964306724821536768> **Successfully unarchived \`${channel.name}\`**`)
       ]});
       if (client.settings.get(message.guild.id, `adminlog`) != "no") {
         try {

@@ -26,7 +26,7 @@ module.exports = {
         message.reply({embeds: [embed]})
       } else {
         let embed = new Discord.MessageEmbed()
-          .setTitle(`<:no:833101993668771842> **This Server has no Banner!**`)
+          .setTitle(`<:no:990786942348193843> **This Server has no Banner!**`)
           .setColor(es.color)
           .setFooter(client.getFooter(es))
           .setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)

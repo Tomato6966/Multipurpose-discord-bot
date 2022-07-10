@@ -85,11 +85,11 @@ module.exports = {
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `<:no:990786942348193843> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:Yes:964306724821536768> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
 
@@ -129,7 +129,7 @@ module.exports = {
                       }
                       client.settings.set(message.guild.id, maxtime, "ghost_ping_detector_max_time");
                       return message.reply({embeds: [new Discord.MessageEmbed()
-                        .setTitle(`<a:yes:833101995723194437> I will now send all detected Ghost Pings in \`${channel.name}\``)
+                        .setTitle(`<a:Yes:964306724821536768> I will now send all detected Ghost Pings in \`${channel.name}\``)
                         .setColor(es.color)
                         .setDescription(`${!isnan ? `And set the Ghost-Ping-Detected-Deletion Message Maximum Time to \`${maxtime / 1000} Seconds\``: "You added an invalid time, so i set the Ghost-Ping-Detection Maximum Time to `10 Seconds`"}`)
                         .setFooter(client.getFooter(es))]}

@@ -104,7 +104,7 @@ module.exports = {
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           } else menu?.reply({
-            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+            content: `<:no:990786942348193843> You are not allowed to do that! Only: <@${cmduser.id}>`,
             ephemeral: true
           });
         });
@@ -113,7 +113,7 @@ module.exports = {
           menumsg.edit({
             embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
             components: [],
-            content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`
+            content: `${collected && collected.first() && collected.first().values ? `<a:Yes:964306724821536768> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`
           })
         });
       }
@@ -355,7 +355,7 @@ module.exports = {
                 //require("../../social_log/twitterfeed").creat_twit(client);
                 message.reply({
                   embeds: [new Discord.MessageEmbed()
-                    .setTitle(`<a:yes:833101995723194437> Set the TWITTER USER ID TO: \`${collected.first().content}\``.substring(0, 256))
+                    .setTitle(`<a:Yes:964306724821536768> Set the TWITTER USER ID TO: \`${collected.first().content}\``.substring(0, 256))
                     .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-twitter"]["variable43"]))
                     .setColor(es.color)
                     .setFooter(client.getFooter(es))
@@ -382,7 +382,7 @@ module.exports = {
                       //require("../../social_log/twitterfeed").creat_twit(client);
                       return message.reply({
                         embeds: [new Discord.MessageEmbed()
-                          .setTitle(`<a:yes:833101995723194437> Set the TWITTER USER Name TO: \`${collected.first().content}\``.substring(0, 256))
+                          .setTitle(`<a:Yes:964306724821536768> Set the TWITTER USER Name TO: \`${collected.first().content}\``.substring(0, 256))
                           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-twitter"]["variable46"]))
                           .setColor(es.color)
                           .addField(eval(client.la[ls]["cmds"]["setup"]["setup-twitter"]["variablex_47"]), eval(client.la[ls]["cmds"]["setup"]["setup-twitter"]["variable47"]))

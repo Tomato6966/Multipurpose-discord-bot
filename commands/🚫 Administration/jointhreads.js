@@ -48,14 +48,14 @@ module.exports = {
         return message.reply({embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
-          .setTitle(`<:no:833101993668771842> **There are no open Threads in this Server**`)
+          .setTitle(`<:no:990786942348193843> **There are no open Threads in this Server**`)
         ]}); 
       for(const channel of channels)
         await channel.join()
       message.reply({embeds :[new MessageEmbed()
         .setColor(es.color)
         .setFooter(client.getFooter(es))
-        .setTitle(`<a:yes:833101995723194437> **I joined \`${channels.size}\` Threads**`)
+        .setTitle(`<a:Yes:964306724821536768> **I joined \`${channels.size}\` Threads**`)
       ]});
       if (client.settings.get(message.guild.id, `adminlog`) != "no") {
         try {

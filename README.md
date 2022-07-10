@@ -1,15 +1,6 @@
 # Public Bot and Support Server!
 
-<a href="https://discord.gg/dcdev"><img src="https://discord.com/api/guilds/773668217163218944/widget.png?style=banner2"></a>
- 
-[**Invite the Public Version of this Bot**](https://milrato.milrato.dev) so you don't need to host it by yourself or [join my Discord server](https://discord.gg/dcdev) to get a custom Bot hosted for you!
-
-
-# Important notes and thank ❤️
-First of all, thanks for using this Source Code, it was and is a ton of work to create and maintain it!
-That's why I'm asking everyone to [**donate a little bit of money**](https://donate.milrato.dev) or if that's not possible, then join my [Discord Server](https://discord.gg/dcdev)!
-
-  **NOTE:** It is suggested to use the [Sharded (&Clustered) version](https://github.com/Tomato6966/Multipurpose-discord-bot/tree/sharded_with_mongo), if you plan on using it for a VERIFIED BOT (on more then 2000 Servers!)
+<a href="https://discord.gg/roverdev"><img src="https://discord.com/api/guilds/846548733914906664/widget.png?style=banner2"></a>
  
 
 # Installation Guide 🔥
@@ -67,9 +58,9 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
         "clientsettings": {
             "nodes": [
                 {
-                    "host": "localhost",
+                    "host": "node1.roverdev.xyz",
                     "port": 2333,
-                    "password": "youshallnotpass"
+                    "password": "discord.gg/roverdev"
                 }
             ]
         }
@@ -83,9 +74,9 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
         "clientsettings": {
             "nodes": [
                 {
-                    "host": "lava.link",
-                    "port": 80,
-                    "password": "Anything for the Password"
+                    "host": "node1.roverdev.xyz",
+                    "port": 2333,
+                    "password": "discord.gg/roverdev"
                 }
             ]
         }
@@ -135,23 +126,3 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
      * `access_token_secret` you can get from: [twitter Developers](https://developer.twitter.com)
   
 </details>
-
-
-## SUPPORT ME AND MILRATO DEVELOPMENT
-
-> You can always support me by inviting one of my **Discord Bots**
-
-[![2021's best Music Bot | Lava Music](https://cdn.discordapp.com/attachments/748533465972080670/817088638780440579/test3.png)](https://lava.milrato.dev)
-[![Musicium Music Bot](https://cdn.discordapp.com/attachments/742446682381221938/770055673965707264/test1.png)](https://musicium.musicium.dev)
-[![Milrato Multi Bot](https://cdn.discordapp.com/attachments/742446682381221938/770056826724679680/test1.png)](https://milrato.milrato.dev)
-
-# Credits
-
-> If you consider using this Bot, make sure to credit me!
-> Example: `Bot Coded by [Tomato#6966](https://discord.gg/dcdev) but modified by [modifier/your Name](https://discord.gg/)`
-
-# Contributing
-
-> If you want to help improve the Bot code, fix spelling or design Errors or if possible even code errors, you may create PULL REQUESTS.
-> Please consider, that [**Tomato6966**](https://github.com/Tomato6966) is the main Developer of this Bot, everyone else helped just once or sometimes more often.
-> Thanks to any1 who considers helping me!

@@ -22,7 +22,7 @@ module.exports = {
       .setAuthor(client.la[ls].cmds.info.botinfo.loading, "https://cdn.discordapp.com/emojis/756773010123522058.gif", "https://discord.gg/milrato")]})
       cpuStat.usagePercent(function (e, percent, seconds) {
           if (e) {
-              return console.log(e.stack ? String(e.stack).grey : String(e).grey);
+              return console.log(e.stack ? String(e.stack).grey : String(e).grey);node 
           }
           let connectedchannelsamount = 0;
           let guilds = client.guilds.cache.map((guild) => guild);

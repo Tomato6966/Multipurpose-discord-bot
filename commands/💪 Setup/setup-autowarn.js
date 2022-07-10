@@ -118,7 +118,7 @@ module.exports = {
             else disabled++;
             client.settings.set(message.guild.id, !oldstate, `autowarn.${value.toLowerCase()}`)
           }
-          b?.reply(`<a:yes:833101995723194437> **\`Enabled ${enabled} Auto-Warn-Rules\` and \`Disabled ${disabled} Auto-Warn-Rules\` out of \`${b?.values.length} selected Auto-Warn-Rules\`**`)
+          b?.reply(`<a:Yes:964306724821536768> **\`Enabled ${enabled} Auto-Warn-Rules\` and \`Disabled ${disabled} Auto-Warn-Rules\` out of \`${b?.values.length} selected Auto-Warn-Rules\`**`)
         })
         collector.on('end', collected => {
           menumsg.edit({content: ":x: Time ran out/Input finished! Cancelled", embeds: [
