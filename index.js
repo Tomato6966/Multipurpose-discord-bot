@@ -3,7 +3,7 @@ const { Client } = require('discord-cross-hosting');
 const config = require("./botconfig/config.json");
 const colors = require("colors");
 const OS = require("os");
-const { authToken, settings: BridgeSettings } = require("../Bridge/config.json");
+const { authToken, settings: BridgeSettings } = require("./bridge_config.json");
 
 const client = new Client({
     agent: 'bot',
