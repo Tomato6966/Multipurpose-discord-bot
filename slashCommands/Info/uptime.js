@@ -10,7 +10,7 @@ const {
 const moment = require("moment")
 module.exports = {
   name: "uptime",
-  description: "Returns the duration on how long the Bot is online",  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  description: "Returns the duration on how long the Bot is online",  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     //things u can directly access in an interaction!
     const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;
@@ -27,7 +27,7 @@ module.exports = {
         )]}
       );
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
     }
   }
 }

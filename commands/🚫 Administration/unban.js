@@ -2,12 +2,12 @@ const {
   MessageEmbed,
   Permissions
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   databasing
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 module.exports = {
   name: `unban`,
   category: `🚫 Administration`,
@@ -16,9 +16,9 @@ module.exports = {
   usage: `unban <ID>`,
   memberpermissions: ["ADMINISTRATOR"],
   type: "member",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
 
     try {
       if(!message.guild.me.permissions.has([Permissions.FLAGS.BAN_MEMBERS]))      
@@ -26,17 +26,17 @@ module.exports = {
           .setColor(es.wrongcolor).setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable1"]))
         ]})
-      //databasing(client, message.guild.id, message.author.id);
+      //databasing(client, message.guild.id, message.author?.id);
       //message.guild.members.unban("564036254111629332");
       if(!args[0])
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(`${emoji?.msg.ERROR} Please add a valid USERID`)
-          .setDescription(`Usage: \`${prefix}unban <ID>\`\nExample: \`${prefix}unban ${message.author.id}\``)
+          .setDescription(`Usage: \`${prefix}unban <ID>\`\nExample: \`${prefix}unban ${message.author?.id}\``)
         ]});
       
-      let bans = await message.guild.bans.fetch().catch(() => {});
+      let bans = await message.guild.bans.fetch().catch(() => null);
       if (!bans.map(b=>b?.user.id).includes(args[0]))
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
@@ -54,7 +54,7 @@ module.exports = {
           .setDescription(`Type: \`${prefix}listbans\` to see all ${bans.size - 1} Bans!`)
         ]});
       } catch (e){
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -63,7 +63,7 @@ module.exports = {
         ]});
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["administration"]["ban"]["variable18"]))

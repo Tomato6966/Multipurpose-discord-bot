@@ -1,15 +1,15 @@
 const {
   MessageEmbed
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+const ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const radios = require(`../../botconfig/radiostations.json`);
 const playermanager = require(`../../handlers/playermanager`);
 const {
   stations
-} = require(`${process.cwd()}/handlers/functions`);
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
+const { handlemsg } = require(`../../handlers/functions`);
     module.exports = {
   name: `radio`,
   category: `🎶 Music`,
@@ -22,10 +22,10 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     "previoussong": false
   },
   type: "song",
-  run: async (client, message, args, cmduser, text, prefix, player) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    
+    if(GuildSettings.MUSIC === false) {
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -67,8 +67,8 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
         let lastitem = array[array.length - 1];
         let flatObject = [, ...Object.values(radios.REYFM), ...Object.values(radios.ILOVERADIO), ...Object.values(radios.EU), ...Object.values(radios.OTHERS)];
         let allArray = [];
-        for(const element of flatObject){
-          if(Array.isArray(element)) for(const e of element) allArray.push(e);
+        for (const element of flatObject){
+          if(Array.isArray(element)) for (const e of element) allArray.push(e);
           else allArray.push(element);
         }
         return allArray.indexOf(lastitem);

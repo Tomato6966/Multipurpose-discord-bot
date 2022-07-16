@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure, dbRemove
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-twitch",
@@ -18,9 +18,8 @@ module.exports = {
   description: "Manage the Twitch logger, temp role, ping role, adduser, removeuser, etc.",
   memberpermissions: ["ADMINISTRATOR"],
   type: "fun",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+
     let TextEmojis = getNumberEmojis();
     let NumberEmojiIds = getNumberEmojis().map(emoji => emoji?.replace(">", "").split(":")[2])
     try {
@@ -83,44 +82,44 @@ module.exports = {
         //define the embed
         let MenuEmbed = new MessageEmbed()
           .setColor(es.color)
-          .setAuthor('Twitch-Logger', 'https://cdn.discordapp.com/emojis/720391959746969710.gif?size=160', 'https://discord.gg/milrato')
+          .setAuthor(client.getAuthor('Twitch-Logger', 'https://cdn.discordapp.com/emojis/720391959746969710.gif?size=160', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
 
       async function handle_the_picks(optionhandletype, SetupNumber, menuoptiondata) {
         switch (optionhandletype) {
           case "View Twitch-Channels": {
-            if(client.social_log.get(message.guild.id, "twitch.channels").length <= 0) 
+            let channels = await client.social_log.get(message.guild.id+".twitch.channels");
+            if(channels.length <= 0) 
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(`There are no Twitch Channels Setupped yet!`)
                 .setColor(es.wrongcolor)
                 .setDescription(`Add some others first...`.substring(0, 2000))
                 .setFooter(client.getFooter(es))
               ]});
-            let channels = client.social_log.get(message.guild.id, "twitch.channels");
             let menuoptions = channels.map((data, index) => {
               let Obj = {}
               Obj.emoji = NumberEmojiIds[index + 1];
@@ -137,14 +136,14 @@ module.exports = {
           } break;
           case "Remove Channel":
           {
-            if(client.social_log.get(message.guild.id, "twitch.channels").length <= 0) 
+            let channels = await client.social_log.get(message.guild.id+".twitch.channels");
+            if(channels.length <= 0) 
             return message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(`There are no Twitch Channels Setupped yet!`)
               .setColor(es.wrongcolor)
               .setDescription(`Add some others first...`.substring(0, 2000))
               .setFooter(client.getFooter(es))
             ]});
-          let channels = client.social_log.get(message.guild.id, "twitch.channels");
           let menuoptions = channels.map((data, index) => {
             let Obj = {}
             Obj.emoji = NumberEmojiIds[index + 1];
@@ -172,42 +171,43 @@ module.exports = {
           //define the embed
           let MenuEmbed = new MessageEmbed()
             .setColor(es.color)
-            .setAuthor('Twitch-Poster', 'https://cdn.discordapp.com/emojis/720391959746969710.gif?size=160', 'https://discord.gg/milrato')
+            .setAuthor(client.getAuthor('Twitch-Poster', 'https://cdn.discordapp.com/emojis/720391959746969710.gif?size=160', 'https://discord.gg/milrato'))
             .setDescription("Select all Twitch Channels you want to remove!")
           //send the menu msg
           let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
           //Create the collector
           const collector = menumsg.createMessageComponentCollector({ 
-            filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+            filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
             time: 90000
           })
           //Menu Collections
-          collector.on('collect', menu => {
+          collector.on('collect', async menu => {
             if (menu?.user.id === cmduser.id) {
               collector.stop();
-              for(const value of menu?.values) {
+              for await (const value of menu?.values) {
                 let menuoptiondataIndex = menuoptions.findIndex(v=> v.value == value)
-                client.social_log.remove(message.guild.id, d=> d.ChannelName == channels[menuoptiondataIndex].ChannelName, "twitch.channels")
+                await dbRemove(client.social_log+".twitch.channels", message.guild.id, d=> d.ChannelName == channels[menuoptiondataIndex].ChannelName)
               }
               menu?.reply(`✅ **Successfully removed ${menu?.values.length} Twitch Accounts!**`)
             }
-            else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+            else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
           });
           //Once the Collections ended edit the menu message
           collector.on('end', collected => {
-            menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+            menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
           });
           } break;
           case "New Channel":
           {
-            if(client.social_log.get(message.guild.id, "twitch.channels").length > 10) return message.reply(":x: **You can't have more then 10 Twitch Channels**");
+            let channels = await client.social_log.get(message.guild.id+".twitch.channels");
+            if(channels.length > 10) return message.reply(":x: **You can't have more then 10 Twitch Channels**");
             var tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable5"]))
               .setColor(es.color)
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable6"]))
               .setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 90000,
                 errors: ["time"]
@@ -224,7 +224,7 @@ module.exports = {
                     .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable8"]))
                     .setFooter(client.getFooter(es))
                   ]})
-                  await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+                  await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                       max: 1,
                       time: 90000,
                       errors: ["time"]
@@ -239,7 +239,7 @@ module.exports = {
                           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable10"]))
                           .setFooter(client.getFooter(es))
                         ]})
-                        await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+                        await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                             max: 1,
                             time: 90000,
                             errors: ["time"]
@@ -248,13 +248,13 @@ module.exports = {
                             var msg = collected.first().content;
                             if(msg){
                               var themsg = msg;
-                              client.social_log.push(message.guild.id,
+                              await client.social_log.push(message.guild.id+".twitch.channels",
                                 {
                                   ChannelName: channelname,
                                   DISCORD_USER_ID: discorduser,
                                   twitch_stream_id: "",
                                   message: themsg
-                                }, "twitch.channels")
+                                })
                               
                               return message.reply({embeds: [new Discord.MessageEmbed()
                                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable11"]))
@@ -268,7 +268,7 @@ module.exports = {
                             }
                           })
                           .catch(e => {
-                            console.log(e)
+                            console.error(e)
                             return message.reply({embeds: [new Discord.MessageEmbed()
                               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable15"]))
                               .setColor(es.wrongcolor)
@@ -282,7 +282,7 @@ module.exports = {
                       }
                     })
                     .catch(e => {
-                      console.log(e)
+                      console.error(e)
                       return message.reply({embeds: [new Discord.MessageEmbed()
                         .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable15"]))
                         .setColor(es.wrongcolor)
@@ -296,7 +296,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e)
+                console.error(e)
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable15"]))
                   .setColor(es.wrongcolor)
@@ -313,15 +313,15 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable18"]))
               .setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 90000,
                 errors: ["time"]
             })
-            .then(collected => {
+            .then(async collected => {
               var message = collected.first();
               if (message.content.toLowerCase() == "no") {
-                client.social_log.set(message.guild.id, "", "twitch.channelId")
+                await client.social_log.set(message.guild.id+".twitch.channelId", "")
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable19"]))
                   .setColor(es.color)
@@ -331,7 +331,7 @@ module.exports = {
               var channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
               if (channel) {
                 try {
-                  client.social_log.set(message.guild.id, channel.id, "twitch.channelId")
+                  await client.social_log.set(message.guild.id+".twitch.channelId",channel.id)
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable20"]))
                     .setColor(es.color)
@@ -350,7 +350,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e)
+              console.error(e)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable23"]))
                 .setColor(es.wrongcolor)
@@ -367,15 +367,15 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable25"]))
               .setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 90000,
                 errors: ["time"]
               })
-              .then(collected => {
+              .then(async collected => {
                 var message = collected.first();
                 if (message.content.toLowerCase() == "no") {
-                  client.social_log.set(message.guild.id, "", "twitch.roleID_GIVE")
+                  await client.social_log.set(message.guild.id+".twitch.roleID_GIVE", "")
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable26"]))
                     .setColor(es.color)
@@ -385,7 +385,7 @@ module.exports = {
                 var channel = message.mentions.roles.filter(role=>role.guild.id==message.guild.id).first();
                 if (channel) {
                   try {
-                    client.social_log.set(message.guild.id, channel.id, "twitch.roleID_GIVE")
+                    await client.social_log.set(message.guild.id+".twitch.roleID_GIVE", channel.id)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable27"]))
                       .setColor(es.color)
@@ -404,7 +404,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e)
+                console.error(e)
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable30"]))
                   .setColor(es.wrongcolor)
@@ -421,15 +421,15 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable32"]))
               .setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
               max: 1,
               time: 90000,
               errors: ["time"]
             })
-            .then(collected => {
+            .then(async collected => {
               var message = collected.first();
               if (message.content.toLowerCase() == "no") {
-                client.social_log.set(message.guild.id, "", "twitch.roleID_PING")
+                await client.social_log.set(message.guild.id+".twitch.roleID_PING", "")
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable33"]))
                   .setColor(es.color)
@@ -439,7 +439,7 @@ module.exports = {
               var channel = message.mentions.roles.filter(role=>role.guild.id==message.guild.id).first();
               if (channel) {
                 try {
-                  client.social_log.set(message.guild.id, channel.id, "twitch.roleID_PING")
+                  await client.social_log.set(message.guild.id+".twitch.roleID_PING", channel.id)
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable34"]))
                     .setColor(es.color)
@@ -458,7 +458,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e)
+              console.error(e)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-twitch"]["variable37"]))
                 .setColor(es.wrongcolor)
@@ -472,7 +472,7 @@ module.exports = {
       }
 
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

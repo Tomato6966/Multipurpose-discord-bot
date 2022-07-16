@@ -1,11 +1,11 @@
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const translate = require("translatte");
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+const { handlemsg } = require(`../../handlers/functions`);
 module.exports = {
   name: "translate",
   category: "🔰 Info",
@@ -14,9 +14,9 @@ module.exports = {
   usage: "translate <from> <to> <TEXT>",
   description: "Translates Text from a Language to another one!",
   type: "util",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       if(!args[0]) return message.reply(handlemsg(client.la[ls].cmds.info.translate.error, {prefix: prefix}))
       if(!args[1]) return message.reply(handlemsg(client.la[ls].cmds.info.translate.error, {prefix: prefix}))
@@ -38,7 +38,7 @@ module.exports = {
             console.log(err);
       });
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

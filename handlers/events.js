@@ -14,7 +14,7 @@ module.exports = (client) => {
           allevents.push(eventName);
           client.on(eventName, event.bind(null, client));
         }catch(e){
-          console.log(String(e.stack).grey.bgRed)
+          console.error(e)
         }
       }
     }
@@ -32,7 +32,7 @@ module.exports = (client) => {
     } catch {
       /* */ }
     } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
   }
 };
 /**

@@ -3,13 +3,13 @@ const {
   MessageEmbed,
   Permissions
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
 const emoji = require("../../botconfig/emojis.json");
 const ms = require("ms")
 const {
   databasing, delay
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 module.exports = {
   name: "dm",
   category: "🚫 Administration",
@@ -18,12 +18,12 @@ module.exports = {
   usage: "dm <@User/@Role> <MESSAGE>",
   description: "Allows you to DM a USER or every USER of a ROLE",
   type: "memberrole",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       return message.reply({content : eval(client.la[ls]["cmds"]["administration"]["dm"]["variable1"])})
-      if (!message.member.permissions.has([Permissions.FLAGS.ADMINISTRATOR]))
+      if (!message.member?.permissions?.has([Permissions.FLAGS.ADMINISTRATOR]))
         return message.reply({embeds  :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -45,7 +45,7 @@ module.exports = {
           member.send({embeds : [new MessageEmbed()
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
             .setFooter(client.getFooter(es))
-            .setAuthor(`Message from: ${message.author.username}`, message.author.displayAvatarURL({dynamic:true}), "https://discord.gg/milrato")
+            .setAuthor(client.getAuthor(`Message from: ${message.author.username}`, message.author.displayAvatarURL({dynamic:true}), "https://discord.gg/milrato"))
             .setDescription(args.slice(1).join(" ").substring(0, 2048))
           ]})
           message.reply({embeds : [new MessageEmbed()
@@ -62,7 +62,7 @@ module.exports = {
         }
       }
       else if(role){
-        await message.guild.members.fetch().catch(() => {});
+        await message.guild.members.fetch().catch(() => null);
         if (!args[1])
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
@@ -85,16 +85,16 @@ module.exports = {
         await message.reply({embeds :[new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setFooter(client.getFooter(es))
-          .setAuthor(`Dming ${members.length} Members...`, "https://images-ext-1.discordapp.net/external/ANU162U1fDdmQhim_BcbQ3lf4dLaIQl7p0HcqzD5wJA/https/cdn.discordapp.com/emojis/756773010123522058.gif", "https://discord.gg/2dKrZQyaC4")
+          .setAuthor(client.getAuthor(`Dming ${members.length} Members...`, "https://images-ext-1.discordapp.net/external/ANU162U1fDdmQhim_BcbQ3lf4dLaIQl7p0HcqzD5wJA/https/cdn.discordapp.com/emojis/756773010123522058.gif", "https://discord.gg/milrato"))
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["dm"]["variable12"]))
         ]});
-        for(const member of members) {
+        for await (const member of members) {
           try{
             var failedd = false
             await member.send({embeds : [new MessageEmbed()
               .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
               .setFooter(client.getFooter(es))
-              .setAuthor(`Message from: ${message.author.username}`, message.author.displayAvatarURL({dynamic:true}), "https://discord.gg/milrato")
+              .setAuthor(client.getAuthor(`Message from: ${message.author.username}`, message.author.displayAvatarURL({dynamic:true}), "https://discord.gg/milrato"))
               .setDescription(args.slice(1).join(" ").substring(0, 2048))
             ]}).catch(e=>{
               failedd = true
@@ -109,7 +109,7 @@ module.exports = {
           }
           await delay(1500);
         }
-        await message.reply({content: `<@${message.author.id}>`, embeds: [new MessageEmbed()
+        await message.reply({content: `<@${message.author?.id}>`, embeds: [new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["dm"]["variable13"]))
@@ -124,24 +124,24 @@ module.exports = {
         .setDescription(eval(client.la[ls]["cmds"]["administration"]["dm"]["variable16"]))
         ]});
       }
-      if(client.settings.get(message.guild.id, `adminlog`) != "no"){
+      if(GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no"){
         try{
-          var channel = message.guild.channels.cache.get(client.settings.get(message.guild.id, `adminlog`))
-          if(!channel) return client.settings.set(message.guild.id, "no", `adminlog`);
+          var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
+          if(!channel) return client.settings.set(`${message.guild.id}.adminlog`, "no");
           channel.send({embeds : [new MessageEmbed()
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-            .setAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({dynamic: true}))
+            .setAuthor(client.getAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({dynamic: true})))
             .setDescription(eval(client.la[ls]["cmds"]["administration"]["dm"]["variable17"]))
             .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
            .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-            .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+            .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
           ]})
         }catch (e){
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       } 
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

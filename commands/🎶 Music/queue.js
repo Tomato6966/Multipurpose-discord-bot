@@ -1,16 +1,16 @@
 const {
   MessageEmbed
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+const ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   format,
   delay,
   swap_pages,
   swap_pages2
-} = require(`${process.cwd()}/handlers/functions`);
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
+const { handlemsg } = require(`../../handlers/functions`);
     module.exports = {
   name: `queue`,
   category: `🎶 Music`,
@@ -23,10 +23,10 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     "previoussong": false
   },
   type: "queue",
-  run: async (client, message, args, cmduser, text, prefix, player) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    
+    if(GuildSettings.MUSIC === false) {
       return message.reply({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -45,9 +45,9 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
           }))
           .setColor(es.color).addField(eval(client.la[ls]["cmds"]["music"]["queue"]["variablex_1"]), eval(client.la[ls]["cmds"]["music"]["queue"]["variable1"]))
           .setDescription(eval(client.la[ls]["cmds"]["music"]["queue"]["variable2"]))
-        ]}).then(msg => {
+        ]}).then(async (msg) => {
           setTimeout(()=>{try { 
-            msg.delete().catch(() => {});
+            msg.delete().catch(() => null);
           } catch {} 
           }, 5000)
         })
@@ -59,9 +59,9 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
           }))
           .addField(`**\` 0. \` __CURRENT TRACK__**`, `**${player.queue.current.uri ? `[${player.queue.current.title.substring(0, 60).replace(/\[/igu, "\\[").replace(/\]/igu, "\\]")}](${player.queue.current.uri})`: player.queue.current.title}** - \`${player.queue.current.isStream ? `LIVE STREAM` : format(player.queue.current.duration).split(` | `)[0]}\`\n> *Requested by: __${player.queue.current.requester.tag}__*`)
           .setColor(es.color).setDescription(tracks.map((track, index) => `**\` ${++index}. \`${track.uri ? `[${track.title.substring(0, 60).replace(/\[/igu, "\\[").replace(/\]/igu, "\\]")}](${track.uri})`: track.title}** - \`${track.isStream ? `LIVE STREAM` : format(track.duration).split(` | `)[0]}\`\n> *Requested by: __${track.requester.tag}__*`).join(`\n`))
-        ]}).then(msg => {
+        ]}).then(async (msg) => {
           setTimeout(()=>{try { 
-            msg.delete().catch(() => {});
+            msg.delete().catch(() => null);
           } catch {} 
           }, 5000)
         })

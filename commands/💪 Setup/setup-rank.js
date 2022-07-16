@@ -2,14 +2,14 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing,
+  dbEnsure,
   edit_msg,
   send_roster
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-rank",
@@ -20,9 +20,8 @@ module.exports = {
   description: "Manage the Ranking System with stuff like channel, background, etc",
   memberpermissions: ["ADMINISTRATOR"],
   type: "system",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
     try {
 
       first_layer()
@@ -79,30 +78,30 @@ module.exports = {
         //define the embed
         let MenuEmbed = new MessageEmbed()
           .setColor(es.color)
-          .setAuthor('Rank Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/page-with-curl_1f4c3.png', 'https://discord.gg/milrato')
+          .setAuthor(client.getAuthor('Rank Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/page-with-curl_1f4c3.png', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
 
@@ -115,18 +114,18 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-rank"]["variable6"]))
               .setFooter(client.getFooter(es))
             ]})
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 90000,
                 errors: ["time"]
               })
-              .then(collected => {
+              .then(async collected => {
                 var message = collected.first();
                 var channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
                 if (channel) {
                   try {
-                    client.points.set(message.guild.id, channel.id, "channel")
-                    client.points.set(message.guild.id, false, "disabled")
+                    await client.points.set(message.guild.id+".channel", channel.id, )
+                    await client.points.set(message.guild.id+".disabled", false)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-rank"]["variable7"]))
                       .setColor(es.color)
@@ -145,7 +144,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                console.error(e);
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-rank"]["variable10"]))
                   .setColor(es.wrongcolor)
@@ -156,8 +155,8 @@ module.exports = {
           }break;
           case "Reply on Levelup": {
             try {
-              client.points.set(message.guild.id, false, "channel")
-              client.points.set(message.guild.id, false, "disabled")
+              await client.points.set(message.guild.id+".channel", false)
+              await client.points.set(message.guild.id+".disabled", false)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-rank"]["variable11"]))
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-rank"]["variable12"]))
@@ -175,13 +174,13 @@ module.exports = {
           }break;
           case "Disable Levelup": {
             try {
-              if (client.points.get(message.guild.id, "disabled")) return message.reply({embeds: [new Discord.MessageEmbed()
+              if (await client.points.get(message.guild.id+".disabled")) return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-rank"]["variable15"]))
                 .setColor(es.wrongcolor)
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-rank"]["variable16"]))
                 .setFooter(client.getFooter(es))
               ]});
-              client.points.set(message.guild.id, true, "disabled")
+              await client.points.set(message.guild.id+".disabled", true)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-rank"]["variable17"]))
                 .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-rank"]["variable18"]))
@@ -198,11 +197,9 @@ module.exports = {
             }
           }break;
           case "Levelup Roles": {
-            client.points.ensure(message.guild.id, {
-              rankroles: {
-                  
-              }
-          })
+            await dbEnsure(client.points, message.guild.id, {
+              rankroles: { }
+            })
           var tempmsg = await message.reply({embeds: [new Discord.MessageEmbed()
             .setTitle("What do you want to do now?")
             .setColor(es.color)
@@ -213,21 +210,21 @@ module.exports = {
             .setFooter(client.getFooter(es))
           ]})
           await tempmsg.channel.awaitMessages({
-              filter: m => m.author.id === message.author.id,
+              filter: m => m.author.id === message.author?.id,
               max: 1,
               time: 90000,
               errors: ["time"]
             })
-            .then(collected => {
+            .then(async collected => {
               var message = collected.first();
               let arggs = message.content.trim().split(" ");
               if(!arggs[0] || isNaN(arggs[0])) return message.reply("**:x: YOU DID WRONG! Please read what the introduction tells you!**\nCancelled!")
               var Role = message.mentions.roles.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.roles.cache.get(arggs[1]);
                 try {
-                  let oldRankRoles = client.points.get(message.guild.id, "rankroles");
+                  let oldRankRoles = await client.points.get(message.guild.id+".rankroles");
                   if(!arggs[1] && oldRankRoles[parseInt(arggs[0])]){
                     delete oldRankRoles[parseInt(arggs[0])]
-                    client.points.set(message.guild.id, oldRankRoles, "rankroles");
+                    await client.points.set(message.guild.id+".rankroles", oldRankRoles);
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(`**REMOVED** the Levelup-Role: ${Role.name} for the Levelup-Level: ${parseInt(arggs[0])}`)
                       .setColor(es.color)
@@ -236,7 +233,7 @@ module.exports = {
                     ]});
                   } else if(arggs[1] && oldRankRoles[parseInt(arggs[0])]){
                     oldRankRoles[parseInt(arggs[0])] = Role.id;
-                    client.points.set(message.guild.id, oldRankRoles, "rankroles");
+                    await client.points.set(message.guild.id+".rankroles", oldRankRoles);
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(`**CHANGE** the Levelup-Role: ${Role.name} for the Levelup-Level: ${parseInt(arggs[0])}`)
                       .setColor(es.color)
@@ -245,7 +242,7 @@ module.exports = {
                     ]});
                   } else {
                     oldRankRoles[parseInt(arggs[0])] = Role.id;
-                    client.points.set(message.guild.id, oldRankRoles, "rankroles");
+                    await client.points.set(message.guild.id+".rankroles", oldRankRoles);
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(`**ADDED** the Levelup-Role: ${Role.name} for the Levelup-Level: ${parseInt(arggs[0])}`)
                       .setColor(es.color)
@@ -263,7 +260,7 @@ module.exports = {
                 }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-rank"]["variable10"]))
                 .setColor(es.wrongcolor)
@@ -274,16 +271,16 @@ module.exports = {
           }break;
           case "Show Settings": {
 
-            client.points.ensure(message.guild.id, {
+            await dbEnsure(client.points, message.guild.id, {
               rankroles: {
                   
               }
             })
             let rankroles = [];
-            let rolesdata = client.points.get(message.guild.id, "rankroles")
-            let channel = client.points.get(message.guild.id, "channel")
-            let disabled = client.points.get(message.guild.id, "disabled")
-            for(const [key, value] of Object.entries(rolesdata)){
+            let rolesdata = await client.points.get(message.guild.id+".rankroles")
+            let channel = await client.points.get(message.guild.id+".channel")
+            let disabled = await client.points.get(message.guild.id+".disabled")
+            for await (const [key, value] of Object.entries(rolesdata)){
               rankroles.push(`\`${key}\`. <@&${value}>`)
             }
             return message.reply({embeds: [new Discord.MessageEmbed()
@@ -297,7 +294,7 @@ module.exports = {
         }
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

@@ -15,9 +15,9 @@ module.exports = {
   options: [
     { "User": { name: "which_user", description: "From Which User do you want to get ... ?", required: false } }, //to use in the code: interacton.getUser("ping_a_user")
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
 
-    if (!client.settings.get(message.guild.id, "FUN")) {
+    if (GuildSettings.FUN === false) {
       const x = new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -44,7 +44,7 @@ module.exports = {
           .setAuthor(`Meme for: ${user.tag}`, avatar)
           .setImage("attachment://trash.png")
         ], files: [attachment], ephemeral: true
-      }).catch(() => {})
+      }).catch(() => null)
     })
 
   }

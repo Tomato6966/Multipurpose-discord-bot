@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing, duration
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure, duration, dbEnsure
+} = require(`../../handlers/functions`);
 const ms = require("ms");
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
@@ -19,21 +19,21 @@ module.exports = {
   description: "Setup a System which Blocks too new Accounts!",
   memberpermissions: ["ADMINISTRATOR"],
   type: "security",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
-      client.settings.ensure(message.guild.id, {
+      await dbEnsure(client.settings, message.guild.id, {
         antinewaccount: {
           enabled: false,
           delay: ms("2 days"),
           action: "kick", // kick / ban
           extra_message: "Please do not join back, unless you meet the requirements!"
         } 
-      });
+      })
 
 
-      const settings = client.settings.get(message.guild.id, "antinewaccount")
+      const settings = await client.settings.get(message.guild.id+ ".antinewaccount")
       first_layer()
       async function first_layer(){
         let menuoptions = [
@@ -94,24 +94,24 @@ module.exports = {
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
 
@@ -119,8 +119,8 @@ module.exports = {
         switch (optionhandletype) {
           case !settings.enabled ? "Enable Anti New Account" : "Disable Anti New Account":
           {
-              client.settings.set(message.guild.id, !settings.enabled, `antinewaccount.enabled`)
-              let thesettings = client.settings.get(message.guild.id, `antinewaccount`)
+              await client.settings.set(message.guild.id+`.antinewaccount.enabled`, !settings.enabled)
+              let thesettings = await client.settings.get(message.guild.id+`.antinewaccount`)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(`${thesettings ? `Enabled New Account Detection` : `Disabled New Account Detection`}`)
                 .setColor(es.color)
@@ -138,7 +138,7 @@ module.exports = {
                 .addField(`**Current Extra-Message:**`, `${extramessage && extramessage.length > 1 ? extramessage : "No Extra Message provided"}`.substring(0, 1024))
                 .setDescription(`Send it now!`).setFooter(client.getFooter(es))]
               })
-              await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+              await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                   max: 1,
                   time: 90000,
                   errors: ["time"]
@@ -148,7 +148,7 @@ module.exports = {
                   if(!message) return message.reply("NO MESSAGE SENT");
                   if(message.content){
                     extramessage = message.content.slice(0, 1024);
-                    client.settings.set(message.guild.id, extramessage, `antinewaccount.extra_message`)
+                    await client.settings.set(message.guild.id+`.antinewaccount.extra_message`, extramessage)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(`Defined the New Extra Message!`)
                       .setColor(es.color)
@@ -172,7 +172,7 @@ module.exports = {
           break;
           case "Show Settings":
             {
-              let thesettings = client.settings.get(message.guild.id, `antinewaccount`)
+              let thesettings = await client.settings.get(message.guild.id+ `.antinewaccount`)
               const extramessage = thesettings.extra_message;
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(`Settings of the New Account Detection Setup`)
@@ -228,17 +228,17 @@ module.exports = {
             let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
             //Create the collector
             const collector = menumsg.createMessageComponentCollector({ 
-              filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+              filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
               time: 90000
             })
             //Menu Collections
-            collector.on('collect', menu => {
+            collector.on('collect', async menu => {
               if (menu?.user.id === cmduser.id) {
                 collector.stop();
                 let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
                 if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-                menu?.deferUpdate();                
-                client.settings.set(message.guild.id, menu?.values[0], `antinewaccount.action`)
+                client.disableComponentMessage(menu);                
+                await client.settings.set(message.guild.id+`.antinewaccount.action`, menu?.values[0])
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(`Successfully set the new Action to: ${menu?.values[0]}`)
                   .setColor(es.color)
@@ -246,11 +246,11 @@ module.exports = {
                   .setFooter(client.getFooter(es))
                 ]});
               }
-              else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+              else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
             });
             //Once the Collections ended edit the menu message
             collector.on('end', collected => {
-              menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+              menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
             });
           }break;
           case "Set the Duration": {
@@ -261,7 +261,7 @@ module.exports = {
                 .addField(`**Current Minimum Account Age:**`, `${duration(settings.delay).map(i => `\`${i}\``).join(", ")}`.substring(0, 1024))
                 .setDescription(`Send it now!\nExample: \`2 Days\`, \`6 hours + 2 Days\``).setFooter(client.getFooter(es))]
               })
-              await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+              await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                   max: 1,
                   time: 90000,
                   errors: ["time"]
@@ -272,12 +272,12 @@ module.exports = {
                   if(message.content){
                     let gargs = message.content.split("+");
                     let time = 0;
-                    for(const a of gargs){
+                    for await (const a of gargs){
                       time += ms(a.split(" ").join(""))
                     }
                     if(!time || isNaN(time)) return message.reply("You added a not valid Time!");
                     
-                    client.settings.set(message.guild.id, time, `antinewaccount.delay`)
+                    await client.settings.set(message.guild.id+`.antinewaccount.delay`, time)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(`Defined the New Minimum Account Duration!`)
                       .setColor(es.color)
@@ -301,7 +301,7 @@ module.exports = {
         }
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

@@ -6,14 +6,14 @@ var {
   MessageSelectMenu,
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 const fs = require('fs');
 var {
-  databasing,
+  dbEnsure,
   isValidURL
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 module.exports = {
   name: "setup-advertise",
   category: "👑 advertise",
@@ -22,10 +22,10 @@ module.exports = {
   usage: "setup-advertise  -->  Follow the Steps",
   type: "bot",
   description: "Changes if the Advertisement of BERO-HOST.de Should be there or NOT",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!config.ownerIDS.some(r => r.includes(message.author.id)))
+    
+    if (!config.ownerIDS.some(r => r.includes(message.author?.id)))
       return message.channel.send({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["owner"]["setup-advertise"]["variable1"]))
@@ -72,7 +72,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
         .setColor(es.color)
-        .setAuthor('Advertising Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/prohibited_1f6ab?.png',  'https://discord.gg/milrato')
+        .setAuthor(client.getFooter('Advertising Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/prohibited_1f6ab.png',  'https://discord.gg/milrato'))
         .setDescription(eval(client.la[ls]["cmds"]["owner"]["setup-advertise"]["variable4"]))
         let used1 = false;
         //send the menu msg
@@ -82,12 +82,12 @@ module.exports = {
           let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
           let menuoptionindex = menuoptions.findIndex(v => v.value == menu?.values[0])
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["owner"]["setup-advertise"]["variable5"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
           used1 = true;
           handle_the_picks(menuoptionindex, menuoptiondata)
         }
         //Event
-        client.on('interactionCreate',  (menu) => {
+        client.on('interactionCreate', async (menu) => {
           if (menu?.message.id === menumsg.id) {
             if (menu?.user.id === cmduser.id) {
               if(used1) return menu?.reply({content : `<:no:833101993668771842> You already selected something, this Selection is now disabled!`}, {ephermal : true});
@@ -106,28 +106,28 @@ module.exports = {
           case 0:
             {
               let advertisement = require("../../botconfig/advertisement.json");
-            advertisement.adenabled = !advertisement.adenabled;
-            fs.writeFile(`./botconfig/advertisement.json`, JSON.stringify(advertisement, null, 3), (e) => {
-              if (e) {
-                console.log(e.stack ? String(e.stack).dim : String(e).dim);
-                return message.channel.send({embedq: [new MessageEmbed()
-                  .setFooter(client.getFooter(es))
-                  .setColor(es.wrongcolor)
-                  .setTitle(eval(client.la[ls]["cmds"]["owner"]["setup-advertise"]["variable6"]))
-                  .setDescription(eval(client.la[ls]["cmds"]["owner"]["setup-advertise"]["variable7"]))
-                ]})
-              }
-            let advertisement = require("../../botconfig/advertisement.json");
-            client.ad.enabled = advertisement.adenabled;
-            client.ad.statusad = advertisement.statusad
-            client.ad.spacedot = advertisement.spacedot;
-            client.ad.textad = advertisement.textad;
-            return message.channel.send({embeds: [new MessageEmbed()
-              .setFooter(client.getFooter(es))
-              .setColor(es.color)
-              .setTitle(eval(client.la[ls]["cmds"]["owner"]["setup-advertise"]["variable8"]))
-            ]})
-          });
+              advertisement.adenabled = !advertisement.adenabled;
+              fs.writeFile(`./botconfig/advertisement.json`, JSON.stringify(advertisement, null, 3), (e) => {
+                if (e) {
+                  console.log(e.stack ? String(e.stack).dim : String(e).dim);
+                  return message.channel.send({embedq: [new MessageEmbed()
+                    .setFooter(client.getFooter(es))
+                    .setColor(es.wrongcolor)
+                    .setTitle(eval(client.la[ls]["cmds"]["owner"]["setup-advertise"]["variable6"]))
+                    .setDescription(eval(client.la[ls]["cmds"]["owner"]["setup-advertise"]["variable7"]))
+                  ]})
+                }
+              let advertisement = require("../../botconfig/advertisement.json");
+              client.ad.enabled = advertisement.adenabled;
+              client.ad.statusad = advertisement.statusad
+              client.ad.spacedot = advertisement.spacedot;
+              client.ad.textad = advertisement.textad;
+              return message.channel.send({embeds: [new MessageEmbed()
+                .setFooter(client.getFooter(es))
+                .setColor(es.color)
+                .setTitle(eval(client.la[ls]["cmds"]["owner"]["setup-advertise"]["variable8"]))
+              ]})
+            });
             }
             break;
           case 1: {

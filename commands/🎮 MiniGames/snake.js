@@ -10,8 +10,8 @@ function disableButtons(components) {
 };
 const WIDTH = 15;
 const HEIGHT = 10;
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
 class SnakeGame {
   constructor(options = {}) {
       if (!options.message) throw new TypeError('NO_MESSAGE: Please provide a message arguement')
@@ -230,7 +230,7 @@ class SnakeGame {
       })
 
       collector.on('collect', async btn => {
-          if (btn.user.id !== this.message.author.id) return btn.reply({ content: this.options.othersMessage.replace('{author}', this.message.author.tag),  ephemeral: true })
+          if (btn.user.id !== this.message.author?.id) return btn.reply({ content: this.options.othersMessage.replace('{author}', this.message.author.tag),  ephemeral: true })
 
           await btn.deferUpdate();
           const snakeHead = this.snake[0];
@@ -301,14 +301,14 @@ module.exports = {
     description: "Allows you to play a Game1",
     usage: "snake --> Play the Game",
     type: "buttons",
-     run: async (client, message, args, cmduser, text, prefix) => {
-        let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        if(!client.settings.get(message.guild.id, "MINIGAMES")){
+     run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+        
+        if(GuildSettings.FUN === false){
           return message.reply(new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.disabled.title)
-            .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+            .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
           );
         }
         new SnakeGame({

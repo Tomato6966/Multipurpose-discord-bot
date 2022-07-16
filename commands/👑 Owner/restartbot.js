@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing, isValidURL
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure, isValidURL
+} = require(`../../handlers/functions`);
 module.exports = {
   name: "restartbot",
   category: "👑 Owner",
@@ -16,9 +16,9 @@ module.exports = {
   usage: "restartbot",
   type: "bot",
   description: "Restarts the Bot, if it`s not working as intended or so..",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    return;
     try {
       await message.reply("NOW RESTARTING!");
       require("child_process").exec(`pm2 restart ID_OF_THE_BOT_PROCESS_IN_PM2_LIST`, (error, stdout, stderr) => {

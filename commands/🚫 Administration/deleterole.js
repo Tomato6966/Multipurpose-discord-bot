@@ -1,14 +1,14 @@
-const config = require(`${process.cwd()}/botconfig/config.json`);
+const config = require(`../../botconfig/config.json`);
 const ms = require(`ms`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`)
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var ee = require(`../../botconfig/embed.json`)
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   MessageEmbed, MessageActionRow, MessageButton,
   Permissions
 } = require(`discord.js`)
 const {
   databasing
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 module.exports = {
   name: `deleterole`,
   category: `🚫 Administration`,
@@ -17,7 +17,7 @@ module.exports = {
   usage: `deleterole  @Role`,
   description: `Delets a Role from this Server`,
   type: "role",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
     if(!message.guild.me.permissions.has([Permissions.FLAGS.MANAGE_ROLES]))      
     return message.reply({embeds : [new MessageEmbed()
@@ -25,10 +25,10 @@ module.exports = {
       .setFooter(client.getFooter(es))
       .setTitle(eval(client.la[ls]["cmds"]["administration"]["deleterole"]["variable1"]))
     ]})
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
-      let adminroles = client.settings.get(message.guild.id, "adminroles")
-      let cmdroles = client.settings.get(message.guild.id, "cmdadminroles.deleterole")
+      let adminroles = GuildSettings?.adminroles || [];
+      let cmdroles = GuildSettings?.cmdadminroles?.deleterole || [];
       var cmdrole = []
       if (cmdroles.length > 0) {
         for (const r of cmdroles) {
@@ -37,13 +37,16 @@ module.exports = {
           } else if (message.guild.members.cache.get(r)) {
             cmdrole.push(` | <@${r}>`)
           } else {
-            
-            //console.log(r)
-            client.settings.remove(message.guild.id, r, `cmdadminroles.deleterole`)
+            const File = `deleterole`;
+            let index = GuildSettings && GuildSettings.cmdadminroles && typeof GuildSettings.cmdadminroles == "object" ? GuildSettings.cmdadminroles[File]?.indexOf(r) || -1 : -1;
+            if(index > -1) {
+              GuildSettings.cmdadminroles[File].splice(index, 1);
+              client.settings.set(`${message.guild.id}.cmdadminroles`, GuildSettings.cmdadminroles)
+            }
           }
         }
       }
-      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author.id) && !message.member.permissions.has([Permissions.FLAGS.ADMINISTRATOR]))
+      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author?.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author?.id) && !message.member?.permissions?.has([Permissions.FLAGS.ADMINISTRATOR]))
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -56,7 +59,7 @@ module.exports = {
         ]});
       let button_verify = new MessageButton().setStyle('SUCCESS').setCustomId('deleterole_verify').setLabel("Verify this Step").setEmoji("833101995723194437")
       let msg = await message.channel.send({
-          content: `<@${message.author.id}>`,
+          content: `<@${message.author?.id}>`,
           embeds: [
             new MessageEmbed()
             .setTitle(eval(client.la[ls]["cmds"]["administration"]["deleterole"]["variable6"]))
@@ -69,19 +72,19 @@ module.exports = {
           time: 30000
       }); //collector for 5 seconds
       collector.on('collect', async b => {
-          if (b?.user.id !== message.author.id)
+          if (b?.user.id !== message.author?.id)
               return b?.reply(`<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`, true)
 
           edited = true;
           msg.edit({
-              content: `<@${message.author.id}>`,
+              content: `<@${message.author?.id}>`,
               embeds: [new MessageEmbed()
                   .setTitle("Verified!")
                   .setColor(es.color)
               ],
               components: [new MessageActionRow().addComponents(button_verify.setDisabled(true))]
           }).catch((e) => {
-              console.log(String(e).grey)
+              console.error(e)
           });
 
 
@@ -95,26 +98,26 @@ module.exports = {
                   .setFooter(client.getFooter(es))
                   .setTitle(eval(client.la[ls]["cmds"]["administration"]["deleterole"]["variable8"]))
                 ]});
-                if (client.settings.get(message.guild.id, `adminlog`) != "no") {
+                if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
                   try {
-                    var channel = message.guild.channels.cache.get(client.settings.get(message.guild.id, `adminlog`))
-                    if (!channel) return client.settings.set(message.guild.id, "no", `adminlog`);
+                    var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
+                    if (!channel) return client.settings.set(`${message.guild.id}.adminlog`, "no");
                     channel.send({embeds : [new MessageEmbed()
                       .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-                      .setAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({
+                      .setAuthor(client.getAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({
                         dynamic: true
-                      }))
+                      })))
                       .setDescription(eval(client.la[ls]["cmds"]["administration"]["deleterole"]["variable9"]))
                       .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
                       .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-                      .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+                      .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
                     ]})
                   } catch (e) {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                   }
                 }
               })
-              .catch(() => {});
+              .catch(() => null);
           } else {
             return message.reply({embeds : [new MessageEmbed()
               .setColor(es.wrongcolor)
@@ -132,16 +135,16 @@ module.exports = {
           if (!edited) {
               edited = true;
               msg.edit({
-                  content: `<@${message.author.id}>`,
+                  content: `<@${message.author?.id}>`,
                   embeds: [endedembed],
                   components: [new MessageActionRow().addComponents(button_verify.setDisabled(true).setLabel("FAILED TO VERIFY").setEmoji("833101993668771842").setStyle('DANGER'))]
               }).catch((e) => {
-                  console.log(String(e).grey)
+                  console.error(e)
               });
           }
       });
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

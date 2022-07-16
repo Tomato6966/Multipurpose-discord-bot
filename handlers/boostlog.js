@@ -1,9 +1,10 @@
 const { MessageEmbed } = require("discord.js");
+const { dbEnsure, dbKeys, dbRemove, delay } = require("./functions")
 module.exports = function (client, options) {
 
   client.on("guildMemberUpdate", async (oM, nM) => {
     
-    client.settings.ensure(nM.guild.id, {
+    await dbEnsure(client.settings, nM.guild.id, {
       boost: {
         enabled: false,
         message: "",
@@ -13,20 +14,19 @@ module.exports = function (client, options) {
         againBoost: "<a:Server_Boosts:867777823468027924> {member} **has boosted us again!** <:Tada_WON:867724032207224833>",
       }
     })
-    if(!client.settings.has(nM.guild.id)) return;
-    if(!client.settings.has(nM.guild.id, "boost")) return;
+    const GuildSettings = await client.settings.get(nM.guild.id)
+    if(!GuildSettings) return;
+    if(!GuildSettings.boost) return;
 
-    let settings = client.settings.get(nM.guild.id, "boost");
-    if(settings && settings.enabled) {
+    let settings = GuildSettings.boost;
+    if(settings && settings?.enabled) {
       //if he/she starts boosting    
       if(!oM.premiumSince && nM.premiumSince) {
-        console.log(settings)
-        nM.send(settings.message.substring(0, 2000)).catch(() => {});
+        nM.send(settings.message.substring(0, 2000)).catch(() => null);
       }
       //if he/she boosts again
       if(oM.premiumSince && oM.premiumSinceTimestamp != nM.premiumSinceTimestamp) {
-        console.log(settings)
-        nM.send(settings.message.substring(0, 2000)).catch(() => {});
+        nM.send(settings.message.substring(0, 2000)).catch(() => null);
       }
     }
 
@@ -34,7 +34,7 @@ module.exports = function (client, options) {
 
     if(settings && settings.log) {
       let boostLogChannel = nM.guild.channels.cache.get(settings.log);
-      if(!boostLogChannel) boostLogChannel = await nM.guild.channels.fetch(settings.log).catch(()=>{}) || false;
+      if(!boostLogChannel) boostLogChannel = await nM.guild.channels.fetch(settings.log).catch(() => null) || false;
       if(!boostLogChannel) return;
       
       let stopBoost = new MessageEmbed()

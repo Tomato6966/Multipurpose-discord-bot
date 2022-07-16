@@ -8,7 +8,7 @@ const { swap_pages, handlemsg } = require(`${process.cwd()}/handlers/functions`)
 module.exports = {
   name: "serverinfo",
   description: "Shows info about a server",
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     //things u can directly access in an interaction!
     const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;
@@ -78,7 +78,7 @@ module.exports = {
         })))]});
      
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
     }
   }
 }

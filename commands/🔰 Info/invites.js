@@ -1,9 +1,9 @@
 const Discord = require("discord.js");
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { GetUser, GetGlobalUser, handlemsg, nFormatter } = require(`${process.cwd()}/handlers/functions`)
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { GetUser, GetGlobalUser, handlemsg, nFormatter, dbEnsure } = require(`../../handlers/functions`)
 module.exports = {
   name: "invites",
   aliases: ["invitecount"],
@@ -11,9 +11,9 @@ module.exports = {
   description: "See how many Invites a user has!",
   usage: "invites [@USER]",
   type: "user",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       var user;
       try{
@@ -22,7 +22,7 @@ module.exports = {
         return message.reply({content: String('```' + e.message ? String(e.message).substring(0, 1900) : String(e) + '```')})
       }      
       // Fetch guild and member data from the db
-      client.invitesdb?.ensure(message.guild.id + user.id, {
+      await dbEnsure(client.invitesdb, message.guild.id + user.id, {
         /* REQUIRED */
         id: user.id, // Discord ID of the user
         guildId: message.guild.id,
@@ -45,7 +45,7 @@ module.exports = {
         bot: user.bot || false
       });
       //get the new memberdata
-      let memberData = client.invitesdb?.get(message.guild.id + user.id)
+      let memberData = await client.invitesdb.get(message.guild.id + user.id)
       let {
         invites,
         fake,
@@ -70,7 +70,7 @@ module.exports = {
         .addField(client.la[ls].cmds.info.invites.field4.title, handlemsg(client.la[ls].cmds.info.invites.field4.value, {messagesCount: messagesCount}))
         .setFooter(client.getFooter(es))]});
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

@@ -1,12 +1,12 @@
 const {
   MessageEmbed
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   databasing
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 module.exports = {
   name: `globalwarnings`,
   category: `🚫 Administration`,
@@ -14,14 +14,14 @@ module.exports = {
   description: `Shows the warnings of a User, globally`,
   usage: `globalwarnings @User`,
   type: "member",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       //find the USER
       let warnmember = message.mentions.users.first();
       if(!warnmember && args[0] && args[0].length == 18) {
-        let tmp = await client.users.fetch(args[0]).catch(() => {})
+        let tmp = await client.users.fetch(args[0]).catch(() => null)
         if(tmp) warnmember = tmp;
         if(!tmp) return message.reply({content : eval(client.la[ls]["cmds"]["administration"]["globalwarnings"]["variable1"])})
       }
@@ -46,7 +46,7 @@ module.exports = {
 
       try {
         client.userProfiles.ensure(warnmember.id, {
-          id: message.author.id,
+          id: message.author?.id,
           guild: message.guild.id,
           totalActions: 0,
           warnings: [],
@@ -84,25 +84,25 @@ module.exports = {
           await message.reply({embeds :[warnembed.setDescription(k.substring(i, i + 2048))]})
         }
 
-        if(client.settings.get(message.guild.id, `adminlog`) != "no"){
+        if(GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no"){
           try{
-            var channel = message.guild.channels.cache.get(client.settings.get(message.guild.id, `adminlog`))
-            if(!channel) return client.settings.set(message.guild.id, "no", `adminlog`);
+            var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
+            if(!channel) return client.settings.set(`${message.guild.id}.adminlog`, "no");
             channel.send({embeds : [new MessageEmbed()
               .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-              .setAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({dynamic: true}))
+              .setAuthor(client.getAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({dynamic: true})))
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["globalwarnings"]["variable7"]))
               .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
              .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-              .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+              .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
             ]})
           }catch (e){
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
           }
         } 
 
       } catch (e) {
-        console.log(e.stack ? String(e.stack).grey : String(e).grey);
+        console.error(e);
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -111,7 +111,7 @@ module.exports = {
         ]});
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["administration"]["globalwarnings"]["variable11"]))

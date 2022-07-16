@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-autobackup",
@@ -18,9 +18,8 @@ module.exports = {
   description: "Enable / Disable Automated Backups of this Server (One Backup / 2 Days)",
   memberpermissions: ["ADMINISTRATOR"],
   type: "security",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+        
     try {
 ///////////////////////////////////////
       ///////////////////////////////////////
@@ -45,9 +44,9 @@ module.exports = {
       async function first_layer(){
         let menuoptions = [
           {
-            value: !client.settings.get(message.guild.id, "autobackup") ? "Enable Auto-Backups" : "Disable Auto-Backups",
-            description: !client.settings.get(message.guild.id, "autobackup") ? "Make a Backup every 2nd Day" : "Don't make automated Server Backups anymore",
-            emoji: !client.settings.get(message.guild.id, "autobackup") ? "833101995723194437" : "833101993668771842"
+            value: !GuildSettings.autobackup ? "Enable Auto-Backups" : "Disable Auto-Backups",
+            description: !GuildSettings.autobackup ? "Make a Backup every 2nd Day" : "Don't make automated Server Backups anymore",
+            emoji: !GuildSettings.autobackup ? "833101995723194437" : "833101993668771842"
           },
           {
             value: "Cancel",
@@ -71,35 +70,35 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
           .setColor(es.color)
-          .setAuthor("Auto-Backup System Setup", 
+          .setAuthor(client.getAuthor("Auto-Backup System Setup", 
           "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/floppy-disk_1f4be.png",
-          "https://discord.gg/milrato")
+          "https://discord.gg/milrato"))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-anticaps"]["variable1"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            client.settings.set(message.guild.id, !client.settings.get(message.guild.id, "autobackup"), "autobackup");
+            await client.settings.set(message.guild.id+".autobackup", !GuildSettings.autobackup);
             return message.reply({embeds: [new Discord.MessageEmbed()
-              .setTitle(client.settings.get(message.guild.id, "autobackup") ? "Enabled Auto-Backups" : "Disabled Auto-Backups")
+              .setTitle(GuildSettings.autobackup ? "Enabled Auto-Backups" : "Disabled Auto-Backups")
               .setColor(es.color)
-              .setDescription(`${client.settings.get(message.guild.id, "autobackup") ? `I woll now make a Backup every 2nd Day!\nOld Backups will automatically get removed!\n\nTo See the backups use the: \`${prefix}listbackups ${message.guild.id}\` Command\n\nTo load the latest Backup use the \`${prefix}loadbackup ${message.guild.id} 0\` Command` : `I will no longer make automatic Backups every 2 Days!\n\nTo create backups manually use: \`${prefix}createbackup`}`.substring(0, 2048))
+              .setDescription(`${GuildSettings.autobackup ? `I woll now make a Backup every 2nd Day!\nOld Backups will automatically get removed!\n\nTo See the backups use the: \`${prefix}listbackups ${message.guild.id}\` Command\n\nTo load the latest Backup use the \`${prefix}loadbackup ${message.guild.id} 0\` Command` : `I will no longer make automatic Backups every 2 Days!\n\nTo create backups manually use: \`${prefix}createbackup`}`.substring(0, 2048))
               .setFooter(client.getFooter(es))]
             });
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
 
@@ -108,7 +107,7 @@ module.exports = {
       ///////////////////////////////////////
       ///////////////////////////////////////
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

@@ -2,13 +2,13 @@ const Discord = require("discord.js");
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   GetUser,
   GetGlobalUser, handlemsg
-} = require(`${process.cwd()}/handlers/functions`)
+} = require(`../../handlers/functions`)
 const fetch = require("node-fetch")
 module.exports = {
   name: "connectioninfo",
@@ -17,10 +17,8 @@ module.exports = {
   description: "Get Information of your Connection",
   usage: "connectioninfo",
   type: "user",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    let es = client.settings.get(message.guild.id, "embed");
-    let ls = client.settings.get(message.guild.id, "language")
-    
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+
 		try {
       var user;
       if(args[0]){
@@ -32,16 +30,16 @@ module.exports = {
             user = await GetUser(message, args)
           }
         } catch (e){
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
           return message.reply(client.la[ls].common.usernotfound)
         }
       } else{
         user = message.author;
       }
-      let member = message.guild.members.cache.get(user.id) || await message.guild.members.fetch(user.id).catch(() => {}) || false;
+      let member = message.guild.members.cache.get(user.id) || await message.guild.members.fetch(user.id).catch(() => null) || false;
       
       if(!member) return message.reply(":x: **This User is not a Member of this Guild!**")
-      if(!member.voice || !member.voice.channel) return message.reply(":x: **This User is not Connected to a Voicechannel!**")
+      if(!member.voice || !member.voice.channel) return message.reply(":x: **This User is not Connected to a Voicechannel in this Guild!**")
       
 
       const embed = new Discord.MessageEmbed()
@@ -57,7 +55,7 @@ module.exports = {
         embeds: [embed]
       });
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

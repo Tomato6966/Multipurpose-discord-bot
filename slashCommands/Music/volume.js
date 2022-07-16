@@ -20,10 +20,10 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
   options: [
     {"Integer": { name: "volume", description: "To What % do you want to change the volume to?", required: true }}, 
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     
-    //let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    //
+    if(GuildSettings.MUSIC === false) {
       return interaction?.reply({ephemeral: true, embeds : [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

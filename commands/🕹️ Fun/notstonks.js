@@ -1,10 +1,10 @@
 ﻿const Discord = require("discord.js");
 const {MessageEmbed, MessageAttachment} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
+const config = require(`../../botconfig/config.json`);
 const canvacord = require("canvacord");
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+var ee = require(`../../botconfig/embed.json`);
 const request = require("request");
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 module.exports = {
   name: "notstonks",
   aliases: [""],
@@ -12,15 +12,15 @@ module.exports = {
   description: "IMAGE CMD",
   usage: "notstonks <TEXT>",
   type: "text",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        if(!client.settings.get(message.guild.id, "FUN")){
+    
+        if(GuildSettings.FUN === false){
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.disabled.title)
-            .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+            .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
           ]});
         }
       //send loading message
@@ -35,7 +35,7 @@ module.exports = {
         .setTitle(eval(client.la[ls]["cmds"]["fun"]["notstonks"]["variable2"]))
         .setColor("RED")
         .setDescription(eval(client.la[ls]["cmds"]["fun"]["notstonks"]["variable3"]))
-      ]}).catch(() => {})
+      ]}).catch(() => null)
       
       //get the memer image
       client.memer.notstonks(text).then(image => {
@@ -48,7 +48,7 @@ module.exports = {
           .setColor(es.color)
           .setAuthor(`Meme for: ${message.author.tag}`, message.author.displayAvatarURL())
           .setImage("attachment://notstonks.png")
-        ], files : [attachment]}).catch(() => {})
+        ], files : [attachment]}).catch(() => null)
       })
       
   }

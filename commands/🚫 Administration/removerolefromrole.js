@@ -1,7 +1,7 @@
- const config = require(`${process.cwd()}/botconfig/config.json`);
+ const config = require(`../../botconfig/config.json`);
  const ms = require(`ms`);
- var ee = require(`${process.cwd()}/botconfig/embed.json`)
- const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+ var ee = require(`../../botconfig/embed.json`)
+ const emoji = require(`../../botconfig/emojis.json`);
  const map = new Map();
  const {
    MessageEmbed,
@@ -10,7 +10,7 @@
  const {
    databasing,
    delay
- } = require(`${process.cwd()}/handlers/functions`);
+ } = require(`../../handlers/functions`);
  module.exports = {
    name: `removerolefromrole`,
    category: `🚫 Administration`,
@@ -18,32 +18,35 @@
    usage: `removerolefromrole @RoleToHave @RoleToRemove`,
    description: `Removes a Role from every MEMBER in this Guild who has the ROle`,
    type: "memberrole",
-   run: async (client, message, args, cmduser, text, prefix) => {
+   run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-     let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+     
      try {
       if(!message.guild.me.permissions.has([Permissions.FLAGS.MANAGE_ROLES]))      
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["administration"]["addroletoeveryone"]["variable1"]))
       ]})
-       let adminroles = client.settings.get(message.guild.id, "adminroles")
-       let cmdroles = client.settings.get(message.guild.id, "cmdadminroles.removerolefromrole")
+      let adminroles = GuildSettings?.adminroles || [];
+      let cmdroles = GuildSettings?.cmdadminroles?.removerolefromrole || [];
        var cmdrole = []
        if (cmdroles.length > 0) {
          for (const r of cmdroles) {
            if (message.guild.roles.cache.get(r)) {
-             cmdrole.push(` | <@&${r}>`)
+              cmdrole.push(` | <@&${r}>`)
            } else if (message.guild.members.cache.get(r)) {
-             cmdrole.push(` | <@${r}>`)
+              cmdrole.push(` | <@${r}>`)
            } else {
-             
-             //console.log(r)
-             client.settings.remove(message.guild.id, r, `cmdadminroles.removerolefromrole`)
+              const File = `removerolefromrole`;
+              let index = GuildSettings && GuildSettings.cmdadminroles && typeof GuildSettings.cmdadminroles == "object" ? GuildSettings.cmdadminroles[File]?.indexOf(r) || -1 : -1;
+              if(index > -1) {
+                GuildSettings.cmdadminroles[File].splice(index, 1);
+                client.settings.set(`${message.guild.id}.cmdadminroles`, GuildSettings.cmdadminroles)
+              }
            }
          }
        }
-       if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author.id) && !message.member.permissions.has([Permissions.FLAGS.ADMINISTRATOR]))
+       if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author?.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author?.id) && !message.member?.permissions?.has([Permissions.FLAGS.ADMINISTRATOR]))
          return message.reply({embeds : [new MessageEmbed()
            .setColor(es.wrongcolor)
            .setFooter(client.getFooter(es))
@@ -79,7 +82,7 @@
            .setFooter(client.getFooter(es))
            .setTitle(eval(client.la[ls]["cmds"]["administration"]["addroletoeveryone"]["variable7"]))
          ]});
-       await message.guild.members.fetch().catch(() => {});
+       await message.guild.members.fetch().catch(() => null);
        var members = message.guild.members.cache.filter(member => member.roles.cache.has(rolehas.id) && member.roles.cache.has(role.id)).map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
        if (!members || members.length == 0)
          return message.reply({embeds :[new MessageEmbed()
@@ -92,25 +95,25 @@
        message.reply({embeds:  [new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
          .setFooter(client.getFooter(es))
-         .setAuthor(`Changing roles for ${members.length} Members...`, "https://images-ext-1.discordapp.net/external/ANU162U1fDdmQhim_BcbQ3lf4dLaIQl7p0HcqzD5wJA/https/cdn.discordapp.com/emojis/756773010123522058.gif", "https://discord.gg/2dKrZQyaC4")
+         .setAuthor(client.getAuthor((`Changing roles for ${members.length} Members...`, "https://images-ext-1.discordapp.net/external/ANU162U1fDdmQhim_BcbQ3lf4dLaIQl7p0HcqzD5wJA/https/cdn.discordapp.com/emojis/756773010123522058.gif", "https://discord.gg/milrato")))
          .setDescription(eval(client.la[ls]["cmds"]["administration"]["addroletoeveryone"]["variable10"]))
        ]});
-       if (client.settings.get(message.guild.id, `adminlog`) != "no") {
+       if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
          try {
-           var channel = message.guild.channels.cache.get(client.settings.get(message.guild.id, `adminlog`))
-           if (!channel) return client.settings.set(message.guild.id, "no", `adminlog`);
+           var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
+           if (!channel) return client.settings.set(`${message.guild.id}.adminlog`, "no");
            channel.send({embeds :[new MessageEmbed()
              .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-             .setAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({
+             .setAuthor(client.getAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({
                dynamic: true
-           }))
+           })))
              .setDescription(eval(client.la[ls]["cmds"]["administration"]["addroletoeveryone"]["variable11"]))
              .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
             .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-             .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+             .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
           ]})
          } catch (e) {
-           console.log(e.stack ? String(e.stack).grey : String(e).grey)
+           console.error(e)
          }
        }
        var success = 0;
@@ -134,7 +137,7 @@
        function send_finished() {
          map.set(message.guild.id, false)
          message.reply({
-           content: `<@${message.author.id}>`,
+           content: `<@${message.author?.id}>`,
            embeds: [new MessageEmbed()
              .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
              .setFooter(client.getFooter(es))
@@ -145,7 +148,7 @@
 
      } catch (e) {
        map.set(message.guild.id, false)
-       console.log(String(e.stack).grey.bgRed)
+       console.error(e)
        return message.reply({embeds :[new MessageEmbed()
          .setColor(es.wrongcolor)
          .setFooter(client.getFooter(es))

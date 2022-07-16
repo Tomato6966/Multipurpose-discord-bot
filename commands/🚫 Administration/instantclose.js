@@ -2,13 +2,13 @@ const {
   MessageEmbed, Collection, MessageAttachment, Permissions
 } = require("discord.js");
 const Discord = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
 const moment = require("moment")
 const fs = require('fs')
 const {
   databasing, delay, create_transcript, GetUser, GetRole
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow } = require('discord.js')
 module.exports = {
   name: "instantclose",
@@ -18,18 +18,18 @@ module.exports = {
   usage: "instantclose",
   description: "Instant Closes the Ticket",
   type: "channel",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     const guild = message.guild;
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
-      let adminroles = client.settings.get(message.guild.id, "adminroles")
-      let cmdroles = client.settings.get(message.guild.id, "cmdadminroles.ticket")
-      let cmdroles2 = client.settings.get(message.guild.id, "cmdadminroles.close")
-      try{for (const r of cmdroles2) cmdroles.push(r)}catch{}
+        let adminroles = GuildSettings?.adminroles || [];
+        let cmdroles = GuildSettings?.cmdadminroles?.ticket || [];
+        let cmdroles2 = GuildSettings?.cmdadminroles?.close || [];
+         try{for (const r of cmdroles2) cmdroles.push(r)}catch{}
      
       var cmdrole = []
         if(cmdroles.length > 0){
-          for(const r of cmdroles){
+          for await (const r of cmdroles){
             if(message.guild.roles.cache.get(r)){
               cmdrole.push(` | <@&${r}>`)
             }
@@ -37,10 +37,18 @@ module.exports = {
               cmdrole.push(` | <@${r}>`)
             }
             else {
-              
-              //console.log(r)
-              try{ client.settings.remove(message.guild.id, r, `cmdadminroles.ticket`) }catch{ }
-              try{ client.settings.remove(message.guild.id, r, `cmdadminroles.close`) }catch{ }
+                const File = `ticket`;
+                let index = GuildSettings && GuildSettings.cmdadminroles && typeof GuildSettings.cmdadminroles == "object" ? GuildSettings.cmdadminroles[File]?.indexOf(r) || -1 : -1;
+                if(index > -1) {
+                  GuildSettings.cmdadminroles[File].splice(index, 1);
+                  client.settings.set(`${message.guild.id}.cmdadminroles`, GuildSettings.cmdadminroles)
+                }
+                const File2 = `close`;
+                let index2 = GuildSettings && GuildSettings.cmdadminroles && typeof GuildSettings.cmdadminroles == "object" ? GuildSettings.cmdadminroles[File2]?.indexOf(r) || -1 : -1;
+                if(index2 > -1) {
+                  GuildSettings.cmdadminroles[File2].splice(index2, 1);
+                  client.settings.set(`${message.guild.id}.cmdadminroles`, GuildSettings.cmdadminroles)
+                }
             }
           }
         }
@@ -54,7 +62,7 @@ module.exports = {
       if(String(Ticketdata.type).includes("menu") && Ticketdata.menutickettype && Ticketdata.menutickettype > 0) {
           closedParent = client[`menuticket${Ticketdata.menutickettype}`].get(guild.id, "closedParent")
       }
-      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author.id) && !message.member.permissions.has([Permissions.FLAGS.ADMINISTRATOR]) && !message.member.roles.cache.some(r => ticket.adminroles.includes(r ? r.id : r)))
+      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author?.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author?.id) && !message.member?.permissions?.has([Permissions.FLAGS.ADMINISTRATOR]) && !message.member.roles.cache.some(r => ticket.adminroles.includes(r ? r.id : r)))
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -100,7 +108,7 @@ module.exports = {
                     ],
                     components: [new MessageActionRow().addComponents(button_ticket_verify.setDisabled(true))]
                 }).catch((e) => {
-                    console.log(String(e).grey)
+                    console.error(e)
                 });
                   let index = String(data.type).slice(-1);
                   
@@ -122,13 +130,13 @@ module.exports = {
                     if(ticketCh && ticketCh.type == "GUILD_CATEGORY") {
                         if(ticketCh.children.size < 50) {
                             await msg.channel.setParent(ticketCh.id, { lockPermissions: false }).catch(async (e) => {
-                                await msg.channel.send(`Can't move to: ${ticketCh.name} (\`${ticketCh.id}\`) because an Error occurred:\n> \`\`\`${String(e.message ? e.message : e).substring(0, 100)}\`\`\``).catch(() => {});
+                                await msg.channel.send(`Can't move to: ${ticketCh.name} (\`${ticketCh.id}\`) because an Error occurred:\n> \`\`\`${String(e.message ? e.message : e).substring(0, 100)}\`\`\``).catch(() => null);
                             })
                         } else {
-                            await msg.channel.send(`Ticket Category ${ticketCh.name} (\`${ticketCh.id}\`) is full, can't move!`).catch(() => {});
+                            await msg.channel.send(`Ticket Category ${ticketCh.name} (\`${ticketCh.id}\`) is full, can't move!`).catch(() => null);
                         }
                     } else {
-                        await msg.channel.send(`Could not find ${closedParent} as a parent`).catch(() => {});
+                        await msg.channel.send(`Could not find ${closedParent} as a parent`).catch(() => null);
                     }
                   } 
 
@@ -150,26 +158,26 @@ module.exports = {
                           .setFooter(client.getFooter(es))
                       ]
                   })
-                  try { msg.channel.setName(String(msg.channel.name).replace("ticket", "closed").substring(0, 32)).catch((e)=>{console.log(e)}); } catch (e) { console.log(e) }
-                  if (client.settings.get(guild.id, `adminlog`) != "no") {
+                  try { msg.channel.setName(String(msg.channel.name).replace("ticket", "closed").substring(0, 32)).catch((e)=>{console.error(e)}); } catch (e) { console.error(e) }
+                  if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
                       let message = msg; //NEEDED FOR THE EVALUATION!
                       try {
-                          var adminchannel = guild.channels.cache.get(client.settings.get(guild.id, `adminlog`))
-                          if (!adminchannel) return client.settings.set(guild.id, "no", `adminlog`);
+                          var adminchannel = guild.channels.cache.get(GuildSettings.adminlog)
+                          if (!adminchannel) return client.settings.set(`${message.guild.id}.adminlog`, "no");
                           adminchannel.send({
                               embeds: [new MessageEmbed()
                                   .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-                                  .setAuthor(`ticket --> LOG | ${message.author.tag}`, message.author.displayAvatarURL({
+                                  .setAuthor(client.getAuthor(`ticket --> LOG | ${message.author.tag}`, message.author.displayAvatarURL({
                                       dynamic: true
-                                  }))
+                                  })))
                                   .setDescription(eval(client.la[ls]["handlers"]["ticketeventjs"]["ticketevent"]["variable9"]))
                                   .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
                                   .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-                                  .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+                                  .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
                               ]
                           })
                       } catch (e) {
-                          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                          console.error(e)
                       }
                   }
               } else {
@@ -182,7 +190,7 @@ module.exports = {
                     ],
                     components: [new MessageActionRow().addComponents(button_ticket_verify.setDisabled(true))]
                 }).catch((e) => {
-                    console.log(String(e).grey)
+                    console.error(e)
                 });
             }
           });
@@ -197,13 +205,13 @@ module.exports = {
                       embeds: [endedembed],
                       components: [new MessageActionRow().addComponents(button_ticket_verify.setDisabled(true).setLabel("FAILED TO VERIFY").setEmoji("833101993668771842").setStyle('DANGER'))]
                   }).catch((e) => {
-                      console.log(String(e).grey)
+                      console.error(e)
                   });
               }
           });
       })
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["administration"]["close"]["variable6"]))

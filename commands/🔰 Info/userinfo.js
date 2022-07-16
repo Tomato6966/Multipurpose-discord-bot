@@ -1,10 +1,10 @@
 const Discord = require("discord.js");
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const moment = require('moment');
-const { GetUser, GetGlobalUser, handlemsg } = require(`${process.cwd()}/handlers/functions`)
+const { GetUser, GetGlobalUser, handlemsg } = require(`../../handlers/functions`)
 const flags = {
 	DISCORD_EMPLOYEE: 'Discord Employee',
 	DISCORD_PARTNER: 'Discord Partner',
@@ -42,9 +42,9 @@ module.exports = {
   description: "Get information about a user",
   usage: "userinfo [@USER] [global/guild]",
   type: "user",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {   
       var user;
       if(args[0]){
@@ -56,7 +56,7 @@ module.exports = {
             user = await GetUser(message, args)
           }
         }catch (e){
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
           return message.reply(client.la[ls].common.usernotfound)
         }
       }else{
@@ -67,7 +67,7 @@ module.exports = {
       if(!user || user == null || user.id == null || !user.id) return message.reply(client.la[ls].common.usernotfound)
       try {
         let member = message.guild.members.cache.get(user.id);
-        if (!member) await message.guild.members.fetch(user.id).catch(() => {}) || false;
+        if (!member) await message.guild.members.fetch(user.id).catch(() => null) || false;
         if (member && member.avatar) {
           customavatar = member.displayAvatarURL({
             dynamic: true,
@@ -75,7 +75,7 @@ module.exports = {
           })
         }
       } catch (e) {
-        console.log(String(e.stack).grey.bgRed)
+        console.error(e)
       }
       try{
         await user.fetch().then(user => {
@@ -85,13 +85,13 @@ module.exports = {
               size: 4096,
             })
           }
-        }).catch(() => {})
+        }).catch(() => null)
       }catch (e) {
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
       }
       try{
         let member = message.guild.members.cache.get(user.id);
-        if(!member) await message.guild.members.fetch(user.id).catch(() => {}) || false;
+        if(!member) await message.guild.members.fetch(user.id).catch(() => null) || false;
         const roles = member.roles;
         const userFlags = member.user.flags.toArray();
         const activity = member.presence ? member.presence.activities[0] : {
@@ -104,7 +104,7 @@ module.exports = {
         //create the EMBED
         const embeduserinfo = new MessageEmbed()
         embeduserinfo.setThumbnail(customavatar ? customavatar : member.user.displayAvatarURL({ dynamic: true, size: 512 }))
-        embeduserinfo.setAuthor(handlemsg(client.la[ls].cmds.info.userinfo.author, { usertag: member.user.tag}), member.user.displayAvatarURL({ dynamic: true }), "https://discord.gg/milrato")
+        embeduserinfo.setAuthor(client.getAuthor(handlemsg(client.la[ls].cmds.info.userinfo.author, { usertag: member.user.tag}), member.user.displayAvatarURL({ dynamic: true }), "https://discord.gg/milrato"))
         embeduserinfo.addField(client.la[ls].cmds.info.userinfo.field1,`> <@${member.user.id}>\n\`${member.user.tag}\``,true)
         embeduserinfo.addField(client.la[ls].cmds.info.userinfo.field2,`> \`${member.id}\``,true)
         embeduserinfo.addField(client.la[ls].cmds.info.userinfo.field3,`> [\`Link to avatar\`](${member.user.displayAvatarURL({ format: "png" })})${customavatar ? `\n\n> [\`Link to Custom Avatar\`](${customavatar})`: ""}`,true)
@@ -133,12 +133,11 @@ module.exports = {
         //send the EMBED
         message.reply({embeds: [embeduserinfo]})
       }catch (e) {
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
         const userFlags = user.flags?.toArray();
         //create the EMBED
         const embeduserinfo = new MessageEmbed()
         embeduserinfo.setThumbnail(customavatar ? customavatar : user.displayAvatarURL({ dynamic: true, size: 512 }))
-        embeduserinfo.setAuthor(handlemsg(client.la[ls].cmds.info.userinfo.author, { usertag: user.tag}), user.displayAvatarURL({ dynamic: true }), "https://discord.gg/milrato")
+        embeduserinfo.setAuthor(client.getAuthor(handlemsg(client.la[ls].cmds.info.userinfo.author, { usertag: user.tag}), user.displayAvatarURL({ dynamic: true }), "https://discord.gg/milrato"))
         embeduserinfo.addField(client.la[ls].cmds.info.userinfo.field1,`<@${user.id}>\n\`${user.tag}\``,true)
         embeduserinfo.addField(client.la[ls].cmds.info.userinfo.field2,`\`${user.id}\``,true)
         embeduserinfo.addField(client.la[ls].cmds.info.userinfo.field3,`[\`Link to avatar\`](${user.displayAvatarURL({ format: "png" })})`,true)
@@ -153,7 +152,7 @@ module.exports = {
       }
       
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

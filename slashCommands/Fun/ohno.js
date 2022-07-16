@@ -15,9 +15,9 @@ module.exports = {
   options: [
     { "String": { name: "text", description: "What should I send? [ +n+ = Newline ]", required: true } }, //to use in the code: interacton.getString("title")
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
 
-    if (!client.settings.get(message.guild.id, "FUN")) {
+    if (GuildSettings.FUN === false) {
       return interaction?.reply({
         embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
@@ -40,7 +40,7 @@ module.exports = {
         .setColor("RED")
         .setDescription(eval(client.la[ls]["cmds"]["fun"]["ohno"]["variable3"]))
       ]
-    }).catch(() => {})
+    }).catch(() => null)
 
     //get the memer image
     client.memer.ohno(text).then(image => {
@@ -54,7 +54,7 @@ module.exports = {
           .setAuthor(`Meme for: ${message.author.tag}`, message.author.displayAvatarURL())
           .setImage("attachment://ohno2.png")
         ], files: [attachment], ephemeral: true
-      }).catch(() => {})
+      }).catch(() => null)
     })
 
   }

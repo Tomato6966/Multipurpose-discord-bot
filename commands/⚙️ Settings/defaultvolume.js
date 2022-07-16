@@ -1,9 +1,10 @@
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+const ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { dbEnsure } = require("../../handlers/functions")
 module.exports = {
   name: "defaultvolume",
   category: "⚙️ Settings",
@@ -13,18 +14,18 @@ module.exports = {
   description: "Defines the Default Volume on 1. Track start [Default: 15]",
   memberpermissions: ["ADMINISTRATOR"],
   type: "music",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
-      client.settings.ensure(message.guild.id, {
+      await dbEnsure(client.settings, message.guild.id, {
         defaultvolume: 15
-      });
+      })
       if(!args[0]){
         return message.reply({embeds : [new MessageEmbed()
           .setFooter(client.getFooter(es)).setColor(es.wrongcolor)
           .setTitle(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable1"]))
-          .setDescription(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable2"]))
+          .setDescription(`**The Current Default Volume is: \`${GuildSettings.defaultvolume}%\`**`)
         ]});
       }
       let volume = args[0];
@@ -32,23 +33,24 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
           .setFooter(client.getFooter(es)).setColor(es.wrongcolor)
           .setTitle(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable3"]))
-          .setDescription(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable4"]))
+          .setDescription(`*It must be a **Number***\n**The Current Default Volume is: \`${GuildSettings.defaultvolume}%\`**`)
         ]});
       }
       if(Number(volume) > 150 || Number(volume) < 1){
         return message.reply({embeds : [new MessageEmbed()
           .setFooter(client.getFooter(es)).setColor(es.wrongcolor)
           .setTitle(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable5"]))
-          .setDescription(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable6"]))
+          .setDescription(`*It must be between \`150\` and \`1\`*\n**The Current Default Volume is: \`${GuildSettings.defaultvolume}%\`**`)
         ]});
       }
-      client.settings.set(message.guild.id, Number(volume), "defaultvolume");
+      await client.settings.set(`${message.guild.id}.defaultvolume`, Number(volume));
+      
       return message.reply({embeds : [new MessageEmbed()
         .setFooter(client.getFooter(es)).setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-        .setTitle(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable7"]))
+        .setTitle(`**Successfully set the new Default Volume to: \`${volume}%\`**`)
       ]});
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds : [new MessageEmbed()
         .setFooter(client.getFooter(es)).setColor(es.wrongcolor)
         .setTitle(client.la[ls].common.erroroccur)

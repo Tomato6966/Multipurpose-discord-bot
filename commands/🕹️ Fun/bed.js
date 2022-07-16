@@ -1,10 +1,10 @@
 ﻿const Discord = require("discord.js");
 const {MessageEmbed, MessageAttachment} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
+const config = require(`../../botconfig/config.json`);
 const canvacord = require("canvacord");
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+var ee = require(`../../botconfig/embed.json`);
 const request = require("request");
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 module.exports = {
   name: "bed",
   aliases: [""],
@@ -12,15 +12,15 @@ module.exports = {
   description: "IMAGE CMD",
   usage: "bed @User @User2",
   type: "user",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        if(!client.settings.get(message.guild.id, "FUN")){
+    
+        if(GuildSettings.FUN === false){
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.disabled.title)
-            .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+            .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
           ]});
         }
       //send loading message
@@ -31,7 +31,7 @@ module.exports = {
      //find the USER
      let user = message.mentions.users.first();
      if(!user && args[0] && args[0].length == 18) {
-       let tmp = await client.users.fetch(args[0]).catch(() => {})
+       let tmp = await client.users.fetch(args[0]).catch(() => null)
        if(tmp) user = tmp;
        if(!tmp) return message.reply({content : eval(client.la[ls]["cmds"]["fun"]["bed"]["variable2"])})
      }
@@ -47,7 +47,7 @@ module.exports = {
      //find the USER
      let user2 = message.mentions.users.last();
      if(!user2 && args[1] && args[1].length == 18) {
-       let tmp = await client.users.fetch(args[1]).catch(() => {})
+       let tmp = await client.users.fetch(args[1]).catch(() => null)
        if(tmp) user2 = tmp;
        if(!tmp) user2 = message.author;
      }
@@ -86,7 +86,7 @@ module.exports = {
         .setAuthor(`Meme for: ${user1.tag} | ${user2.tag}`, avatar1)
         .setColor(es.color)          
         .setImage("attachment://bed.png") 
-      ], files : [attachment]}).catch(() => {})
+      ], files : [attachment]}).catch(() => null)
     })
       
   }

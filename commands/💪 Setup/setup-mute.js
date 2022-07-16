@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-mute",
@@ -18,15 +18,8 @@ module.exports = {
   description: "Setup the Mute system Role/Timeout and the defaulttime if no time added",
   memberpermissions: ["ADMINISTRATOR"],
   type: "fun",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    client.settings.ensure(message.guild.id, {
-      style: "timeout",
-      roleId: "",
-      defaultTime: 60000, // in ms  
-    }, "mute")
-    const menusettings = client.settings.get(message.guild.id, "mute");
     try {
 
 
@@ -37,8 +30,14 @@ module.exports = {
           defaultTime: 60000,  
         },
       */
+      const menusettings = await client.settings.get(message.guild.id+".mute");
       first_layer()
       async function first_layer(){
+        await dbEnsure(client.settings, message.guild.id, {
+          style: "timeout",
+          roleId: "",
+          defaultTime: 60000, // in ms  
+        })
         let menuoptions = [
           {
             value: "Toggle Style",
@@ -92,24 +91,24 @@ module.exports = {
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
 
@@ -117,7 +116,7 @@ module.exports = {
         switch (optionhandletype) {
           case "Toggle Style": {
             const newStyle = menusettings.style == "timeout" ? "role" : "timeout";
-            client.settings.set(message.guild.id, newStyle, "mute.style");
+            await client.settings.set(message.guild.id+".mute.style", newStyle);
             return message.reply(`Successfully changed the Style from ${menusettings.style} to ${newStyle}`);
           }break;
           case "Set Mute-Role": {
@@ -126,7 +125,7 @@ module.exports = {
               .setColor(es.color)
               .setDescription("Ping the Role now, or send the id of it!").setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                 max: 1,
                 time: 90000,
                 errors: ["time"]
@@ -136,7 +135,7 @@ module.exports = {
                 if(!message) return message.reply("NO MESSAGE SENT");
                 let role = message.mentions.roles.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.roles.cache.get(message.content.trim().split(" ")[0]);
                 if(role){
-                  client.settings.set(message.guild.id, role.id, `mute.roleId`)
+                  await client.settings.set(message.guild.id+`.mute.roleId`, role.id)
                   return message.reply({embeds: [new Discord.MessageEmbed()
                     .setTitle("Set the MUTE ROLE")
                     .setColor(es.color)
@@ -164,7 +163,7 @@ module.exports = {
               .setColor(es.color)
               .setDescription("Recommneded is: `10min`, but you can send anything you want, as long as it's less than `1Week`!\nTo send multiple do this: `1hour+5min`").setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                 max: 1,
                 time: 90000,
                 errors: ["time"]
@@ -176,7 +175,7 @@ module.exports = {
 
                 let time = 0;
                 if(message.includes("+")) {
-                  for(const m of message.split("+")){
+                  for await (const m of message.split("+")){
                     try {
                       time+= ms(m)
                     }catch{
@@ -193,7 +192,7 @@ module.exports = {
                 if(!time || time < 0 || time > ms("1 Week")) {
                   return message.reply("Invalid time added! Must be more than 0 and less than 1 week")
                 }
-                client.settings.set(message.guild.id, time, `mute.defaultTime`)
+                await client.settings.set(message.guild.id+`.mute.defaultTime`, time)
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle("Set the new DEFAULT MUTE TIME")
                   .setColor(es.color)
@@ -211,17 +210,6 @@ module.exports = {
               })
           }
           break;
-          case "Show Settings":
-            {
-              let thesettings = client.settings.get(message.guild.id, `aichat`)
-              return message.reply({embeds: [new Discord.MessageEmbed()
-                .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-aichat"]["variable10"]))
-                .setColor(es.color)
-                .setDescription(`**Channel:** ${thesettings == "no" ? "Not Setupped" : `<#${thesettings}> | \`${thesettings}\``}`.substring(0, 2048))
-                .setFooter(client.getFooter(es))
-              ]});
-            }
-          break;
         }
       }
 
@@ -229,7 +217,7 @@ module.exports = {
       
 
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

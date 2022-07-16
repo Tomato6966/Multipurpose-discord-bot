@@ -4,14 +4,14 @@ var {
   MessageActionRow, MessageButton
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 const fs = require('fs');
 var {
-  databasing,
+  dbEnsure,
   isValidURL
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 module.exports = {
   name: "setup-owner",
   category: "👑 Owner",
@@ -20,10 +20,10 @@ module.exports = {
   type: "info",
   usage: "setup-owner  -->  Follow the Steps",
   description: "Change the Bot Owners",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!config.ownerIDS.some(r => r.includes(message.author.id)))
+    
+    if (!config.ownerIDS.some(r => r.includes(message.author?.id)))
       return message.channel.send({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["owner"]["setup-owner"]["variable1"]))
@@ -74,7 +74,7 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
         .setColor(es.color)
-        .setAuthor('Owner Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/prohibited_1f6ab?.png',  'https://discord.gg/milrato')
+        .setAuthor(client.getAuthor('Owner Setup', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/285/prohibited_1f6ab.png',  'https://discord.gg/milrato'))
         .setDescription(eval(client.la[ls]["cmds"]["owner"]["setup-advertise"]["variable4"]))
         let used1 = false;
         //send the menu msg
@@ -84,12 +84,13 @@ module.exports = {
           let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0])
           let menuoptionindex = menuoptions.findIndex(v => v.value == menu?.values[0])
           if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["owner"]["setup-advertise"]["variable5"]))
-          menu?.deferUpdate();
+          client.disableComponentMessage(menu);
+          
           used1 = true;
           handle_the_picks(menuoptionindex, menuoptiondata)
         }
         //Event
-        client.on('interactionCreate',  (menu) => {
+        client.on('interactionCreate', async (menu) => {
           if (menu?.message.id === menumsg.id) {
             if (menu?.user.id === cmduser.id) {
               if(used1) return menu?.reply({content : `<:no:833101993668771842> You already selected something, this Selection is now disabled!`, ephermal : true});
@@ -114,12 +115,12 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["owner"]["setup-owner"]["variable8"]))
               .setFooter(client.getFooter(es))
             ]})
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 90000,
                 errors: ["time"]
               })
-              .then(collected => {
+              .then(async collected => {
                 var message = collected.first();
                 var user = message.mentions.users.first();
                 if (user) {
@@ -170,7 +171,7 @@ module.exports = {
           } break;
           //remove
           case 1: {
-            if(config.ownerIDS[0] != message.author.id && config.ownerIDS[1] != message.author.id){
+            if(config.ownerIDS[0] != message.author?.id && config.ownerIDS[1] != message.author?.id){
               return message.channel.send({embeds: [new MessageEmbed()
                 .setFooter(client.getFooter(es))
                 .setColor(es.wrongcolor)
@@ -184,12 +185,12 @@ module.exports = {
               .setDescription("Please Ping the Owner you want to remove")
               .setFooter(client.getFooter(es))
             ]})
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 90000,
                 errors: ["time"]
               })
-              .then(collected => {
+              .then(async collected => {
                 var message = collected.first();
                 var user = message.mentions.users.first();
                 if (user) {
@@ -269,8 +270,8 @@ module.exports = {
             var embed = new MessageEmbed()
               .setTitle(`There are ${config.ownerIDS.length} Owners`)
               .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-              .addField(`__Original Owner__:`, `<@${originalOwner}>`.substring(0, 1024))
-              .addField(`__Other Owner${config.ownerIDS.filter(id => id != originalOwner).length > 1 ? "s" : ""}__:`, `${config.ownerIDS.filter(id => id != originalOwner).map(id => `<@${id}>`).join("︲")}`.substring(0, 1024))
+              .addField(`__Original Owner__:`, `>>> <@${originalOwner}>`.substring(0, 1024))
+              .addField(`__Other Owner${config.ownerIDS.filter(id => id != originalOwner).length > 1 ? "s" : ""}__:`, `>>> ${config.ownerIDS.filter(id => id != originalOwner).map(id => `<@${id}>`).join("︲")}`.substring(0, 1024))
               .setFooter(client.getFooter(es))
             return message.reply({embeds: [embed]});
           } break;

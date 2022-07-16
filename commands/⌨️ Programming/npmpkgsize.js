@@ -1,6 +1,6 @@
 //Here the command starts
-const config = require(`${process.cwd()}/botconfig/config.json`)
-var ee = require(`${process.cwd()}/botconfig/embed.json`)
+const config = require(`../../botconfig/config.json`)
+var ee = require(`../../botconfig/embed.json`)
 const fetch = require("node-fetch");
 const { STATUS_CODES } = require("http");
 const { MessageEmbed } = require(`discord.js`);
@@ -14,8 +14,17 @@ module.exports = {
   	description: "Search the NPM Registry for a package Size Information", //the description of the command
 
 	//running the command with the parameters: client, message, args, user, text, prefix
-  	run: async (client, message, args, cmduser, text, prefix) => {
-    	let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+  	run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+    	
+			
+		if(GuildSettings.VOICE !== false){
+			return message.reply({embeds : [new MessageEmbed()
+			.setColor(es.wrongcolor)
+			.setFooter(client.getFooter(es))
+			.setTitle(client.la[ls].common.disabled.title)
+			.setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+			]});
+		}
 		try {
 			const name = args[0];
 			if (!name)
@@ -41,7 +50,7 @@ module.exports = {
 				.setFooter(client.getFooter(es))
 				.setDescription(eval(client.la[ls]["cmds"]["programming"]["npmpkgsize"]["variable5"])) ]});
 		} catch (e) {
-			console.log(String(e.stack).grey.bgRed)
+			console.error(e)
 			return message.reply({embeds : [new MessageEmbed()
 			  .setColor(es.wrongcolor).setFooter(client.getFooter(es))
 			  .setTitle(client.la[ls].common.erroroccur)

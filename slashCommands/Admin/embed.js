@@ -20,7 +20,7 @@ module.exports = {
 	
   ],
   memberpermissions: ["ADMINISTRATOR"],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     try{
 	    //console.log(interaction, StringOption)
 		
@@ -44,13 +44,13 @@ module.exports = {
 		.setDescription(String(EmbedDescription).substring(0, 2048).split("+n+").join("\n"))
         .setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es));
 		//update it without a response!
-		await interaction?.reply({content: `Sending the Embed...`, ephemeral: true}).catch(()=>{});
+		await interaction?.reply({content: `Sending the Embed...`, ephemeral: true}).catch(() => null);
 		//SEND THE EMBED!
 		await channel.send({embeds: [embed]}).catch(()=>{
-			channel.send({embeds: [embed.setColor(es.color)]}).catch(()=>{});
+			channel.send({embeds: [embed.setColor(es.color)]}).catch(() => null);
 		})
 		//Edit the reply
-		interaction?.editReply({content: `✅ Embed sent in ${channel}!`, ephemeral: true}).catch(()=>{});
+		interaction?.editReply({content: `✅ Embed sent in ${channel}!`, ephemeral: true}).catch(() => null);
     } catch (e) {
         console.log(String(e.stack).bgRed)
     }

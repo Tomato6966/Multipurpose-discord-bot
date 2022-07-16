@@ -19,6 +19,16 @@
                 "host": "localhost",
                 "port": 2333,
                 "password": "youshallnotpass"
+            },
+            {
+                "host": "n1.lavalink.milrato.com",
+                "port": 10350,
+                "password": "discord.gg/milrato"
+            },
+            {
+                "host": "n2.lavalink.milrato.com",
+                "port": 10350,
+                "password": "discord.gg/milrato"
             }
         ]
     },

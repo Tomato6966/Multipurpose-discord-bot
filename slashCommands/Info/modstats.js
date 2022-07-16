@@ -19,7 +19,7 @@ module.exports = {
 		//{"IntChoices": { name: "what_ping", description: "What Ping do you want to get?", required: true, choices: [["Bot", 1], ["Discord Api", 2]] }, //here the second array input MUST BE A NUMBER // TO USE IN THE CODE: interacton.getInteger("what_ping")
 		//{"StringChoices": { name: "what_ping", description: "What Ping do you want to get?", required: true, choices: [["Bot", "botping"], ["Discord Api", "api"]] }}, //here the second array input MUST BE A STRING // TO USE IN THE CODE: interacton.getString("what_ping")
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     //things u can directly access in an interaction!
 		const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;
@@ -61,10 +61,10 @@ module.exports = {
         .addField(eval(client.la[ls]["cmds"]["info"]["modstats"]["variablex_17"]), eval(client.la[ls]["cmds"]["info"]["modstats"]["variable17"]), true)
         .addField(eval(client.la[ls]["cmds"]["info"]["modstats"]["variablex_18"]), eval(client.la[ls]["cmds"]["info"]["modstats"]["variable18"]), true)
         .addField("\u200b", client.la[ls].cmds.info.modstats.desc)
-        .setAuthor(`${client.la[ls].cmds.info.modstats.about} ${user.tag}`, user.displayAvatarURL({dynamic: true, size: 512}))
+        .setAuthor(client.getAuthor(`${client.la[ls].cmds.info.modstats.about} ${user.tag}`, user.displayAvatarURL({dynamic: true, size: 512})))
       ]});
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
     }
   }
 }

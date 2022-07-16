@@ -1,10 +1,10 @@
 const Discord = require("discord.js");
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`)
-var ee = require(`${process.cwd()}/botconfig/embed.json`)
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`)
+var ee = require(`../../botconfig/embed.json`)
+const emoji = require(`../../botconfig/emojis.json`);
 const moment = require("moment")
-const { swap_pages, handlemsg } = require(`${process.cwd()}/handlers/functions`)
+const { swap_pages, handlemsg } = require(`../../handlers/functions`)
 module.exports = {
   name: "serveravatar",
   aliases: ["savatar", "guildavatar", "gavatar"],
@@ -12,9 +12,9 @@ module.exports = {
   description: "Shows the ServerAvatar",
   usage: "serveravatar",
   type: "server",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       message.reply({embeds: [new Discord.MessageEmbed()
       .setAuthor(handlemsg(client.la[ls].cmds.info.serveravatar.author, { servername: message.guild.name }), message.guild.iconURL({dynamic: true}), "https://discord.gg/milrato")
@@ -31,7 +31,7 @@ module.exports = {
       }))
     ]});
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

@@ -1,8 +1,8 @@
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { parseMilliseconds, duration, GetUser, nFormatter, ensure_economy_user } = require(`${process.cwd()}/handlers/functions`)
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { parseMilliseconds, duration, GetUser, nFormatter, ensure_economy_user } = require(`../../handlers/functions`)
 module.exports = {
   name: "sell",
   category: "💸 Economy",
@@ -10,15 +10,15 @@ module.exports = {
   description: "Allows you to sell an item with 10% Zins.",
   usage: "sell [Item]",
   type: "info",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if(!client.settings.get(message.guild.id, "ECONOMY")){
+    
+    if(GuildSettings.ECONOMY === false){
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.disabled.title)
-        .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+        .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
       ]});
     }
     try {
@@ -28,9 +28,9 @@ module.exports = {
     if(user.bot) return message.reply(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable1"]))
       
     //ensure the economy data
-    ensure_economy_user(client, message.guild.id, user.id)
+    await ensure_economy_user(client, message.guild.id, user.id)
     //get the economy data 
-    var data = client.economy.get(`${message.guild.id}-${user.id}`)
+    var data = await client.economy.get(`${message.guild.id}_${user.id}`)
     var items = 0;
     var itemsvalue = 0;
     var theitems = [];
@@ -94,7 +94,7 @@ module.exports = {
     if (!args[0])
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-        .setFooter(user.tag, user.displayAvatarURL({dynamic: true}))
+        .setFooter(client.getFooter(user.tag, user.displayAvatarURL({ dynamic: true })))
         .setTitle(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable2"]))
         .setDescription(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable3"]))
         .addField("To sell items:", `\`${prefix}sell Pen 2\``)
@@ -104,7 +104,7 @@ module.exports = {
       if (amountofbuy == 0)
         return message.reply({embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
-          .setFooter(user.tag, user.displayAvatarURL({ dynamic: true }))
+          .setFooter(client.getFooter(user.tag, message.author.displayAvatarURL({ dynamic: true })))
           .setTitle(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable4"]))
           .setDescription(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable5"]))
         ]});
@@ -139,7 +139,7 @@ module.exports = {
       if (!prize)
         return message.reply({embeds: [new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-          .setFooter(user.tag, user.displayAvatarURL({dynamic: true}))
+          .setFooter(client.getFooter(user.tag, user.displayAvatarURL({ dynamic: true })))
           .setTitle(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable6"]))
           .setDescription(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable7"]))
           .addField("To sell items:", `\`${prefix}sell Pen 2\``)
@@ -147,32 +147,32 @@ module.exports = {
       if(data.items[`${args[0].toLowerCase()}`] == 0)
         return message.reply({embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
-          .setFooter(user.tag, user.displayAvatarURL({ dynamic: true }))
+          .setFooter(client.getFooter(user.tag, message.author.displayAvatarURL({ dynamic: true })))
           .setTitle(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable8"]))
           .setDescription(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable9"]))
         ]});
       if (amountofbuy > data.items[`${args[0].toLowerCase()}`])
         return message.reply({embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
-          .setFooter(user.tag, user.displayAvatarURL({ dynamic: true }))
+          .setFooter(client.getFooter(user.tag, message.author.displayAvatarURL({ dynamic: true })))
           .setTitle(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable10"]))
           .setDescription(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable11"]))
         ]});
 
       var endprize = (prize * amountofbuy) * 0.9;
       
-      client.economy.math(`${message.guild.id}-${user.id}`, "-", amountofbuy, `items.${args[0].toLowerCase()}`)
-      client.economy.math(`${message.guild.id}-${user.id}`, "+", endprize, `balance`)
-      data = client.economy.get(`${message.guild.id}-${user.id}`)
+      await client.economy.subtract(`${message.guild.id}_${user.id}.items.${args[0].toLowerCase()}`, amountofbuy)
+      await client.economy.add(`${message.guild.id}_${user.id}.balance`, endprize)
+      data = await client.economy.get(`${message.guild.id}_${user.id}`)
 
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-        .setFooter(user.tag, user.displayAvatarURL({ dynamic: true }))
+        .setFooter(client.getFooter(user.tag, message.author.displayAvatarURL({ dynamic: true })))
         .setTitle(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable12"]))
         .setDescription(eval(client.la[ls]["cmds"]["economy"]["sell"]["variable13"]))
       ]});
   } catch (e) {
-    console.log(String(e.stack).grey.bgRed)
+    console.error(e)
     return message.reply({embeds: [new MessageEmbed()
       .setColor(es.wrongcolor)
       .setFooter(client.getFooter(es))

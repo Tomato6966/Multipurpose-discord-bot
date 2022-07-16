@@ -5,6 +5,12 @@
 [**Invite the Public Version of this Bot**](https://milrato.milrato.dev) so you don't need to host it by yourself or [join my Discord server](https://discord.gg/dcdev) to get a custom Bot hosted for you!
 
 
+Make sure to do this before starting the Bot:
+
+```
+node canvasApi.js
+```
+
 # Important notes and thank ❤️
 First of all, thanks for using this Source Code, it was and is a ton of work to create and maintain it!
 That's why I'm asking everyone to [**donate a little bit of money**](https://donate.milrato.dev) or if that's not possible, then join my [Discord Server](https://discord.gg/dcdev)!

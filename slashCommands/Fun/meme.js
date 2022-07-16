@@ -23,9 +23,9 @@ module.exports = {
   usage: `${path.parse(__filename).name} [@User]`,
   type: "user",
   description: "*Image cmd in the style:* " + path.parse(__filename).name,
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
 
-    if (!client.settings.get(message.guild.id, "FUN")) {
+    if (GuildSettings.FUN === false) {
       return interaction?.reply({
         embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)

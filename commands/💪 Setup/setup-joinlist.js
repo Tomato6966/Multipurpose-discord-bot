@@ -1,10 +1,12 @@
 const {
   MessageEmbed, UserFlags
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-
+const config = require(`../../botconfig/config.json`);
+const ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+var {
+  dbEnsure, dbRemove, dbKeys
+} = require(`../../handlers/functions`);
 module.exports = {
   name: "setup-joinlist",
   category: "💪 Setup",
@@ -14,8 +16,8 @@ module.exports = {
   description: "Manages the Joinlist",
   type: "security",
   run: async (client, message, args, user, text, prefix, player) => {
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    const { duration } = require(`${process.cwd()}/handlers/functions`);
+    
+    const { duration } = require(`../../handlers/functions`);
     try {
       // client.settings.get(message.guild.id, "joinlist")
       const validtypes = [`username_contain`, `username_equal`, `userid`, `server_in_common`, `server_not_in_common`, `noavatar`];
@@ -97,7 +99,7 @@ module.exports = {
       if(!validtypes.includes(type)) return message.reply(`:x: **Please a VALID joinlist type!**\n> **Get Help:** \`${prefix}joinlist help\`\n> Usage: \`${prefix}joinlist <type> <action> <data>\`\nValid Types: ${validtypes.map(d => `\`${d}\``).join(", ")}\nValid Actions: ${validactions.map(d => `\`${d}\``).join(", ")}`);
       if(!validactions.includes(action)) return message.reply(`:x: **Please a VALID joinlist action!**\n> **Get Help:** \`${prefix}joinlist help\`\n> Usage: \`${prefix}joinlist <type> <action> <data>\`\nValid Types: ${validtypes.map(d => `\`${d}\``).join(", ")}\nValid Actions: ${validactions.map(d => `\`${d}\``).join(", ")}`);
 
-      client.settings.ensure(message.guild.id, {
+      await dbEnsure(client.settings, message.guild.id, {
         joinlist: {
           username_contain: [/*
             {
@@ -113,13 +115,13 @@ module.exports = {
         }
       });
 
-      const joinlist = client.settings.get(message.guild.id, "joinlist");
+      const joinlist = await client.settings.get(message.guild.id, "joinlist");
       //remove
       if(joinlist[type].filter((d) => d.action == action).map(d => d.data).includes(data)) {
         var index = joinlist[type].findIndex(d => d.action == action && d.data == data);
         if(index > -1){
           joinlist[type].splice(index, 1);
-          client.settings.set(message.guild.id, joinlist, "joinlist");
+          await client.settings.set(message.guild.id+".joinlist", joinlist);
           message.reply(`Successfully removed \`${data}\` from the action \`${action}\` from the \`${type}\``);
         } else {
           message.reply("Could not find it in the db");
@@ -134,7 +136,7 @@ module.exports = {
               const nickname = args[3] ? args.slice(3).join(" ") : null;
               if(!nickname || nickname.length > 32) return message.reply("For the action `setnickname` a Nickname must be provided at the very end (after the data), which is less than 32 Characters, insert `{random}`, so that the nickname will randomly be choosen!");
               joinlist[type].push({data, action, nickname});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User's name contains \`${data}\` then his nickname will be changed to ${nickname} (\`${type}\`)`);
             } else if(action == "timeout"){
               const dur = args[3] ? args.slice(3).join("") : null;
@@ -142,7 +144,7 @@ module.exports = {
               const ms = require("ms");
               try {
                 if(dur.includes("+")){
-                  for(const d of dur.split("+")){
+                  for await (const d of dur.split("+")){
                     try {
                       time += ms(d.trim());
                     } catch {
@@ -157,12 +159,12 @@ module.exports = {
               }
               if(!time || time < 10 || time == "NAN") return message.reply("For the action `timeout` a timeout duration must be provided at the very end (after the data), For example: 1day, if you want multiple timeouts than do: 1day+10min");
               joinlist[type].push({data, action, time});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User's name contains \`${data}\` then he will be \`${action}ed\` for ${duration(time).map(d => `\`${d}\``).join(", ")} (\`${type}\`)`);
             } else {
               const days = args[3] && !isNaN(args[3]) ? Number(args[3]) : 0;
               joinlist[type].push({data, action, days});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User's name contains \`${data}\` then he will be \`${action}ed\` ${action == "ban" ? `for ${days !== 0 ? `${days} Days` : `ever! (Optional: add days afterwards)`}` : ``} (\`${type}\`)`);
             }
           } break;
@@ -172,7 +174,7 @@ module.exports = {
               const nickname = args[3] ? args.slice(3).join(" ") : null;
               if(!nickname || nickname.length > 32) return message.reply("For the action `setnickname` a Nickname must be provided at the very end (after the data), which is less than 32 Characters, insert `{random}`, so that the nickname will randomly be choosen!");
               joinlist[type].push({data, action, nickname});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User has the name \`${data}\` then his nickname will be changed to ${nickname} (\`${type}\`)`);
             } else if(action == "timeout"){
               const dur = args[3] ? args.slice(3).join("") : null;
@@ -180,7 +182,7 @@ module.exports = {
               const ms = require("ms");
               try {
                 if(dur.includes("+")){
-                  for(const d of dur.split("+")){
+                  for await (const d of dur.split("+")){
                     try {
                       time += ms(d.trim());
                     } catch {
@@ -195,12 +197,12 @@ module.exports = {
               }
               if(!time || time < 10 || time == "NAN") return message.reply("For the action `timeout` a timeout duration must be provided at the very end (after the data), For example: 1day, if you want multiple timeouts than do: 1day+10min");
               joinlist[type].push({data, action, time});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User has the name \`${data}\` then he will be \`${action}ed\` for ${duration(time).map(d => `\`${d}\``).join(", ")} (\`${type}\`)`);
             } else {
               const days = args[3] && !isNaN(args[3]) ? Number(args[3]) : 0;
               joinlist[type].push({data, action, days});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User has the name \`${data}\` then he will be \`${action}ed\` ${action == "ban" ? `for ${days !== 0 ? `${days} Days` : `ever! (Optional: add days afterwards)`}` : ``} (\`${type}\`)`);
             }
           } break;
@@ -213,7 +215,7 @@ module.exports = {
               const nickname = args[3] ? args.slice(3).join(" ") : null;
               if(!nickname || nickname.length > 32) return message.reply("For the action `setnickname` a Nickname must be provided at the very end (after the data), which is less than 32 Characters, insert `{random}`, so that the nickname will randomly be choosen!");
               joinlist[type].push({data, action, nickname});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User has the id \`${data}\` then his nickname will be changed to ${nickname} (\`${type}\`)`);
             } else if(action == "timeout"){
               const dur = args[3] ? args.slice(3).join("") : null;
@@ -221,7 +223,7 @@ module.exports = {
               const ms = require("ms");
               try {
                 if(dur.includes("+")){
-                  for(const d of dur.split("+")){
+                  for await (const d of dur.split("+")){
                     try {
                       time += ms(d.trim());
                     } catch {
@@ -236,12 +238,12 @@ module.exports = {
               }
               if(!time || time < 10 || time == "NAN") return message.reply("For the action `timeout` a timeout duration must be provided at the very end (after the data), For example: 1day, if you want multiple timeouts than do: 1day+10min");
               joinlist[type].push({data, action, time});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User has the id \`${data}\` then he will be \`${action}ed\` for ${duration(time).map(d => `\`${d}\``).join(", ")} (\`${type}\`)`);
             } else {
               const days = args[3] && !isNaN(args[3]) ? Number(args[3]) : 0;
               joinlist[type].push({data, action, days});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User has the id \`${data}\` then he will be \`${action}ed\` ${action == "ban" ? `for ${days !== 0 ? `${days} Days` : `ever! (Optional: add days afterwards)`}` : ``} (\`${type}\`)`);
             }
           } break;
@@ -257,7 +259,7 @@ module.exports = {
               const nickname = args[3] ? args.slice(3).join(" ") : null;
               if(!nickname || nickname.length > 32) return message.reply("For the action `setnickname` a Nickname must be provided at the very end (after the data), which is less than 32 Characters, insert `{random}`, so that the nickname will randomly be choosen!");
               joinlist[type].push({data, action, nickname});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User is in the Guild \`${client.guilds.cache.get(data) ? client.guilds.cache.get(data).name : data}\` then his nickname will be changed to ${nickname} (\`${type}\`)`);
             } else if(action == "timeout"){
               const dur = args[3] ? args.slice(3).join("") : null;
@@ -265,7 +267,7 @@ module.exports = {
               const ms = require("ms");
               try {
                 if(dur.includes("+")){
-                  for(const d of dur.split("+")){
+                  for await (const d of dur.split("+")){
                     try {
                       time += ms(d.trim());
                     } catch {
@@ -280,12 +282,12 @@ module.exports = {
               }
               if(!time || time < 10 || time == "NAN") return message.reply("For the action `timeout` a timeout duration must be provided at the very end (after the data), For example: 1day, if you want multiple timeouts than do: 1day+10min");
               joinlist[type].push({data, action, time});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User is in the Guild \`${client.guilds.cache.get(data) ? client.guilds.cache.get(data).name : data}\` then he will be \`${action}ed\` for ${duration(time).map(d => `\`${d}\``).join(", ")} (\`${type}\`)`);
             } else {
               const days = args[3] && !isNaN(args[3]) ? Number(args[3]) : 0;
               joinlist[type].push({data, action, days});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User is in the Guild \`${client.guilds.cache.get(data) ? client.guilds.cache.get(data).name : data}\` then he will be \`${action}ed\` ${action == "ban" ? `for ${days !== 0 ? `${days} Days` : `ever! (Optional: add days afterwards)`}` : ``} (\`${type}\`)`);
             }
           } break;
@@ -301,7 +303,7 @@ module.exports = {
               const nickname = args[3] ? args.slice(3).join(" ") : null;
               if(!nickname || nickname.length > 32) return message.reply("For the action `setnickname` a Nickname must be provided at the very end (after the data), which is less than 32 Characters, insert `{random}`, so that the nickname will randomly be choosen!");
               joinlist[type].push({data, action, nickname});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User is not in the Guild \`${client.guilds.cache.get(data) ? client.guilds.cache.get(data).name : data}\` then his nickname will be changed to ${nickname} (\`${type}\`)`);
             } else if(action == "timeout"){
               const dur = args[3] ? args.slice(3).join("") : null;
@@ -309,7 +311,7 @@ module.exports = {
               const ms = require("ms");
               try {
                 if(dur.includes("+")){
-                  for(const d of dur.split("+")){
+                  for await (const d of dur.split("+")){
                     try {
                       time += ms(d.trim());
                     } catch {
@@ -328,7 +330,7 @@ module.exports = {
             } else {
               const days = args[3] && !isNaN(args[3]) ? Number(args[3]) : 0;
               joinlist[type].push({data, action, days});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User is not in the Guild \`${client.guilds.cache.get(data) ? client.guilds.cache.get(data).name : data}\` then he will be \`${action}ed\` ${action == "ban" ? `for ${days !== 0 ? `${days} Days` : `ever! (Optional: add days afterwards)`}` : ``} (\`${type}\`)`);
             }
           } break;
@@ -342,7 +344,7 @@ module.exports = {
               const nickname = args[3] ? args.slice(3).join(" ") : null;
               if(!nickname || nickname.length > 32) return message.reply("For the action `setnickname` a Nickname must be provided at the very end (after the data), which is less than 32 Characters, insert `{random}`, so that the nickname will randomly be choosen!");
               joinlist[type].push({data, action, nickname});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User has no Avatar then his Nickname will be ${data == "enable" ? "" : "__not__ (disable)"} changed to: ${nickname} (\`${type}\`)`);
             } else if(action == "timeout"){
               const dur = args[3] ? args.slice(3).join("") : null;
@@ -350,7 +352,7 @@ module.exports = {
               const ms = require("ms");
               try {
                 if(dur.includes("+")){
-                  for(const d of dur.split("+")){
+                  for await (const d of dur.split("+")){
                     try {
                       time += ms(d.trim());
                     } catch {
@@ -365,12 +367,12 @@ module.exports = {
               }
               if(!time || time < 10 || time == "NAN") return message.reply("For the action `timeout` a timeout duration must be provided at the very end (after the data), For example: 1day, if you want multiple timeouts than do: 1day+10min");
               joinlist[type].push({data, action, time});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User has no Avatar then he will be \`${action}ed\` for ${duration(time).map(d => `\`${d}\``).join(", ")} (\`${type}\`)`);
             } else {
               const days = args[3] && !isNaN(args[3]) ? Number(args[3]) : 0;
               joinlist[type].push({data, action, days});
-              client.settings.set(message.guild.id, joinlist, "joinlist");
+              await client.settings.set(message.guild.id+".joinlist", joinlist);
               message.reply(`If a User has no Avatar then he will be \`${action}ed\` ${action == "ban" ? `for ${days !== 0 ? `${days} Days` : `ever! (Optional: add days afterwards)`}` : ``} (\`${type}\`)`);
             }
 
@@ -381,7 +383,7 @@ module.exports = {
       }
 
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds : [new MessageEmbed()
         .setFooter(client.getFooter(es)).setColor(es.wrongcolor)
         .setTitle(client.la[ls].common.erroroccur)

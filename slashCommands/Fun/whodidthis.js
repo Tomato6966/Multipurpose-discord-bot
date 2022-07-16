@@ -16,9 +16,9 @@ module.exports = {
   options: [
     { "User": { name: "which_user", description: "From Which User do you want to get ... ?", required: false } },
   ],
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
 
-  if (!client.settings.get(message.guild.id, "FUN")) {
+  if (GuildSettings.FUN === false) {
       return message.reply({
         embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
@@ -47,7 +47,7 @@ module.exports = {
           .setAuthor(`Meme for: ${user.tag}`, avatar)
           .setImage("attachment://whodidthis.png")
         ], files: [attachment], ephemeral: true
-      }).catch(() => {})
+      }).catch(() => null)
     })
 
   }

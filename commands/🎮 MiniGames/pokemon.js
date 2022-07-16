@@ -1,8 +1,8 @@
 
 const { MessageEmbed, MessageAttachment } = require('discord.js');
 const fetch = require('node-fetch');
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
 class GuessThePokemon {
 	constructor(options = {}) {
 		if (!options.message) throw new TypeError('NO_MESSAGE: Please provide a message arguement')
@@ -76,7 +76,7 @@ class GuessThePokemon {
 		if (thinkMsg && !thinkMsg.deleted) thinkMsg.delete().catch();
 		const msg = await this.sendMessage({ embeds: [embed], files: [attachment] })
 
-		const filter = (m) => m.author.id === this.message.author.id;
+		const filter = (m) => m.author.id === this.message.author?.id;
 		const collector = this.message.channel.createMessageCollector({
 			filter, 
 			time: this.options.time,
@@ -122,14 +122,14 @@ module.exports = {
     description: "Allows you to play a Game",
     usage: "pokemon --> Play the Game",
     type: "buttons",
-     run: async (client, message, args, cmduser, text, prefix) => {
-        let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        if(!client.settings.get(message.guild.id, "MINIGAMES")){
+     run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+        
+        if(GuildSettings.FUN === false){
           return message.reply(new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.disabled.title)
-            .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+            .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
           );
         }
         new GuessThePokemon({

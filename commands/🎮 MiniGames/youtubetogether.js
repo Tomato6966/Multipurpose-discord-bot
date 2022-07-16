@@ -2,9 +2,9 @@ const {
     MessageEmbed,
     MessageAttachment
   } = require("discord.js");
-  const config = require(`${process.cwd()}/botconfig/config.json`);
-  var ee = require(`${process.cwd()}/botconfig/embed.json`);
-  const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+  const config = require(`../../botconfig/config.json`);
+  var ee = require(`../../botconfig/embed.json`);
+  const emoji = require(`../../botconfig/emojis.json`);
   const fetch = require("node-fetch");
   module.exports = {
     name: "youtubetogether",
@@ -21,15 +21,15 @@ const {
 755600276941176913 YouTube Together
 814288819477020702 Fishington.io
     */
-    run: async (client, message, args, cmduser, text, prefix) => {
+    run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-        let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        if(!client.settings.get(message.guild.id, "MINIGAMES")){
+        
+        if(GuildSettings.FUN === false){
           return message.reply(new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.disabled.title)
-            .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+            .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
           );
         }
       try {
@@ -71,7 +71,7 @@ const {
             message.reply(eval(client.la[ls]["cmds"]["minigames"]["youtubetogether"]["variable4"]));
         })
         } catch (e) {
-            console.log(String(e.stack).grey.bgRed)
+            console.error(e)
             return message.reply(new Discord.MessageEmbed()
                 .setColor(es.wrongcolor)
                 .setFooter(client.getFooter(es))

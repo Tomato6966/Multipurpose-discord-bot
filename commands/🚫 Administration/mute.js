@@ -1,14 +1,14 @@
-const config = require(`${process.cwd()}/botconfig/config.json`);
+const config = require(`../../botconfig/config.json`);
 const ms = require(`ms`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`)
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var ee = require(`../../botconfig/embed.json`)
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   MessageEmbed,
   Permissions
 } = require(`discord.js`)
 const {
-  databasing, delay
-} = require(`${process.cwd()}/handlers/functions`);
+  databasing,delay, dbEnsure
+} = require(`../../handlers/functions`);
 module.exports = {
   name: `mute`,
   category: `🚫 Administration`,
@@ -17,17 +17,16 @@ module.exports = {
   usage: `mute @User <Time+Format(e.g: 10m) / perma> [REASON]`,
   description: `Mutes a User for a specific Time!`,
   type: "member",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
     try {
       if (!message.guild.me.permissions.has([Permissions.FLAGS.MANAGE_ROLES]))
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor).setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable1"]))
         ]})
-      let adminroles = client.settings.get(message.guild.id, "adminroles")
-      let cmdroles = client.settings.get(message.guild.id, "cmdadminroles.mute")
+      let adminroles = GuildSettings?.adminroles || [];
+      let cmdroles = GuildSettings?.cmdadminroles?.mute || [];
       var cmdrole = []
       if (cmdroles.length > 0) {
         for (const r of cmdroles) {
@@ -36,13 +35,16 @@ module.exports = {
           } else if (message.guild.members.cache.get(r)) {
             cmdrole.push(` | <@${r}>`)
           } else {
-            
-            //console.log(r)
-            client.settings.remove(message.guild.id, r, `cmdadminroles.mute`)
+            const File = `mute`;
+            let index = GuildSettings && GuildSettings.cmdadminroles && typeof GuildSettings.cmdadminroles == "object" ? GuildSettings.cmdadminroles[File]?.indexOf(r) || -1 : -1;
+            if(index > -1) {
+              GuildSettings.cmdadminroles[File].splice(index, 1);
+              client.settings.set(`${message.guild.id}.cmdadminroles`, GuildSettings.cmdadminroles)
+            }
           }
         }
       }
-      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author.id) && !message.member.permissions.has([Permissions.FLAGS.ADMINISTRATOR]))
+      if (([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => cmdroles.includes(r.id))) && !cmdroles.includes(message.author?.id) && ([...message.member.roles.cache.values()] && !message.member.roles.cache.some(r => adminroles.includes(r ? r.id : r))) && !Array(message.guild.ownerId, config.ownerid).includes(message.author?.id) && !message.member?.permissions?.has([Permissions.FLAGS.ADMINISTRATOR]))
         return message.reply({embeds :[new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -58,7 +60,7 @@ module.exports = {
           .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable5"]))
         ]});
 
-      if(!message.member || message.member.roles ||!message.member.roles.highest) await message.member.fetch().catch(() => {});
+      if(!message.member || message.member.roles ||!message.member.roles.highest) await message.member.fetch().catch(() => null);
       args.shift();
       if (member.roles.highest.position >= message.member.roles.highest.position)
         return message.reply({embeds : [new MessageEmbed()
@@ -67,7 +69,15 @@ module.exports = {
           .setTitle(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable6"]))
         ]});
 
-      let mutesettings = client.settings.get(message.guild.id, "mute"); 
+      let mutesettings = GuildSettings.mute;
+      if(!mutesettings) {
+        mutesettings = {
+          style: "timeout",
+          roleId: "",
+          defaultTime: 60000,  
+        };
+        await dbEnsure(client.settings, message.guild.id, mutesettings)
+      } 
       /*
           mute: {
             style: "timeout",
@@ -81,14 +91,14 @@ module.exports = {
           time = mutesettings.default;
       }
       let mutedRole = mutesettings.roleId ? message.guild.roles.cache.get(mutesettings.roleId) || false : false;
-      
+
       if(!mutedRole || mutesettings.style == "timeout") {
         if (!member.manageable)
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(":x: **I am not able to manage this User**")
-          ]}).catch(()=>{});
+          ]}).catch(() => null);
 
         args.shift();
 
@@ -106,7 +116,7 @@ module.exports = {
           mutetime = mutesettings.defaultTime;
         }
         console.log(mutetime);
-        member.timeout(mutetime, reason).then(() => {  
+        member.timeout(mutetime, reason).then(async () => {  
           console.log("SUCCESS")
             //send Information in the Chat
             message.reply({
@@ -116,9 +126,9 @@ module.exports = {
               .setFooter(client.getFooter(es))
               .setTitle(String(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable14"])).replace("MUTED", "TIMEOUTED"))
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable15"]))
-            ]}).catch((_) => {})
+            ]}).catch(() => null)
             //increase the Mod Stats
-            client.stats.push(message.guild.id + message.author.id, new Date().getTime(), "mute");
+            await client.stats.push(message.guild.id + message.author?.id+".mute", new Date().getTime());
             //Send information to the MUTE - MEMBER
             member.send({
               embeds:[ new MessageEmbed()
@@ -126,11 +136,11 @@ module.exports = {
               .setFooter(client.getFooter(es))
               .setTitle(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable16"]))
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable17"]))
-            ]}).catch((_) => {})
+            ]}).catch(() => null)
         }).catch((e) => {
-            console.log(e)
+            console.error(e)
             return message.reply(`:x: **I could not timeout ${member.user.tag}**`).then(m => {
-                setTimeout(() => { m.delete().catch(() => {}) }, 5000);
+                setTimeout(() => { m.delete().catch(() => null) }, 5000);
             });
         });
 
@@ -147,7 +157,7 @@ module.exports = {
             args.shift();
             let reason = args.join(` `);
             await member.roles.add(mutedRole).catch(e=>{
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             })
             //send Information in the Chat
             message.reply({
@@ -158,7 +168,7 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable15"]))
             ]});
             //increase the Mod Stats
-            client.stats.push(message.guild.id + message.author.id, new Date().getTime(), "mute");
+            await client.stats.push(message.guild.id + message.author?.id+".mute", new Date().getTime());
             //Send information to the MUTE - MEMBER
             member.send({
               embeds:[ new MessageEmbed()
@@ -166,9 +176,9 @@ module.exports = {
               .setFooter(client.getFooter(es))
               .setTitle(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable16"]))
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable17"]))
-            ]}).catch((_) => {})
+            ]}).catch(() => null)
             //Add the Member to the Mute DB
-            client.mutes.push("MUTES", {
+            await client.mutes.push("MUTES.MUTES", {
               timestamp: Date.now(),
               mutetime: -1,
               role: mutedRole.id,
@@ -176,9 +186,9 @@ module.exports = {
               guild: message.guild.id,
               channel: message.channel.id,
               reason: reason,
-            }, "MUTES")
+            })
             //increase the Mod Stats
-            client.stats.push(message.guild.id + message.author.id, new Date().getTime(), "mute");
+            await client.stats.push(message.guild.id + message.author?.id+".mute", new Date().getTime());
             
             await message.guild.channels.cache
               .filter(c => c.permissionOverwrites)
@@ -194,11 +204,11 @@ module.exports = {
                     ADD_REACTIONS: false,
                     CONNECT: false,
                     SPEAK: false
-                  }).catch(() => {})
+                  }).catch(() => null)
                   await delay(1500);
                 }
               } catch (e) {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                console.error(e);
               }
             });
           }catch(e){
@@ -228,7 +238,7 @@ module.exports = {
           try {
             
             await member.roles.add(mutedRole).catch(e=>{
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
             })
             if (!mutetime || mutetime === undefined) {
               return message.reply({
@@ -247,7 +257,7 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable21"]))
             ]});
             //Add the Member to the Mute DB
-            client.mutes.push("MUTES", {
+            await client.mutes.push("MUTES.MUTES", {
               timestamp: Date.now(),
               mutetime: mutetime,
               role: mutedRole.id,
@@ -255,9 +265,9 @@ module.exports = {
               guild: message.guild.id,
               channel: message.channel.id,
               reason: reason,
-            }, "MUTES")
+            })
             //increase the Mod Stats
-            client.stats.push(message.guild.id + message.author.id, new Date().getTime(), "mute");
+            await client.stats.push(message.guild.id + message.author?.id+".mute", new Date().getTime());
             //Send information to the MUTE - MEMBER
             member.send({
               embeds: (new MessageEmbed()
@@ -265,7 +275,7 @@ module.exports = {
               .setFooter(client.getFooter(es))
               .setTitle(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable22"]))
               .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable23"]))
-            )}).catch((_) => {})
+            )}).catch(() => null)
   
             await message.guild.channels.cache
               .filter(c => c.permissionOverwrites)
@@ -281,11 +291,11 @@ module.exports = {
                     ADD_REACTIONS: false,
                     CONNECT: false,
                     SPEAK: false
-                  }).catch(() => {})
+                  }).catch(() => null)
                   await delay(1500);
                 }
               } catch (e) {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey);
+                console.error(e);
               }
             });
           } catch (e) {
@@ -303,26 +313,26 @@ module.exports = {
 
 
 
-      if (client.settings.get(message.guild.id, `adminlog`) != "no") {
+      if (GuildSettings && GuildSettings.adminlog && GuildSettings.adminlog != "no") {
         try {
-          var channel = message.guild.channels.cache.get(client.settings.get(message.guild.id, `adminlog`))
-          if (!channel) return client.settings.set(message.guild.id, "no", `adminlog`);
+          var channel = message.guild.channels.cache.get(GuildSettings.adminlog)
+          if (!channel) return client.settings.set(`${message.guild.id}.adminlog`, "no");
           channel.send({embeds: [new MessageEmbed()
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null).setFooter(client.getFooter(es))
-            .setAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({
+            .setAuthor(client.getAuthor(`${require("path").parse(__filename).name} | ${message.author.tag}`, message.author.displayAvatarURL({
               dynamic: true
-          }))
+          })))
             .setDescription(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable24"]))
             .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_15"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable15"]))
            .addField(eval(client.la[ls]["cmds"]["administration"]["ban"]["variablex_16"]), eval(client.la[ls]["cmds"]["administration"]["ban"]["variable16"]))
-            .setTimestamp().setFooter(client.getFooter("ID: " + message.author.id, message.author.displayAvatarURL({dynamic: true})))
+            .setTimestamp().setFooter(client.getFooter("ID: " + message.author?.id, message.author.displayAvatarURL({dynamic: true})))
         ]})
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["administration"]["mute"]["variable27"]))

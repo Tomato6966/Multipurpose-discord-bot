@@ -1,7 +1,8 @@
 const { MessageEmbed } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { databasing, clearDBData } = require("../../handlers/functions");
 module.exports = {
   name: `reset`,
   aliases: [`hardreset`],
@@ -10,13 +11,13 @@ module.exports = {
   usage: `reset`,
   memberpermissions: [`ADMINISTRATOR`],
   type: "bot",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try{
       
       //if not enough permissions aka not the guild owner, return error
-      if (message.member.guild.ownerId !== message.author.id)
+      if (message.member.guild.ownerId !== message.author?.id)
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -30,7 +31,7 @@ module.exports = {
         .setDescription(eval(client.la[ls]["cmds"]["settings"]["reset"]["variable3"]))
       ]}).then((msg) => {
         //wait for answer of the right user
-        msg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+        msg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
           max: 1,
           time: 30 * 1000,
           errors: ['time']
@@ -40,21 +41,11 @@ module.exports = {
           //and if its yes
           if(collected.first().content.toLowerCase() === `yes`)
           {
-            //reset the database of the setup
-            client.setups.set(message.guild.id, {
-                textchannel: `0`,
-                voicechannel: `0`,
-                category: `0`,
-                message_cmd_info: `0`,
-                message_queue_info: `0`,
-                message_track_info: `0`
-            });
-            //reset the settings like prefix djroles and botchannels
-            client.settings.set(message.guild.id, {
-                prefix: config.prefix,
-                djroles: [],
-                botchannel: [],
-            });
+            await clearDBData(client, message.guild.id);
+            await databasing(client, message.guild.id);
+            //databasing(client, message.guild.id)
+            var es = await client.settings.get(message.guild.id, "embed")
+            var ls = await client.settings.get(message.guild.id, "language")
             //send the success message
             return message.reply({embeds : [new MessageEmbed()
               .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
@@ -74,7 +65,7 @@ module.exports = {
         })
       });
     } catch (e) {
-        console.log(String(e.stack).grey.bgRed)
+        console.error(e)
         return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
 						.setFooter(client.getFooter(es))

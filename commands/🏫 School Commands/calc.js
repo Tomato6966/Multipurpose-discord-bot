@@ -5,9 +5,9 @@ const {
   MessageEmbed,
   MessageAttachment
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 module.exports = {
   name: "calc",
   aliases: ["calculate"],
@@ -15,15 +15,15 @@ module.exports = {
   description: "Calculates a math equation",
   usage: "calc <INPUT>",
   type: "math",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if(!client.settings.get(message.guild.id, "SCHOOL")){
+    
+    if(!GuildSettings.SCHOOL){
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.disabled.title)
-        .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+        .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
       ]});
     }
     //command
@@ -39,9 +39,10 @@ module.exports = {
     let answer;
 
     try {
-      answer = math.eval(args.join(" "));
+      answer = await math.eval(args.join(" ").replace(/mod/igu, "Mod").replace(/%/igu, "Mod"));
     } catch (err) {
-      message.reply({content: eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variable3"])});
+      console.error(err);
+      return message.reply({content: `Invalid Math Equation: \`\`\`${String(err.message ? err.message : err).substring(0, 150)}\`\`\``});
     }
 
     message.reply({embeds: [new MessageEmbed() 

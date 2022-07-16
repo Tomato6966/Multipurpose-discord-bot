@@ -1,11 +1,11 @@
 const Discord = require("discord.js");
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const moment = require('moment');
-const { GetUser, GetGlobalUser } = require(`${process.cwd()}/handlers/functions`)
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+const { GetUser, GetGlobalUser } = require(`../../handlers/functions`)
+const { handlemsg } = require(`../../handlers/functions`);
 module.exports = {
   name: "permissions",
   aliases: ["perms"],
@@ -13,9 +13,9 @@ module.exports = {
   description: "Get permissions information about a user",
   usage: "permissions [@USER]",
   type: "user",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
 		try {   
       var user;
       if(args[0]){
@@ -44,7 +44,7 @@ module.exports = {
         if(guildowner == member.id) embeduserinfo.setDescription(`>>> \`ALL\` --> \`SERVEROWNER\``)
         message.reply({embeds: [embeduserinfo]})
       }catch (e){
-        console.log(e.stack ? String(e.stack).grey : String(e).grey)
+        console.error(e)
         //create the EMBED
         const embeduserinfo = new MessageEmbed()
         embeduserinfo.setThumbnail(user.displayAvatarURL({ dynamic: true, size: 512 }))
@@ -57,7 +57,7 @@ module.exports = {
       }
       
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

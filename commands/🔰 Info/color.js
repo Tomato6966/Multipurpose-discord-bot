@@ -2,13 +2,13 @@ const Discord = require("discord.js");
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   GetUser,
   GetGlobalUser, handlemsg
-} = require(`${process.cwd()}/handlers/functions`)
+} = require(`../../handlers/functions`)
 const fetch = require("node-fetch")
 module.exports = {
   name: "color",
@@ -17,10 +17,8 @@ module.exports = {
   description: "Get Hex Color Information",
   usage: "color <HEX CODE> | Example: color #ee33ff",
   type: "util",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    let es = client.settings.get(message.guild.id, "embed");
-    let ls = client.settings.get(message.guild.id, "language")
-    
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+
 		try {
       let userinfo = false;
       if(!args[0]){
@@ -31,7 +29,6 @@ module.exports = {
       let json;
       try {
         json = await fetch(url).then(res => res.json())
-        console.log(json)
       } catch (e) {
         return message.reply({content: `${e.message ? e.message : e}`,
           codeBlock: "js"
@@ -53,7 +50,7 @@ module.exports = {
         embeds: [embed]
       })
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

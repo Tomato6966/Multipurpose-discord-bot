@@ -12,8 +12,8 @@ function disableButtons(components) {
   }
   return components;
 }
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
 class RPSGame {
   constructor(options = {}) {
       if (!options.message) throw new TypeError('NO_MESSAGE: Please provide a message arguement')
@@ -96,7 +96,7 @@ class RPSGame {
       }
 
       if (this.opponent.bot) return this.sendMessage('You can\'t play with bots!')
-      if (this.opponent.id === this.message.author.id) return this.sendMessage('You cannot play with yourself!')
+      if (this.opponent.id === this.message.author?.id) return this.sendMessage('You cannot play with yourself!')
 
       const check = await verify(this.options)
 
@@ -136,13 +136,13 @@ class RPSGame {
 
 
       collector.on('collect', async btn => {
-          if (btn.user.id !== this.message.author.id && btn.user.id !== this.opponent.id) {
+          if (btn.user.id !== this.message.author?.id && btn.user.id !== this.opponent.id) {
               const authors = this.message.author.tag + 'and' + this.opponent.tag;
               return btn.reply({ content: this.options.othersMessage.replace('{author}', authors),  ephemeral: true })
           }
 
 
-          if (btn.user.id == this.message.author.id) {
+          if (btn.user.id == this.message.author?.id) {
               if (challenger_choice) {
                   return btn.reply({ content: this.options.noChangeMessage,  ephemeral: true })
               }
@@ -218,14 +218,14 @@ module.exports = {
     description: "Allows you to play a Game of Rock Paper Scissors",
     usage: "rockpaperscissors --> Play the Game",
     type: "buttons",
-     run: async (client, message, args, cmduser, text, prefix) => {    
-        let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        if(!client.settings.get(message.guild.id, "MINIGAMES")){
+     run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {    
+        
+        if(GuildSettings.FUN === false){
           return message.reply(new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.disabled.title)
-            .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+            .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
           );
         }
         const opponent = message.mentions.members.first() || message.guild.members.cache.get(args[0]);

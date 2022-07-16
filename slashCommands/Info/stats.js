@@ -10,7 +10,7 @@ const {
 module.exports = {
   name: "stats",
   description: "Shows music Stats, like amount of Commands and played Songs etc.",
-  run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+  run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
     //things u can directly access in an interaction!
     const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
     const { guild } = member;
@@ -32,7 +32,7 @@ module.exports = {
         .setTitle(handlemsg(client.la[ls].cmds.info.stats.title, { botname: client.user.username }))
       ]});
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
     }
   }
 }

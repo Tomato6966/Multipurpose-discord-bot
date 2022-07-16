@@ -9,7 +9,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`)
 module.exports = {
 	name: "developer",
 	description: "Shows Information about the Developer",
-	run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
+	run: async (client, interaction, cmduser, es, ls, prefix, player, message, GuildSettings) => {
 		//things u can directly access in an interaction!
 		const { member, channelId, guildId, applicationId, commandName, deferred, replied, ephemeral, options, id, createdTimestamp } = interaction; 
 		const { guild } = member;
@@ -30,7 +30,7 @@ module.exports = {
 components: allbuttons
 			}).catch(error => console.log(error));
 		} catch (e) {
-			console.log(String(e.stack).grey.bgRed)
+			console.error(e)
 			return message.reply({embeds: [new MessageEmbed()
 			  .setColor(es.wrongcolor)
 			  .setFooter(client.getFooter(es))

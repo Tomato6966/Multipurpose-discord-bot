@@ -1,51 +1,43 @@
 //Import npm modules
-const Discord = require("discord.js");
-const Canvas = require("canvas");
-const canvacord = require("canvacord");
-//Load fonts
-// Canvas.registerFont( "./assets/fonts/DMSans-Bold.ttf" , { family: "DM Sans", weight: "bold" } );
-// Canvas.registerFont( "./assets/fonts/DMSans-Regular.ttf" , { family: "DM Sans", weight: "regular" } );
-// Canvas.registerFont( "./assets/fonts/STIXGeneral.ttf" , { family: "STIXGeneral" } );
-// Canvas.registerFont( "./assets/fonts/AppleSymbol.ttf" , { family: "AppleSymbol" } );
-// Canvas.registerFont( "./assets/fonts/Arial.ttf"       , { family: "Arial" } );
-// Canvas.registerFont( "./assets/fonts/ArialUnicode.ttf", { family: "ArielUnicode" } );
-// Canvas.registerFont(`./assets/fonts/Genta.ttf`, { family: `Genta` } );
-// Canvas.registerFont("./assets/fonts/UbuntuMono.ttf", { family: "UbuntuMono" } );
+const { Collection, MessageEmbed, MessageAttachment, Permissions } = require("discord.js");
+const MilratoCanvasApi = require("./CanvasApi");
 // require functions from files
 const config = require(`${process.cwd()}/botconfig/config.json`);
 const ee = require(`${process.cwd()}/botconfig/embed.json`);
-const {
-  delay,
-  duration,
-  simple_databasing
-} = require(`./functions`);
-const {
-  Captcha
-} = require(`captcha-canvas`); //require package here
+const { delay, duration, dbEnsure} = require(`./functions`);
+const { Captcha } = require(`captcha-canvas`); //require package here
 const ms = require("ms");
 //Create Variables
-const Fonts = "Genta, UbuntuMono, `DM Sans`, STIXGeneral, AppleSymbol, Arial, ArialUnicode";
-const wideFonts = "`DM Sans`, STIXGeneral, AppleSymbol, Arial, ArialUnicode";
 let invitemessage = "\u200b";
-//Start the module
-module.exports = client => {
+const { inviteationCache, DbAllCache } = require("./caches");
 
+//Start the module
+module.exports = async (client) => {
   client.fetched = false;
-  client.invitations = {};
   
   /**
    * FETCH THE INVITES OF ALL GUILDS
    */
   client.on("ready", async () => {
-    for(const guild of [...client.guilds.cache.values()]){
-      let fetchedInvites = null;
-      if (guild.me.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD)) {
-        await guild.invites.fetch().catch(() => {});
+    for await (const guild of [...client.guilds.cache.values()]){
+      try{
+        let fetchedInvites = null;
+        if (guild.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
+          await guild.invites.fetch().catch(() => null);
+        }
+        fetchedInvites = generateInvitesCache(guild.invites.cache);
+        inviteationCache.set(guild.id, fetchedInvites);
+      }catch(e){
+        console.error(e)
       }
-      fetchedInvites = await generateInvitesCache(guild.invites.cache);
-      client.invitations[guild.id] = fetchedInvites;
     }
     client.fetched = true;
+    
+    const allData = await client.invitesdb.all();
+    client.guilds.cache.each(async g => {
+      // Update the invitesDb cache
+      DbAllCache.set(g.id, allData.filter(v => v.data?.guildId == g.id))
+    })
   })
 
   /**
@@ -53,48 +45,40 @@ module.exports = client => {
    */
   client.on("guildCreate", async (guild) => {
       let fetchedInvites = null;
-      if (guild.me.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD)) {
-        await guild.invites.fetch().catch(() => {});
+      if (guild.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
+        await guild.invites.fetch().catch(() => null);
       }
-      fetchedInvites = await generateInvitesCache(guild.invites.cache);
-      client.invitations[guild.id] = fetchedInvites;
+      fetchedInvites = generateInvitesCache(guild.invites.cache);
+      inviteationCache.set(guild.id, fetchedInvites);
   })
 
   /**
    * Register new Created Invites
    */
-  client.on("inviteCreate", (invite) => {
-    if(!invite.guild) return;
-    function SetInvite(i){
-      if (!client.fetched) {
-        if(!client.invitations[invite.guild.id]){
-          setTimeout(() => {
-            SetInvite(i);
-          }, 5_000)
-          return;
-        }
-      }
-      client.invitations[invite.guild.id].set(invite.code, inviteToJson(invite));
+  client.on("inviteCreate", (i) => {
+    if(!i.guild) return;
+    function SetInvite(invite){
+      if (!client.fetched && !inviteationCache.has(invite.guild.id)) 
+        return setTimeout(() => SetInvite(invite), 5_000)
+      
+      inviteationCache.get(invite.guild.id).set(invite.code, inviteToJson(invite));
     }
-    SetInvite(invite)
+    SetInvite(i)
   })
   /**
    * Handle Invite Delete Event
    */
-  client.on("inviteDelete", (invite) => {
-    if(!invite.guild) return;
-    function SetInvite(i){
-      if (!client.fetched) {
-        if(!client.invitations[invite.guild.id]){
-          setTimeout(() => {
-            SetInvite(i);
-          }, 5_000)
-          return;
-        }
+  client.on("inviteDelete", (i) => {
+    if(!i.guild) return;
+    function SetInvite(invite){
+      if (!client.fetched && !inviteationCache.has(invite.guild.id)) 
+        return setTimeout(() => SetInvite(invite), 5_000)
+      
+      if(inviteationCache.get(invite.guild.id) && inviteationCache.get(invite.guild.id).get(invite.code)) {
+        inviteationCache.get(invite.guild.id).get(invite.code).deletedTimestamp = Date.now();
       }
-      client.invitations[invite.guild.id].delete(invite.code);
     }
-    SetInvite(invite)
+    SetInvite(i)
   })
 
   /**
@@ -107,111 +91,93 @@ module.exports = client => {
    * WELCOMING + Register the Invites etc.
    */
   client.on("guildMemberAdd", async mem => {
-    if (!mem.guild || mem.user.bot) return; //if not finished yet return
-    simple_databasing(client, mem.guild.id, mem.id)
-    let ls = client.settings.get(mem.guild.id, "language");
-    let es = client.settings.get(mem.guild.id, "embed");
+    // If not in a guild or a bot got added return
+    if (!mem.guild || mem.user.bot) return;
+    // Make sure that it's in the db
+    await dbEnsure(client.settings, mem.guild.id, getDefaultWelcomeData()).catch(console.warn);
+    // get the settings
+    const theSettings = await client.settings.get(mem.guild.id);
+    // if there are not settings, or no welcome settings return
+    if(!theSettings || !theSettings.welcome) return 
+    // Settings Data
+    const ls = theSettings.language || "en";
+    const es = theSettings.embed || ee;
+    // Execute the Welcome Function
     welcome(mem);
     async function welcome(member) {
-      if (!client.fetched) {
-        if(client.invitations[mem.guild.id]){
-          console.log("NOT FETCHED ALL SERVERS, but this one did")
-        } else {
-          console.log("NOT FETCHED YET PLS WAIT! Retrying in 5 Seconds...");
-          setTimeout(() => {
-            welcome(member);
-          }, 5_000)
-          return;
-        }
-      }
-      if(!client.isReady()) {
-        setTimeout(() => {
-          welcome(member);
-        }, 5_000); //try in 5 secs again
-        return; 
-      }
-      // Fetch guild and member data from the db
-      EnsureInviteDB(member.guild, member.user)
+      // If guild is not in the cache yet, wait 5 Seconds and then retry
+      if (!client.fetched && !inviteationCache.has(member.guild.id)) 
+        return setTimeout(() => welcome(member), 5_000)
 
-      let memberData = client.invitesdb.find(v => v.id == member.id && v.guildId == member.guild.id && v.bot == member.user.bot);
-      let memberDataKey = client.invitesdb.findKey(v => v.id == member.id && v.guildId == member.guild.id && v.bot == member.user.bot);
-      /* Find who is the inviter */
-      let invite = null;
-      let vanity = false; //if a vanity invite
-      let perm = false; //if manage guild permissions
+      // Fetch guild and member data from the db
+      await EnsureInviteDB(member.guild, member.user)
+
+      const allData = DbAllCache.get(member.guild.id) || await client.invitesdb.all().then(v => v.filter(d => d.data?.guildId == member.guild.id)) || [];
+      DbAllCache.set(member.guild.id, allData);
+
+      const memberData = allData.find(v => v.data?.id == member.id && v.data?.guildId == member.guild.id && v.data?.bot == member.user.bot)?.data || {};
+      const memberDataKey = allData.find(v => v.data?.id == member.id && v.data?.guildId == member.guild.id && v.data?.bot == member.user.bot)?.ID || `${member.guild.id + member.id}`;
+      
+      let invite = null, vanity = false, perm = false; 
 
       //if i dont exist in the guild fetch me
-      if (!member.guild.me) {
-        await member.guild.members.fetch({
-            user: client.user.id,
-            cache: true
-        }).catch(() => {});
-      }
+      if (!member.guild.me) await member.guild.members.fetch({ user: client.user.id, cache: true }).catch(() => null);
+      
       //if not allowed set perm to true
-      if (!member.guild.me.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD)) perm = true;
-      /**
-       * @INFO
-       * GET THE INVITE LINK INFORMATION
-       */
-      //if i am allowed to do so then start
+      if (!member.guild.me.permissions.has("MANAGE_GUILD")) perm = true;
+      
+      // if i am allowed to do so then start
       if (!perm) {
         // Fetch the current invites of the guild
-        await member.guild.invites.fetch().catch(() => {});
-        //generate an invites cache collection
-        const guildInvites = generateInvitesCache(member.guild.invites.cache);
+        const currentInvites = await member.guild.invites.fetch().catch(() => new Collection());
+        const currentInvitesData = generateInvitesCache(currentInvites);
         //get the old GUild INvites
-        const oldGuildInvites = client.invitations[member.guild.id];
+        const oldGuildInvites = inviteationCache.get(member.guild.id);
+        // update the cache Data
+        if(currentInvitesData) inviteationCache.set(member.guild.id, currentInvitesData);
         
-        if (guildInvites && oldGuildInvites) {
-          // Update the cache
-          client.invitations[member.guild.id] = guildInvites;
+        if (currentInvitesData && oldGuildInvites) {
           // Find the invitations which doesn't have the same number of use
-          let inviteUsed = guildInvites.find((i) => 
-            oldGuildInvites.has(i?.code) && 
-            (oldGuildInvites.get(i?.code).uses ? oldGuildInvites.get(i?.code).uses : "Infinite") < i?.uses
-          );
-          // Special case: The invitation used was deleted shortly after the member's arrival and only
-          // before GUILD_MEMBER_ADD is output. (An invitation with a limited number of uses works like this)
-          if (!inviteUsed) {
-            oldGuildInvites.map(i => i).sort((a, b) => (a.deletedTimestamp && b.deletedTimestamp) ? b.deletedTimestamp - a.deletedTimestamp : 0).forEach((invite) => {
-                if (!guildInvites.get(invite.code) && invite.maxUses > 0 && invite.uses === (invite.maxUses - 1)) {
-                    inviteUsed = invite;
-                }
-            });
-          }
-          //if it's a vanity code          
-          if ((isEqual(oldGuildInvites.map((i) => `${i?.code}|${i?.uses}` ).sort(), guildInvites.map((i) => `${i?.code}|${i?.uses}` ).sort())) && !inviteUsed && member.guild.features.includes("VANITY_URL")){
+          let inviteUsed = compareOldWithNew(oldGuildInvites, currentInvitesData); 
+          
+          // if it's a vanity code          
+          if ((isEqual(oldGuildInvites.map((i) => `${i?.code}|${i?.uses}` ).sort(), currentInvitesData.map((i) => `${i?.code}|${i?.uses}` ).sort())) && !inviteUsed && member.guild.features.includes("VANITY_URL")){
             vanity = true;
           } 
-          if (!inviteUsed){
-              const newAndUsed = guildInvites.filter((i) => !oldGuildInvites.get(i?.code) && i?.uses >= 1);
+
+          if (!inviteUsed || inviteUsed.length == 0){
+              const newAndUsed = currentInvitesData.filter((i) => !oldGuildInvites.get(i?.code) && i?.uses >= 1);
               if (newAndUsed.size >= 1){
-                  inviteUsed = newAndUsed.first();
+                  inviteUsed = [newAndUsed.first()];
               }
           }
-          if (inviteUsed && !vanity) invite = inviteUsed;
-        } else if (guildInvites) {
-          client.invitations[member.guild.id] = guildInvites;
+          if (inviteUsed && !vanity) invite = inviteUsed[0];
         }
 
         //if there wasn't an invite found, yet
-        if (!invite && guildInvites){
-            //try to find the inviter
-            const targetInvite = guildInvites.find((i) => i?.targetUser && (i?.targetUser.id === member.id));
-            if (targetInvite && targetInvite.uses === 1) {
+        if (!invite && currentInvitesData){
+            // try to find the inviter
+            const targetInvite = currentInvitesData.find((i) => i?.targetUser && (i?.targetUser.id === member.id));
+            const oldTargetCache = oldGuildInvites.get(targetInvite?.code) || null;
+            if ((targetInvite && !oldTargetCache) || (targetInvite && oldTargetCache && targetInvite.uses > oldTargetCache.uses)) {
                 invite = targetInvite;
             }
         }
       }
+
       const inviter = invite && invite.inviter ? invite.inviter : null;
+
+      let inviterData;
+      let inviterDataKey;
       //if there is an inviter, ensure the database
       if (inviter) {
         //ensure him in the database
-        EnsureInviteDB(member.guild, inviter)
+        await EnsureInviteDB(member.guild, inviter)
         //get the inviterData
-        const inviterData = inviter ? client.invitesdb.find(v => v.id == inviter.id && v.guildId == member.guild.id) : null;
-        const inviterDataKey = client.invitesdb.findKey(v => v.id == inviter.id && v.guildId == member.guild.id && v.bot == inviter.bot)
-          //make sure that the inviter Data is an array 
+        inviterData = inviter ? allData.find(v => v.data?.id == inviter.id && v.data?.guildId == member.guild.id)?.data : {id: inviter.id, guildId: member.guild.id,fake: 0,leaves: 0,invites: 0,invited: [],left: [],joinData: { type: "unknown", invite: null }, messagesCount: 0,bot: inviter.bot};
+        inviterDataKey = allData.find(v => v.data?.id == inviter.id && v.data?.guildId == member.guild.id && v.data?.bot == inviter.bot)?.ID || inviter.id + member.guild.id
+        if(inviterData){
+        //make sure that the inviter Data is an array 
           if(!inviterData.left || !Array.isArray(inviterData.left)) {
             inviterData.left = [];
           }
@@ -237,8 +203,9 @@ module.exports = client => {
           // We increase the number of regular invitations
           inviterData.invites++;
           //update the database
-          client.invitesdb.set(inviterDataKey, inviterData)
+          await client.invitesdb.set(inviterDataKey, inviterData)
         }
+      }  
 
       /**
        * @INFO CHANGE THE MEMBERDATA TO WHOM INVITED HIM
@@ -263,8 +230,10 @@ module.exports = client => {
           invite: null
         }
       }
+
+
       //update the database for the MEMBER
-      client.invitesdb.set(memberDataKey, memberData)
+      await client.invitesdb.set(memberDataKey, memberData)
       
       if (invite && inviter) {
         //get the new memberdata
@@ -272,7 +241,7 @@ module.exports = client => {
           invites,
           fake,
           leaves
-         } = client.invitesdb.get(member.guild.id + inviter.id);
+         } = inviterData || await client.invitesdb.get(member.guild.id + inviter.id);
         if(fake < 0) fake *= -1;
         if(leaves < 0) leaves *= -1;
         if(invites < 0) invites *= -1;
@@ -284,30 +253,38 @@ module.exports = client => {
       }
       else if (vanity) {
         try{
-          let res = await member.guild.fetchVanityData().catch(() => {});
+          let res = await member.guild.fetchVanityData().catch(() => null);
           if(res){
             invitemessage = `Invited by a **[Vanity URL](https://discord.gg/${res.code})** with \`${res.uses} Uses\``
           } else {
             invitemessage = `Invited by a **Vanity Link!**`;
           }
         }catch (e){
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
           invitemessage = `Invited by a **Vanity Link!**`;
         }
       } else if (perm) {
         //get the new memberdata
         invitemessage = `I need the **Manage Server** Permission, to fetch Invites!`;
       } else {
+        console.log("ELSE - NO INVITE INFOS ");
         invitemessage = "\u200b"
       }
-      if (client.settings.get(member.guild.id, "welcome.captcha") && !member.user.bot) {
-       const captcha = new Captcha();
-        captcha.async = false //Sync
-        captcha.addDecoy(); //Add decoy text on captcha canvas.
-        captcha.drawTrace(); //draw trace lines on captcha canvas.
-        captcha.drawCaptcha(); //draw captcha text on captcha canvas
-        const buffer = captcha.png; //returns buffer of the captcha image
-        const attachment = new Discord.MessageAttachment(buffer, `${captcha.text}_Captcha.png`)
+
+      // Update the invitation cache
+      (async() => {
+        const allInvitesData = await client.invitesdb.all().then(v => v.filter(d => d.data?.guildId == member.guild.id)) || DbAllCache.get(member.guild.id) || [];
+        DbAllCache.set(member.guild.id, allInvitesData);
+      })();
+
+      if (theSettings.welcome.captcha && !member.user.bot) {
+        const captcha = new Captcha();
+        captcha.async = true //Sync
+        await captcha.addDecoy(); //Add decoy text on captcha canvas.
+        await captcha.drawTrace(); //draw trace lines on captcha canvas.
+        await captcha.drawCaptcha(); //draw captcha text on captcha canvas
+        const buffer = await captcha.png; //returns buffer of the captcha image
+        const attachment = new MessageAttachment(buffer, `${captcha.text}_Captcha.png`)
         //fin a muted role
         let mutedrole = member.guild.roles.cache.find(r => r.name.toLowerCase().includes("captcha")) || false;
         //if no muted role found, create a new one
@@ -319,7 +296,7 @@ module.exports = client => {
             position: member.guild.me.roles.highest.position - 1,
             reason: `This role got created, to DISABLED - CAPTCHA Members!`
           }).catch((e) => {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey);
+            console.error(e);
           });
         }
         //For each channel, not including the captcha role, change the permissions
@@ -331,23 +308,23 @@ module.exports = client => {
               (c.permissionOverwrites.cache.has(mutedrole.id) && !c.permissionOverwrites.cache.get(mutedrole.id).deny.toArray().includes("ADD_REACTIONS"))
         ).forEach(async (ch) => {
           try {
-            if(ch.permissionsFor(ch.guild.me).has(Discord.Permissions.FLAGS.MANAGE_CHANNELS)){
+            if(ch.permissionsFor(ch.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
               await ch.permissionOverwrites.edit(mutedrole, {
                 VIEW_CHANNEL: false,
                 SEND_MESSAGES: false,
                 ADD_REACTIONS: false,
                 CONNECT: false,
                 SPEAK: false
-              }).catch(() => {});
+              }).catch(() => null);
               await delay(300);
             };
           } catch (e) {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey);
+            console.error(e);
           }
         });
         //Add the role
-        member.roles.add(mutedrole.id).catch(() => {});
-        const captchaembed = new Discord.MessageEmbed()
+        member.roles.add(mutedrole.id).catch(() => null);
+        const captchaembed = new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setTimestamp()
           .setFooter(client.getFooter(es))
@@ -363,13 +340,13 @@ module.exports = client => {
           }).then(async collected => {
             if (collected.first().content.trim().toLowerCase() == captcha.text.toLowerCase()) {
               //remove the role again
-              member.roles.remove(mutedrole.id).catch(e => console.log(e.stack ? String(e.stack).grey : String(e).grey))
+              member.roles.remove(mutedrole.id).catch(e => console.error(e))
               //Send the message to success
               await msg.channel.send({
                 embeds: [msg.embeds[0].setDescription(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable3"])).setImage("https://cdn.discordapp.com/attachments/807985610265460766/834519837782704138/success-3345091_1280.png")]
-              }).catch(() => {});
+              }).catch(() => null);
               //try to delete the original message
-              msg.delete().catch(() => {});
+              msg.delete().catch(() => null);
               //Do the WELCOME functions
               add_roles(member)
               message(member)
@@ -377,58 +354,58 @@ module.exports = client => {
               msg.edit({
                 embeds: [],
                 content: `**Failed the CAPTCHA!**`
-              }).catch(() => {});
+              }).catch(() => null);
               try{ 
                 //kick the member, but fetch the invites first if there is no valid invite
                 if(member.guild.invites.cache.filter(i => i?.code && (i?.maxAge === 0 || i?.maxAge > 600)).size < 1)
-                  await member.guild.invites.fetch().catch(() => {});
+                  await member.guild.invites.fetch().catch(() => null);
                 //if there is a valid invite which lasts for at least 10 minutes or forever
                 if(member.guild.invites.cache.filter(i => i?.code && (i?.maxAge === 0 || i?.maxAge > 600)).size > 0){
                   await member.send(`**OH NO - You failed the CAPTCHA!**\n> Here is an Invite Link in case u need one: https://discord.gg/${member.guild.invites.cache.filter(i => i?.code && i?.maxAge === 0).first().code}\n> :hammer: *I kicked you from the Server due to Security Reasons*`)
-                  member.kick("FAILED THE CAPTCHA").catch(() => {});
+                  member.kick("FAILED THE CAPTCHA").catch(() => null);
                 } else {
-                  let channels = member.guild.channels.cache.filter(ch => ch.permissionsFor(member.guild.me).has(Discord.Permissions.FLAGS.CREATE_INSTANT_INVITE));
+                  let channels = member.guild.channels.cache.filter(ch => ch.permissionsFor(member.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE));
                   if(channels.size > 0) {
                     member.guild.invites.create(channels.first().id).create().then(async invite => {
                       await member.send(`**OH NO - You failed the CAPTCHA!**\n> Here is an Invite Link in case u need one: https://discord.gg/${invite.code}\n> :hammer: *I kicked you from the Server due to Security Reasons*`)
-                      member.kick("FAILED THE CAPTCHA").catch(() => {});
+                      member.kick("FAILED THE CAPTCHA").catch(() => null);
                     }).catch(async e => {
-                      await member.user.send(`**OH NO - You failed the CAPTCHA!**\n> :hammer: *I kicked you from the Server due to Security Reasons*`).catch(() => {})
-                      member.kick("FAILED THE CAPTCHA").catch(() => {});
+                      await member.user.send(`**OH NO - You failed the CAPTCHA!**\n> :hammer: *I kicked you from the Server due to Security Reasons*`).catch(() => null)
+                      member.kick("FAILED THE CAPTCHA").catch(() => null);
                     })
                   }
                 }
               }catch (E){
-                member.kick("FAILED THE CAPTCHA").catch(() => {});
+                member.kick("FAILED THE CAPTCHA").catch(() => null);
               }
             }
           }).catch(async ()=>{
             msg.edit({
               embeds: [],
               content: `**Failed the CAPTCHA!**`
-            }).catch(() => {});
+            }).catch(() => null);
             try{ 
               //kick the member, but fetch the invites first if there is no valid invite
               if(member.guild.invites.cache.filter(i => i?.code && (i?.maxAge === 0 || i?.maxAge > 600)).size < 1)
-                await member.guild.invites.fetch().catch(() => {});
+                await member.guild.invites.fetch().catch(() => null);
               //if there is a valid invite which lasts for at least 10 minutes or forever
               if(member.guild.invites.cache.filter(i => i?.code && (i?.maxAge === 0 || i?.maxAge > 600)).size > 0){
                 await member.send(`**OH NO - You failed the CAPTCHA!**\n> Here is an Invite Link in case u need one: https://discord.gg/${member.guild.invites.cache.filter(i => i?.code && i?.maxAge === 0).first().code}\n> :hammer: *I kicked you from the Server due to Security Reasons*`)
-                member.kick("FAILED THE CAPTCHA").catch(() => {});
+                member.kick("FAILED THE CAPTCHA").catch(() => null);
               } else {
-                let channels = member.guild.channels.cache.filter(ch => ch.permissionsFor(member.guild.me).has(Discord.Permissions.FLAGS.CREATE_INSTANT_INVITE));
+                let channels = member.guild.channels.cache.filter(ch => ch.permissionsFor(member.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE));
                 if(channels.size > 0) {
                   member.guild.invites.create(channels.first().id).create().then(async invite => {
                     await member.send(`**OH NO - You failed the CAPTCHA!**\n> Here is an Invite Link in case u need one: https://discord.gg/${invite.code}\n> :hammer: *I kicked you from the Server due to Security Reasons*`)
-                    member.kick("FAILED THE CAPTCHA").catch(() => {});
+                    member.kick("FAILED THE CAPTCHA").catch(() => null);
                   }).catch(async e => {
-                    await member.user.send(`**OH NO - You failed the CAPTCHA!**\n> :hammer: *I kicked you from the Server due to Security Reasons*`).catch(() => {})
-                    member.kick("FAILED THE CAPTCHA").catch(() => {});
+                    await member.user.send(`**OH NO - You failed the CAPTCHA!**\n> :hammer: *I kicked you from the Server due to Security Reasons*`).catch(() => null)
+                    member.kick("FAILED THE CAPTCHA").catch(() => null);
                   })
                 }
               }
             }catch (E){
-              member.kick("FAILED THE CAPTCHA").catch(() => {});
+              member.kick("FAILED THE CAPTCHA").catch(() => null);
             }
           })
         }).catch(e => {
@@ -450,8 +427,8 @@ module.exports = client => {
             ]
           }).then(ch => {
             try{
-              if(ch.permissionsFor(ch.guild.me).has(Discord.Permissions.FLAGS.SEND_MESSAGES)){
-                if(ch.permissionsFor(ch.guild.me).has(Discord.Permissions.FLAGS.EMBED_LINKS)){
+              if(ch.permissionsFor(ch.guild.me).has(Permissions.FLAGS.SEND_MESSAGES)){
+                if(ch.permissionsFor(ch.guild.me).has(Permissions.FLAGS.EMBED_LINKS)){
                   ch.send({
                     content: `<@${member.user.id}>`,
                     embeds: [captchaembed], 
@@ -464,9 +441,9 @@ module.exports = client => {
                     }).then(async collected => {
                       if (collected.first().content.trim().toLowerCase() == captcha.text.toLowerCase()) {
                         //remove the role again
-                        member.roles.remove(mutedrole.id).catch(e => console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                        member.roles.remove(mutedrole.id).catch(e => console.error(e))
                         //Send the message to success
-                        ch.delete().catch(() => {});
+                        ch.delete().catch(() => null);
                         //Do the WELCOME functions
                         add_roles(member)
                         message(member)
@@ -474,77 +451,77 @@ module.exports = client => {
                         msg.edit({
                           embeds: [],
                           content: `**Failed the CAPTCHA!**`
-                        }).catch(() => {});
+                        }).catch(() => null);
                         try{ 
                           //kick the member, but fetch the invites first if there is no valid invite
                           if(member.guild.invites.cache.filter(i => i?.code && (i?.maxAge === 0 || i?.maxAge > 600)).size < 1)
-                            await member.guild.invites.fetch().catch(() => {});
+                            await member.guild.invites.fetch().catch(() => null);
                           //if there is a valid invite which lasts for at least 10 minutes or forever
                           if(member.guild.invites.cache.filter(i => i?.code && (i?.maxAge === 0 || i?.maxAge > 600)).size > 0){
                             await ch.send(`**OH NO - You failed the CAPTCHA!**\n> Here is an Invite Link in case u need one: https://discord.gg/${member.guild.invites.cache.filter(i => i?.code && i?.maxAge === 0).first().code}\n> :hammer: *I will kick you in 2 Seconds from the Server due to Security Reasons*`)
                             await delay(2000)
-                            member.kick("FAILED THE CAPTCHA").catch(() => {});
+                            member.kick("FAILED THE CAPTCHA").catch(() => null);
                             ch.delete(() => {});
                           } else {
-                            let channels = member.guild.channels.cache.filter(ch => ch.permissionsFor(member.guild.me).has(Discord.Permissions.FLAGS.CREATE_INSTANT_INVITE));
+                            let channels = member.guild.channels.cache.filter(ch => ch.permissionsFor(member.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE));
                             if(channels.size > 0) {
                               member.guild.invites.create(channels.first().id).create().then(async invite => {
                                 await ch.send(`**OH NO - You failed the CAPTCHA!**\n> Here is an Invite Link in case u need one: https://discord.gg/${invite.code}\n> :hammer: *I will kick you in 2 Seconds from the Server due to Security Reasons*`)
                                 await delay(2000)
-                                member.kick("FAILED THE CAPTCHA").catch(() => {});
+                                member.kick("FAILED THE CAPTCHA").catch(() => null);
                                 ch.delete(() => {});
                               }).catch(async e => {
-                                await ch.user.send(`**OH NO - You failed the CAPTCHA!**\n> :hammer: *I will kick you in 2 Seconds from the Server due to Security Reasons*`).catch(() => {})
+                                await ch.user.send(`**OH NO - You failed the CAPTCHA!**\n> :hammer: *I will kick you in 2 Seconds from the Server due to Security Reasons*`).catch(() => null)
                                 await delay(2000)
-                                member.kick("FAILED THE CAPTCHA").catch(() => {});
+                                member.kick("FAILED THE CAPTCHA").catch(() => null);
                                 ch.delete(() => {});
                               })
                             }
                           }
                         }catch (E){
-                          member.kick("FAILED THE CAPTCHA").catch(() => {});
+                          member.kick("FAILED THE CAPTCHA").catch(() => null);
                         }
                       }
                     }).catch(async () => {
                       msg.edit({
                         embeds: [],
                         content: `**Failed the CAPTCHA!**`
-                      }).catch(() => {});
+                      }).catch(() => null);
                       try{ 
                         //kick the member, but fetch the invites first if there is no valid invite
                         if(member.guild.invites.cache.filter(i => i?.code && (i?.maxAge === 0 || i?.maxAge > 600)).size < 1)
-                          await member.guild.invites.fetch().catch(() => {});
+                          await member.guild.invites.fetch().catch(() => null);
                         //if there is a valid invite which lasts for at least 10 minutes or forever
                         if(member.guild.invites.cache.filter(i => i?.code && (i?.maxAge === 0 || i?.maxAge > 600)).size > 0){
                           await ch.send(`**OH NO - You failed the CAPTCHA!**\n> Here is an Invite Link in case u need one: https://discord.gg/${member.guild.invites.cache.filter(i => i?.code && i?.maxAge === 0).first().code}\n> :hammer: *I kicked you from the Server due to Security Reasons*`)
                           await delay(2000)
-                          member.kick("FAILED THE CAPTCHA").catch(() => {});
+                          member.kick("FAILED THE CAPTCHA").catch(() => null);
                           ch.delete(() => {});
                         } else {
-                          let channels = member.guild.channels.cache.filter(ch => ch.permissionsFor(member.guild.me).has(Discord.Permissions.FLAGS.CREATE_INSTANT_INVITE));
+                          let channels = member.guild.channels.cache.filter(ch => ch.permissionsFor(member.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE));
                           if(channels.size > 0) {
                             member.guild.invites.create(channels.first().id).create().then(async invite => {
                               await ch.send(`**OH NO - You failed the CAPTCHA!**\n> Here is an Invite Link in case u need one: https://discord.gg/${invite.code}\n> :hammer: *I kicked you from the Server due to Security Reasons*`)
                               await delay(2000)
-                              member.kick("FAILED THE CAPTCHA").catch(() => {});
+                              member.kick("FAILED THE CAPTCHA").catch(() => null);
                               ch.delete(() => {});
                             }).catch(async e => {
-                              await ch.user.send(`**OH NO - You failed the CAPTCHA!**\n> :hammer: *I kicked you from the Server due to Security Reasons*`).catch(() => {})
+                              await ch.user.send(`**OH NO - You failed the CAPTCHA!**\n> :hammer: *I kicked you from the Server due to Security Reasons*`).catch(() => null)
                               await delay(2000)
-                              member.kick("FAILED THE CAPTCHA").catch(() => {});
+                              member.kick("FAILED THE CAPTCHA").catch(() => null);
                               ch.delete(() => {});
                             })
                           }
                         }
                       }catch (E){
-                        member.kick("FAILED THE CAPTCHA").catch(() => {});
+                        member.kick("FAILED THE CAPTCHA").catch(() => null);
                       }
                     })
                   }).catch(() => {
                     member.guild.fetchOwner().then(owner => {
-                      owner.send(`:warning: **I can't create Channels_with_SEND_MESSAGES_PERMISSIONS for Captcha User, please give me PERMISSIONS for it asap!**`).catch(() => {});
-                    }).catch(() => {});
-                    member.kick().catch(() => {});
+                      owner.send(`:warning: **I can't create Channels_with_SEND_MESSAGES_PERMISSIONS for Captcha User, please give me PERMISSIONS for it asap!**`).catch(() => null);
+                    }).catch(() => null);
+                    member.kick().catch(() => null);
                   })
                 } else {
                   ch.send({
@@ -557,9 +534,9 @@ module.exports = client => {
                     }).then(async collected => {
                       if (collected.first().content.trim().toLowerCase() == captcha.text.toLowerCase()) {
                         //remove the role again
-                        member.roles.remove(mutedrole.id).catch(e => console.log(e.stack ? String(e.stack).grey : String(e).grey))
+                        member.roles.remove(mutedrole.id).catch(e => console.error(e))
                         //Send the message to success
-                        ch.delete().catch(() => {});
+                        ch.delete().catch(() => null);
                         //Do the WELCOME functions
                         add_roles(member)
                         message(member)
@@ -567,91 +544,91 @@ module.exports = client => {
                         msg.edit({
                           embeds: [],
                           content: `**Failed the CAPTCHA!**`
-                        }).catch(() => {});
+                        }).catch(() => null);
                         try{ 
                           //kick the member, but fetch the invites first if there is no valid invite
                           if(member.guild.invites.cache.filter(i => i?.code && (i?.maxAge === 0 || i?.maxAge > 600)).size < 1)
-                            await member.guild.invites.fetch().catch(() => {});
+                            await member.guild.invites.fetch().catch(() => null);
                           //if there is a valid invite which lasts for at least 10 minutes or forever
                           if(member.guild.invites.cache.filter(i => i?.code && (i?.maxAge === 0 || i?.maxAge > 600)).size > 0){
                             await ch.send(`**OH NO - You failed the CAPTCHA!**\n> Here is an Invite Link in case u need one: https://discord.gg/${member.guild.invites.cache.filter(i => i?.code && i?.maxAge === 0).first().code}\n> :hammer: *I kicked you from the Server due to Security Reasons*`)
                             await delay(2000)
-                            member.kick("FAILED THE CAPTCHA").catch(() => {});
+                            member.kick("FAILED THE CAPTCHA").catch(() => null);
                             ch.delete(() => {});
                           } else {
-                            let channels = member.guild.channels.cache.filter(ch => ch.permissionsFor(member.guild.me).has(Discord.Permissions.FLAGS.CREATE_INSTANT_INVITE));
+                            let channels = member.guild.channels.cache.filter(ch => ch.permissionsFor(member.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE));
                             if(channels.size > 0) {
                               member.guild.invites.create(channels.first().id).create().then(async invite => {
                                 await ch.send(`**OH NO - You failed the CAPTCHA!**\n> Here is an Invite Link in case u need one: https://discord.gg/${invite.code}\n> :hammer: *I kicked you from the Server due to Security Reasons*`)
                                 await delay(2000)
-                                member.kick("FAILED THE CAPTCHA").catch(() => {});
+                                member.kick("FAILED THE CAPTCHA").catch(() => null);
                                 ch.delete(() => {});
                               }).catch(async e => {
-                                await ch.user.send(`**OH NO - You failed the CAPTCHA!**\n> :hammer: *I kicked you from the Server due to Security Reasons*`).catch(() => {})
+                                await ch.user.send(`**OH NO - You failed the CAPTCHA!**\n> :hammer: *I kicked you from the Server due to Security Reasons*`).catch(() => null)
                                 await delay(2000)
-                                member.kick("FAILED THE CAPTCHA").catch(() => {});
+                                member.kick("FAILED THE CAPTCHA").catch(() => null);
                                 ch.delete(() => {});
                               })
                             }
                           }
                         }catch (E){
-                          member.kick("FAILED THE CAPTCHA").catch(() => {});
+                          member.kick("FAILED THE CAPTCHA").catch(() => null);
                         }
                       }
                     }).catch(async () => {
                       msg.edit({
                         embeds: [],
                         content: `**Failed the CAPTCHA!**`
-                      }).catch(() => {});
+                      }).catch(() => null);
                       try{ 
                         //kick the member, but fetch the invites first if there is no valid invite
                         if(member.guild.invites.cache.filter(i => i?.code && (i?.maxAge === 0 || i?.maxAge > 600)).size < 1)
-                          await member.guild.invites.fetch().catch(() => {});
+                          await member.guild.invites.fetch().catch(() => null);
                         //if there is a valid invite which lasts for at least 10 minutes or forever
                         if(member.guild.invites.cache.filter(i => i?.code && (i?.maxAge === 0 || i?.maxAge > 600)).size > 0){
                           await ch.send(`**OH NO - You failed the CAPTCHA!**\n> Here is an Invite Link in case u need one: https://discord.gg/${member.guild.invites.cache.filter(i => i?.code && i?.maxAge === 0).first().code}\n> :hammer: *I kicked you from the Server due to Security Reasons*`)
                           await delay(2000)
-                          member.kick("FAILED THE CAPTCHA").catch(() => {});
+                          member.kick("FAILED THE CAPTCHA").catch(() => null);
                           ch.delete(() => {});
                         } else {
-                          let channels = member.guild.channels.cache.filter(ch => ch.permissionsFor(member.guild.me).has(Discord.Permissions.FLAGS.CREATE_INSTANT_INVITE));
+                          let channels = member.guild.channels.cache.filter(ch => ch.permissionsFor(member.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE));
                           if(channels.size > 0) {
                             member.guild.invites.create(channels.first().id).create().then(async invite => {
                               await ch.send(`**OH NO - You failed the CAPTCHA!**\n> Here is an Invite Link in case u need one: https://discord.gg/${invite.code}\n> :hammer: *I kicked you from the Server due to Security Reasons*`)
                               await delay(2000)
-                              member.kick("FAILED THE CAPTCHA").catch(() => {});
+                              member.kick("FAILED THE CAPTCHA").catch(() => null);
                               ch.delete(() => {});
                             }).catch(async e => {
-                              await ch.user.send(`**OH NO - You failed the CAPTCHA!**\n> :hammer: *I kicked you from the Server due to Security Reasons*`).catch(() => {})
+                              await ch.user.send(`**OH NO - You failed the CAPTCHA!**\n> :hammer: *I kicked you from the Server due to Security Reasons*`).catch(() => null)
                               await delay(2000)
-                              member.kick("FAILED THE CAPTCHA").catch(() => {});
+                              member.kick("FAILED THE CAPTCHA").catch(() => null);
                               ch.delete(() => {});
                             })
                           }
                         }
                       }catch (E){
-                        member.kick("FAILED THE CAPTCHA").catch(() => {});
+                        member.kick("FAILED THE CAPTCHA").catch(() => null);
                       }
                     })
-                  }).catch(() => {})
+                  }).catch(() => null)
                 }
               } else {
                 member.guild.fetchOwner().then(owner => {
-                  owner.send(`:warning: **I can't create Channels_with_SEND_MESSAGES_PERMISSIONS for Captcha User, please give me PERMISSIONS for it asap!**`).catch(() => {});
-                }).catch(() => {});
-                member.kick().catch(() => {});
+                  owner.send(`:warning: **I can't create Channels_with_SEND_MESSAGES_PERMISSIONS for Captcha User, please give me PERMISSIONS for it asap!**`).catch(() => null);
+                }).catch(() => null);
+                member.kick().catch(() => null);
               }
 
             }catch(e){
-              console.log(e);
-              ch.delete().catch(() => {})
-              member.kick().catch(() => {});
+              console.error(e);
+              ch.delete().catch(() => null)
+              member.kick().catch(() => null);
             }
           }).catch(e => {
-            member.kick().catch(() => {});
+            member.kick().catch(() => null);
             member.guild.fetchOwner().then(owner => {
-              owner.send(`:warning: **I can't create Channels for Captcha User, please give me PERMISSIONS for it asap!**`).catch(() => {});
-            }).catch(() => {});
+              owner.send(`:warning: **I can't create Channels for Captcha User, please give me PERMISSIONS for it asap!**`).catch(() => null);
+            }).catch(() => null);
           })
         })
       } else {
@@ -660,7 +637,7 @@ module.exports = client => {
       }
     }
     async function message(member) {
-      let welcome = client.settings.get(member.guild.id, "welcome");
+      let welcome = theSettings.welcome
       if(welcome && welcome.secondchannel !== "nochannel"){
         let themessage = String(welcome.secondmsg);
         if(!themessage || themessage.length == 0) themessage = ":wave: {user} **Welcome to our Server!** :v:";
@@ -669,14 +646,14 @@ module.exports = client => {
         if(!channel){
           try{
             client.channels.fetch(welcome.secondchannel).then(ch => {
-              ch.send({content: themessage}).catch(() => {});
-            }).catch(() => {});
+              ch.send({content: themessage}).catch(() => null);
+            }).catch(() => null);
           }catch (e){
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
           }
         } else {
-          if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.SEND_MESSAGES)){
-            channel.send({content: themessage}).catch(() => {});
+          if(channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.SEND_MESSAGES)){
+            channel.send({content: themessage}).catch(() => null);
           }
         }
       }
@@ -702,94 +679,94 @@ module.exports = client => {
 
 
       async function msg_withoutimg(member) {
-        let welcomechannel = client.settings.get(member.guild.id, "welcome.channel");
+        let welcomechannel = theSettings.welcome.channel;
         if (!welcomechannel) return;
-        let channel = await client.channels.fetch(welcomechannel).catch(() => {})
+        let channel = await client.channels.fetch(welcomechannel).catch(() => null)
         if (!channel) return;
 
         //define the welcome embed
-        const welcomeembed = new Discord.MessageEmbed()
+        const welcomeembed = new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setTimestamp()
-          .setFooter({text: `ID: ${member.user.id}`, iconURL: `${member.user.displayAvatarURL({ dynamic: true })}`})
+          .setFooter(client.getFooter(`ID: ${member.user.id}`, `${member.user.displayAvatarURL({ dynamic: true })}`))
           .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable7"]))
-          .setDescription(client.settings.get(member.guild.id, "welcome.msg").replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
+          .setDescription(theSettings.welcome.msg.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
           .addField(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variablex_8"]), eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable8"]))
         
           //send the welcome embed to there
-          if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.SEND_MESSAGES)){
-            if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.EMBED_LINKS)){
+          if(channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.SEND_MESSAGES)){
+            if(channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS)){
               channel.send({
                 content: `<@${member.user.id}>`,
                 embeds: [welcomeembed]
-              }).catch(() => {});
+              }).catch(() => null);
             } else {
               channel.send({
                 content: `<@${member.user.id}>\n${welcomeembed.description}`.substring(0, 2000),
-              }).catch(() => {});
+              }).catch(() => null);
             }
           }
         
       }
       async function dm_msg_withoutimg(member) {
         //define the welcome embed
-        const welcomeembed = new Discord.MessageEmbed()
+        const welcomeembed = new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setTimestamp()
-          .setFooter({text: `ID: ${member.user.id}`, iconURL: `${member.user.displayAvatarURL({ dynamic: true })}`})
+          .setFooter(client.getFooter(`ID: ${member.user.id}`, `${member.user.displayAvatarURL({ dynamic: true })}`))
           .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable9"]))
-          .setDescription(client.settings.get(member.guild.id, "welcome.dm_msg").replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
-          if(client.settings.get(member.guild.id, "welcome.invitedm")) welcomeembed.addField("\u200b", `${invitemessage}`)
+          .setDescription(theSettings.welcome.dm_msg.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
+          if(theSettings.welcome.invitedm) welcomeembed.addField("\u200b", `${invitemessage}`)
           //send the welcome embed to there
         member.user.send({
           content: `<@${member.user.id}>`,
           embeds: [welcomeembed]
-        }).catch(() => {});
+        }).catch(() => null);
       }
 
 
       async function dm_msg_withimg(member) {
         //define the welcome embed
-        const welcomeembed = new Discord.MessageEmbed()
+        const welcomeembed = new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setTimestamp()
-          .setFooter({text: `ID: ${member.user.id}`, iconURL: `${member.user.displayAvatarURL({ dynamic: true })}`})
+          .setFooter(client.getFooter(`ID: ${member.user.id}`, `${member.user.displayAvatarURL({ dynamic: true })}`))
           .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable10"]))
-          .setDescription(client.settings.get(member.guild.id, "welcome.dm_msg").replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
-          .setImage(client.settings.get(member.guild.id, "welcome.customdm"))
-          if(client.settings.get(member.guild.id, "welcome.invitedm")) welcomeembed.addField("\u200b", `${invitemessage}`)
+          .setDescription(theSettings.welcome.dm_msg.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
+          .setImage(theSettings.welcome.customdm)
+          if(theSettings.welcome.invitedm) welcomeembed.addField("\u200b", `${invitemessage}`)
           //send the welcome embed to there
         member.user.send({
           content: `<@${member.user.id}>`,
           embeds: [welcomeembed]
-        }).catch(() => {});
+        }).catch(() => null);
       }
       async function msg_withimg(member) {
-        let welcomechannel = client.settings.get(member.guild.id, "welcome.channel");
+        let welcomechannel = theSettings.welcome.channel;
         if (!welcomechannel) return;
-        let channel = await client.channels.fetch(welcomechannel).catch(() => {})
+        let channel = await client.channels.fetch(welcomechannel).catch(() => null)
         if (!channel) return;
 
         //define the welcome embed
-        const welcomeembed = new Discord.MessageEmbed()
+        const welcomeembed = new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setTimestamp()
-          .setFooter({text: `ID: ${member.user.id}`, iconURL: `${member.user.displayAvatarURL({ dynamic: true })}`})
+          .setFooter(client.getFooter(`ID: ${member.user.id}`, `${member.user.displayAvatarURL({ dynamic: true })}`))
           .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable11"]))
-          .setDescription(client.settings.get(member.guild.id, "welcome.msg").replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
-          .setImage(client.settings.get(member.guild.id, "welcome.custom"))
-          if(client.settings.get(member.guild.id, "welcome.invite")) welcomeembed.addField("\u200b", `${invitemessage}`)
+          .setDescription(theSettings.welcome.msg.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
+          .setImage(theSettings.welcome.custom)
+          if(theSettings.welcome.invite) welcomeembed.addField("\u200b", `${invitemessage}`)
           //send the welcome embed to there
-        if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.SEND_MESSAGES)){
-          if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.EMBED_LINKS)){
+        if(channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.SEND_MESSAGES)){
+          if(channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS)){
             channel.send({
               content: `<@${member.user.id}>`,
               embeds: [welcomeembed]
-            }).catch(() => {});
+            }).catch(() => null);
           } else {
             channel.send({
               content: `<@${member.user.id}>\n${welcomeembed.description}`.substring(0, 2000),
-            }).catch(() => {});
+            }).catch(() => null);
           }
         }
       }
@@ -797,263 +774,103 @@ module.exports = client => {
       async function dm_msg_autoimg(member) {
         try {
           //define the welcome embed
-          const welcomeembed = new Discord.MessageEmbed()
+          const welcomeembed = new MessageEmbed()
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
             .setTimestamp()
-            .setFooter({text: `ID: ${member.user.id}`, iconURL: `${member.user.displayAvatarURL({ dynamic: true })}`})
-          .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable12"]))
-            .setDescription(client.settings.get(member.guild.id, "welcome.dm_msg").replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
-          if(client.settings.get(member.guild.id, "welcome.invitedm")) welcomeembed.addField("\u200b", `${invitemessage}`)
-        //member roles add on welcome every single role
-          const canvas = Canvas.createCanvas(1772, 633);
-          //make it "2D"
-          const ctx = canvas.getContext(`2d`);
-
-          if (client.settings.get(member.guild.id, "welcome.backgrounddm") !== "transparent") {
-            try {
-              const bgimg = await Canvas.loadImage(client.settings.get(member.guild.id, "welcome.backgrounddm"));
-              ctx.drawImage(bgimg, 0, 0, canvas.width, canvas.height);
-            } catch {}
-          } else {
-            try {
-              if (!member.guild.iconURL() || member.guild.iconURL() == null || member.guild.iconURL() == undefined) return;
-              const img = await Canvas.loadImage(member.guild.iconURL({
-                format: "png"
-              }));
-              ctx.globalAlpha = 0.3;
-              //draw the guildicon
-              ctx.drawImage(img, 1772 - 633, 0, 633, 633);
-              ctx.globalAlpha = 1;
-            } catch {}
-          }
-
-          if (client.settings.get(member.guild.id, "welcome.framedm")) {
-            let background;
-            var framecolor = client.settings.get(member.guild.id, "welcome.framecolordm").toUpperCase();
-            if (framecolor == "WHITE") framecolor = "#FFFFF9";
-            if (client.settings.get(member.guild.id, "welcome.discriminatordm") && client.settings.get(member.guild.id, "welcome.servernamedm"))
-              background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome3frame.png`);
-
-            else if (client.settings.get(member.guild.id, "welcome.discriminatordm"))
-              background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome2frame_unten.png`);
-
-            else if (client.settings.get(member.guild.id, "welcome.servernamedm"))
-              background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome2frame_oben.png`);
-
-            else
-              background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1frame.png`);
-
-            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-            if (client.settings.get(member.guild.id, "welcome.pbdm")) {
-              background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1framepb.png`);
-              ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-            }
-          }
-
-          var fillcolors = client.settings.get(member.guild.id, "welcome.framecolordm").toUpperCase();
-          if (fillcolors == "WHITE") framecolor = "#FFFFF9";
-          ctx.fillStyle = fillcolors.toLowerCase();
-
-          //set the first text string 
-          var textString3 = `${member.user.username}`;
-          //if the text is too big then smaller the text
-          if (textString3.length >= 14) {
-            ctx.font = `100px ${Fonts}`;         
-            await canvacord.Util.renderEmoji(ctx, textString3, 720, canvas.height / 2);
-          }
-          //else dont do it
-          else {
-            ctx.font = `150px ${Fonts}`;
-            await canvacord.Util.renderEmoji(ctx, textString3, 720, canvas.height / 2 + 20);
-          }
-
-
-
-          ctx.font = `bold 50px ${wideFonts}`;
-          //define the Discriminator Tag
-          if (client.settings.get(member.guild.id, "welcome.discriminatordm")) {
-            await canvacord.Util.renderEmoji(ctx, `#${member.user.discriminator}`, 750, canvas.height / 2 + 125);
-          }
-          //define the Member count
-          if (client.settings.get(member.guild.id, "welcome.membercountdm")) {
-            await canvacord.Util.renderEmoji(ctx, `Member #${member.guild.memberCount}`, 750, canvas.height / 2 + 200);
-          }
-          //get the Guild Name
-          if (client.settings.get(member.guild.id, "welcome.servernamedm")) {
-            await canvacord.Util.renderEmoji(ctx, `${member.guild.name}`, 700, canvas.height / 2 - 150);
-          }
-
-          if (client.settings.get(member.guild.id, "welcome.pbdm")) {
-            //create a circular "mask"
-            ctx.beginPath();
-            ctx.arc(315, canvas.height / 2, 250, 0, Math.PI * 2, true); //position of img
-            ctx.closePath();
-            ctx.clip();
-            //define the user avatar
-            const avatar = await Canvas.loadImage(member.user.displayAvatarURL({
-              format: `png`
-            }));
-            //draw the avatar
-            ctx.drawImage(avatar, 65, canvas.height / 2 - 250, 500, 500);
-          }
+            .setFooter(client.getFooter(`ID: ${member.user.id}`, `${member.user.displayAvatarURL({ dynamic: true })}`))
+            .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable12"]))
+            .setDescription(theSettings.welcome.dm_msg.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
+          if(theSettings.welcome.invitedm) welcomeembed.addField("\u200b", `${invitemessage}`)
+          
+          
+          // Get the buffer from the api / Handler File
+          const { buffer } = await MilratoCanvasApi.getWelcomeDm({
+            welcomeSettings: theSettings.welcome,
+            guildIconUrl: member.guild.iconURL({ dynamic: false, format: "png", size: 4096 }),
+            memberCount: member.guild.memberCount,
+            discriminator: member.user.discriminator,
+            username: member.user.username,
+            guildName: member.guild.name,
+            avatarUrl: member.user.displayAvatarURL({ dynamic: false, format: "png", size: 4096 })
+          });
 
           //get it as a discord attachment
-          const attachment = new Discord.MessageAttachment(canvas.toBuffer(), `welcome-image.png`);
+          const attachment = new MessageAttachment(buffer, `welcome-image.png`);
           //send the welcome embed to there
           member.user.send({
             content: `<@${member.user.id}>`,
             embeds: [welcomeembed.setImage(`attachment://welcome-image.png`) ],
             files: [attachment]
-          }).catch(() => {});
+          }).catch(() => null);
           //member roles add on welcome every single role
         } catch {}
       }
       async function msg_autoimg(member) {
         try {
-          let welcomechannel = client.settings.get(member.guild.id, "welcome.channel");
+          let welcomechannel = theSettings.welcome.channel;
           if (!welcomechannel) return
-          let channel = await client.channels.fetch(welcomechannel).catch(() => {})
+          let channel = await client.channels.fetch(welcomechannel).catch(() => null)
           if (!channel) return 
           //define the welcome embed
-          const welcomeembed = new Discord.MessageEmbed()
+          const welcomeembed = new MessageEmbed()
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
             .setTimestamp()
-            .setFooter({text: `ID: ${member.user.id}`, iconURL: `${member.user.displayAvatarURL({ dynamic: true })}`})
+            .setFooter(client.getFooter(`ID: ${member.user.id}`, `${member.user.displayAvatarURL({ dynamic: true })}`))
             .setTitle(eval(client.la[ls]["handlers"]["welcomejs"]["welcome"]["variable13"]))
-            .setDescription(client.settings.get(member.guild.id, "welcome.msg").replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
-            if(client.settings.get(member.guild.id, "welcome.invite")) welcomeembed.addField("\u200b", `${invitemessage}`)
+            .setDescription(theSettings.welcome.msg.replace("{user}", `${member.user}`).replace("{username}", `${member.user.username}`).replace("{usertag}", `${member.user.tag}`))
+            if(theSettings.welcome.invite) welcomeembed.addField("\u200b", `${invitemessage}`)
             try {
-            //member roles add on welcome every single role
-            const canvas = Canvas.createCanvas(1772, 633);
-            //make it "2D"
-            const ctx = canvas.getContext(`2d`);
 
-            if (client.settings.get(member.guild.id, "welcome.background") !== "transparent") {
-              try {
-                const bgimg = await Canvas.loadImage(client.settings.get(member.guild.id, "welcome.background"));
-                ctx.drawImage(bgimg, 0, 0, canvas.width, canvas.height);
-              } catch {}
-            } else {
-              try {
-                if (!member.guild.iconURL() || member.guild.iconURL() == null || member.guild.iconURL() == undefined) return;
-                const img = await Canvas.loadImage(member.guild.iconURL({
-                  format: "png"
-                }));
-                ctx.globalAlpha = 0.3;
-                //draw the guildicon
-                ctx.drawImage(img, 1772 - 633, 0, 633, 633);
-                ctx.globalAlpha = 1;
-              } catch {}
-            }
+              
+            // Get the buffer from the api / Handler File
+            const { buffer } = await MilratoCanvasApi.getWelcomeChannel({
+              welcomeSettings: theSettings.welcome,
+              guildIconUrl: member.guild.iconURL({ dynamic: false, format: "png", size: 4096 }),
+              memberCount: member.guild.memberCount,
+              discriminator: member.user.discriminator,
+              username: member.user.username,
+              guildName: member.guild.name,
+              avatarUrl: member.user.displayAvatarURL({ dynamic: false, format: "png", size: 4096 })
+            });
 
-
-            if (client.settings.get(member.guild.id, "welcome.frame")) {
-              let background;
-              var framecolor = client.settings.get(member.guild.id, "welcome.framecolor").toUpperCase();
-              if (framecolor == "WHITE") framecolor = "#FFFFF9";
-              if (client.settings.get(member.guild.id, "welcome.discriminator") && client.settings.get(member.guild.id, "welcome.servername"))
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome3frame.png`);
-
-              else if (client.settings.get(member.guild.id, "welcome.discriminator"))
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome2frame_unten.png`);
-
-              else if (client.settings.get(member.guild.id, "welcome.servername"))
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome2frame_oben.png`);
-
-              else
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1frame.png`);
-
-              ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-              if (client.settings.get(member.guild.id, "welcome.pb")) {
-                background = await Canvas.loadImage(`./assets/welcome/${framecolor}/welcome1framepb.png`);
-                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-              }
-            }
-
-            var fillcolor = client.settings.get(member.guild.id, "welcome.framecolor").toUpperCase();
-            if (fillcolor == "WHITE") framecolor = "#FFFFF9";
-            ctx.fillStyle = fillcolor.toLowerCase();
-
-            //set the first text string 
-            var textString3 = `${member.user.username}`;
-            //if the text is too big then smaller the text
-            if (textString3.length >= 14) {
-              ctx.font = `100px ${Fonts}`;
-              await canvacord.Util.renderEmoji(ctx, textString3, 720, canvas.height / 2);
-            }
-            //else dont do it
-            else {
-              ctx.font = `150px ${Fonts}`;
-              await canvacord.Util.renderEmoji(ctx, textString3, 720, canvas.height / 2 + 20);
-            }
-
-            ctx.font = `bold 50px ${wideFonts}`;
-            //define the Discriminator Tag
-            if (client.settings.get(member.guild.id, "welcome.discriminator")) {
-              await canvacord.Util.renderEmoji(ctx, `#${member.user.discriminator}`, 750, canvas.height / 2 + 125);
-            }
-            //define the Member count
-            if (client.settings.get(member.guild.id, "welcome.membercount")) {
-              await canvacord.Util.renderEmoji(ctx, `Member #${member.guild.memberCount}`, 750, canvas.height / 2 + 200);
-            }
-            //get the Guild Name
-            if (client.settings.get(member.guild.id, "welcome.servername")) {
-              await canvacord.Util.renderEmoji(ctx, `${member.guild.name}`, 700, canvas.height / 2 - 150);
-            }
-
-
-            if (client.settings.get(member.guild.id, "welcome.pb")) {
-              //create a circular "mask"
-              ctx.beginPath();
-              ctx.arc(315, canvas.height / 2, 250, 0, Math.PI * 2, true); //position of img
-              ctx.closePath();
-              ctx.clip();
-              //define the user avatar
-              const avatar = await Canvas.loadImage(member.user.displayAvatarURL({
-                format: `png`
-              }));
-              //draw the avatar
-              ctx.drawImage(avatar, 65, canvas.height / 2 - 250, 500, 500);
-            }
             //get it as a discord attachment
-            const attachment = new Discord.MessageAttachment(await canvas.toBuffer(), `welcome-image.png`);
+            const attachment = new MessageAttachment(buffer, `welcome-image.png`);
             //send the welcome embed to there
-            if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.SEND_MESSAGES)){
-              if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.EMBED_LINKS) && channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.ATTACH_FILES)){
+            if(channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.SEND_MESSAGES)){
+              if(channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.EMBED_LINKS) && channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.ATTACH_FILES)){
                 channel.send({
                   content: `<@${member.user.id}>`,
                   embeds: [welcomeembed.setImage(`attachment://welcome-image.png`)],
                   files: [attachment]
-                }).catch(() => {});
-              } else if(channel.permissionsFor(channel.guild.me).has(Discord.Permissions.FLAGS.ATTACH_FILES)){
+                }).catch(() => null);
+              } else if(channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.ATTACH_FILES)){
                 channel.send({
                   content: `<@${member.user.id}>\n${welcomeembed.description}`.substring(0, 2000),
                   files: [attachment]
-                }).catch(() => {});
+                }).catch(() => null);
               } else {
                 channel.send({
                   content: `<@${member.user.id}>\n${welcomeembed.description}`.substring(0, 2000),
                   files: [attachment]
-                }).catch(() => {});
+                }).catch(() => null);
               }
             }
           } catch (e) {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey);
+            console.error(e);
           }
         } catch (e) {
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
         }
       }
     }
 
     function add_roles(member) {
-      let roles = client.settings.get(member.guild.id, "welcome.roles")
+      let roles = theSettings.welcome.roles
       if (roles && roles.length > 0) {
         for (const role of roles) {
           try {
             let R = member.guild.roles.cache.get(role);
-            if(R) member.roles.add(R.id).catch(() => {});
+            if(R) member.roles.add(R.id).catch(() => null);
           } catch (e){ }
         }
       }
@@ -1066,7 +883,7 @@ module.exports = client => {
    */
   client.on("guildMemberAdd", async member => {
     if(!member.guild || member.user.bot) return;
-    client.settings.ensure(member.guild.id, {
+    await dbEnsure(await client.settings, member.guild.id, {
       antinewaccount: {
         enabled: false,
         delay: ms("2 days"),
@@ -1075,37 +892,38 @@ module.exports = client => {
       } 
     });
     //Return if account system is disabled
-    if(!client.settings.get(member.guild.id, "antinewaccount.enabled")) return; 
+    let newAccount = await client.settings.get(member.guild.id);
+    if(!newAccount || !newAccount.antinewaccount || !newAccount.antinewaccount.enabled) return; 
     //get the ms time of the account creationj
     const createdAccount = new Date(member.user.createdAt).getTime(); 
-    const newaccount_delay = client.settings.get(member.guild.id, "antinewaccount.delay");
+    const newaccount_delay = newAccount.antinewaccount.delay;
     //return if account is old enough
     if(newaccount_delay < Date.now() - createdAccount) return;
-    const extramessage = client.settings.get(member.guild.id, "antinewaccount.extra_message");
-    const action = client.settings.get(member.guild.id, "antinewaccount.action");
+    const extramessage = newAccount.antinewaccount.extra_message;
+    const action = newAccount.antinewaccount.action;
     if(action == "ban") {
       await member.send({
         embeds: [
-          new Discord.MessageEmbed()
+          new MessageEmbed()
           .setTitle(`You got banned from __${member.guild.name}__`)
           .setThumbnail(member.guild.iconURL({dynamic: true}))
-          .setFooter({text: `${member.guild.name} | ${member.guild.id}`, iconURL: `${member.guild.iconURL({dynamic: true})}`})
+          .setFooter(client.getFooter(`${member.guild.name} | ${member.guild.id}`, `${member.guild.iconURL({ dynamic: true })}`))
           .setDescription(`This is because your Account was Created ${duration(Date.now() - createdAccount).map(a => `\`${a}\``).join(", ")} ago, and the minimum Amount of Account-Age should be: ${duration(newaccount_delay).map(a => `\`${a}\``).join(", ")}`)
           .addField(`**Guild-Message:**`, `${extramessage && extramessage.length > 1 ? extramessage : "No Extra Message provided"}`.substring(0, 1024))
         ]
-      }).catch(() => {});
+      }).catch(() => null);
       member.ban({reason: `Alt Account Detection | Account created ${duration(Date.now() - createdAccount).join(", ")} ago`})
     } else {
       await member.send({
         embeds: [
-          new Discord.MessageEmbed()
+          new MessageEmbed()
           .setTitle(`You got kicked from __${member.guild.name}__`)
           .setThumbnail(member.guild.iconURL({dynamic: true}))
-          .setFooter({text: `${member.guild.name} | ${member.guild.id}`, iconURL: `${member.guild.iconURL({dynamic: true})}`})
+          .setFooter(client.getFooter(`${member.guild.name} | ${member.guild.id}`, `${member.guild.iconURL({ dynamic: true })}`))
           .setDescription(`This is because your Account was Created ${duration(Date.now() - createdAccount).map(a => `\`${a}\``).join(", ")} ago, and the minimum Amount of Account-Age should be: ${duration(newaccount_delay).map(a => `\`${a}\``).join(", ")}`)
           .addField(`**Guild-Message:**`, `${extramessage && extramessage.length > 1 ? extramessage : "No Extra Message provided"}`.substring(0, 1024))
         ]
-      }).catch(() => {});
+      }).catch(() => null);
       member.kick({reason: `Alt Account Detection | Account created ${duration(Date.now() - createdAccount).join(", ")} ago`})
     }
   })
@@ -1116,7 +934,7 @@ module.exports = client => {
    */
   client.on("guildMemberAdd", async member => {
     if(!member.guild || member.user.bot) return;
-    client.settings.ensure(member.guild.id, {
+    await dbEnsure(client.settings, member.guild.id, {
       joinlist: {
         username_contain: [/*
           {
@@ -1134,8 +952,8 @@ module.exports = client => {
       }
     });
 
-    const joinlist = client.settings.get(member.guild.id, "joinlist");
-    
+    const joinlist = await client.settings.get(member.guild.id+ ".joinlist");
+    if(!joinlist) return;
     let inthere = false;
     let notInthere = false;
     
@@ -1165,10 +983,10 @@ module.exports = client => {
 
     if(joinlist.server_in_common.map(d => d.data).length > 0) {
       const guilds = joinlist.server_in_common.map(d => d.data);
-      for(const guild of guilds) {
+      for await (const guild of guilds) {
         const g = client.guilds.cache.get(guild);
         if(g) {
-          let themember = g.members.cache.get(member.id) || await g.members.fetch(member.id).catch(() => {})
+          let themember = g.members.cache.get(member.id) || await g.members.fetch(member.id).catch(() => null)
           if(themember) {
             inthere = g;
             break;
@@ -1182,10 +1000,10 @@ module.exports = client => {
 
     if(joinlist.server_not_in_common.map(d => d.data).length > 0) {
       const guilds = joinlist.server_not_in_common.map(d => d.data);
-      for(const guild of guilds) {
+      for await (const guild of guilds) {
         const g = client.guilds.cache.get(guild);
         if(g) {
-          let themember = g.members.cache.get(member.id) || await g.members.fetch(member.id).catch(() => {})
+          let themember = g.members.cache.get(member.id) || await g.members.fetch(member.id).catch(() => null)
           if(!themember) {
             notInthere = g;
             break;
@@ -1200,22 +1018,22 @@ module.exports = client => {
     function handleDatas(datas, reason = "No reason provided") {
       return new Promise(async (resolve, reject) => {
         if(datas.length > 0) {
-          for(const data of datas) {
+          for await (const data of datas) {
             if(data.action == "kick") {
               if(member.kickable) {
-                await member.send(`You got kicked from \`${member.guild.name}\` because:\n> ${eval(reason)}`).catch(() => {});
+                await member.send(`You got kicked from \`${member.guild.name}\` because:\n> ${eval(reason)}`).catch(() => null);
                 await member.kick({reason: `${eval(reason)}`}).catch(console.warn)
               }
             } 
             if(data.action == "ban") {
               if(member.bannable) {
-                await member.send(`You got banned from \`${member.guild.name}\` for ${data.days != 0 ? `${data.days} Days` : `ever`} because:\n> ${eval(reason)}`).catch(() => {});
+                await member.send(`You got banned from \`${member.guild.name}\` for ${data.days != 0 ? `${data.days} Days` : `ever`} because:\n> ${eval(reason)}`).catch(() => null);
                 await member.ban({reason: `${eval(reason)}`, days: data.days }).catch(console.warn)
               }
             } 
             if(data.time && data.time > 0 && data.action == "timeout") {
               if(member.manageable) {
-                await member.send(`You got timeouted until <t:${Math.floor((Date.now() + data.time) / 1000)}:F> from \`${member.guild.name}\` because:\n> ${eval(reason)}`).catch(() => {});
+                await member.send(`You got timeouted until <t:${Math.floor((Date.now() + data.time) / 1000)}:F> from \`${member.guild.name}\` because:\n> ${eval(reason)}`).catch(() => null);
                 await member.timeout(data.time, `${eval(reason)}`).catch(console.warn)
               }
             } 
@@ -1237,28 +1055,31 @@ module.exports = client => {
   /**
    * INCREASE THE MESSAGECOUNTER 
    */
-  client.on("messageCreate", message => {
-    if(message.guild && message.author.id){
-      // Fetch guild and member data from the db
-      client.invitesdb.ensure(message.guild.id + message.author.id, {
-        messagesCount: 0,
-      });
-      client.invitesdb.inc(message.guild.id + message.author.id, "messagesCount")
+  client.on("messageCreate", async message => {
+    if(message.guild && message.author?.id){
+      if(!await client.invitesdb.get(message.guild.id + message.author?.id)) {
+        await dbEnsure(client.invitesdb, `${message.guild.id + message.author?.id}`, { messagesCount: 0 }).catch(console.warn);
+      }
+      await client.invitesdb.add(`${message.guild.id + message.author?.id}.messagesCount`, 1).catch(console.warn);
     }
   })
 
   function inviteToJson (invite) {
     return {
+        guildId: invite.guild?.id,
         code: invite.code,
+        url: invite.url,
         uses: invite.uses,
         maxUses: invite.maxUses,
-        inviter: invite.inviter,
+        maxAge: invite.maxAge,
+        createdTimestamp: invite.createdTimestamp,
         deletedTimestamp: invite.deletedTimestamp,
+        inviter: invite.inviter,
     };
   };
 
   function generateInvitesCache (invitesCache) {
-    const cacheCollection = new Discord.Collection();
+    const cacheCollection = new Collection();
     invitesCache.forEach((invite) => {
         cacheCollection.set(invite.code, inviteToJson(invite));
     });
@@ -1299,8 +1120,9 @@ module.exports = client => {
     }
     return true;
   };
-  function EnsureInviteDB(guild, user) {
-    client.invitesdb.ensure(guild.id + user.id, {
+
+  async function EnsureInviteDB(guild, user) {
+    const res = await dbEnsure(client.invitesdb, guild.id + user.id, {
       /* REQUIRED */
       id: user.id, // Discord ID of the user
       guildId: guild.id,
@@ -1320,5 +1142,64 @@ module.exports = client => {
       /* BOT */
       bot: user.bot
     });
-  }
+
+    if(res && res.changed) {
+      DbAllCache.set(guild.id, false);
+      DbAllCache.delete(guild.id);
+    }
+
+    return true;
+  };
+
+  function compareOldWithNew(oldInvites, currentInvites) {
+    const invitesUsed = [];
+    currentInvites.forEach((invite) => {
+      if(invite.uses !== 0 && oldInvites.get(invite.code) && oldInvites.get(invite.code)?.uses < invite?.uses) {
+        invitesUsed.push(invite);
+      }
+    });
+    if(invitesUsed.length < 1) {
+      oldInvites.sort((a, b) => (a.deletedTimestamp && b.deletedTimestamp) ? b.deletedTimestamp -a.deletedTimestamp : 0).forEach((invite) => {
+        if(!currentInvites.get(invite.code) && invite.maxUses > 0 && invite.uses == (invite.maxUses - 1)) {
+          invitesUsed.push(invite);
+        } 
+      })
+    }
+    return invitesUsed;
+  };
+
+  function getDefaultWelcomeData() {
+    return {
+      welcome: {
+        captcha: false,
+        roles: [],
+        channel: "nochannel",
+        secondchannel: "nochannel",
+        secondmsg: ":wave: {user} **Welcome to our Server!** :v:",
+        image: true,
+        custom: "no",
+        background: "transparent",
+        frame: true,
+        framecolor: "white",
+        pb: true,
+        invite: true,
+        discriminator: true,
+        membercount: true,
+        servername: true,
+        msg: "{user} Welcome to this Server",
+        dm: false,
+        imagedm: false,
+        customdm: "no",
+        backgrounddm: "transparent",
+        framedm: true,
+        framecolordm: "white",
+        pbdm: true,
+        invitedm: true,
+        discriminatordm: true,
+        membercountdm: true,
+        servernamedm: true,
+        dm_msg: "{user} Welcome to this Server"
+      }
+    }
+  };
 }

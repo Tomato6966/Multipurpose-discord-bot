@@ -2,14 +2,14 @@ const {
   MessageEmbed,
   MessageAttachment
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+const ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
   createBar,
   format
-} = require(`${process.cwd()}/handlers/functions`);
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
+const { handlemsg } = require(`../../handlers/functions`);
     module.exports = {
   name: `nowplaying`,
   category: `🎶 Music`,
@@ -22,10 +22,10 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     "previoussong": false
   },
   type: "song",
-  run: async (client, message, args, cmduser, text, prefix, player) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    
+    if(GuildSettings.MUSIC === false) {
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -52,6 +52,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
         .addField(`${emoji?.msg.time} Duration: `, `\`${format(player.queue.current.duration).split(" | ")[0]}\` | \`${format(player.queue.current.duration).split(" | ")[1]}\``, true)
         .addField(`${emoji?.msg.song_by} Song By: `, `\`${player.queue.current.author}\``, true)
         .addField(`${emoji?.msg.repeat_mode} Queue length: `, `\`${player.queue.length} Songs\``, true)
+        .addField(":notes: Music Dashboard :new: ", `[**Check out the :new: Music Dashboard!**](https://milrato.com/dashboard/queue/${message.guild.id})\n> Live Music View, Live Music Requests, Live Music Control and more!`) 
         .setFooter(client.getFooter(`Requested by: ${player.queue.current.requester.tag}`, player.queue.current.requester.displayAvatarURL({
           dynamic: true
         })))

@@ -2,25 +2,23 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-epicgamesverify",
   category: "💪 Setup",
-  aliases: ["setupepicgamesverify", "epicgamesverify-setup", "epicgamesverifysetup"],
+  aliases: ["setupepicgamesverify", "epicgamesverify-setup", "epicgamesverifysetup", "setup-epic", "setup-epicgames", "setup-epicgamesverification"],
   cooldown: 5,
   usage: "setup-epicgamesverify  -->  Follow the Steps",
   description: "Setup an Epic Games Verification System for your Server to Host events and play better together!",
   memberpermissions: ["ADMINISTRATOR"],
   type: "info",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     try {
       first_layer()
       async function first_layer(){
@@ -66,35 +64,35 @@ module.exports = {
         //define the embed
         let MenuEmbed = new MessageEmbed()
           .setColor(es.color)
-          .setAuthor('Epic Games Verify Setup', 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Epic_Games_logo.svg/882px-Epic_Games_logo.svg.png', 'https://discord.gg/milrato')
+          .setAuthor(client.getAuthor('Epic Games Verify Setup', 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Epic_Games_logo.svg/882px-Epic_Games_logo.svg.png', 'https://discord.gg/milrato'))
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             let SetupNumber = menu?.values[0].split(" ")[0]
             handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata)
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
 
       async function handle_the_picks(optionhandletype, SetupNumber, menuoptiondata) {
-        client.epicgamesDB.ensure(message.guild.id, { 
+        await dbEnsure(client.epicgamesDB, message.guild.id, { 
             logChannel: "",
             verifychannel: "",
         });
@@ -107,7 +105,7 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-admincmdlog"]["variable5"])).setFooter(client.getFooter(es))
             ]})
             var thecmd;
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
                 max: 1,
                 time: 90000,
                 errors: ["time"]
@@ -131,7 +129,7 @@ module.exports = {
                   ]
                 });
 
-                client.epicgamesDB.set(message.guild.id, channel.id, `verifychannel`)
+                await client.epicgamesDB.set(message.guild.id+`.verifychannel`, channel.id)
                 
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle("Enabled the Verification System!")
@@ -145,7 +143,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-admincmdlog"]["variable7"]))
                 .setColor(es.wrongcolor)
@@ -162,7 +160,7 @@ module.exports = {
             .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-admincmdlog"]["variable5"])).setFooter(client.getFooter(es))
           ]})
           var thecmd;
-          await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author.id, 
+          await tempmsg.channel.awaitMessages({filter: m => m.author.id == message.author?.id, 
               max: 1,
               time: 90000,
               errors: ["time"]
@@ -171,7 +169,7 @@ module.exports = {
             var message = collected.first();
             if(!message) return message.reply( "NO MESSAGE SENT");
             if(message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first()){
-              client.epicgamesDB.set(message.guild.id, message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first().id, `logChannel`)
+              await client.epicgamesDB.set(message.guild.id+`.logChannel`, message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first().id)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle("Enabled the Log")
                 .setColor(es.color)
@@ -184,7 +182,7 @@ module.exports = {
             }
           })
           .catch(e => {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+            console.error(e)
             return message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-admincmdlog"]["variable7"]))
               .setColor(es.wrongcolor)
@@ -207,7 +205,7 @@ module.exports = {
         }
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

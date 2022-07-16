@@ -1,21 +1,18 @@
-const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js")
+const { MessageEmbed, MessageButton, MessageActionRow, Permissions } = require("discord.js")
 const { check_if_dj, autoplay, escapeRegex, format, duration, createBar } = require("../functions");
 const config = require(`${process.cwd()}/botconfig/config.json`);
 const ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 const playermanager = require(`../playermanager`);
 //we need to create the music system, somewhere...
-module.exports = client => {
+module.exports = async (client) => {
     client.on("interactionCreate", async (interaction) => {
         if(!interaction?.isButton()) return;
         var { guild, message, channel, member, user } = interaction;
-        if(!guild) guild = client.guilds.cache.get(interaction?.guildId);
-        if(!guild) return;
-        client.musicsettings.ensure(guild.id, {
-            "channel": "",
-            "message": ""
-        })
-        var data = client.musicsettings.get(guild.id);
+        if(!guild) guild = client.guilds.cache.get(interaction.guildId)
+        if(!guild) return 
+        var data = await client.musicsettings.get(guild.id);
+        if(!data) return
         var musicChannelId = data.channel;
         var musicChannelMessage = data.message;
         //if not setupped yet, return
@@ -30,7 +27,7 @@ module.exports = client => {
         if(musicChannelMessage != message.id) return;
 
         if(!member) member = guild.members.cache.get(user.id);
-        if(!member) member = await guild.members.fetch(user.id).catch(() => {});
+        if(!member) member = await guild.members.fetch(user.id).catch(() => null);
         if(!member) return;
         //if the member is not connected to a vc, return
         if(!member.voice.channel) return interaction?.reply({ephemeral: true, content: ":x: **Please Connect to a Voice Channel first!**"})
@@ -42,7 +39,7 @@ module.exports = client => {
             })      
             
         var player = client.manager.players.get(interaction?.guild.id);
-        if (interaction?.customId != "Join" && interaction?.customId != "Leave" && (!player || !player.queue || !player.queue.current))
+        if (interaction?.customId != "Join" && interaction?.customId != "Leave" && (!player || !player.queue || !player?.queue?.current))
             return interaction?.reply({content: "<:no:833101993668771842> Nothing Playing yet", ephemeral: true})
                         
         //if not connected to the same voice channel, then make sure to connect to it!
@@ -52,19 +49,28 @@ module.exports = client => {
                 ephemeral: true
             })
         //here i use my check_if_dj function to check if he is a dj if not then it returns true, and it shall stop!
-        if(player && interaction?.customId != `Join` && interaction?.customId != `Lyrics` && check_if_dj(client, member, player.queue.current)) {
+        const dj = await check_if_dj(client, member, player?.queue?.current);
+        if(player && interaction?.customId != `Join` && interaction?.customId != `Lyrics` && dj) {
                 return interaction?.reply({embeds: [new MessageEmbed()
                   .setColor(ee.wrongcolor)
                   .setFooter({text: `${ee.footertext}`, iconURL: `${ee.footericon}`})
                   .setTitle(`<:no:833101993668771842> **You are not a DJ and not the Song Requester!**`)
-                  .setDescription(`**DJ-ROLES:**\n${check_if_dj(client, interaction?.member, player.queue.current)}`)
+                  .setDescription(`**DJ-ROLES:**\n${dj}`)
                 ],
                 ephemeral: true});
         }
-        let es = client.settings.get(guild.id, "embed")
-        let ls = client.settings.get(guild.id, "language")
+        let settings = await client.settings.get(guild.id)
+        let es = settings.embed;
+        let ls = settings.language;
         switch(interaction?.customId){
             case "Join": {
+              
+      
+                if(!member?.voice.channel?.permissionsFor(message.guild?.me)?.has(Permissions.FLAGS.CONNECT)) 
+                  return message.reply({ content: "<:no:833101993668771842> **I'm missing the Permission to Connect to your Voice-Channel!**"}).catch(() => null);
+                if(!member?.voice.channel?.permissionsFor(message.guild?.me)?.has(Permissions.FLAGS.SPEAK)) 
+                  return message.reply({ content: "<:no:833101993668771842> **I'm missing the Permission to Speak in your Voice-Channel!**"}).catch(() => null);
+            
                 //create the player
                 var player = await client.manager.create({
                     guild: guild.id,
@@ -80,9 +86,9 @@ module.exports = client => {
                     .setDescription(`Channel: <#${member.voice.channel.id}>`)]
                 });
                 //edit the message so that it's right!
-                var data = generateQueueEmbed(client, guild.id)
+                var data = await generateQueueEmbed(client, guild.id)
                 message.edit(data).catch((e) => {
-                  //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  //console.error(e)
                 })
             }break;
             case "Leave": {
@@ -97,21 +103,21 @@ module.exports = client => {
                 if(player){
                     await player.destroy();
                     //edit the message so that it's right!
-                    var data = generateQueueEmbed(client, guild.id, true)
+                    var data = await generateQueueEmbed(client, guild.id, true)
                     message.edit(data).catch((e) => {
-                      //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                      //console.error(e)
                     })
                 } else {
                     //edit the message so that it's right!
-                    var data = generateQueueEmbed(client, guild.id, true)
+                    var data = await generateQueueEmbed(client, guild.id, true)
                     message.edit(data).catch((e) => {
-                    //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    //console.error(e)
                     })
                 }
             }break;
             case "Skip": {
                 //if ther is nothing more to skip then stop music and leave the Channel
-                if (!player.queue || !player.queue.size || player.queue.size === 0) {
+                if (!player.queue || !player?.queue?.size || player?.queue?.size === 0) {
                     //if its on autoplay mode, then do autoplay before leaving...
                     if(player.get("autoplay")) return autoplay(client, player, "skip");
                     interaction?.reply({
@@ -123,9 +129,9 @@ module.exports = client => {
                     })
                     await player.destroy()
                     //edit the message so that it's right!
-                    var data = generateQueueEmbed(client, guild.id, true)
+                    var data = await generateQueueEmbed(client, guild.id, true)
                     message.edit(data).catch((e) => {
-                    //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    //console.error(e)
                     })
                     return
                 }
@@ -139,9 +145,9 @@ module.exports = client => {
                   .setFooter(client.getFooter(`💢 Action by: ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
                 //edit the message so that it's right!
-                var data = generateQueueEmbed(client, guild.id)
+                var data = await generateQueueEmbed(client, guild.id)
                 message.edit(data).catch((e) => {
-                  //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  //console.error(e)
                 })
             }break;
             case "Stop": {
@@ -155,9 +161,9 @@ module.exports = client => {
                 }) 
                 await player.destroy()
                 //edit the message so that it's right!
-                var data = generateQueueEmbed(client, guild.id, true)
+                var data = await generateQueueEmbed(client, guild.id, true)
                 message.edit(data).catch((e) => {
-                  //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  //console.error(e)
                 })
             }break;
             case "Pause": {
@@ -183,9 +189,9 @@ module.exports = client => {
                     })
                   }
                   //edit the message so that it's right!
-                  var data = generateQueueEmbed(client, guild.id)
+                  var data = await generateQueueEmbed(client, guild.id)
                   message.edit(data).catch((e) => {
-                    //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    //console.error(e)
                   })
             }break;
             case "Autoplay": {
@@ -199,28 +205,28 @@ module.exports = client => {
                   .setFooter(client.getFooter(`💢 Action by: ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
                 //edit the message so that it's right!
-                var data = generateQueueEmbed(client, guild.id)
+                var data = await generateQueueEmbed(client, guild.id)
                 message.edit(data).catch((e) => {
-                  //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  //console.error(e)
                 })
             }break;
             case "Shuffle": {
                 //set into the player instance an old Queue, before the shuffle...
-                player.set(`beforeshuffle`, player.queue.map(track => track));
+                player.set(`beforeshuffle`, player?.queue?.map(track => track));
                 //shuffle the Queue
-                player.queue.shuffle();
+                player?.queue?.shuffle();
                 //Send Success Message
                 interaction?.reply({
                   embeds: [new MessageEmbed()
                     .setColor(ee.color)
                     .setTimestamp()
-                    .setTitle(`🔀 **Shuffled ${player.queue.length} Songs!**`)
+                    .setTitle(`🔀 **Shuffled ${player?.queue?.length} Songs!**`)
                     .setFooter(client.getFooter(`💢 Action by: ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
                 //edit the message so that it's right!
-                var data = generateQueueEmbed(client, guild.id)
+                var data = await generateQueueEmbed(client, guild.id)
                 message.edit(data).catch((e) => {
-                  //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  //console.error(e)
                 })
             }break;
             case "Song": {
@@ -238,9 +244,9 @@ module.exports = client => {
                   .setFooter(client.getFooter(`💢 Action by: ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
                 //edit the message so that it's right!
-                var data = generateQueueEmbed(client, guild.id)
+                var data = await generateQueueEmbed(client, guild.id)
                 message.edit(data).catch((e) => {
-                  //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  //console.error(e)
                 })
             }break;
             case "Queue": {
@@ -258,9 +264,9 @@ module.exports = client => {
                   .setFooter(client.getFooter(`💢 Action by: ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
                 //edit the message so that it's right!
-                var data = generateQueueEmbed(client, guild.id)
+                var data = await generateQueueEmbed(client, guild.id)
                 message.edit(data).catch((e) => {
-                  //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  //console.error(e)
                 })
             }break;
             case "Forward": {
@@ -269,7 +275,7 @@ module.exports = client => {
                 //if the userinput is smaller then 0, then set the seektime to just the player.position
                 if (10 <= 0) seektime = Number(player.position);
                 //if the seektime is too big, then set it 1 sec earlier
-                if (Number(seektime) >= player.queue.current.duration) seektime = player.queue.current.duration - 1000;
+                if (Number(seektime) >= player?.queue?.current.duration) seektime = player?.queue?.current.duration - 1000;
                 //seek to the new Seek position
                 await player.seek(Number(seektime));
                 interaction?.reply({
@@ -280,14 +286,14 @@ module.exports = client => {
                     .setFooter(client.getFooter(`💢 Action by: ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
                 //edit the message so that it's right!
-                var data = generateQueueEmbed(client, guild.id)
+                var data = await generateQueueEmbed(client, guild.id)
                 message.edit(data).catch((e) => {
-                  //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  //console.error(e)
                 })
             }break;
             case "Rewind": {
                 var seektime = player.position - 10 * 1000;
-                if (seektime >= player.queue.current.duration - player.position || seektime < 0) {
+                if (seektime >= player?.queue?.current.duration - player.position || seektime < 0) {
                   seektime = 0;
                 }
                 //seek to the new Seek position
@@ -300,9 +306,9 @@ module.exports = client => {
                     .setFooter(client.getFooter(`💢 Action by: ${member.user.tag}`, member.user.displayAvatarURL({dynamic: true})))]
                 })
                 //edit the message so that it's right!
-                var data = generateQueueEmbed(client, guild.id)
+                var data = await generateQueueEmbed(client, guild.id)
                 message.edit(data).catch((e) => {
-                  //console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                  //console.error(e)
                 })
             }break;
             case "Lyrics": {
@@ -315,29 +321,20 @@ module.exports = client => {
 
     client.on("messageCreate", async message => {
         if(!message.guild) return;
-        client.musicsettings.ensure(message.guild.id, {
-            "channel": "",
-            "message": ""
-        })
-        var data = client.musicsettings.get(message.guild.id);
+        var data = await client.musicsettings.get(message.guild.id);
+        if(!data) return
         var musicChannelId = data.channel;
         //if not setupped yet, return
         if(!musicChannelId || musicChannelId.length < 5) return;
         //if not the right channel return
         if(musicChannelId != message.channel.id) return;
         //Delete the message once it got sent into the channel, bot messages after 5 seconds, user messages instantly!
-        if (message.author.id === client.user.id) 
-            setTimeout(()=>{
-              try{
-                message.delete().catch(() => {
-                  setTimeout(()=>{
-                    try{message.delete().catch((e) => {console.log(e)});}catch(e){ console.log(e)}}, 5000)});}catch(e){setTimeout(()=>{try{message.delete().catch((e) => {console.log(e)});}catch(e){ console.log(e)}}, 5000)}}, 5000)
-        else 
-            {
-              try{message.delete().catch(() => {setTimeout(()=>{try{message.delete().catch(() => {});}catch(e){ }}, 5000)});}catch(e){setTimeout(()=>{try{message.delete().catch(() => {});}catch(e){ }}, 5000)}
-            }
-        if (message.author.bot) return; // if the message  author is a bot, return aka ignore the inputs
-        var prefix = client.settings.get(message.guild.id, "prefix")
+        if (message.author?.id === client.user.id) 
+            setTimeout(()=> message.delete().catch(() => null), 2500)
+        else setTimeout(()=> message.delete().catch(() => null), 5000)
+            
+        if (message.author?.bot) return; // if the message  author is a bot, return aka ignore the inputs
+        var prefix = await client.settings.get(message.guild.id+".prefix")
         //get the prefix regex system
         const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`); //the prefix can be a Mention of the Bot / The defined Prefix of the Bot
         var args;
@@ -347,13 +344,13 @@ module.exports = client => {
             const [, matchedPrefix] = message.content.match(prefixRegex); //now define the right prefix either ping or not ping
             args = message.content.slice(matchedPrefix.length).trim().split(/ +/); //create the arguments with sliceing of of the rightprefix length
             cmd = args.shift().toLowerCase(); //creating the cmd argument by shifting the args by 1
-            if (cmd || cmd.length === 0) return// message.reply("<:no:833101993668771842> **Please use a Command Somewhere else!**").then(msg=>{setTimeout(()=>{try{msg.delete().catch(() => {});}catch(e){ }}, 3000)})
+            if (cmd || cmd.length === 0) return// message.reply("<:no:833101993668771842> **Please use a Command Somewhere else!**").then(msg=>{setTimeout(()=>{try{msg.delete().catch(() => null);}catch(e){ }}, 3000)})
         
             var command = client.commands.get(cmd); //get the command from the collection
             if (!command) command = client.commands.get(client.aliases.get(cmd)); //if the command does not exist, try to get it by his alias
             if (command) //if the command is now valid
             {
-                return// message.reply("<:no:833101993668771842> **Please use a Command Somewhere else!**").then(msg=>{setTimeout(()=>{try{msg.delete().catch(() => {});}catch(e){ }}, 3000)})
+                return// message.reply("<:no:833101993668771842> **Please use a Command Somewhere else!**").then(msg=>{setTimeout(()=>{try{msg.delete().catch(() => null);}catch(e){ }}, 3000)})
             }
         }
         //getting the Voice Channel Data of the Message Member
@@ -361,11 +358,11 @@ module.exports = client => {
           channel
         } = message.member.voice;
         //if not in a Voice Channel return!
-        if (!channel) return message.reply("<:no:833101993668771842> **Please join a Voice Channel first!**").then(msg=>{setTimeout(()=>{try{msg.delete().catch(() => {});}catch(e){ }}, 5000)})
+        if (!channel) return message.reply("<:no:833101993668771842> **Please join a Voice Channel first!**").then(msg=>{setTimeout(()=>{try{msg.delete().catch(() => null);}catch(e){ }}, 5000)})
         //get the lavalink erela.js player information
         const player = client.manager.players.get(message.guild.id);
         //if there is a player and the user is not in the same channel as the Bot return information message
-        if (player && channel.id !== player.voiceChannel) return message.reply(`<:no:833101993668771842> **Please join __my__ Voice Channel first! <#${player.voiceChannel}>**`).then(msg=>{setTimeout(()=>{try{msg.delete().catch(() => {});}catch(e){ }}, 3000)})
+        if (player && channel.id !== player.voiceChannel) return message.reply(`<:no:833101993668771842> **Please join __my__ Voice Channel first! <#${player.voiceChannel}>**`).then(msg=>{setTimeout(()=>{try{msg.delete().catch(() => null);}catch(e){ }}, 3000)})
 
         
         else {
@@ -375,11 +372,15 @@ module.exports = client => {
 
 
 }
-function generateQueueEmbed(client, guildId, leave){
+async function generateQueueEmbed(client, guildId, leave){
     let guild = client.guilds.cache.get(guildId)
     if(!guild) return;
-    let es = client.settings.get(guild.id, "embed")
-    let ls = client.settings.get(guild.id, "language")
+    
+    let settings = await client.settings.get(guild.id);
+    
+    let es = settings.embed;
+    let ls = settings.language;
+
     var embeds = [
       new MessageEmbed()
         .setColor(es.color)
@@ -394,13 +395,13 @@ function generateQueueEmbed(client, guildId, leave){
         .setDescription(`> *I support <:Youtube:840260133686870036> Youtube, <:Spotify:846090652231663647> Spotify, <:soundcloud:825095625884434462> Soundcloud and direct MP3 Links!*`)
     ]
     const player = client.manager.players.get(guild.id);
-    if(!leave && player && player.queue && player.queue.current){
-        embeds[1].setImage(`https://img.youtube.com/vi/${player.queue.current.identifier}/mqdefault.jpg`)
-            .setFooter(client.getFooter(`Requested by: ${player.queue.current.requester.tag}`, player.queue.current.requester.displayAvatarURL({dynamic: true})))
-            .addField(`${emoji?.msg.time} Duration: `, `\`${format(player.queue.current.duration).split(" | ")[0]}\` | \`${format(player.queue.current.duration).split(" | ")[1]}\``, true)
-            .addField(`${emoji?.msg.song_by} Song By: `, `\`${player.queue.current.author}\``, true)
-            .addField(`${emoji?.msg.repeat_mode} Queue length: `, `\`${player.queue.length} Songs\``, true)
-            .setAuthor(`${player.queue.current.title}`, "https://images-ext-1.discordapp.net/external/DkPCBVBHBDJC8xHHCF2G7-rJXnTwj_qs78udThL8Cy0/%3Fv%3D1/https/cdn.discordapp.com/emojis/859459305152708630.gif", player.queue.current.uri)
+    if(!leave && player && player.queue && player?.queue?.current){
+        embeds[1].setImage(`https://img.youtube.com/vi/${player?.queue?.current.identifier}/mqdefault.jpg`)
+            .setFooter(client.getFooter(`Requested by: ${player?.queue?.current.requester.tag}`, player?.queue?.current.requester.displayAvatarURL({dynamic: true})))
+            .addField(`${emoji?.msg.time} Duration: `, `\`${format(player?.queue?.current.duration).split(" | ")[0]}\` | \`${format(player?.queue?.current.duration).split(" | ")[1]}\``, true)
+            .addField(`${emoji?.msg.song_by} Song By: `, `\`${player?.queue?.current.author}\``, true)
+            .addField(`${emoji?.msg.repeat_mode} Queue length: `, `\`${player?.queue?.length} Songs\``, true)
+            .setAuthor(client.getAuthor(`${player?.queue?.current.title}`, "https://images-ext-1.discordapp.net/external/DkPCBVBHBDJC8xHHCF2G7-rJXnTwj_qs78udThL8Cy0/%3Fv%3D1/https/cdn.discordapp.com/emojis/859459305152708630.gif", player?.queue?.current.uri))
         delete embeds[1].description;
         delete embeds[1].title;
         //get the right tracks of the current tracks
@@ -409,12 +410,12 @@ function generateQueueEmbed(client, guildId, leave){
         //get an array of quelist where 10 tracks is one index in the array
         var songs = tracks.slice(0, maxTracks);
         embeds[0] = new MessageEmbed()
-        .setTitle(`📃 Queue of __${guild.name}__  -  [ ${player.queue.length} Tracks ]`)
+        .setTitle(`📃 Queue of __${guild.name}__  -  [ ${player?.queue?.length} Tracks ]`)
         .setColor(es.color)
         .setDescription(String(songs.map((track, index) => `**\` ${++index}. \` ${track.uri ? `[${track.title.substring(0, 60).replace(/\[/igu, "\\[").replace(/\]/igu, "\\]")}](${track.uri})` : track.title}** - \`${track.isStream ? `LIVE STREAM` : format(track.duration).split(` | `)[0]}\`\n> *Requested by: __${track.requester.tag}__*`).join(`\n`)).substring(0, 2048));
-        if(player.queue.length > 10)
-          embeds[0].addField(`**\` N. \` *${player.queue.length > maxTracks ? player.queue.length - maxTracks : player.queue.length} other Tracks ...***`, `\u200b`)
-        embeds[0].addField(`**\` 0. \` __CURRENT TRACK__**`, `**${player.queue.current.uri ? `[${player.queue.current.title.substring(0, 60).replace(/\[/igu, "\\[").replace(/\]/igu, "\\]")}](${player.queue.current.uri})`:player.queue.current.title}** - \`${player.queue.current.isStream ? `LIVE STREAM` : format(player.queue.current.duration).split(` | `)[0]}\`\n> *Requested by: __${player.queue.current.requester.tag}__*`)
+        if(player?.queue?.length > 10)
+          embeds[0].addField(`**\` N. \` *${player?.queue?.length > maxTracks ? player?.queue?.length - maxTracks : player?.queue?.length} other Tracks ...***`, `\u200b`)
+        embeds[0].addField(`**\` 0. \` __CURRENT TRACK__**`, `**${player?.queue?.current.uri ? `[${player?.queue?.current.title.substring(0, 60).replace(/\[/igu, "\\[").replace(/\]/igu, "\\]")}](${player?.queue?.current.uri})`:player?.queue?.current.title}** - \`${player?.queue?.current.isStream ? `LIVE STREAM` : format(player?.queue?.current.duration).split(` | `)[0]}\`\n> *Requested by: __${player?.queue?.current.requester.tag}__*`)
             
     }
     var joinbutton = new MessageButton().setStyle('SUCCESS').setCustomId('Join').setEmoji(`👌`).setLabel(`Join`).setDisabled(false);
@@ -429,7 +430,7 @@ function generateQueueEmbed(client, guildId, leave){
     var forwardbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Forward').setEmoji('⏩').setLabel(`+10 Sec`).setDisabled();
     var rewindbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Rewind').setEmoji('⏪').setLabel(`-10 Sec`).setDisabled();
     var lyricsbutton = new MessageButton().setStyle('PRIMARY').setCustomId('Lyrics').setEmoji('📝').setLabel(`Lyrics`).setDisabled();
-    if(!leave && player && player.queue && player.queue.current){
+    if(!leave && player && player.queue && player?.queue?.current){
         skipbutton = skipbutton.setDisabled(false);
         shufflebutton = shufflebutton.setDisabled(false);
         stopbutton = stopbutton.setDisabled(false);

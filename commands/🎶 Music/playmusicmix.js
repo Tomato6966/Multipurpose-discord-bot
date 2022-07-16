@@ -2,12 +2,12 @@ const Discord = require(`discord.js`);
 const {
   MessageEmbed
 } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+const ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const songoftheday = require(`../../botconfig/songoftheday.json`);
 const playermanager = require(`../../handlers/playermanager`);
-const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+const { handlemsg } = require(`../../handlers/functions`);
     module.exports = {
   name: `playmusicmix`,
   category: `🎶 Music`,
@@ -20,10 +20,10 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     "previoussong": false
   },
   type: "queuesong",
-  run: async (client, message, args, cmduser, text, prefix, player) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!client.settings.get(message.guild.id, "MUSIC")) {
+    
+    if(GuildSettings.MUSIC === false) {
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))
@@ -59,23 +59,27 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
         //strange-fruits
         if (args[0].toLowerCase().startsWith("s")) link = "https://open.spotify.com/playlist/6xGLprv9fmlMgeAMpW0x51";
         //magic-release
-        if (args[0].toLowerCase().startsWith("ma"))  link = "https://www.youtube.com/watch?v=WvMc5_RbQNc&list=PLYUn4Yaogdagvwe69dczceHTNm0K_ZG3P"
+        if (args[0].toLowerCase().startsWith("ma")) link = "https://www.youtube.com/watch?v=WvMc5_RbQNc&list=PLYUn4Yaogdagvwe69dczceHTNm0K_ZG3P"
         //metal
         if (args[0].toLowerCase().startsWith("me")) link = "https://open.spotify.com/playlist/37i9dQZF1DX9qNs32fujYe";
         //heavy metal
         if (args[0].toLowerCase().startsWith("h")) link = "https://open.spotify.com/playlist/37i9dQZF1DX9qNs32fujYe";
+        //2000's 
+        if(args[0].toLowerCase().startsWith("2")) link = "https://www.youtube.com/playlist?list=PLkZ5DEjAIPvEsksHd82aUQ8kCdLey0GPP";
+        //edm
+        if(args[0].toLowerCase().startsWith("e")) link = "https://www.youtube.com/playlist?list=PLw6eTMMKY24QLYfmrU2rB8x-lP5Fas2dY"
       }
       message.reply({
         embeds:  [new MessageEmbed()
           .setColor(es.color)
           .setAuthor(`Loading '${args[0] ? args[0] : "Default"}' Music Mix`, "https://imgur.com/xutrSuq.gif", link)
           .setTitle(eval(client.la[ls]["cmds"]["music"]["playmusicmix"]["variable1"]))
-          .setDescription(eval(client.la[ls]["cmds"]["music"]["playmusicmix"]["variable2"]))
+          .setDescription(`>>> \`\`\`2000s, blues, charts, chill, default, edm, heavymetal, gaming, jazz, metal, magic-release, ncs, nocopyright, oldgaming, pop, remixes, rock, strange-fruits-gaming\`\`\``)
           .addField(eval(client.la[ls]["cmds"]["music"]["playmusicmix"]["variablex_3"]), eval(client.la[ls]["cmds"]["music"]["playmusicmix"]["variable3"]))
           .setFooter(client.getFooter(es))
         ]})
       //play the SONG from YOUTUBE
-      playermanager(client, message, Array(link), `song:youtube`, "songoftheday");
+      playermanager(client, message, Array(link), `song:youtube`, false, "songoftheday");
     } catch (e) {
       console.log(String(e.stack).dim.bgRed)
       return message.reply({embeds :[new MessageEmbed()

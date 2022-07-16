@@ -1,7 +1,7 @@
 const { MessageEmbed } = require(`discord.js`);
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 module.exports = {
     name: `adddj`,
     aliases: [`adddjrole`],
@@ -10,8 +10,8 @@ module.exports = {
     usage: `adddj @role`,
     memberpermissions: [`ADMINISTRATOR`],
     type: "music",
-    run: async (client, message, args, cmduser, text, prefix) => {
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+    
     try{
       
       //get the role of the mention
@@ -34,16 +34,16 @@ module.exports = {
         ]});
       }
       //if ther role is already in the Database, return error
-      if(client.settings.get(message.guild.id,`djroles`).includes(role.id))
+      if(GuildSettings.djroles.includes(role.id))
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
           .setTitle(eval(client.la[ls]["cmds"]["settings"]["adddj"]["variable3"]))
         ]});
       //push it into the database
-      client.settings.push(message.guild.id, role.id, `djroles`);
+      await client.settings.push(`${message.guild.id}.djroles`, role.id);
       //these lines creates a string with all djroles
-      var leftb = client.settings.get(message.guild.id, `djroles`).map(r => `<@&${r}>`);
+      var leftb = await client.settings.get(`${message.guild.id}.djroles`).then(d => d.map(r => `<@&${r}>`));
       if (leftb?.length == 0) leftb = "`not setup`";
       else leftb = String(leftb?.join(", "));
 
@@ -54,7 +54,7 @@ module.exports = {
         .setDescription(eval(client.la[ls]["cmds"]["settings"]["adddj"]["variable5"]))
       ]});
     } catch (e) {
-        console.log(String(e.stack).grey.bgRed)
+        console.error(e)
         return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
 						.setFooter(client.getFooter(es))

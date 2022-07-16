@@ -1,9 +1,9 @@
 const Discord = require("discord.js");
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { GetUser, GetGlobalUser } = require(`${process.cwd()}/handlers/functions`)
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { GetUser, GetGlobalUser } = require(`../../handlers/functions`)
 module.exports = {
   name: "userid",
   aliases: ["uid"],
@@ -11,8 +11,8 @@ module.exports = {
   description: "Get the ID of a USER | for mobile copy paste abilities",
   usage: "userid [@USER] [global/guild]",
   type: "userid",
-  run: async (client, message, args, cmduser, text, prefix) => {
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
+    
     try {   
       var user;
       if(args[0]){
@@ -24,7 +24,7 @@ module.exports = {
             user = await GetUser(message, args)
           }
         }catch (e){
-          console.log(e.stack ? String(e.stack).grey : String(e).grey)
+          console.error(e)
           return message.reply(client.la[ls].common.usernotfound)
         }
       }else{
@@ -32,7 +32,7 @@ module.exports = {
       }
       return message.reply(`${user.id}`);
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor)
         .setFooter(client.getFooter(es))

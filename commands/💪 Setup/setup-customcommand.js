@@ -2,14 +2,15 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing,
+  dbEnsure,
   edit_msg,
-  send_roster
-} = require(`${process.cwd()}/handlers/functions`);
+  send_roster,
+  dbRemove
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-customcommand",
@@ -20,11 +21,10 @@ module.exports = {
   description: "Define Custom Commands, Create Custom Commands and Remove Custom Commands --> \"Custom Command Names, that sends Custom Messages\"",
   memberpermissions: ["ADMINISTRATOR"],
   type: "system",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
     try {
-      var originalowner = message.author.id;
+      var originalowner = message.author?.id;
       let timeouterror;
       let NumberEmojiIds = getNumberEmojis().map(emoji => emoji?.replace(">", "").split(":")[2])
       first_layer()
@@ -65,37 +65,37 @@ module.exports = {
         //define the embed
         let MenuEmbed = new Discord.MessageEmbed()
         .setColor(es.color)
-        .setAuthor('Custom Command Setup', 'https://images-ext-1.discordapp.net/external/HF-XNy3iUP4D95zv2fuTUy1csYWuNa5IZj2HSCSkvhs/https/emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/298/flexed-biceps_1f4aa.png', 'https://discord.gg/milrato')
+        .setAuthor(client.getAuthor('Custom Command Setup', 'https://images-ext-1.discordapp.net/external/HF-XNy3iUP4D95zv2fuTUy1csYWuNa5IZj2HSCSkvhs/https/emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/298/flexed-biceps_1f4aa.png', 'https://discord.gg/milrato'))
         .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable2"]))
         //send the menu msg
         let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
 
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             used1 = true;
             handle_the_picks(menu?.values[0], menuoptiondata)
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
       async function handle_the_picks(optionhandletype, menuoptiondata) {
         switch (optionhandletype){ // return message.reply
           case "Create Custom Command": {
-            if(client.customcommands.get(message.guild.id, "commands").length > 24)
+            if(await client.customcommands.get(message.guild.id +".commands").length > 24)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-customcommand"]["variable5"]))
                 .setColor(es.wrongcolor)
@@ -108,7 +108,7 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-customcommand"]["variable7"]))
               .setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 120000,
                 errors: ["time"]
@@ -127,7 +127,7 @@ module.exports = {
                   .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-customcommand"]["variable9"]))
                   .setFooter(client.getFooter(es))
                 ]})
-                await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+                await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                     max: 1,
                     time: 120000,
                     errors: ["time"]
@@ -153,7 +153,7 @@ module.exports = {
                             time: 90000,
                             errors: ["time"]
                           })
-                          .then(collected => {
+                          .then(async collected => {
                             var reaction = collected.first();
                             if (reaction) {
                               if(reaction.emoji?.name == "✅") {
@@ -161,7 +161,7 @@ module.exports = {
                               } else {
                                 thecustomcommand.embed = false;
                               }
-                              client.customcommands.push(message.guild.id, thecustomcommand, "commands")
+                              await client.customcommands.push(message.guild.id+".commands", thecustomcommand)
 
                               message.reply({embeds: [new Discord.MessageEmbed()
                                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-customcommand"]["variable12"]))
@@ -186,7 +186,7 @@ module.exports = {
                             }
                           })
                           .catch(e => {
-                            console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                            console.error(e)
                             timeouterror = e;
                           })
                         if (timeouterror)
@@ -202,7 +202,7 @@ module.exports = {
                     }
                   })
                   .catch(e => {
-                    console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                    console.error(e)
                     timeouterror = e;
                   })
                 if (timeouterror)
@@ -219,7 +219,7 @@ module.exports = {
               }
             })
             .catch(e => {
-              console.log(e.stack ? String(e.stack).grey : String(e).grey)
+              console.error(e)
               return message.reply({embeds: [new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-customcommand"]["variable16"]))
                 .setColor(es.wrongcolor)
@@ -229,7 +229,7 @@ module.exports = {
             })
           } break;
           case "Delete Custom Command": {
-            let cuc = client.customcommands.get(message.guild.id, "commands");
+            let cuc = await client.customcommands.get(message.guild.id +".commands");
             if(!cuc || cuc.length < 1) return message.reply(":x: There are no Custom Commands")
             let menuoptions = [
             ]
@@ -266,15 +266,15 @@ module.exports = {
             let menumsg = await message.reply({embeds: [MenuEmbed], components: [new MessageActionRow().addComponents(Selection)]})
             //Create the collector
             const collector = menumsg.createMessageComponentCollector({ 
-              filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+              filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
               time: 90000
             })
             //Menu Collections
-            collector.on('collect', menu => {
+            collector.on('collect', async menu => {
               if (menu?.user.id === cmduser.id) {
                 collector.stop();
-                for(const value of menu?.values){
-                  client.customcommands.remove(message.guild.id, d => String(d.name).substring(0, 25).toLowerCase() == String(value).toLowerCase(), "commands")
+                for await (const value of menu?.values){
+                  await dbRemove(client.customcommands, message.guild.id+".commands", d => String(d.name).substring(0, 25).toLowerCase() == String(value).toLowerCase())
                 }
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(`Deleted ${menu?.values.length} Custom Commands!`)
@@ -283,7 +283,7 @@ module.exports = {
                   .setFooter(client.getFooter(es))
                 ]});
               }
-              else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+              else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
             });
             //Once the Collections ended edit the menu message
             collector.on('end', collected => {
@@ -291,17 +291,17 @@ module.exports = {
             });
           } break;
           case "Show Settings": {
-            let cuc = client.customcommands.get(message.guild.id, "commands");
+            let cuc = await client.customcommands.get(message.guild.id +".commands");
             var embed = new Discord.MessageEmbed()
             .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-customcommand"]["variable22"]))
             .setColor(es.color)
-            .setFooter(ee.footertext, es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL())
+            .setFooter(client.getFooter(es))
             var embed2 = new Discord.MessageEmbed()
             .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-customcommand"]["variable22"]))
             .setColor(es.color)
-            .setFooter(ee.footertext, es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL())
+            .setFooter(client.getFooter(es))
             var sendembed2 = false;
-            for(let i = 0; i < cuc.length; i++){
+            for (let i = 0; i < cuc.length; i++){
               try{
                 var string = `${cuc[i].output}`;
                 if(string.length > 250) string = string.substring(0, 250) + " ..."
@@ -311,7 +311,7 @@ module.exports = {
                 } else 
                 embed.addField(`<:arrow:832598861813776394> \`${cuc[i].name}\` | ${cuc[i].embed ? "✅ Embed" : "❌ Embed"}`, ">>> "+ string)
               }catch (e){
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
               }
             }
             if(sendembed2)
@@ -322,7 +322,7 @@ module.exports = {
         }
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

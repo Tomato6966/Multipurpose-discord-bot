@@ -2,14 +2,14 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing,
+  dbEnsure,
   edit_msg,
-  send_roster
-} = require(`${process.cwd()}/handlers/functions`);
+  dbRemove
+} = require(`../../handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js')
 module.exports = {
   name: "setup-autoembed",
@@ -20,9 +20,9 @@ module.exports = {
   description: "Define a Channel where every message is replaced with an EMBED or disable this feature",
   memberpermissions: ["ADMINISTRATOR"],
   type: "system",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       let NumberEmojiIds = getNumberEmojis().map(emoji => emoji?.replace(">", "").split(":")[2])
       first_layer()
@@ -76,24 +76,24 @@ module.exports = {
 
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({ 
-          filter: i => i?.isSelectMenu() && i?.message.author.id == client.user.id && i?.user,
+          filter: i => i?.isSelectMenu() && i?.message.author?.id == client.user.id && i?.user,
           time: 90000
         })
         //Menu Collections
-        collector.on('collect', menu => {
+        collector.on('collect', async menu => {
           if (menu?.user.id === cmduser.id) {
             collector.stop();
             let menuoptiondata = menuoptions.find(v=>v.value == menu?.values[0])
             if(menu?.values[0] == "Cancel") return menu?.reply(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable3"]))
-            menu?.deferUpdate();
+            client.disableComponentMessage(menu);
             used1 = true;
             handle_the_picks(menu?.values[0], menuoptiondata)
           }
-          else menu?.reply({content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
+          else menu?.reply({content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`, ephemeral: true});
         });
         //Once the Collections ended edit the menu message
         collector.on('end', collected => {
-          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
+          menumsg.edit({embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)], components: [], content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected && collected?.first()?.values?.[0] ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**" }`})
         });
       }
       async function handle_the_picks(optionhandletype, menuoptiondata) {
@@ -105,21 +105,17 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable6"]))
               .setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 90000,
                 errors: ["time"]
               })
-              .then(collected => {
+              .then(async collected => {
                 var message = collected.first();
                 var channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
                 if (channel) {
                   try {
-                    var a = client.settings.get(message.guild.id, "autoembed")
-                    if(!Array.isArray(a)){
-                      client.settings.set(message.guild.id, Array(a), "autoembed");
-                      a = client.settings.get(message.guild.id, "autoembed")
-                    }
+                    var a = await client.settings.get(message.guild.id+ ".autoembed") || []
                     if(a.includes(channel.id))
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable7"]))
@@ -127,7 +123,7 @@ module.exports = {
                       .setColor(es.color)
                       .setFooter(client.getFooter(es))
                     ]});
-                    client.settings.push(message.guild.id, channel.id, "autoembed")
+                    await client.settings.push(message.guild.id+".autoembed", channel.id)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable9"]))
                       .setColor(es.color)
@@ -146,7 +142,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable12"]))
                   .setColor(es.wrongcolor)
@@ -164,21 +160,17 @@ module.exports = {
               .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable14"]))
               .setFooter(client.getFooter(es))]
             })
-            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author.id,
+            await tempmsg.channel.awaitMessages({filter: m => m.author.id === message.author?.id,
                 max: 1,
                 time: 90000,
                 errors: ["time"]
               })
-              .then(collected => {
+              .then(async collected => {
                 var message = collected.first();
                 var channel = message.mentions.channels.filter(ch=>ch.guild.id==message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
                 if (channel) {
                   try {
-                    var a = client.settings.get(message.guild.id, "autoembed")
-                    if(!Array.isArray(a)){
-                      client.settings.set(message.guild.id, Array(a), "autoembed");
-                      a = client.settings.get(message.guild.id, "autoembed")
-                    }
+                    var a = await client.settings.get(message.guild.id+ ".autoembed")|| []
                     if(!a.includes(channel.id))
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable15"]))
@@ -186,7 +178,7 @@ module.exports = {
                       .setColor(es.color)
                       .setFooter(client.getFooter(es))
                     ]});
-                    client.settings.remove(message.guild.id, channel.id, "autoembed")
+                    await dbRemove(client.settings, message.guild.id+".autoembed", channel.id)
                     return message.reply({embeds: [new Discord.MessageEmbed()
                       .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable17"]))
                       .setColor(es.color)
@@ -205,7 +197,7 @@ module.exports = {
                 }
               })
               .catch(e => {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey)
+                console.error(e)
                 return message.reply({embeds: [new Discord.MessageEmbed()
                   .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable12"]))
                   .setColor(es.wrongcolor)
@@ -215,17 +207,14 @@ module.exports = {
               })
           }break;
           case "Show all Channels": {
-            var a = client.settings.get(message.guild.id, "autoembed")
-            if(!Array.isArray(a)){
-              client.settings.set(message.guild.id, Array(a), "autoembed");
-            }
+            var a = await client.settings.get(message.guild.id+ ".autoembed") || []
             //remove invalid ids
-            for(const id of a){
+            for await (const id of a){
               if(!message.guild.channels.cache.get(id)){
-                client.settings.remove(message.guild.id, id, "autoembed")
+                await dbRemove(client.settings, message.guild.id+".autoembed", id)
               }
             }
-            a = client.settings.get(message.guild.id, "autoembed")
+            a = await client.settings.get(message.guild.id+".autoembed")
 
             message.reply({embeds: [new Discord.MessageEmbed()
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-autoembed"]["variable23"]))
@@ -238,7 +227,7 @@ module.exports = {
       }
 
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

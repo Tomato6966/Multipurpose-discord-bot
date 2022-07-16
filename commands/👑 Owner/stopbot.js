@@ -2,12 +2,12 @@ var {
   MessageEmbed
 } = require(`discord.js`);
 var Discord = require(`discord.js`);
-var config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+var config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+var emoji = require(`../../botconfig/emojis.json`);
 var {
-  databasing, isValidURL
-} = require(`${process.cwd()}/handlers/functions`);
+  dbEnsure, isValidURL
+} = require(`../../handlers/functions`);
 module.exports = {
   name: "stopbot",
   category: "👑 Owner",
@@ -16,10 +16,10 @@ module.exports = {
   usage: "stopbot",
   type: "bot",
   description: "Stops the Bot, to set it OFFLINE",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-    if (!config.ownerIDS.some(r => r.includes(message.author.id)))
+    
+    if (!config.ownerIDS.some(r => r.includes(message.author?.id)))
       return message.channel.send({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(eval(client.la[ls]["cmds"]["owner"]["stopbot"]["variable1"]))
@@ -30,7 +30,7 @@ module.exports = {
       let guild = client.guilds.cache.get("773668217163218944")
       return message.reply({content : `**<:no:833101993668771842> THIS COMMAND IS DISABLED, go to discord.gg/milrato and <#840332764603351101> to get it restarted!**\n\n\n> **Path:**
 \`\`\`yml
-${process.cwd()}
+../..
 \`\`\`
 > **Server:**
 \`\`\`yml

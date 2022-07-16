@@ -6,14 +6,18 @@ const {
   onCoolDown,
   escapeRegex,
   delay,
-  simple_databasing,
+  CheckGuild,
   databasing, 
   handlemsg,
   check_if_dj
-} = require(`${process.cwd()}/handlers/functions`);
+} = require(`../../handlers/functions`);
 const Discord = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 module.exports = async (client, interaction) => {
       if (!interaction?.isCommand()) return;
+      
+      interaction.member = interaction.guild.members.cache.get(interaction.user.id) || await interaction.guild.members.fetch(interaction.user.id).catch(() => null)
+      
       const {
         member,
         channelId,
@@ -27,23 +31,14 @@ module.exports = async (client, interaction) => {
         id,
         createdTimestamp
       } = interaction;
-      const {
-        guild
-      } = member;
+      
+      let guild = interaction.guild || member?.guild || client.guilds.cache.get(guildId);
       if(!guild) {
-        return interaction?.reply({content: ":x: Interactions only Works inside of GUILDS!", ephemeral: true}).catch(()=>{});
+        return interaction?.reply({content: ":x: Interactions only Works inside of GUILDS!", ephemeral: true}).catch(() => null);
       }
+      
+      if(!client.guilds.cache.get(interaction.guild.id)) return;
       const CategoryName = interaction?.commandName;
-      simple_databasing(client, guild.id, member.id)
-      var not_allowed = false;
-      const guild_settings = client.settings.get(guild.id);
-      let es = guild_settings.embed;
-      let ls = guild_settings.language;
-      let {
-        prefix,
-        botchannel,
-        unkowncmdmessage
-      } = guild_settings;
       let command = false;
       try {
         if (client.slashCommands.has(CategoryName + interaction?.options.getSubcommand())) {
@@ -54,13 +49,34 @@ module.exports = async (client, interaction) => {
           command = client.slashCommands.get("normal" + CategoryName);
         }
       }
+      if(client.checking[interaction.guild.id]) {
+        if(command) {
+          return interaction.reply(":x: I'm setting myself up for this Guild!")
+        }
+        return
+      }
+      await CheckGuild(client, interaction.guildId);
+      var not_allowed = false;
+      let guild_settings = await client.settings.get(guild.id);
+      if(!guild_settings || !guild_settings.prefix) {
+        await databasing(client, guild.id)
+        guild_settings = await client.settings.get(guild.id);
+      } 
+      let es = guild_settings.embed;
+      let ls = guild_settings.language;
+      let {
+        prefix,
+        botchannel,
+        unkowncmdmessage
+      } = guild_settings;
+      
       if (command) {
-        if (!command.category?.toLowerCase().includes("nsfw") && botchannel.toString() !== "") {
+        if (!command.category?.toLowerCase().includes("nsfw") && botchannel?.toString() !== "") {
           if (!botchannel.includes(channelId) && !member.permissions.has("ADMINISTRATOR")) {
-            for(const channelId of botchannel){
+            for await (const channelId of botchannel){
               let channel = guild.channels.cache.get(channelId);
               if(!channel){
-                client.settings.remove(guild.id, channelId, `botchannel`)
+                await dbRemove(client.settings, guild.id, channelId, `botchannel`)
               }
             }
             not_allowed = true;
@@ -97,8 +113,8 @@ module.exports = async (client, interaction) => {
         }
         timestamps.set(member.id, now); //if he is not on cooldown, set it to the cooldown
         setTimeout(() => timestamps.delete(member.id), cooldownAmount); //set a timeout function with the cooldown, so it gets deleted later on again
-        client.stats.inc(guild.id, "commands"); //counting our Database stats for SERVER
-        client.stats.inc("global", "commands"); //counting our Database Stats for GLOBAL
+        client.stats.add(interaction.guild.id+".commands", 1); //counting our Database stats for SERVER
+        client.stats.add("global.commands", 1); //counting our Database Stats for GLOBA
         //if Command has specific permission return error
         if (command.memberpermissions && command.memberpermissions.length > 0 && !interaction?.member.permissions.has(command.memberpermissions)) {
           return interaction?.reply({
@@ -131,7 +147,9 @@ module.exports = async (client, interaction) => {
         //get the channel instance
         const { channel } = member.voice;
         const mechannel = guild.me.voice.channel;
+        
         //if not in a voice Channel return error
+
         if (!channel) {
           not_allowed = true;
           return interaction?.reply({ephemeral: true, embeds: [new Discord.MessageEmbed()
@@ -139,6 +157,14 @@ module.exports = async (client, interaction) => {
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.join_vc)]});
         }
+        
+        if(channel && !mechannel) {
+          if(!channel?.permissionsFor(message.guild?.me)?.has(Permissions.FLAGS.CONNECT)) 
+            return interaction.reply({ ephemeral: true, content: "<:no:833101993668771842> **I'm missing the Permission to Connect to your Voice-Channel!**"}).catch(() => null);
+          if(!channel?.permissionsFor(message.guild?.me)?.has(Permissions.FLAGS.SPEAK)) 
+            return interaction.reply({ ephemeral: true, content: "<:no:833101993668771842> **I'm missing the Permission to Speak in your Voice-Channel!**"}).catch(() => null);
+        }
+
         //If there is no player, then kick the bot out of the channel, if connected to
         if(!player && mechannel) {
           await guild.me.voice.disconnect().catch(e=>{});
@@ -225,6 +251,6 @@ module.exports = async (client, interaction) => {
       guildId: interaction?.guildId,
     }
     //Execute the Command
-		command.run(client, interaction, interaction?.member.user, es, ls, prefix, player, message)
+		command.run(client, interaction, interaction?.member.user, es, ls, prefix, player, message, guild_settings)
 	}
 }

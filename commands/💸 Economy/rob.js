@@ -1,23 +1,23 @@
 const {MessageEmbed} = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { parseMilliseconds, duration, GetUser, nFormatter, ensure_economy_user } = require(`${process.cwd()}/handlers/functions`)
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
+const { parseMilliseconds, duration, GetUser, nFormatter, ensure_economy_user } = require(`../../handlers/functions`)
 module.exports = {
   name: "rob",
   category: "💸 Economy",
   description: "Rob Money from a Specific User, you can Ping him, add his ID / Username, it will be a random amount!",
   usage: "rob @USER",
   type: "game",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        if(!client.settings.get(message.guild.id, "ECONOMY")){
+    
+        if(GuildSettings.ECONOMY === false){
           return message.reply({embeds: [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
             .setTitle(client.la[ls].common.disabled.title)
-            .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
+            .setDescription(require(`../../handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
           ]});
         }
     try {
@@ -34,19 +34,19 @@ module.exports = {
       if(!user)
         return message.reply({embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
-          .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic: true}))
+          .setFooter(client.getFooter(message.author.tag, message.author.displayAvatarURL({ dynamic: true })))
           .setTitle(eval(client.la[ls]["cmds"]["economy"]["rob"]["variable2"]))
           .setDescription(eval(client.la[ls]["cmds"]["economy"]["rob"]["variable3"]))
         ]});
       if(user.bot) return message.reply(eval(client.la[ls]["cmds"]["economy"]["rob"]["variable4"]))
       
       //ensure the economy data
-      ensure_economy_user(client, message.guild.id, user.id)
+      await ensure_economy_user(client, message.guild.id, user.id)
       //ensure the economy data
-      ensure_economy_user(client, message.guild.id, message.author.id)
+      await ensure_economy_user(client, message.guild.id, message.author?.id)
       //get the economy data 
-      let data = client.economy.get(`${message.guild.id}-${message.author.id}`)
-      let data2 = client.economy.get(`${message.guild.id}-${user.id}`)
+      let data = await client.economy.get(`${message.guild.id}_${message.author?.id}`)
+      let data2 = await client.economy.get(`${message.guild.id}_${user.id}`)
 
       //get the delays
       let timeout = 86400000;
@@ -55,7 +55,7 @@ module.exports = {
         let time = duration(timeout - (Date.now() - data.rob));
         return message.reply({embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
-          .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic: true}))
+          .setFooter(client.getFooter(message.author.tag, message.author.displayAvatarURL({ dynamic: true })))
           .setTitle(eval(client.la[ls]["cmds"]["economy"]["rob"]["variable5"]))
           .setDescription(eval(client.la[ls]["cmds"]["economy"]["rob"]["variable6"]))]
         });
@@ -67,22 +67,22 @@ module.exports = {
         let amount = Math.floor(amountarray[Math.floor((Math.random() * amountarray.length))]);
         amount = amount * data.black_market.boost.multiplier
         //add the Money to the User's Balance in this Guild
-        client.economy.math(`${message.guild.id}-${message.author.id}`, "+", amount, "balance")
-        client.economy.math(`${message.guild.id}-${user.id}`, "-", amount, "balance")
+        await client.economy.add(`${message.guild.id}_${message.author?.id}.balance`,amount)
+        await client.economy.subtract(`${message.guild.id}_${user.id}.balance`, Number(amount))
         //set the current time to the db
-        client.economy.set(`${message.guild.id}-${message.author.id}`, Date.now(), "rob")
+        await client.economy.set(`${message.guild.id}_${message.author?.id}.rob`, Date.now())
         //get the new data
-        data = client.economy.get(`${message.guild.id}-${message.author.id}`)
+        data = await client.economy.get(`${message.guild.id}_${message.author?.id}`)
         //return some message!
         return message.reply({embeds: [new MessageEmbed()
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-          .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic: true}))
+          .setFooter(client.getFooter(message.author.tag, message.author.displayAvatarURL({ dynamic: true })))
           .setTitle(eval(client.la[ls]["cmds"]["economy"]["rob"]["variable8"]))
           .setDescription(eval(client.la[ls]["cmds"]["economy"]["rob"]["variable9"]))
         ]});
       }
     } catch (e) {
-      console.log(String(e.stack).grey.bgRed)
+      console.error(e)
       return message.reply({embeds: [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
         .setTitle(client.la[ls].common.erroroccur)

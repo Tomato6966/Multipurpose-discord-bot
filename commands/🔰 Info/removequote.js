@@ -2,12 +2,12 @@ const Discord = require("discord.js");
 const {
   MessageEmbed
 } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const config = require(`../../botconfig/config.json`);
+var ee = require(`../../botconfig/embed.json`);
+const emoji = require(`../../botconfig/emojis.json`);
 const {
-  swap_pages
-} = require(`${process.cwd()}/handlers/functions`)
+  swap_pages, dbEnsure
+} = require(`../../handlers/functions`)
 const moment = require("moment");
 module.exports = {
   name: "removequote",
@@ -16,9 +16,9 @@ module.exports = {
   description: "Removes a Quote from a User/you",
   usage: "removequote <@USER> <ID>",
   type: "user",
-  run: async (client, message, args, cmduser, text, prefix) => {
+  run: async (client, message, args, cmduser, text, prefix, player, es, ls, GuildSettings) => {
     
-    let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
+    
     try {
       //"HELLO"
       var member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
@@ -28,23 +28,23 @@ module.exports = {
         member = message.member;
       }
       var { user } = member;
-      if(user.id != message.author.id) {
-        if(!message.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR))  
+      if(user.id != message.author?.id) {
+        if(!message.member?.permissions?.has(Discord.Permissions.FLAGS.ADMINISTRATOR))  
         {
           return message.reply(":x: **Only Admins can add Quotes to other Users!**")
         }
       }
-      client.afkDB.ensure(user.id, {
+      await dbEnsure(client.afkDB, user.id, {
         quotes: [
           /*
           { by: "id", text: "", image: null, at: Date.now(), }
           */
         ]
       })
-      let data = client.afkDB.get(user.id, "quotes")
+      let data = await client.afkDB.get(user.id+".quotes")
       data = data.sort((a,b) => a.at - b?.at);
       let id = String(args[0]);
-      if(!id || !isNaN(id))
+      if((!id && id !== 0) || isNaN(id))
         return message.reply({embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
@@ -57,7 +57,7 @@ module.exports = {
       }
       let embed = new MessageEmbed()
         .setColor(es.color)
-        .setFooter(user.id, user.displayAvatarURL({dynamic: true}))
+        .setFooter(client.getFooter(user.id, user.displayAvatarURL({dynamic: true})))
         .addField("**Quote by:**", `<@${data[Number(id)].by}>`)
         .addField("**Quote at:**", `\`\`\`${moment(data[Number(id)].at).format("DD/MM/YYYY HH:mm")}\`\`\``)
         .setTitle("**Quote Text:**")
@@ -66,9 +66,11 @@ module.exports = {
         embed.setImage(data[Number(id)].image)
       }
       //remove the data
+      console.log(data)
       data.splice(Number(id), 1);
+      console.log(data)
       //set the new data
-      client.afkDB.set(user.id, data, "quotes")
+      await client.afkDB.set(user.id+".quotes", data)
       //send information message
       return message.reply({embeds: [
         embed,
@@ -78,7 +80,7 @@ module.exports = {
         .setDescription(`**${user.username}** now has **\`${data.length} Quotes\`**!`)
       ]})
     } catch (e) {
-        console.log(String(e.stack).grey.bgRed)
+        console.error(e)
         return message.reply({embeds: [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
