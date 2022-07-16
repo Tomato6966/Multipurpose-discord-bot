@@ -1,0 +1,14 @@
+{
+    "token": "The_Bot_Token",
+    "authToken": "Some_Auth_token_For_The_Brdige",
+    "port": 3350,
+    "settings" : {
+        "totalShards": 40, 
+        "totalMachines": 2, 
+        "shardsPerCluster": 5
+    },
+    "redis": {
+        "password": "password",
+        "url": "redis://ipaddress:password"
+    }
+}
