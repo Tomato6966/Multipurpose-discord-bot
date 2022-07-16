@@ -31,7 +31,7 @@
  const config = require("./botconfig/config.json")
  const advertisement = require("./botconfig/advertisement.json")
  const { delay, dbEnsure, clearDBData,} = require("./handlers/functions")
- const { redis } = require("../Bridge/config.json");
+ const { redis } = require("./bridge_config.json");
  
  /**********************************************************
   * @param {2} CREATE_THE_DISCORD_BOT_CLIENT with some default settings
