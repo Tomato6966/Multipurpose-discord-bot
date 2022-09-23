@@ -1,4 +1,4 @@
-/*const {
+const {
   MessageEmbed
 } = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
@@ -34,7 +34,7 @@ module.exports = {
     }
   }
 }
-*/
+
 /**
  * @INFO
  * Bot Coded by Tomato#6966 | https://discord.gg/milrato
