@@ -101,6 +101,9 @@
     "reaction",
     "reactions"
   ],
+  "engines": {
+    "node": "16.14.2"
+  },
   "bugs": {
     "url": "https://github.com/lunaticsm/Multipurpose-discord-bot/issues"
   },
