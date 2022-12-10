@@ -1,1 +1,1 @@
-web: npm i discord-hybrid-sharding@1.5
+web: npm start

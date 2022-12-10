@@ -103,6 +103,7 @@
   ],
   "engines": {
     "node": "16.14.2",
+    "discord-hybrid-sharding": "^1.5",
     "npm" : "9.2.0"
   },
   "bugs": {
