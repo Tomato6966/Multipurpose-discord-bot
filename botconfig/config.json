@@ -6,7 +6,7 @@
     ],
     "fnbr": "DISABLED",
     "fortnitetracker": "",
-    "memer_api": "",
+    "memer_api": "SBhjnpsGy0m",
     "status": {
         "text": "{prefix}help || {songsplayed} songs played",
         "text2": "{prefix}help || {usedcommands} cmds used",
@@ -17,9 +17,9 @@
     "clientsettings": {
         "nodes": [
             {
-                "host": "localhost",
-                "port": 2333,
-                "password": "marshal"
+                "host": "nonssl.freelavalink.ga",
+                "port": 80,
+                "password": "www.freelavalink.ga"
             }
         ]
     },
