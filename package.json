@@ -103,6 +103,7 @@
   ],
   "engines": {
     "node": "16.14.2"
+    "npm" : "9.2.0"
   },
   "bugs": {
     "url": "https://github.com/lunaticsm/Multipurpose-discord-bot/issues"
