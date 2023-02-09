@@ -28,7 +28,7 @@ module.exports = {
         boost: {
           enabled: false,
           message: "",
-          log: false,
+          log: "",
           stopBoost: "<a:Server_Boosts:867777823468027924> {member} **stopped Boosting us..** <:Cat_Sad:867722685949804565>",
           startBoost: "<a:Server_Boosts:867777823468027924> {member} **has boosted us!** <a:Light_Saber_Dancce:867721861462229013>",
           againBoost: "<a:Server_Boosts:867777823468027924> {member} **has boosted us again!** <:Tada_WON:867724032207224833>",
@@ -62,6 +62,11 @@ module.exports = {
             value: "Again Boost Message",
             description: `Define the Again Boosting Message`,
             emoji: "867777823468027924"
+          },
+          {
+              value: "Settings",
+              description: `show current settings`,
+              emoji: "📑"
           },
           {
             value: "Cancel",
@@ -138,7 +143,7 @@ module.exports = {
                   if (!message) return message.reply("NO MESSAGE SENT");
                   let channel = message.mentions.channels.filter(ch => ch.guild.id == message.guild.id).first() || message.guild.channels.cache.get(message.content.trim().split(" ")[0]);
                   if (channel) {
-                    client.settings.set(message.guild.id, channel.id, "boost.log")
+                    client.settings.set(message.guild.id, channel.id, "boost.log");
                     return message.reply({
                       embeds: [new Discord.MessageEmbed()
                         .setTitle("Enabled the Boost Log!")
@@ -181,7 +186,7 @@ module.exports = {
                 .then(async collected => {
                   var message = collected.first();
                   if (!message) return message.reply("NO MESSAGE SENT");
-                  client.settings.set(message.guild.id, message, "boost.startBoost")
+                  client.settings.set(message.guild.id, message.content, "boost.startBoost")
                   const log = client.settings.get(message.guild.id, "boost.log");
                   return message.reply({
                     embeds: [new Discord.MessageEmbed()
@@ -221,7 +226,7 @@ module.exports = {
                 .then(async collected => {
                   var message = collected.first();
                   if (!message) return message.reply("NO MESSAGE SENT");
-                  client.settings.set(message.guild.id, message, "boost.stopBoost")
+                  client.settings.set(message.guild.id, message.content, "boost.stopBoost")
                   const log = client.settings.get(message.guild.id, "boost.log");
                   return message.reply({
                     embeds: [new Discord.MessageEmbed()
@@ -261,7 +266,7 @@ module.exports = {
                 .then(async collected => {
                   var message = collected.first();
                   if (!message) return message.reply("NO MESSAGE SENT");
-                  client.settings.set(message.guild.id, message, "boost.againBoost")
+                  client.settings.set(message.guild.id, message.content, "boost.againBoost")
                   const log = client.settings.get(message.guild.id, "boost.log");
                   return message.reply({
                     embeds: [new Discord.MessageEmbed()
@@ -295,6 +300,21 @@ module.exports = {
                   .setFooter(client.getFooter(es))
                 ]
               });
+            }
+            break;
+            case "Settings": {
+                    const log = client.settings.get(message.guild.id, "boost.log");
+                    return message.reply({
+                    embeds: [new Discord.MessageEmbed()
+                        .setTitle(`Configuración actual`)
+                        .setDescription(`**Channel:** ${log ? `<#${log}>` : `\`Sin canal\``}`.substring(0, 2048))
+                        .addField(`**Main Boost Message:**`,`> ${client.settings.get(message.guild.id, "boost.startBoost")}`.substring(0, 2048))
+                        .addField(`**Boost message when done:**`,`> ${client.settings.get(message.guild.id, "boost.stopBoost")}`.substring(0, 2048))
+                        .addField(`**Boost message when I do it again:**`,`> ${client.settings.get(message.guild.id, "boost.againBoost")}`.substring(0, 2048))
+                        .setColor(es.color)
+                        .setFooter({ text: es.footertext, iconURL: es.footericon })
+                    ]
+                })
             }
             break;
         }
