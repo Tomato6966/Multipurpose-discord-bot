@@ -1,17 +1,17 @@
 {
-    "token": "GET from: https://discord.com/developers/applications",
+    "token": "MTA5MDM2NzEzMTY4MzY2ODAxOA.GCzDi8.AqYVCUHfBxHpzyyt2O5flaLiiLQUq-48FmE4c8",
     "prefix": "//",
     "ownerIDS": [
-        "442355791412854784"
+        "1060302535790960660"
     ],
     "fnbr": "GET from: https://fnbr.co",
     "fortnitetracker": "GET from: https://fortnitetracker.com",
     "memer_api": "GET from: https://discord.gg/Mc2FudJkgP",
     "status": {
         "text": "{prefix}help | on {guildcount} Servers, with {membercount} Members | Played: {songsplayed} Songs",
-        "text2": "By: discord.gg/dcdev",
+        "text2": "By: https://discord.gg/MDQbAqBDMM",
         "type": "PLAYING",
-        "url": "https://twitch.tv/milratodiscordbot"
+        "url": "https://discord.gg/MDQbAqBDMM"
     },
     "clientsettings": {
         "nodes": [
