@@ -253,7 +253,7 @@ module.exports = {
               .setTitle(eval(client.la[ls]["cmds"]["setup"]["setup-admin"]["variable4"]))
               .setColor(es.color)
               .setDescription(`
-              ${client.commands.filter((cmd) => cmd.category.includes("Admin")).map((cmd) => `\`${cmd.name}\``).join(" | ")}
+              ${client.commands?.filter?.((cmd) => cmd.category?.includes?.("Admin"))?.map?.((cmd) => `\`${cmd.name}\``).join(" | ")}
       
               
               *Enter one of those Commands!*`).setFooter(client.getFooter(es))
