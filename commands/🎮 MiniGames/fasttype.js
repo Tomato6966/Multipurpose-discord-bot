@@ -2,7 +2,7 @@ const Canvas = require('canvas');
 const {
 	MessageEmbed
 } = require('discord.js')
-;const { FastType } = require('weky')
+;const { FastType } = require('@m3rcena/weky/dist/index')
 const config = require(`${process.cwd()}/botconfig/config.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const Discord = require(`discord.js`);
