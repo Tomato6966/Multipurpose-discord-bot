@@ -1,4 +1,4 @@
-const { NeverHaveIEver } = require('weky')
+const { NeverHaveIEver } = require('@m3rcena/weky/dist/index')
 const { MessageEmbed } = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);

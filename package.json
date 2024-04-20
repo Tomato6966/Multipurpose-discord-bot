@@ -7,6 +7,7 @@
     "@discordjs/builders": "^0.12.0",
     "@discordjs/opus": "^0.7.0",
     "@discordjs/voice": "^0.8.0",
+    "@m3rcena/weky": "^6.5.0",
     "anime-actions": "^1.0.6",
     "axios": "^0.25.0",
     "booru": "^2.5.3",
@@ -45,7 +46,6 @@
     "twit": "^2.2.11",
     "utf-8-validate": "^5.0.8",
     "weather-js": "^2.0.0",
-    "@m3rcena/weky": "^4.6.0",
     "wrap-ansi": "^8.0.1",
     "yargs": "^17.3.1"
   },
