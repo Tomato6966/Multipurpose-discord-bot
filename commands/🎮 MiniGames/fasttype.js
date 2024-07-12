@@ -2,7 +2,7 @@ const Canvas = require('canvas');
 const {
 	MessageEmbed
 } = require('discord.js')
-;const { FastType } = require('@m3rcena/weky/dist/index')
+;const { FastType } = require('@m3rcena/weky');
 const config = require(`${process.cwd()}/botconfig/config.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const Discord = require(`discord.js`);
@@ -27,13 +27,15 @@ module.exports = {
           );
         }
 		await FastType({
-			message: message,
+			interaction: message,
 			embed: {
 				title: 'FastType',
 				description: 'You have **{{time}}** to type the below sentence.',
 				color: es.color,
-				footer: es.footertext,
-				timestamp: true
+				footer: {
+					text: es.footertext
+				},
+				timestamp: new Date()
 			},
 			sentence: fastwords[Math.floor(Math.random() * fastwords.length)] + " "
 			+ fastwords[Math.floor(Math.random() * fastwords.length)] + " "

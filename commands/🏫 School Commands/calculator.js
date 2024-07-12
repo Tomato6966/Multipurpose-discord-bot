@@ -9,7 +9,7 @@ const config = require(`${process.cwd()}/botconfig/config.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 const { MessageButton, MessageActionRow } = require('discord.js')
-const { Calculator } = require('@m3rcena/weky/dist/index');
+const { Calculator } = require('@m3rcena/weky');
 module.exports = {
   name: "calculator",
   aliases: ["ti82", "taschenrechner"],
@@ -29,16 +29,16 @@ module.exports = {
       ]});
     }
     await Calculator({
-			message: message,
+			interaction: message,
 			embed: {
 				title: 'Calculator',
 				color: es.color,
-        footer: es.footertext,
-				timestamp: false,
+        footer: {
+          text: es.footertext
+        },
 			},
 			disabledQuery: 'Calculator got disabled!',
 			invalidQuery: 'The provided equation is invalid!',
-			othersMessage: 'Only <@{{author}}> can use the buttons!',
 		});
   }
 };
