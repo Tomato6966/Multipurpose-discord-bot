@@ -1,4 +1,4 @@
-const { ChaosWords } = require('@m3rcena/weky/dist/index')
+const { ChaosWords } = require('@m3rcena/weky');
 const { MessageEmbed } = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
@@ -22,22 +22,21 @@ module.exports = {
         var randomWords = require('random-words');
         const words = randomWords(args[0] && !isNaN(args[0]) && Number(args[0]) > 0 ? Number(args[0]) : 3) // generating 3 words
         await ChaosWords({
-          message: message,
+          interaction: message,
+          client: client,
           embed: {
               title: 'ChaosWords',
-              footer: es.footertext,
+              footer: {
+                text: es.footertext
+              },
               description: 'You have **{{time}}** to find the hidden words in the below sentence.',
               color: es.color,
-              field1: 'Sentence:',
-              field2: 'Words Found/Remaining Words:',
-              field3: 'Words found:',
-              field4: 'Words:',
-              timestamp: true
+              timestamp: new Date()
           },
           winMessage: 'GG, You won! You made it in **{{time}}**.',
           loseMessage: 'Better luck next time!',
-          wrongWordMessage: 'Wrong Guess! You have **{{remaining_tries}}** tries left.',
-          correctWordMessage: 'GG, **{{word}}** was correct! You have to find **{{remaining}}** more word(s).',
+          wrongWord: 'Wrong Guess! You have **{{remaining_tries}}** tries left.',
+          correctWord: 'GG, **{{word}}** was correct! You have to find **{{remaining}}** more word(s).',
           time: 60000,
           words: words,
           charGenerated: 17,
