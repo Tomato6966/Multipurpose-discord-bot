@@ -1,4 +1,4 @@
-const { GuessTheNumber } = require('@m3rcena/weky/dist/index')
+const { GuessTheNumber } = require('@m3rcena/weky')
 const { MessageEmbed } = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
@@ -21,13 +21,15 @@ module.exports = {
           );
         }
         await GuessTheNumber({
-          message: message,
+          interaction: message,
           embed: {
-            footer: es.footertext,
+            footer: {
+              text: es.footertext
+            },
             title: 'Guess The Number',
             description: 'You have **{{time}}** to guess the number. (1-100)',
             color: es.color,
-            timestamp: true,
+            timestamp: new Date(),
           },
           publicGame: true,
           number: Math.floor(Math.random() * 100) + 1,
@@ -40,11 +42,11 @@ module.exports = {
           },
           loseMessage:
             'Better luck next time! The number which I guessed was **{{number}}**.',
-          bigNumberMessage: 'No {{author}}! My number is greater than **{{number}}**.',
-          smallNumberMessage:
+          bigNumber: 'No {{author}}! My number is greater than **{{number}}**.',
+          smallNumber:
             'No {{author}}! My number is smaller than **{{number}}**.',
-          othersMessage: 'Only <@{{author}}> can use the buttons!',
-          buttonText: 'Cancel',
+          otherMessage: 'Only <@{{author}}> can use the buttons!',
+          button: 'Cancel',
           ongoingMessage:
             "A game is already runnning in <#{{channel}}>. You can't start a new one!",
           returnWinner: false,

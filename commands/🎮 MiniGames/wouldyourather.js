@@ -1,4 +1,4 @@
-const { WillYouPressTheButton } = require('@m3rcena/weky/dist/index')
+const { WouldYouRather } = require('@m3rcena/weky')
 const { MessageEmbed } = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
@@ -20,16 +20,18 @@ module.exports = {
             .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
           );
         }
-        await WillYouPressTheButton({
-          message: message,
+        await WouldYouRather({
+          interaction: message,
           embed: {
             title: 'Will you press the button?',
             description: '```{{statement1}}```\n**but**\n\n```{{statement2}}```',
             color: es.color,
-            footer: es.footertext,
-            timestamp: true,
+            footer: {
+              text: es.footertext
+            },
+            timestamp: new Date(),
           },
-          button: { yes: 'Yes', no: 'No' },
+          button: { optionA: 'Yes', optionB: 'No' },
           thinkMessage: 'I am thinking',
           othersMessage: 'Only <@{{author}}> can use the buttons!',
         });
