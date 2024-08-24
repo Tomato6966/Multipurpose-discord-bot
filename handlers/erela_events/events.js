@@ -93,7 +93,7 @@ module.exports = (client) => {
         if(client.musicsettings.get(player.guild, "channel") && client.musicsettings.get(player.guild, "channel").length > 5){
           let messageId = client.musicsettings.get(player.guild, "message");
           let guild = client.guilds.cache.get(player.guild);
-          if(!guild)  
+          if(!guild) return; 
           let channel = guild.channels.cache.get(client.musicsettings.get(player.guild, "channel"));
           if(guild && channel && message) {
             let channel = guild.channels.cache.get(musicsettings.channel);
