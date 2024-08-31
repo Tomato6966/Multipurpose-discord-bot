@@ -1,5 +1,6 @@
 //Here the command starts
 const config = require(`${process.cwd()}/botconfig/config.json`)
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`)
 var ee = require(`${process.cwd()}/botconfig/embed.json`)
 const fetch = require("node-fetch");
 const { MessageEmbed } = require(`discord.js`);
@@ -46,7 +47,7 @@ module.exports = {
 				return message.reply({embeds:  [new MessageEmbed()
 					.setColor(es.wrongcolor)
 					.setFooter(client.getFooter(es))
-					.setTitle(eval(client.la[ls]["cmds"]["programming"]["coliru"]["variable1"]))
+					.setTitle(eval(client.la[ls]["cmds"]["programming"]["coliru"]["variable1"].replace(":no:", customEmojis.general.no)))
 					.setDescription(`Usage:\n${prefix}coliru` + "\\`\\`\\`lang\nCode\n\\`\\`\\`\nCodeBlock language will be used to determine how to compile the code.")
 				]});
 
@@ -54,7 +55,7 @@ module.exports = {
 				return message.reply({embeds: [new MessageEmbed()
 					.setColor(es.wrongcolor)
 					.setFooter(client.getFooter(es))
-					.setTitle(eval(client.la[ls]["cmds"]["programming"]["coliru"]["variable2"]))
+					.setTitle(eval(client.la[ls]["cmds"]["programming"]["coliru"]["variable2"].replace(":no:", customEmojis.general.no)))
 					.setDescription(eval(client.la[ls]["cmds"]["programming"]["coliru"]["variable3"]))
 				]});
 
