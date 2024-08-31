@@ -1,2 +1,5 @@
 node_modules/
+databases/
+social_log
+.env
 package-lock.json

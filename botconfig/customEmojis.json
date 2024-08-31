@@ -1,0 +1,36 @@
+{
+    "examples": {
+        "Custom Emojis": "<:yes:1275931631948927029>",
+        "Animated Custom Emojis": "<a:yes:1275931631948927029>"
+    },
+    "general": {
+        "yes": "✅",
+        "no": "❌",
+        "development": "🛠️",
+        "gear": "⚙️",
+        "folder": "📁",
+        "time": "⌚",
+        "ping": "📶",
+        "channel": "💬",
+        "threadChannel": "💬",
+        "playingAudio": "🔊",
+        "roles": "👤"
+    },
+    "companies": {
+        "twitter": "🐦",
+        "youtube": "🎵",
+        "spotify": "🎶",
+        "discord": "🤖"
+    },
+    "help": {
+        "buttons": {
+            "buttonBack": "◀️",
+            "buttonForward": "▶️",
+            "buttonHome": "🏠",
+            "buttonTutorial": "🔗",
+            "overview": "🔍"
+        },
+        "botFlag": "🏴‍☠️",
+        "builder": "⚒️"
+    }
+}
