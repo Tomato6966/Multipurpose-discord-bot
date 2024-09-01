@@ -1,5 +1,6 @@
 //Here the command starts
 const config = require(`${process.cwd()}/botconfig/config.json`)
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`)
 var ee = require(`${process.cwd()}/botconfig/embed.json`)
 const fetch = require("node-fetch");
 const { MessageEmbed } = require(`discord.js`);
@@ -21,7 +22,7 @@ module.exports = {
 				return message.reply({embeds: [new MessageEmbed()
 					.setColor(es.wrongcolor)
 					.setFooter(client.getFooter(es))
-					.setTitle(eval(client.la[ls]["cmds"]["programming"]["github"]["variable1"]))
+					.setTitle(eval(client.la[ls]["cmds"]["programming"]["github"]["variable1"].replace(":no:", customEmojis.general.no)))
 					.setDescription(eval(client.la[ls]["cmds"]["programming"]["github"]["variable2"]))
 				]});
 			const [base, username, repository] = repo.replace("https://", "").replace("http://", "").split("/");
@@ -29,10 +30,13 @@ module.exports = {
 				return message.reply({embeds:  [new MessageEmbed()
 					.setColor(es.wrongcolor)
 					.setFooter(client.getFooter(es))
-					.setTitle(eval(client.la[ls]["cmds"]["programming"]["github"]["variable3"]))
+					.setTitle(eval(client.la[ls]["cmds"]["programming"]["github"]["variable3"].replace(":no:", customEmojis.general.no)))
 					.setDescription(eval(client.la[ls]["cmds"]["programming"]["github"]["variable4"]))
 				]});
-			const body = await fetch(`https://api.github?.com/repos/${username}/${repository}`)
+
+			console.log(username);
+			console.log(repository);
+			const body = await fetch(`https://api.github.com/repos/${username}/${repository}`)
 				.then((res) => res.ok && res.json())
 				.catch(() => null);
 
@@ -40,7 +44,7 @@ module.exports = {
 				return message.reply({embeds: [new MessageEmbed()
 					.setColor(es.wrongcolor)
 					.setFooter(client.getFooter(es))
-					.setTitle(eval(client.la[ls]["cmds"]["programming"]["github"]["variable5"]))
+					.setTitle(eval(client.la[ls]["cmds"]["programming"]["github"]["variable5"].replace(":no:", customEmojis.general.no)))
 					.setDescription(eval(client.la[ls]["cmds"]["programming"]["github"]["variable6"]))
 				]});
 			const size = body.size <= 1024 ? `${body.size} KB` : Math.floor(body.size / 1024) > 1024 ? `${(body.size / 1024 / 1024).toFixed(2)} GB` : `${(body.size / 1024).toFixed(2)} MB`;
@@ -51,7 +55,9 @@ module.exports = {
 
 			return message.reply({ embeds: [new MessageEmbed()
 				.setTitle(body.full_name)
-				.setAuthor('GitHub', 'https://github?.githubassets.com/images/modules/logos_page/GitHub-Mark.png')
+				.setAuthor({
+					name: 'GitHub', 
+					iconURL: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'})
 				.setURL(body.html_url)
 				.setThumbnail(body.owner.avatar_url)
 				.setColor(es.color)
