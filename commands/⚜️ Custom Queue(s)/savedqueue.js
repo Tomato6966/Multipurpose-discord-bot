@@ -2,6 +2,7 @@ const {
   MessageEmbed
 } = require(`discord.js`);
 const config = require(`${process.cwd()}/botconfig/config.json`);
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 const {
@@ -47,7 +48,7 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
-          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable1"]))
+          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable1"].replace(":no:", customEmojis.general.no)))
           .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable2"]))
         ]});
       switch (Type.toLowerCase()) {
@@ -56,14 +57,14 @@ module.exports = {
             return message.reply({embeds :[new MessageEmbed()
               .setColor(es.wrongcolor)
               .setFooter(client.getFooter(es))
-              .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable3"]))
+              .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable3"].replace(":no:", customEmojis.general.no)))
               .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable4"]))
             ]});
           if (Name.length > 10)
             return message.reply({embeds : [new MessageEmbed()
               .setColor(es.wrongcolor)
               .setFooter(client.user.username, ee.footericon)
-              .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable5"]))
+              .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable5"].replace(":no:", customEmojis.general.no)))
               .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable6"]))
             ]});
           //if the queue does not exist yet, error
@@ -71,7 +72,7 @@ module.exports = {
             return message.reply({embeds :[new MessageEmbed()
               .setFooter(client.getFooter(es))
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable7"]))
+              .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable7"].replace(":no:", customEmojis.general.no)))
               .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable8"]))
             ]});
           client.queuesaves.set(message.author.id, {
@@ -79,7 +80,7 @@ module.exports = {
           }, `${Name}`)
           //return susccess message
           return message.reply({embeds :[new MessageEmbed()
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable9"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable9"].replace(":yes:", customEmojis.general.yes)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable10"]))
             .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
             .setFooter(client.getFooter(es))
@@ -91,14 +92,14 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable11"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable11"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable12"]))
           ]});
         if (Name.length > 10)
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable13"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable13"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable14"]))
           ]});
         //if the queue does not exist yet, error
@@ -106,7 +107,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable15"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable15"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable16"]))
           ]});
         //get the player instance
@@ -116,7 +117,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable17"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable17"].replace(":no:", customEmojis.general.no)))
           ]});
         //get the current track
         const track = player.queue.current;
@@ -125,7 +126,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable18"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable18"].replace(":no:", customEmojis.general.no)))
           ]});
         let oldtracks = client.queuesaves.get(message.author.id, `${Name}`);
         if (!Array.isArray(oldtracks)) oldtracks = [];
@@ -138,7 +139,7 @@ module.exports = {
         client.queuesaves.set(message.author.id, oldtracks, `${Name}`);
         //return susccess message
         return message.reply({embeds : [new MessageEmbed()
-          .setTitle(`<a:yes:833101995723194437> Added ${track.title} onto the Queue \`${Name}\``.substring(0, 256))
+          .setTitle(`${customEmojis.general.yes} Added ${track.title} onto the Queue \`${Name}\``.substring(0, 256))
           .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable19"]))
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setFooter(client.getFooter(es))]})  }
@@ -148,14 +149,14 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable20"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable20"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable21"]))
           ]});
         if (Name.length > 10)
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable22"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable22"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable23"]))
           ]});
         //if the queue does not exist yet, error
@@ -163,7 +164,7 @@ module.exports = {
           return message.reply({embeds :[new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable24"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable24"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable25"]))
           ]});
         //get the player instance
@@ -173,7 +174,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable26"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable26"].replace(":no:", customEmojis.general.no)))
           ]});
         //get all tracks
         const tracks = player.queue;
@@ -182,7 +183,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable27"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable27"].replace(":no:", customEmojis.general.no)))
           ]});
         //get the old tracks from the Name
         let oldtracks = client.queuesaves.get(message.author.id, `${Name}`);
@@ -205,7 +206,7 @@ module.exports = {
         client.queuesaves.set(message.author.id, newqueue, `${Name}`);
         //return susccess message
         return message.reply({embeds : [new MessageEmbed()
-          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable28"]))
+          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable28"].replace(":yes:", customEmojis.general.yes)))
           .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable29"]))
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setFooter(client.getFooter(es))
@@ -218,21 +219,21 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable30"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable30"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable31"]))
           ]});
         if (Name.length > 10)
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable32"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable32"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable33"]))
           ]});
         if (!Options)
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable34"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable34"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable35"]))
           ]});
         //if the queue already exists, then errors
@@ -240,7 +241,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable36"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable36"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable37"]))
           ]});
         let tracks = client.queuesaves.get(message.author.id, `${Name}`);
@@ -248,7 +249,7 @@ module.exports = {
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable38"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable38"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable39"]))
           ]})
         let deletetrack = tracks[Number(Options)];
@@ -262,7 +263,7 @@ module.exports = {
         client.queuesaves.set(message.author.id, tracks, `${Name}`)
         //return susccess message
         return message.reply({embeds :[new MessageEmbed()
-          .setTitle(`<a:yes:833101995723194437> Deleted ${deletetrack.title} of the Queue \`${Name}\``.substring(0, 256))
+          .setTitle(`${customEmojis.general.yes} Deleted ${deletetrack.title} of the Queue \`${Name}\``.substring(0, 256))
           .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable40"]))
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setFooter(client.getFooter(es))
@@ -275,14 +276,14 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable41"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable41"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable42"]))
           ]});
         if (Name.length > 10)
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable43"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable43"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable44"]))
           ]});
         //if the queue already exists, then errors
@@ -290,7 +291,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable45"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable45"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable46"]))
           ]} );
         let oldtracks = client.queuesaves.get(message.author.id, `${Name}`);
@@ -298,7 +299,7 @@ module.exports = {
           return message.reply({embeds: [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable47"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable47"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable48"]))
           ]});
         const newtracks = shuffle(oldtracks);
@@ -306,7 +307,7 @@ module.exports = {
         client.queuesaves.set(message.author.id, newtracks, `${Name}`);
         //return susccess message
         return message.reply({embeds : [new MessageEmbed()
-          .setTitle(`<a:yes:833101995723194437> Shuffled ${newtracks.length} Tracks of the Queue \`${Name}\``.substring(0, 256))
+          .setTitle(`${customEmojis.general.yes} Shuffled ${newtracks.length} Tracks of the Queue \`${Name}\``.substring(0, 256))
           .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable49"]))
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setFooter(client.getFooter(es))]})
@@ -318,14 +319,14 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable50"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable50"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable51"]))
           ]});
         if (Name.length > 10)
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable52"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable52"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable53"]))
           ]});
         //if the queue already exists, then errors
@@ -333,7 +334,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable54"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable54"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable55"]))
           ]});
         let oldtracks = client.queuesaves.get(message.author.id, `${Name}`);
@@ -341,7 +342,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable56"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable56"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable57"]))
           ]});
         //make a new array of each single song which is not a dupe
@@ -364,7 +365,7 @@ module.exports = {
         client.queuesaves.set(message.author.id, newtracks, `${Name}`);
         //return susccess message
         return message.reply({embeds : [new MessageEmbed()
-          .setTitle(`<a:yes:833101995723194437> Removed ${counter} Tracks from the Queue \`${Name}\``.substring(0, 256))
+          .setTitle(`${customEmojis.general.yes} Removed ${counter} Tracks from the Queue \`${Name}\``.substring(0, 256))
           .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable58"]))
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setFooter(client.getFooter(es))]})
@@ -380,7 +381,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable59"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable59"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable60"]))
           ]});
         let description = ``;
@@ -399,21 +400,21 @@ module.exports = {
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable61"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable61"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable62"]))
           ]});
         if (Name.length > 10)
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable63"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable63"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable64"]))
           ]});
         if (client.queuesaves.get(message.author.id, `${Name}`))
           return message.reply({embeds : [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable65"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable65"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable66"]))
           ]});
         //get the player instance
@@ -423,7 +424,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable67"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable67"].replace(":no:", customEmojis.general.no)))
           ]});
         //get all tracks
         const tracks = player.queue;
@@ -432,7 +433,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable68"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable68"].replace(":no:", customEmojis.general.no)))
           ]});
         //get the old tracks from the Name
         let oldtracks = client.queuesaves.get(message.author.id, `${Name}`);
@@ -456,7 +457,7 @@ module.exports = {
         client.queuesaves.set(message.author.id, newqueue, `${Name}`);
         //return susccess message
         return message.reply({embeds : [new MessageEmbed()
-          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable69"]))
+          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable69"].replace(":yes:", customEmojis.general.yes)))
           .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable70"]))
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setFooter(client.getFooter(es))
@@ -470,14 +471,14 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable71"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable71"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable72"]))
           ]});
         if (Name.length > 10)
           return message.reply({embeds  : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable73"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable73"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable74"]))
           ]});
         //if the queue does not exist yet, error
@@ -485,14 +486,14 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable75"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable75"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable76"]))
           ]});
         //delete it
         client.queuesaves.delete(message.author.id, `${Name}`);
         //return susccess message
         return message.reply({embeds : [new MessageEmbed()
-          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable77"]))
+          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable77"].replace(":yes:", customEmojis.general.yes)))
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setFooter(client.getFooter(es))
         ]})
@@ -507,14 +508,14 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable78"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable78"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable79"]))
           ]} );
         if (Name.length > 10)
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable80"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable80"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable81"]))
           ]});
         //get the channel instance from the Member
@@ -526,7 +527,7 @@ module.exports = {
           return message.reply({embeds: [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable82"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable82"].replace(":no:", customEmojis.general.no)))
           ]});
         const mechannel = message.guild.me.voice.channel;
         //get the player instance
@@ -549,7 +550,7 @@ module.exports = {
           return message.reply({embeds :[new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable83"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable83"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable84"]))
           ]});
         //If there is no player, then kick the bot out of the channel, if connected to
@@ -561,7 +562,7 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
-          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable85"]))
+          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable85"].replace(":no:", customEmojis.general.no)))
           .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable86"]))
         ]});
         //if the queue does not exist yet, error
@@ -569,7 +570,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable87"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable87"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable88"]))
           ]});
         //now add every track of the tracks
@@ -616,7 +617,7 @@ module.exports = {
         }
         //return susccess message - by editing the old temp msg
         tempmsg.edit({embeds : [new MessageEmbed()
-          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable91"]))
+          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable91"].replace(":yes:", customEmojis.general.yes)))
           .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           .setFooter(client.getFooter(es))
         ]})
@@ -630,14 +631,14 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable92"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable92"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable93"]))
           ]});
         if (Name.length > 10)
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.user.username, ee.footericon)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable94"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable94"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable95"]))
           ]});
         //if the queue already exists, then errors
@@ -645,7 +646,7 @@ module.exports = {
           return message.reply({embeds : [new MessageEmbed()
             .setFooter(client.getFooter(es))
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable96"]))
+            .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable96"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable97"]))
           ]});
         //get all tracks
@@ -660,7 +661,7 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
-          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable98"]))
+          .setTitle(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable98"].replace(":no:", customEmojis.general.no)))
           .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable99"]))
         ]});
         break;
@@ -671,7 +672,7 @@ module.exports = {
       console.log(String(e.stack).grey.bgRed)
       return message.reply({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
-        .setTitle(client.la[ls].common.erroroccur)
+        .setTitle(client.la[ls].common.erroroccur.replace(":no:", customEmojis.general.no))
         .setDescription(eval(client.la[ls]["cmds"]["customqueues"]["savedqueue"]["variable100"]))
       ]});
     }
