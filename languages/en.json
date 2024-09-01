@@ -805,7 +805,7 @@
             "adddj": {
                 "variable1": "`:no: Please add a Role via ping, @role!`",
                 "variable2": "`:no: It seems that the Role does not exist in this Server!`",
-                "variable3": "`:no: This Role is alerady in the List!`",
+                "variable3": "`:no: This Role is already in the List!`",
                 "variable4": "`:yes: Added the DJ ROLE \\`${role.name}\\``",
                 "variable5": "`All Dj Roles:\\n> ${leftb}`",
                 "variable6": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"

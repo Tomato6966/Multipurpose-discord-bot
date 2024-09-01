@@ -1,5 +1,6 @@
 const { MessageEmbed } = require(`discord.js`);
 const config = require(`${process.cwd()}/botconfig/config.json`);
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 module.exports = {
@@ -21,7 +22,7 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
-          .setTitle(eval(client.la[ls]["cmds"]["settings"]["adddj"]["variable1"]))
+          .setTitle(eval(client.la[ls]["cmds"]["settings"]["adddj"]["variable1"].replace(":no:", customEmojis.general.no)))
         ]});
       //try to find the role in the guild just incase he pings a role of a different server
       try {
@@ -30,7 +31,7 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
-          .setTitle(eval(client.la[ls]["cmds"]["settings"]["adddj"]["variable2"]))
+          .setTitle(eval(client.la[ls]["cmds"]["settings"]["adddj"]["variable2"].replace(":no:", customEmojis.general.no)))
         ]});
       }
       //if ther role is already in the Database, return error
@@ -38,7 +39,7 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
-          .setTitle(eval(client.la[ls]["cmds"]["settings"]["adddj"]["variable3"]))
+          .setTitle(eval(client.la[ls]["cmds"]["settings"]["adddj"]["variable3"].replace(":no:", customEmojis.general.no)))
         ]});
       //push it into the database
       client.settings.push(message.guild.id, role.id, `djroles`);
@@ -50,7 +51,7 @@ module.exports = {
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
         .setFooter(client.getFooter(es))
-        .setTitle(eval(client.la[ls]["cmds"]["settings"]["adddj"]["variable4"]))
+        .setTitle(eval(client.la[ls]["cmds"]["settings"]["adddj"]["variable4"].replace(":yes:", customEmojis.general.yes)))
         .setDescription(eval(client.la[ls]["cmds"]["settings"]["adddj"]["variable5"]))
       ]});
     } catch (e) {
