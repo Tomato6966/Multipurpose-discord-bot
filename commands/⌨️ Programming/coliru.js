@@ -75,7 +75,14 @@ module.exports = {
 				.then((res) => res.text());
 				return message.reply({content : eval(client.la[ls]["cmds"]["programming"]["coliru"]["variable4"])});
 			}  
-			if (res.length < 1990) return message.reply(`{content : \`\`\`${lang}\n${res}\n\`\`\`}`);
+			if (res.length < 1990) return message.reply({
+				embeds: [new MessageEmbed()
+					.setTitle("Coliru Results")
+					.setDescription(`**Code Provided:**\n\`\`\`${lang}\n${code}\`\`\`\n\n**Code Results:**\n\`\`\`${lang}\n${res}\`\`\``)
+					.setColor(es.color)
+					.setFooter(client.getFooter(es))
+				]
+			});
 				return post(message, { cmd, src });
 	
 		} catch (e) {
