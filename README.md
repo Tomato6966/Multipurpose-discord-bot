@@ -1,3 +1,8 @@
+# NEW PUBLIC BOT!
+
+<a href="https://discord.com/api/oauth2/authorize?client_id=1068868597398650971&permissions=8&scope=applications.commands%20bot"><img src="https://discord.c99.nl/widget/theme-3/1068868597398650971.png"></a>
+<a href="https://discord.gg/EETWaC3edf"><img src="https://discord.com/api/guilds/1070626568260562954/widget.png?style=banner2"></a>
+
 # Public Bot and Support Server!
 
 <a href="https://discord.gg/dcdev"><img src="https://discord.com/api/guilds/773668217163218944/widget.png?style=banner2"></a>
