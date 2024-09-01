@@ -1,5 +1,6 @@
 //Here the command starts
 const config = require(`${process.cwd()}/botconfig/config.json`)
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`)
 var ee = require(`${process.cwd()}/botconfig/embed.json`)
 const fetch = require("node-fetch");
 const { STATUS_CODES } = require("http");
@@ -22,7 +23,7 @@ module.exports = {
 				return message.reply({embeds: [new MessageEmbed()
 					.setColor(es.wrongcolor)
 					.setFooter(client.getFooter(es))
-					.setTitle(eval(client.la[ls]["cmds"]["programming"]["httpstatus"]["variable1"]))
+					.setTitle(eval(client.la[ls]["cmds"]["programming"]["httpstatus"]["variable1"].replace(":no:", customEmojis.general.no)))
 					.setDescription(eval(client.la[ls]["cmds"]["programming"]["httpstatus"]["variable2"]))
 				]});
 			// 599 isn't standard i think, not in Node.js but it's on http.cat so let's handle it.
