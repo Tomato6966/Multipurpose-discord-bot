@@ -1,5 +1,6 @@
 const { MessageEmbed } = require(`discord.js`);
 const config = require(`${process.cwd()}/botconfig/config.json`);
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 module.exports = {
@@ -20,7 +21,7 @@ module.exports = {
       if (!channel)
       return message.reply({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
-        .setTitle(eval(client.la[ls]["cmds"]["settings"]["removebotchat"]["variable1"]))
+        .setTitle(eval(client.la[ls]["cmds"]["settings"]["removebotchat"]["variable1"].replace(":no:", customEmojis.general.no)))
       ]});
       //try to find it, just incase user pings channel from different server
       try {
@@ -29,7 +30,7 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
-          .setTitle(eval(client.la[ls]["cmds"]["settings"]["removebotchat"]["variable2"]))
+          .setTitle(eval(client.la[ls]["cmds"]["settings"]["removebotchat"]["variable2"].replace(":no:", customEmojis.general.no)))
         ]});
       }
       //if its not in the database return error
@@ -37,7 +38,7 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
-          .setTitle(eval(client.la[ls]["cmds"]["settings"]["removebotchat"]["variable3"]))
+          .setTitle(eval(client.la[ls]["cmds"]["settings"]["removebotchat"]["variable3"].replace(":no:", customEmojis.general.no)))
         ]});
       //remove the Channel from the Database
       client.settings.remove(message.guild.id, channel.id, `botchannel`);
@@ -52,7 +53,7 @@ module.exports = {
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
         .setFooter(client.getFooter(es))
-        .setTitle(eval(client.la[ls]["cmds"]["settings"]["removebotchat"]["variable4"]))
+        .setTitle(eval(client.la[ls]["cmds"]["settings"]["removebotchat"]["variable4"].replace(":yes:", customEmojis.general.yes)))
         .setDescription(eval(client.la[ls]["cmds"]["settings"]["removebotchat"]["variable5"]))
       ]});
     } catch (e) {
@@ -60,7 +61,7 @@ module.exports = {
         return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
 						.setFooter(client.getFooter(es))
-            .setTitle(client.la[ls].common.erroroccur)
+            .setTitle(client.la[ls].common.erroroccur.replace(":no:", customEmojis.general.no))
             .setDescription(eval(client.la[ls]["cmds"]["settings"]["removebotchat"]["variable6"]))
         ]});
     }

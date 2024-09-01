@@ -59,7 +59,7 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
 						.setFooter(client.getFooter(es))
-            .setTitle(client.la[ls].common.erroroccur)
+            .setTitle(client.la[ls].common.erroroccur.replace(":no:", customEmojis.general.no))
             .setDescription(eval(client.la[ls]["cmds"]["settings"]["adddj"]["variable6"]))
         ]});
     }

@@ -2,6 +2,7 @@ const {
   MessageEmbed
 } = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`);
 const ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 module.exports = {
@@ -23,7 +24,7 @@ module.exports = {
       if(!args[0]){
         return message.reply({embeds : [new MessageEmbed()
           .setFooter(client.getFooter(es)).setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable1"]))
+          .setTitle(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable1"].replace(":no:", customEmojis.general.no)))
           .setDescription(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable2"]))
         ]});
       }
@@ -31,14 +32,14 @@ module.exports = {
       if(isNaN(volume)){
         return message.reply({embeds : [new MessageEmbed()
           .setFooter(client.getFooter(es)).setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable3"]))
+          .setTitle(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable3"].replace(":no:", customEmojis.general.no)))
           .setDescription(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable4"]))
         ]});
       }
       if(Number(volume) > 150 || Number(volume) < 1){
         return message.reply({embeds : [new MessageEmbed()
           .setFooter(client.getFooter(es)).setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable5"]))
+          .setTitle(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable5"].replace(":no:", customEmojis.general.no)))
           .setDescription(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable6"]))
         ]});
       }
@@ -51,7 +52,7 @@ module.exports = {
       console.log(String(e.stack).grey.bgRed)
       return message.reply({embeds : [new MessageEmbed()
         .setFooter(client.getFooter(es)).setColor(es.wrongcolor)
-        .setTitle(client.la[ls].common.erroroccur)
+        .setTitle(client.la[ls].common.erroroccur.replace(":no:", customEmojis.general.no))
         .setDescription(eval(client.la[ls]["cmds"]["settings"]["defaultvolume"]["variable8"]))
       ]});
     }

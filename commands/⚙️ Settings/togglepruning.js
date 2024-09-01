@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require("../../botconfig/emojis.json");
 module.exports = {
@@ -30,7 +31,7 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
             .setColor(es.wrongcolor)
 						.setFooter(client.getFooter(es))
-            .setTitle(client.la[ls].common.erroroccur)
+            .setTitle(client.la[ls].common.erroroccur.replace(":no:", customEmojis.general.no))
             .setDescription(eval(client.la[ls]["cmds"]["settings"]["togglepruning"]["variable3"]))
         ]});
     }

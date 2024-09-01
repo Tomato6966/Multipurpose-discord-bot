@@ -2,6 +2,7 @@ const {
   MessageEmbed
 } = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require("../../botconfig/emojis.json");
 module.exports = {
@@ -20,14 +21,14 @@ module.exports = {
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
         .setFooter(client.getFooter(es))
-        .setTitle(eval(client.la[ls]["cmds"]["settings"]["toggledm"]["variable1"]))
+        .setTitle(eval(client.la[ls]["cmds"]["settings"]["toggledm"]["variable1"].replace(":yes:", customEmojis.general.yes)))
         .setDescription(`${client.settings.get(message.author.id, "dm") ? "I will now send you DMS after the COMMANDS, if needed" : "I will not send you DMS after the COMMANDS"}`.substring(0, 2048))
       ]});
     } catch (e) {
       console.log(String(e.stack).grey.bgRed)
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
-        .setTitle(client.la[ls].common.erroroccur)
+        .setTitle(client.la[ls].common.erroroccur.replace(":no:", customEmojis.general.no))
         .setDescription(eval(client.la[ls]["cmds"]["settings"]["toggledm"]["variable2"]))
       ]});
     }

@@ -1,5 +1,6 @@
 const { MessageEmbed } = require(`discord.js`);
 const config = require(`${process.cwd()}/botconfig/config.json`);
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 module.exports = {
@@ -18,20 +19,20 @@ module.exports = {
     if (!args[0])
       return message.reply({embeds :[new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
-        .setTitle(eval(client.la[ls]["cmds"]["settings"]["prefix"]["variable1"]))
+        .setTitle(eval(client.la[ls]["cmds"]["settings"]["prefix"]["variable1"].replace(":no:", customEmojis.general.no)))
         .setDescription(eval(client.la[ls]["cmds"]["settings"]["prefix"]["variable2"]))
       ]});
     //if there are multiple arguments
     if (args[1])
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
-        .setTitle(eval(client.la[ls]["cmds"]["settings"]["prefix"]["variable3"]))
+        .setTitle(eval(client.la[ls]["cmds"]["settings"]["prefix"]["variable3"].replace(":no:", customEmojis.general.no)))
       ]});
     //if the prefix is too long
     if (args[0].length > 5)
       return message.reply({embeds : [new MessageEmbed()
         .setColor(es.wrongcolor).setFooter(client.getFooter(es))
-        .setTitle(eval(client.la[ls]["cmds"]["settings"]["prefix"]["variable4"]))
+        .setTitle(eval(client.la[ls]["cmds"]["settings"]["prefix"]["variable4"].replace(":no:", customEmojis.general.no)))
       ]});
     //set the new prefix
     client.settings.set(message.guild.id, args[0], `prefix`);
@@ -39,14 +40,14 @@ module.exports = {
     return message.reply({embeds : [new MessageEmbed()
       .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
       .setFooter(client.getFooter(es))
-      .setTitle(eval(client.la[ls]["cmds"]["settings"]["prefix"]["variable5"]))
+      .setTitle(eval(client.la[ls]["cmds"]["settings"]["prefix"]["variable5"].replace(":yes:", customEmojis.general.yes)))
     ]});
   } catch (e) {
       console.log(String(e.stack).grey.bgRed)
       return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
 					.setFooter(client.getFooter(es))
-          .setTitle(client.la[ls].common.erroroccur)
+          .setTitle(client.la[ls].common.erroroccur.replace(":no:", customEmojis.general.no))
           .setDescription(eval(client.la[ls]["cmds"]["settings"]["prefix"]["variable6"]))
       ]});
   }

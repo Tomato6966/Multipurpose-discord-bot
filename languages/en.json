@@ -859,7 +859,7 @@
             "removedj": {
                 "variable1": "`:no: Please add a Role via ping, @role!`",
                 "variable2": "`:no: It seems that the Role does not exist in this Server!`",
-                "variable3": "`:no: This Role is already a DJ-ROLE!`",
+                "variable3": "`:no: This Role is not a DJ-ROLE!`",
                 "variable4": "`:yes: Removed the DJ ROLE \\`${role.name}\\``",
                 "variable5": "`All left Dj Roles:\\n> ${leftb}`",
                 "variable6": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
@@ -897,7 +897,7 @@
                 "variable3": "`${e.message}`"
             },
             "togglerequestonly": {
-                "variable1": "`:yes: ${client.settings.get(message.guild.id, `requestonly`) ? `${emoji.msg.enabled} Enabled` : `${emoji.msg.disabled} Disabled`} Request Only`",
+                "variable1": "`:yes: ${client.settings.get(message.guild.id, `requestonly`) ? `Enabled` : `Disabled`} Request Only`",
                 "variable2": "`You are now ${client.settings.get(message.guild.id, `requestonly`) ? `` : `not`} allowed to use Commands in different Channels`",
                 "variable3": "`${e.message}`"
             },

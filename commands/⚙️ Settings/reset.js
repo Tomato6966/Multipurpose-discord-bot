@@ -1,5 +1,6 @@
 const { MessageEmbed } = require(`discord.js`);
 const config = require(`${process.cwd()}/botconfig/config.json`);
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 module.exports = {
@@ -20,7 +21,7 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
-          .setTitle(eval(client.la[ls]["cmds"]["settings"]["reset"]["variable1"]))
+          .setTitle(eval(client.la[ls]["cmds"]["settings"]["reset"]["variable1"].replace(":no:", customEmojis.general.no)))
         ]});
       //ask for second yes
       let themsg = message.reply({embeds : [new MessageEmbed()
@@ -59,7 +60,7 @@ module.exports = {
             return message.reply({embeds : [new MessageEmbed()
               .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
               .setFooter(client.getFooter(es))
-              .setTitle(eval(client.la[ls]["cmds"]["settings"]["reset"]["variable4"]))
+              .setTitle(eval(client.la[ls]["cmds"]["settings"]["reset"]["variable4"].replace(":yes:", customEmojis.general.yes)))
               .setDescription(eval(client.la[ls]["cmds"]["settings"]["reset"]["variable5"]))
             ]});
           }
@@ -69,7 +70,7 @@ module.exports = {
           return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["settings"]["reset"]["variable6"]))
+            .setTitle(eval(client.la[ls]["cmds"]["settings"]["reset"]["variable6"].replace(":no:", customEmojis.general.no)))
           ]});
         })
       });
@@ -78,7 +79,7 @@ module.exports = {
         return message.reply({embeds :[new MessageEmbed()
             .setColor(es.wrongcolor)
 						.setFooter(client.getFooter(es))
-            .setTitle(client.la[ls].common.erroroccur)
+            .setTitle(client.la[ls].common.erroroccur.replace(":no:", customEmojis.general.no))
             .setDescription(eval(client.la[ls]["cmds"]["settings"]["reset"]["variable7"]))
         ]});
     }
