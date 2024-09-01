@@ -1,5 +1,6 @@
 //Here the command starts
 const config = require(`${process.cwd()}/botconfig/config.json`)
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`)
 var ee = require(`${process.cwd()}/botconfig/embed.json`)
 const fetch = require("node-fetch");
 const { MessageEmbed } = require(`discord.js`);
@@ -46,7 +47,7 @@ module.exports = {
 				return message.reply({embeds: [new MessageEmbed()
 					.setColor(es.wrongcolor)
 					.setFooter(client.getFooter(es))
-					.setTitle(eval(client.la[ls]["cmds"]["programming"]["compile"]["variable1"]))
+					.setTitle(eval(client.la[ls]["cmds"]["programming"]["compile"]["variable1"].replace(":no:", customEmojis.general.no)))
 					.setDescription(`Usage:\n${prefix}compile` + "\\`\\`\\`lang\nCode\n\\`\\`\\`\nCodeBlock language will be used to determine how to compile the code.")
 				]});
 
@@ -54,7 +55,7 @@ module.exports = {
 				return message.reply({embeds: [new MessageEmbed()
 					.setColor(es.wrongcolor)
 					.setFooter(client.getFooter(es))
-					.setTitle(eval(client.la[ls]["cmds"]["programming"]["compile"]["variable2"]))
+					.setTitle(eval(client.la[ls]["cmds"]["programming"]["compile"]["variable2"].replace(":no:", customEmojis.general.no)))
 					.setDescription(eval(client.la[ls]["cmds"]["programming"]["compile"]["variable3"]))
 				]});
 
@@ -74,7 +75,14 @@ module.exports = {
 				.then((res) => res.text());
 				return message.reply({content : eval(client.la[ls]["cmds"]["programming"]["compile"]["variable4"])});
 			}  
-			if (res.length < 1990) return message.reply(`{content : \`\`\`${lang}\n${res}\n\`\`\`}`);
+			if (res.length < 1990) return message.reply({
+				embeds: [new MessageEmbed()
+					.setTitle("Compile Results")
+					.setDescription(`**Code Provided:**\n\`\`\`${lang}\n${code}\`\`\`\n\n**Code Results:**\n\`\`\`${lang}\n${res}\`\`\``)
+					.setColor(es.color)
+					.setFooter(client.getFooter(es))
+				]
+			});
 				return post(message, { cmd, src });
 	
 		} catch (e) {
