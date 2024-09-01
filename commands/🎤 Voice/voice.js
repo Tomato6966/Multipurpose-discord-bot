@@ -1,6 +1,7 @@
 const { MessageEmbed, Permissions } = require("discord.js");
 const Discord = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 module.exports = {
     name: "voice",
@@ -33,7 +34,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds :[new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable1"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable1"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -50,7 +51,7 @@ module.exports = {
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable2"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable2"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
             if(!vc.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
@@ -73,7 +74,7 @@ module.exports = {
               })
               return message.reply({embeds : [new Discord.MessageEmbed()
                 .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
-                .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable3"]))
+                .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable3"].replace(":no:", customEmojis.general.no)))
                 .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable4"]))
                 .setFooter(client.getFooter(es))
               ]})
@@ -82,7 +83,7 @@ module.exports = {
         } else {
           return message.reply({embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable5"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable5"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -92,7 +93,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds : [new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable6"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable6"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -108,7 +109,7 @@ module.exports = {
           if (!owner)
             return message.reply({embeds :[new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable7"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable7"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
             
@@ -138,7 +139,7 @@ module.exports = {
         } else {
           return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable10"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable10"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -148,7 +149,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds :[new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable1"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable1"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -165,7 +166,7 @@ module.exports = {
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable2"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable2"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
             if(!vc.permissionsFor(vc.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)){
@@ -197,7 +198,7 @@ module.exports = {
         } else {
           return message.reply({embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable5"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable5"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -207,7 +208,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds : [new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable6"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable6"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -223,7 +224,7 @@ module.exports = {
           if (!owner)
             return message.reply({embeds :[new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable7"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable7"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
             
@@ -255,7 +256,7 @@ module.exports = {
         } else {
           return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable10"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable10"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -265,7 +266,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds : [new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable11"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable11"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -281,32 +282,32 @@ module.exports = {
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable12"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable12"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           if (!args[0]) return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable13"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable13"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable14"]))
             .setFooter(client.getFooter(es))
           ]})
           let member = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0]);
           if (!member || member == null || member == undefined) return message.reply({embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable15"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable15"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable16"]))
             .setFooter(client.getFooter(es))
           ]})
           if (!member.voice.channel)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable17"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable17"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           if (member.voice.channel.id != channel.id)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable18"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable18"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           try {
@@ -319,7 +320,7 @@ module.exports = {
           } catch (e) {
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable20"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable20"].replace(":no:", customEmojis.general.no)))
               .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable21"]))
               .setFooter(client.getFooter(es))
             ]})
@@ -327,7 +328,7 @@ module.exports = {
         } else {
           return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable22"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable22"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -337,7 +338,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds : [new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable23"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable23"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -353,19 +354,19 @@ module.exports = {
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable24"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable24"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           if (!args[0]) return message.reply({embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable25"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable25"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable26"]))
             .setFooter(client.getFooter(es))
           ]})
           let member = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0]);
           if (!member || member == null || member == undefined) return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable27"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable27"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable28"]))
             .setFooter(client.getFooter(es))
           ]})
@@ -400,7 +401,7 @@ module.exports = {
                 ]}).catch(e => {
                   return message.reply({embeds : [new Discord.MessageEmbed()
                     .setColor(es.wrongcolor)
-                    .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable30"]))
+                    .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable30"].replace(":no:", customEmojis.general.no)))
                     .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable31"]))
                     .setFooter(client.getFooter(es))
                   ]})
@@ -416,7 +417,7 @@ module.exports = {
           } catch (e) {
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable33"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable33"].replace(":no:", customEmojis.general.no)))
               .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable34"]))
               .setFooter(client.getFooter(es))
             ]})
@@ -424,7 +425,7 @@ module.exports = {
         } else {
           return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable35"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable35"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -434,7 +435,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds : [new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable36"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable36"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -450,19 +451,19 @@ module.exports = {
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable37"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable37"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           if (!args[0]) return message.reply({embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable38"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable38"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable39"]))
             .setFooter(client.getFooter(es))
           ]})
           let member = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0]);
           if (!member || member == null || member == undefined) return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable40"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable40"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable41"]))
             .setFooter(client.getFooter(es))
           ]})
@@ -477,7 +478,7 @@ module.exports = {
             } catch (e) {
               message.reply({embeds : [new Discord.MessageEmbed()
                 .setColor(es.wrongcolor)
-                .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable43"]))
+                .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable43"].replace(":no:", customEmojis.general.no)))
                 .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable44"]))
                 .setFooter(client.getFooter(es))
               ]})
@@ -511,7 +512,7 @@ module.exports = {
         } else {
           return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable46"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable46"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -521,7 +522,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds :[new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable47"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable47"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -537,19 +538,19 @@ module.exports = {
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable48"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable48"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           if (!args[0]) return message.reply({embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable49"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable49"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable50"]))
             .setFooter(client.getFooter(es))
           ]})
           let member = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0]);
           if (!member || member == null || member == undefined) return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable51"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable51"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable52"]))
             .setFooter(client.getFooter(es))
           ]})
@@ -579,7 +580,7 @@ module.exports = {
         } else {
           return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable55"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable55"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -589,7 +590,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds : [new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable56"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable56"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -605,7 +606,7 @@ module.exports = {
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable57"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable57"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           if (!args[0]) return message.reply({embeds : [new Discord.MessageEmbed()
@@ -617,7 +618,7 @@ module.exports = {
           let member = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0]);
           if (!member || member == null || member == undefined) return message.reply({embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable60"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable60"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable61"]))
             .setFooter(client.getFooter(es))
           ]})
@@ -647,7 +648,7 @@ module.exports = {
         } else {
           return message.reply({embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable64"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable64"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -657,7 +658,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds: [new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable65"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable65"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -673,19 +674,19 @@ module.exports = {
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable66"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable66"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           if (!args[0]) return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable67"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable67"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable68"]))
             .setFooter(client.getFooter(es))
           ]})
           let member = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0]);
           if (!member || member == null || member == undefined) return message.reply({embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable69"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable69"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable70"]))
             .setFooter(client.getFooter(es))
           ]})
@@ -715,7 +716,7 @@ module.exports = {
         } else {
           return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable73"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable73"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -725,7 +726,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds :[new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable74"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable74"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -741,27 +742,27 @@ module.exports = {
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable75"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable75"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           if (!args[0]) return message.reply(
             {embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable76"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable76"].replace(":no:", customEmojis.general.no)))
             ]});
           if (isNaN(args[0])) return message.reply(
             {embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable77"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable77"].replace(":no:", customEmojis.general.no)))
             ]});
           let userlimit = Number(args[0]);
           if (userlimit > 99 || userlimit < 0) return message.reply(
             {embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable78"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable78"].replace(":no:", customEmojis.general.no)))
             ]});
           channel.setUserLimit(userlimit).then(vc => {
             return message.reply({embeds :[new Discord.MessageEmbed()
@@ -773,7 +774,7 @@ module.exports = {
         } else {
           return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable80"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable80"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -783,7 +784,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds : [new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable81"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable81"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -799,20 +800,20 @@ module.exports = {
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable82"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable82"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           if (!args[0]) return message.reply(
             {embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable83"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable83"].replace(":no:", customEmojis.general.no)))
             ]});
           if (isNaN(args[0])) return message.reply(
             {embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable84"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable84"].replace(":no:", customEmojis.general.no)))
             ]});
           let maxbitrate = 96000;
           let boosts = message.guild.premiumSubscriptionCount;
@@ -824,7 +825,7 @@ module.exports = {
             {embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
             .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable85"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable85"].replace(":no:", customEmojis.general.no)))
             ]});
           channel.setBitrate(userlimit).then(vc => {
             return message.reply({embeds : [new Discord.MessageEmbed()
@@ -836,7 +837,7 @@ module.exports = {
         } else {
           return message.reply({embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable87"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable87"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -846,7 +847,7 @@ module.exports = {
         } = message.member.voice;
         if (!channel) return message.reply({embeds : [new Discord.MessageEmbed()
           .setColor(es.wrongcolor)
-          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable88"]))
+          .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable88"].replace(":no:", customEmojis.general.no)))
           .setFooter(client.getFooter(es))
         ]})
         client.jointocreatemap.ensure(`tempvoicechannel_${message.guild.id}_${channel.id}`, false)
@@ -862,32 +863,32 @@ module.exports = {
           if (!owner)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable89"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable89"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           if (!args[0]) return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable90"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable90"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable91"]))
             .setFooter(client.getFooter(es))
           ]})
           let member = message.mentions.members.filter(member=>member.guild.id==message.guild.id).first() || message.guild.members.cache.get(args[0]);
           if (!member || member == null || member == undefined) return message.reply({embeds :[new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable92"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable92"].replace(":no:", customEmojis.general.no)))
             .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable93"]))
             .setFooter(client.getFooter(es))
           ]})
           if (!member.voice.channel)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable94"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable94"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           if (member.voice.channel.id != channel.id)
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable95"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable95"].replace(":no:", customEmojis.general.no)))
               .setFooter(client.getFooter(es))
             ]})
           try {
@@ -921,7 +922,7 @@ module.exports = {
           } catch (e) {
             return message.reply({embeds : [new Discord.MessageEmbed()
               .setColor(es.wrongcolor)
-              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable97"]))
+              .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable97"].replace(":no:", customEmojis.general.no)))
               .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable98"]))
               .setFooter(client.getFooter(es))
             ]})
@@ -929,7 +930,7 @@ module.exports = {
         } else {
           return message.reply({embeds : [new Discord.MessageEmbed()
             .setColor(es.wrongcolor)
-            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable99"]))
+            .setTitle(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable99"].replace(":no:", customEmojis.general.no)))
             .setFooter(client.getFooter(es))
           ]})
         }
@@ -946,7 +947,7 @@ module.exports = {
         return message.reply({embeds : [new MessageEmbed()
           .setColor(es.wrongcolor)
           .setFooter(client.getFooter(es))
-          .setTitle(client.la[ls].common.erroroccur)
+          .setTitle(client.la[ls].common.erroroccur.replace(":no:", customEmojis.general.no))
           .setDescription(eval(client.la[ls]["cmds"]["voice"]["voice"]["variable102"]))
         ]});
     }
