@@ -797,7 +797,7 @@
             "addbotchat": {
                 "variable1": "`:no: Please add a Channel via ping, for example: #channel!`",
                 "variable2": "`:no: It seems that the Channel does not exist in this Server!`",
-                "variable3": "`:no: This Channel is alerady in the List!`",
+                "variable3": "`:no: This Channel is already in the List!`",
                 "variable4": "`:yes: Added the Bot-Chat \\`${channel.name}\\``",
                 "variable5": "`All Bot Chats:\\n> ${leftb}`",
                 "variable6": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
