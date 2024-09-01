@@ -1,5 +1,6 @@
 //Here the command starts
 const config = require(`${process.cwd()}/botconfig/config.json`)
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`)
 var ee = require(`${process.cwd()}/botconfig/embed.json`)
 const fetch = require("node-fetch");
 const { STATUS_CODES } = require("http");
@@ -22,7 +23,7 @@ module.exports = {
 				return message.reply({embeds: [new MessageEmbed()
 					.setColor(es.wrongcolor)
 					.setFooter(client.getFooter(es))
-					.setTitle(eval(client.la[ls]["cmds"]["programming"]["npm"]["variable1"]))
+					.setTitle(eval(client.la[ls]["cmds"]["programming"]["npm"]["variable1"].replace(":no:", customEmojis.general.no)))
 					.setDescription(eval(client.la[ls]["cmds"]["programming"]["npm"]["variable2"]))
 				]});
 
@@ -54,7 +55,10 @@ module.exports = {
 				.setColor(es.color)
 				.setFooter(client.getFooter(es))
 				.setURL(`https://npmjs.com/package/${pkg}`)
-				.setAuthor(message.author.tag, message.author.displayAvatarURL({ size: 64 }))
+				.setAuthor({
+					name: message.author.tag, 
+					iconURL: message.author.displayAvatarURL({ size: 64 })
+				})
 				.setDescription([
 				body.description || "No Description.",
 				`**Version:** ${body["dist-tags"].latest}`,
