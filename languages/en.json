@@ -786,7 +786,7 @@
             },
             "npmpkgsize": {
                 "variable1": "`:no: You didn't provide a NPM-PACKAGE`",
-                "variable2": "`Usage: \\`${prefix}npm <package>\\``",
+                "variable2": "`Usage: \\`${prefix}npmpkgsize <package>\\``",
                 "variable3": "\"That package doesn't exist.\"",
                 "variable4": "`NPM Package Size - ${name}`",
                 "variable5": "`**Publish Size:** ${getBytes(publishSize)}\\n**Install Size:** ${getBytes(installSize)}`",

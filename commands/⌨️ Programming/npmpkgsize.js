@@ -1,5 +1,6 @@
 //Here the command starts
 const config = require(`${process.cwd()}/botconfig/config.json`)
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`)
 var ee = require(`${process.cwd()}/botconfig/embed.json`)
 const fetch = require("node-fetch");
 const { STATUS_CODES } = require("http");
@@ -22,7 +23,7 @@ module.exports = {
 				return message.reply({embeds: [new MessageEmbed()
 					.setColor(es.wrongcolor)
 					.setFooter(client.getFooter(es))
-					.setTitle(eval(client.la[ls]["cmds"]["programming"]["npmpkgsize"]["variable1"]))
+					.setTitle(eval(client.la[ls]["cmds"]["programming"]["npmpkgsize"]["variable1"].replace(":no:", customEmojis.general.no)))
 					.setDescription(eval(client.la[ls]["cmds"]["programming"]["npmpkgsize"]["variable2"]))
 				]});
 			const { publishSize, installSize } = await fetch(`https://packagephobia.now.sh/api.json?p=${encodeURIComponent(name)}`)
@@ -45,7 +46,7 @@ module.exports = {
 			return message.reply({embeds : [new MessageEmbed()
 			  .setColor(es.wrongcolor).setFooter(client.getFooter(es))
 			  .setTitle(client.la[ls].common.erroroccur)
-			  .setDescription(eval(client.la[ls]["cmds"]["programming"]["npmpkgsize"]["variable6"]))
+			  .setDescription(eval(client.la[ls]["cmds"]["programming"]["npmpkgsize"]["variable6"].replace(":no:", customEmojis.general.no)))
 			]});
 		  }
 	
