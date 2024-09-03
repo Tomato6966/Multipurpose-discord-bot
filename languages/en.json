@@ -1284,10 +1284,10 @@
             "calc": {
                 "variable1": "`:no: You must provide a equation to be solved on the calculator`",
                 "variable2": "` Usage: \\`${prefix}calc <Input>\\`\\n\\nExample: \\`${prefix}calc 10 + 4*5\\`\\n\\nHey try out: \\`${prefix}calculator\\``",
-                "variable3": "`Invalid math equation: ${err}`",
+                "variable3": "`Invalid math equation: ${err.message}`",
                 "variable4": "`Try out: \\`${prefix}calculator\\``",
                 "variablex_5": "`**Equation:**`", "variable5": "`\\`\\`\\`fix\\n${args.join(\" \")}\\`\\`\\``",
-                "variablex_6": "`**Result:**`", "variable6": "`\\`\\`\\`fix\\n= ${answer}\\`\\`\\``"
+                "variablex_6": "`**Result:**`", "variable6": "`\\`\\`\\`fix\\n${answer}\\`\\`\\``"
             },
             "e": {
                 "variable1": "`This is the Number \"\\`e\\`\"`",

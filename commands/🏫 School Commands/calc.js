@@ -1,4 +1,5 @@
 const math = require('math-expression-evaluator');
+const customEmojis = require(`${process.cwd()}/botconfig/customEmojis.json`);
 const ms = require("ms");
 const moment = require("moment")
 const {
@@ -32,7 +33,7 @@ module.exports = {
       return message.reply({embeds: [new MessageEmbed()
       .setColor(es.wrongcolor)
       .setFooter(client.getFooter(es))
-      .setTitle(eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variable1"]))
+      .setTitle(eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variable1"].replace(":no:", customEmojis.general.no)))
       .setDescription(eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variable2"]))
       ]});
 
@@ -41,15 +42,23 @@ module.exports = {
     try {
       answer = math.eval(args.join(" "));
     } catch (err) {
-      message.reply({content: eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variable3"])});
+      return message.reply({content: eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variable3"])});
     }
 
-    message.reply({embeds: [new MessageEmbed() 
+    return message.reply({embeds: [new MessageEmbed() 
       .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
       .setDescription(eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variable4"]))
       .setFooter(client.getFooter(es))
-      .addField(eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variablex_5"]), eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variable5"]))
-      .addField(eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variablex_6"]), eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variable6"]))
+      .addFields(
+        {
+          name: eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variablex_5"]),
+          value: eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variable5"])
+        },
+        {
+          name: eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variablex_6"]),
+          value: eval(client.la[ls]["cmds"]["schoolcommands"]["calc"]["variable6"])
+        }
+      )
     ]});
   }
 };
