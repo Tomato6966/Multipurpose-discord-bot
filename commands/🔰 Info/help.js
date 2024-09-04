@@ -23,10 +23,10 @@ module.exports = {
 
     try {
       if (args[0]) {
-        const embed = new MessageEmbed().setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null);
+        const embed = new MessageEmbed().setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon?.includes("http://") || es.footericon?.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null);
         const cmd = client.commands.get(args[0].toLowerCase()) || client.commands.get(client.aliases.get(args[0].toLowerCase()));
         var cat = false;
-        if (args[0].toLowerCase().includes("cust")) {
+        if (args[0].toLowerCase()?.includes("cust")) {
           let cuc = client.customcommands.get(message.guild.id, "commands");
           if (cuc.length < 1) cuc = [handlemsg(client.la[ls].cmds.info.help.error1)]
           else cuc = cuc.map(cmd => `\`${cmd.name}\``)
@@ -34,7 +34,7 @@ module.exports = {
 
 
           const embed = new MessageEmbed()
-            .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
+            .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon?.includes("http://") || es.footericon?.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
             .setThumbnail(client.user.displayAvatarURL())
             .setTitle(eval(client.la[ls]["cmds"]["info"]["help"]["variable1"]))
             .setDescription(items.join("︲"))
@@ -44,7 +44,7 @@ module.exports = {
           return;
         } var cat = false;
         if (!cmd) {
-          cat = client.categories.find(cat => cat.toLowerCase().includes(args[0].toLowerCase()))
+          cat = client.categories.find(cat => cat.toLowerCase()?.includes(args[0].toLowerCase()))
         }
         if (!cmd && (!cat || cat == null)) {
           return message.reply({ embeds: [embed.setColor(es.wrongcolor).setDescription(handlemsg(client.la[ls].cmds.info.help.noinfo, { command: args[0].toLowerCase() }))] });
@@ -52,7 +52,7 @@ module.exports = {
           var category = cat;
           const items = client.commands.filter((cmd) => cmd.category === category).map((cmd) => `\`${cmd.name}\``);
           const embed = new MessageEmbed()
-            .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
+            .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon?.includes("http://") || es.footericon?.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
             .setThumbnail(client.user.displayAvatarURL())
             .setTitle(eval(client.la[ls]["cmds"]["info"]["help"]["variable2"]))
             .setFooter(handlemsg(client.la[ls].cmds.info.help.nocustom, { prefix: prefix }), client.user.displayAvatarURL());
@@ -93,7 +93,7 @@ module.exports = {
             return message.reply({ embeds: [embeds[16]] })
           if (cat == "🔞 NSFW")
             return message.reply({ embeds: [embeds[17]] })
-          if (category.toLowerCase().includes("custom")) {
+          if (category.toLowerCase()?.includes("custom")) {
             const cmd = client.commands.get(items[0].split("`").join("").toLowerCase()) || client.commands.get(client.aliases.get(items[0].split("`").join("").toLowerCase()));
             try {
               embed.setDescription(eval(client.la[ls]["cmds"]["info"]["help"]["variable3"]));
@@ -103,17 +103,17 @@ module.exports = {
           }
           return message.reply({ embeds: [embed] })
         }
-        if (cmd.name) embed.addFields({ name: handlemsg(client.la[ls].cmds.info.help.detail.name), value: `\`\`\`${cmd.name}\`\`\``});
+        if (cmd.name) embed.addFields({ name: handlemsg(client.la[ls].cmds.info.help.detail.name), value: `\`\`\`${cmd.name}\`\`\`` });
         if (cmd.name) embed.setTitle(handlemsg(client.la[ls].cmds.info.help.detail.about, { cmdname: cmd.name }));
-        if (cmd.description) embed.addFields({ name: handlemsg(client.la[ls].cmds.info.help.detail.desc), value: `\`\`\`${cmd.description}\`\`\``});
+        if (cmd.description) embed.addFields({ name: handlemsg(client.la[ls].cmds.info.help.detail.desc), value: `\`\`\`${cmd.description}\`\`\`` });
         if (cmd.aliases && cmd.aliases.length > 0 && cmd.aliases[0].length > 1) try {
-          embed.addFields({ name: handlemsg(client.la[ls].cmds.info.help.detail.aliases), value: `\`${cmd.aliases.map((a) => `${a}`).join("`, `")}\``});
+          embed.addFields({ name: handlemsg(client.la[ls].cmds.info.help.detail.aliases), value: `\`${cmd.aliases.map((a) => `${a}`).join("`, `")}\`` });
         } catch { }
-        if (cmd.cooldown) embed.addFields({ name: handlemsg(client.la[ls].cmds.info.help.detail.cooldown), value: `\`\`\`${cmd.cooldown} Seconds\`\`\``});
-        else embed.addFields({ name: handlemsg(client.la[ls].cmds.info.help.detail.cooldown), value: `\`\`\`3 Seconds\`\`\``});
+        if (cmd.cooldown) embed.addFields({ name: handlemsg(client.la[ls].cmds.info.help.detail.cooldown), value: `\`\`\`${cmd.cooldown} Seconds\`\`\`` });
+        else embed.addFields({ name: handlemsg(client.la[ls].cmds.info.help.detail.cooldown), value: `\`\`\`3 Seconds\`\`\`` });
         if (cmd.usage) {
-          embed.addFields({ name: handlemsg(client.la[ls].cmds.info.help.detail.usage), value: `\`\`\`${prefix}${cmd.usage}\`\`\``});
-          embed.setFooter(handlemsg(client.la[ls].cmds.info.help.detail.syntax), es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL());
+          embed.addFields({ name: handlemsg(client.la[ls].cmds.info.help.detail.usage), value: `\`\`\`${prefix}${cmd.usage}\`\`\`` });
+          embed.setFooter(handlemsg(client.la[ls].cmds.info.help.detail.syntax), es.footericon && (es.footericon?.includes("http://") || es.footericon?.includes("https://")) ? es.footericon : client.user.displayAvatarURL());
         }
         return message.reply({ embeds: [embed] });
       } else {
@@ -267,7 +267,7 @@ module.exports = {
         const allbuttons = [buttonRow, SelectionRow]
         //define default embed
         let OverviewEmbed = new MessageEmbed()
-          .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
+          .setColor(es.color).setThumbnail(es.thumb ? es.footericon && (es.footericon?.includes("http://") || es.footericon?.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
           //.setFooter("Page Overview\n"+ client.user.username, client.user.displayAvatarURL())
           .setFooter({ text: "Page Overview\n" + client.user.username, iconURL: client.user.displayAvatarURL() })
           .setTitle(`Information about __${client.user.username}__`)
@@ -406,29 +406,29 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "🔰 Info").size}\`] 🔰 Information Commands 🔰`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "🔰 Info").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
-              value: "__**Sub-Categorized Commands:**__" 
+            {
+              name: "\u200b",
+              value: "__**Sub-Categorized Commands:**__"
             },
-            { 
-              name: `🙂 **User Commands**`, 
-              value: ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "user").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲") 
+            {
+              name: `🙂 **User Commands**`,
+              value: ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "user").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: `🕹️ **Games Related Commands**`, 
-              value: ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "games").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲") 
+            {
+              name: `🕹️ **Games Related Commands**`,
+              value: ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "games").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: `${customEmojis.companies.discord} **Server Related Commands**`, 
-              value: ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "server").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲") 
+            {
+              name: `${customEmojis.companies.discord} **Server Related Commands**`,
+              value: ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "server").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: `${customEmojis.help.botFlag} **Bot Related Commands**`, 
-              value: ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "bot").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲") 
+            {
+              name: `${customEmojis.help.botFlag} **Bot Related Commands**`,
+              value: ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "bot").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: `${customEmojis.help.builder} **Util Related Commands**`, 
-              value: ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "util").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲") 
+            {
+              name: `${customEmojis.help.builder} **Util Related Commands**`,
+              value: ">>> " + client.commands.filter((cmd) => cmd.category === "🔰 Info" && cmd.type === "util").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             }
           )
         embeds.push(embed0)
@@ -438,20 +438,20 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "💸 Economy").size}\`] 💸 Economy Commands 💸 | ${settings.ECONOMY ? `${customEmojis.general.yes} ENABLED` : `${customEmojis.general.no} DISABLED`}`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "💸 Economy").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
+            {
+              name: "\u200b",
               value: "__**Sub-Categorized Commands:**__"
             },
-            { 
-              name: `🕹️ **Mini Game to earn 💸**`, 
+            {
+              name: `🕹️ **Mini Game to earn 💸**`,
               value: ">>> " + client.commands.filter((cmd) => cmd.category === "💸 Economy" && cmd.type === "game").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: `:clock1: **Repeatingly earn 💸 via Event(s)**`, 
+            {
+              name: `:clock1: **Repeatingly earn 💸 via Event(s)**`,
               value: ">>> " + client.commands.filter((cmd) => cmd.category === "💸 Economy" && cmd.type === "earn").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: `${customEmojis.help.builder} **Information & Manage 💸**`, 
+            {
+              name: `${customEmojis.help.builder} **Information & Manage 💸**`,
               value: ">>> " + client.commands.filter((cmd) => cmd.category === "💸 Economy" && cmd.type === "info").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             }
           );
@@ -462,16 +462,16 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "🏫 School Commands").size}\`] 🏫 School Commands 🏫 | ${settings.SCHOOL ? `${customEmojis.general.yes} ENABLED` : `${customEmojis.general.no} DISABLED`}`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "🏫 School Commands").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
+            {
+              name: "\u200b",
               value: "__**Sub-Categorized Commands:**__"
             },
-            { 
-              name: `:school: **Mathematics**`, 
+            {
+              name: `:school: **Mathematics**`,
               value: ">>> " + client.commands.filter((cmd) => cmd.category === "🏫 School Commands" && cmd.type === "math").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: `:clock1: **Time Management**`, 
+            {
+              name: `:clock1: **Time Management**`,
               value: ">>> " + client.commands.filter((cmd) => cmd.category === "🏫 School Commands" && cmd.type === "time").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             }
           )
@@ -482,21 +482,21 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "🎶 Music").size}\`] 🎶 Music Commands 🎶 | ${settings.MUSIC ? `${customEmojis.general.yes} ENABLED` : `${customEmojis.general.no} DISABLED`}`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "🎶 Music").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
-              value: "__**Sub-Categorized Commands:**__" 
+            {
+              name: "\u200b",
+              value: "__**Sub-Categorized Commands:**__"
             },
-            { 
-              name: "📑 **Queue Commands**", 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "🎶 Music" && cmd.type.includes("queue")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+            {
+              name: "📑 **Queue Commands**",
+              value: "> " + client.commands.filter((cmd) => cmd.category === "🎶 Music" && cmd.type?.includes("queue")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: `${customEmojis.general.playingAudio} **Song Commands**`, 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "🎶 Music" && cmd.type.includes("song")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+            {
+              name: `${customEmojis.general.playingAudio} **Song Commands**`,
+              value: "> " + client.commands.filter((cmd) => cmd.category === "🎶 Music" && cmd.type?.includes("song")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: `${customEmojis.help.botFlag} **Bot Commands**`, 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "🎶 Music" && cmd.type.includes("bot")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+            {
+              name: `${customEmojis.help.botFlag} **Bot Commands**`,
+              value: "> " + client.commands.filter((cmd) => cmd.category === "🎶 Music" && cmd.type?.includes("bot")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             }
           );
         if (!filterdisabled || settings.MUSIC || settings.showdisabled) embeds.push(embed3)
@@ -512,12 +512,12 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "⚜️ Custom Queue(s)").first().extracustomdesc.length}\`] ⚜️ Custom Queue(s) Commands ⚜️ | ${settings.CUSTOMQUEUE ? `${customEmojis.general.yes} ENABLED` : `${customEmojis.general.no} DISABLED`}`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "⚜️ Custom Queue(s)").first().extracustomdesc.split(",").map(i => i?.trim()).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
+            {
+              name: "\u200b",
               value: "\u200b"
             },
-            { 
-              name: `${customEmojis.general.yes} **Usage**`, 
+            {
+              name: `${customEmojis.general.yes} **Usage**`,
               value: "> " + client.commands.filter((cmd) => cmd.category === "⚜️ Custom Queue(s)").first().usage
             }
           );
@@ -528,29 +528,29 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "🚫 Administration").size}\`] 🚫 Admin Commands 🚫`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "🚫 Administration").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
-              value: "__**Sub-Categorized Commands:**__" 
+            {
+              name: "\u200b",
+              value: "__**Sub-Categorized Commands:**__"
             },
-            { 
-              name: `${customEmojis.companies.discord} **Server Related Commands**`, 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("server")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+            {
+              name: `${customEmojis.companies.discord} **Server Related Commands**`,
+              value: "> " + client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type?.includes("server")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: `${customEmojis.general.channel} **Channel Related Commands**`, 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("channel")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+            {
+              name: `${customEmojis.general.channel} **Channel Related Commands**`,
+              value: "> " + client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type?.includes("channel")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: `${customEmojis.general.threadChannel} **Thread Related Commands**`, 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("thread")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+            {
+              name: `${customEmojis.general.threadChannel} **Thread Related Commands**`,
+              value: "> " + client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type?.includes("thread")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: `${customEmojis.general.roles} **Role Related Commands**`, 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("role")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+            {
+              name: `${customEmojis.general.roles} **Role Related Commands**`,
+              value: "> " + client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type?.includes("role")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
-            { 
-              name: "🙂 **Member Related Commands**", 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type.includes("member")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+            {
+              name: "🙂 **Member Related Commands**",
+              value: "> " + client.commands.filter((cmd) => cmd.category === "🚫 Administration" && cmd.type?.includes("member")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             }
           );
         embeds.push(embed6)
@@ -560,25 +560,25 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "💪 Setup").size}\`] 💪 Setup Commands 💪`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "💪 Setup").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
-              value: "__**Sub-Categorized Commands:**__" 
-            },
-            { 
-              name: "😛 **Setups for Entertainment**", 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type.includes("fun")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
-            },
-            { 
-              name: "💡 **Information & Manage (Bot/Server) Settings**", 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type.includes("info")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+            {
+              name: "\u200b",
+              value: "__**Sub-Categorized Commands:**__"
             },
             {
-              name: `${customEmojis.general.development} **Most used Systems**`, 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type.includes("system")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+              name: "😛 **Setups for Entertainment**",
+              value: "> " + client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type?.includes("fun")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
             {
-              name: `${customEmojis.help.builder} **Security Systems**`, 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type.includes("security")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+              name: "💡 **Information & Manage (Bot/Server) Settings**",
+              value: "> " + client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type?.includes("info")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+            },
+            {
+              name: `${customEmojis.general.development} **Most used Systems**`,
+              value: "> " + client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type?.includes("system")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+            },
+            {
+              name: `${customEmojis.help.builder} **Security Systems**`,
+              value: "> " + client.commands.filter((cmd) => cmd.category === "💪 Setup" && cmd.type?.includes("security")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             }
           );
         embeds.push(embed7)
@@ -588,21 +588,21 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "⚙️ Settings").size}\`] ⚙️ Settings Commands ⚙️`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "⚙️ Settings").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
-              value: "__**Sub-Categorized Commands:**__" 
+            {
+              name: "\u200b",
+              value: "__**Sub-Categorized Commands:**__"
             },
             {
-              name: "🙂 **User Related Commands**", 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "⚙️ Settings" && cmd.type.includes("user")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+              name: "🙂 **User Related Commands**",
+              value: "> " + client.commands.filter((cmd) => cmd.category === "⚙️ Settings" && cmd.type?.includes("user")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
             {
-              name: `${customEmojis.help.botFlag} **Bot Related Commands**`, 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "⚙️ Settings" && cmd.type.includes("bot")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+              name: `${customEmojis.help.botFlag} **Bot Related Commands**`,
+              value: "> " + client.commands.filter((cmd) => cmd.category === "⚙️ Settings" && cmd.type?.includes("bot")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
             {
-              name: "🎶 **Music Related Commands**", 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "⚙️ Settings" && cmd.type.includes("music")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+              name: "🎶 **Music Related Commands**",
+              value: "> " + client.commands.filter((cmd) => cmd.category === "⚙️ Settings" && cmd.type?.includes("music")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             }
           );
         embeds.push(embed8)
@@ -612,17 +612,17 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "👑 Owner").size}\`] 👑 Owner Commands 👑`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "👑 Owner").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
-              value: "__**Sub-Categorized Commands:**__" 
+            {
+              name: "\u200b",
+              value: "__**Sub-Categorized Commands:**__"
             },
             {
-              name: `${customEmojis.companies.discord} **Information & Manage**`, 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "👑 Owner" && cmd.type.includes("info")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+              name: `${customEmojis.companies.discord} **Information & Manage**`,
+              value: "> " + client.commands.filter((cmd) => cmd.category === "👑 Owner" && cmd.type?.includes("info")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
             {
-              name: `${customEmojis.help.botFlag} **Adjust the Bot**`, 
-              value: "> " + client.commands.filter((cmd) => cmd.category === "👑 Owner" && cmd.type.includes("bot")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
+              name: `${customEmojis.help.botFlag} **Adjust the Bot**`,
+              value: "> " + client.commands.filter((cmd) => cmd.category === "👑 Owner" && cmd.type?.includes("bot")).sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             }
           );
         embeds.push(embed9)
@@ -638,16 +638,16 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "📈 Ranking").size}\`] 📈 Ranking Commands 📈 | ${settings.RANKING ? `${customEmojis.general.yes} ENABLED` : `${customEmojis.general.no} DISABLED`}`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "📈 Ranking").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
-              value: "__**Sub-Categorized Commands:**__" 
+            {
+              name: "\u200b",
+              value: "__**Sub-Categorized Commands:**__"
             },
             {
-              name: `${customEmojis.help.builder} **Manage Rank**`, 
+              name: `${customEmojis.help.builder} **Manage Rank**`,
               value: `> ${client.commands.filter((cmd) => cmd.category === "📈 Ranking" && cmd.type === "manage").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}`
             },
             {
-              name: "📈 **Rank Information**", 
+              name: "📈 **Rank Information**",
               value: `> ${client.commands.filter((cmd) => cmd.category === "📈 Ranking" && cmd.type === "info").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}`
             }
           );
@@ -664,12 +664,12 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "🎤 Voice").first().extracustomdesc.length}\`] 🎤 Voice Commands 🎤 | ${settings.VOICE ? `${customEmojis.general.yes} ENABLED` : `${customEmojis.general.no} DISABLED`}`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "🎤 Voice").first().extracustomdesc.split(",").map(i => i?.trim()).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
+            {
+              name: "\u200b",
               value: "\u200b"
             },
             {
-              name: `${customEmojis.general.yes} **Usage**`, 
+              name: `${customEmojis.general.yes} **Usage**`,
               value: "> " + client.commands.filter((cmd) => cmd.category === "🎤 Voice").first().usage
             }
           );
@@ -680,20 +680,20 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "🕹️ Fun").size}\`] 🕹️ Fun Commands 🕹️ | ${settings.FUN ? `${customEmojis.general.yes} ENABLED` : `${customEmojis.general.no} DISABLED`}`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "🕹️ Fun").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
-              value: "__**Sub-Categorized Commands:**__" 
+            {
+              name: "\u200b",
+              value: "__**Sub-Categorized Commands:**__"
             },
             {
-              name: "🙂 **Fun User Image Commands**", 
+              name: "🙂 **Fun User Image Commands**",
               value: "> " + client.commands.filter((cmd) => cmd.category === "🕹️ Fun" && cmd.type === "user").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
             {
-              name: "🙂💬 **Fun User Image-Text Commands**", 
+              name: "🙂💬 **Fun User Image-Text Commands**",
               value: "> " + client.commands.filter((cmd) => cmd.category === "🕹️ Fun" && cmd.type === "usertext").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             },
             {
-              name: "💬 **Fun Text Commands**", 
+              name: "💬 **Fun Text Commands**",
               value: "> " + client.commands.filter((cmd) => cmd.category === "🕹️ Fun" && cmd.type === "text").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")
             }
           );
@@ -703,20 +703,20 @@ module.exports = {
         var embed15 = new MessageEmbed()
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "🎮 MiniGames").size}\`] 🎮 Mini Games Commands 🎮 | ${settings.MINIGAMES ? `${customEmojis.general.yes} ENABLED` : `${customEmojis.general.no} DISABLED`}`)
           .addFields(
-            { 
-              name: "\u200b", 
-              value: "__**Sub-Categorized Commands:**__" 
+            {
+              name: "\u200b",
+              value: "__**Sub-Categorized Commands:**__"
             },
             {
-              name: "💬 **Text Based Minigames**", 
+              name: "💬 **Text Based Minigames**",
               value: `> ${client.commands.filter((cmd) => cmd.category === "🎮 MiniGames" && cmd.type === "text").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}`
             },
             {
-              name: "🔘 **Button(s) Minigames**", 
+              name: "🔘 **Button(s) Minigames**",
               value: `> ${client.commands.filter((cmd) => cmd.category === "🎮 MiniGames" && cmd.type === "buttons").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}`
             },
             {
-              name: "🎙️ **Voice Minigames**", 
+              name: "🎙️ **Voice Minigames**",
               value: `> ${client.commands.filter((cmd) => cmd.category === "🎮 MiniGames" && cmd.type === "voice").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}`
             }
           )
@@ -728,16 +728,16 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "😳 Anime-Emotions").size}\`] 😳 Anime Commands 😳 | ${settings.ANIME ? `${customEmojis.general.yes} ENABLED` : `${customEmojis.general.no} DISABLED`}`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "😳 Anime-Emotions").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
-              value: "__**Sub-Categorized Commands:**__" 
+            {
+              name: "\u200b",
+              value: "__**Sub-Categorized Commands:**__"
             },
             {
-              name: "😳 **Anime-Mention-Emotions (or Self.)**", 
+              name: "😳 **Anime-Mention-Emotions (or Self.)**",
               value: `> ${client.commands.filter((cmd) => cmd.category === "😳 Anime-Emotions" && cmd.type === "mention").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}`
             },
             {
-              name: "😳 **Anime-Self-Emotions**", 
+              name: "😳 **Anime-Self-Emotions**",
               value: `> ${client.commands.filter((cmd) => cmd.category === "😳 Anime-Emotions" && cmd.type === "self").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}`
             }
           );
@@ -748,16 +748,16 @@ module.exports = {
           .setTitle(`[\`${client.commands.filter((cmd) => cmd.category === "🔞 NSFW").size}\`] 🔞 NSFW Commands 🔞 | ${settings.NSFW ? `${customEmojis.general.yes} ENABLED` : `${customEmojis.general.no} DISABLED`}`)
           .setDescription(`> *${client.commands.filter((cmd) => cmd.category === "🔞 NSFW").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}*`)
           .addFields(
-            { 
-              name: "\u200b", 
-              value: "__**Sub-Categorized Commands:**__" 
+            {
+              name: "\u200b",
+              value: "__**Sub-Categorized Commands:**__"
             },
             {
-              name: "😳 **Animated (Hentai, Neko, SFW, ...)**", 
+              name: "😳 **Animated (Hentai, Neko, SFW, ...)**",
               value: `> ${client.commands.filter((cmd) => cmd.category === "🔞 NSFW" && cmd.type === "anime").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}`
             },
             {
-              name: "🔞 **Reallife (Porn, Erotik, etc.)**", 
+              name: "🔞 **Reallife (Porn, Erotik, etc.)**",
               value: `> ${client.commands.filter((cmd) => cmd.category === "🔞 NSFW" && cmd.type === "real").sort((a, b) => a.name.localeCompare(b?.name)).map((cmd) => `\`${cmd.name}\``).join("︲")}`
             }
           );
@@ -777,7 +777,7 @@ module.exports = {
         return embeds.map((embed, index) => {
           return embed
             .setColor(es.color)
-            .setThumbnail(es.thumb ? es.footericon && (es.footericon.includes("http://") || es.footericon.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
+            .setThumbnail(es.thumb ? es.footericon && (es.footericon?.includes("http://") || es.footericon?.includes("https://")) ? es.footericon : client.user.displayAvatarURL() : null)
             .setFooter(client.getFooter(`Page ${index + 1} / ${embeds.length}\nTo see command Descriptions and Information, type: ${config.prefix}help [CMD NAME]`, client.user.displayAvatarURL()));
         })
       }
