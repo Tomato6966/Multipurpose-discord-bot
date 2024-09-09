@@ -31,8 +31,9 @@ import "dotenv/config";
 import chalk from 'chalk';
 import { dirname } from 'path';
 import { fileURLToPath } from 'node:url';
-import type { Collection, PresenceStatusData } from "discord.js";
+import type { Collection, EmbedFooterOptions, PresenceStatusData } from "discord.js";
 import Enmap from "enmap";
+import { Manager } from "erela.js";
 
 let StatusTypes = {
     competing: ActivityType.Competing,
@@ -44,7 +45,7 @@ let StatusTypes = {
 };
 
 interface Language {
-    [key: string]: unknown;
+    [key: string]: any;
 }
 
 interface Advertisement {
@@ -112,6 +113,16 @@ export interface ExtendedClient extends Client {
     mutes: Enmap;
     afkDB: Enmap;
     setups: Enmap;
+    slashCommands: Collection<string, any>;
+    invites: {};
+    categories: string[];
+    cooldowns: Collection<any, any>;
+    defaultEQ: any;
+    bassboost: any;
+    eqs: any;
+    manager: Manager;
+    getFooter(es: any, stringurl?: string): EmbedFooterOptions;
+    getInvite(id: string): Promise<String>;
 }
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -257,7 +268,7 @@ for (const folder of eventFolders) {
         allevents.push(`${event.name}`);
     };
 }
-console.log(chalk.magenta(`[x] :: `) + chalk.green(chalk.greenBright(`LOADED THE ${allevents.length} EVENTS after: `) + `${Date.now() - dateNow}ms`))
+console.log(chalk.magenta(`[x] :: `) + chalk.green(chalk.greenBright(`Loaded the ${allevents.length} Events after: `) + `${Date.now() - dateNow}ms`))
 try {
     const stringlength2 = 69;
     console.log("\n")
