@@ -1,6 +1,10 @@
+import chalk from "chalk";
 import { ExtendedClient } from "..";
 
 export default (client: ExtendedClient) => {
+    let dateNow = Date.now();
+    console.log(chalk.greenBright(`${String(chalk.magenta("[x] :: "))}Now loading the Extra Client Events...`));
+
     client.getFooter = (es, stringurl) => {
         //allow inputs: ({footericon, footerurl}) and (footericon, footerurl);
         let embedData: any = {};
@@ -37,4 +41,6 @@ export default (client: ExtendedClient) => {
         // Return the footerobject
         return { text, iconURL };
     };
+
+    console.log(chalk.magenta(`[x] :: `) + chalk.greenBright(`Loaded the Extra Client Events after: `) + chalk.green(`${Date.now() - dateNow}ms`));
 }
