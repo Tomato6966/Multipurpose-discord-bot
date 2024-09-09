@@ -220,7 +220,7 @@ function requireHandlers() {
             if (module.default) {
                 module.default(client);
             } else {
-                console.log(chalk.grey("No Default Export found for Handler: ") + handler);
+                if (config.debug) console.log(chalk.grey("No Default Export found for Handler: ") + handler);
             }
         } catch (e) {
             console.log(e.stack ? chalk.grey(String(e.stack)) : chalk.grey(String(e)));
@@ -236,7 +236,7 @@ function requireHandlers() {
             if (module.default) {
                 module.default(client);
             } else {
-                console.log(chalk.grey("No Default Export found for Handler: ") + handler);
+                if (config.debug) console.log(chalk.grey("No Default Export found for Handler: ") + handler);
             }
         } catch (e) {
             console.log(e.stack ? chalk.grey(String(e.stack)) : chalk.grey(String(e)));
