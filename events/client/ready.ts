@@ -6,7 +6,6 @@ import type { ExtendedClient } from "../..";
 import chalk from "chalk"
 import { change_status } from "../../functions/statusChange";
 
-// TODO: Fix client.stats
 export default {
     name: Events.ClientReady,
     once: true,

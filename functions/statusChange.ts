@@ -26,9 +26,9 @@ export function change_status(client: ExtendedClient) {
                 .replace("{createdime}", moment(client.user.createdTimestamp).format("HH:mm:ss"))
                 .replace("{name}", client.user.username)
                 .replace("{tag}", client.user.tag)
-                .replace("{commands}", `${client.commands?.size ? client.commands.size : 0}`),
-            // .replace("{usedcommands}", nFormatter(Math.ceil(client.stats.get("global", "commands") * [...client.guilds.cache.values()].length / 10), 2))
-            // .replace("{songsplayed}", nFormatter(Math.ceil(client.stats.get("global", "songs") * [...client.guilds.cache.values()].length / 10), 2))
+                .replace("{commands}", `${client.commands?.size ? client.commands.size : 0}`)
+                .replace("{usedcommands}", nFormatter(Math.ceil(client.stats.get("global", "commands") * [...client.guilds.cache.values()].length / 10), 2))
+                .replace("{songsplayed}", nFormatter(Math.ceil(client.stats.get("global", "songs") * [...client.guilds.cache.values()].length / 10), 2)),
             type: StatusTypes[config.status.type.toLowerCase()],
             url: config.status.url
         });
@@ -45,9 +45,9 @@ export function change_status(client: ExtendedClient) {
                 .replace("{createdime}", moment(client.user.createdTimestamp).format("HH:mm:ss"))
                 .replace("{name}", client.user.username)
                 .replace("{tag}", client.user.tag)
-                .replace("{commands}", `${client.commands?.size ? client.commands.size : 0}`),
-            // .replace("{usedcommands}", nFormatter(Math.ceil(client.stats.get("global", "commands") * [...client.guilds.cache.values()].length / 10), 2))
-            // .replace("{songsplayed}", nFormatter(Math.ceil(client.stats.get("global", "songs") * [...client.guilds.cache.values()].length / 10), 2))
+                .replace("{commands}", `${client.commands?.size ? client.commands.size : 0}`)
+                .replace("{usedcommands}", nFormatter(Math.ceil(client.stats.get("global", "commands") * [...client.guilds.cache.values()].length / 10), 2))
+                .replace("{songsplayed}", nFormatter(Math.ceil(client.stats.get("global", "songs") * [...client.guilds.cache.values()].length / 10), 2)),
             type: StatusTypes[config.status.type.toLowerCase()],
             url: config.status.url
         });
@@ -65,3 +65,13 @@ export function change_status(client: ExtendedClient) {
         }, (90 - 15) * 1000);
     }
 }
+
+/**********************************************************
+ * @INFO
+ * Bot Coded by Tomato#6966 | https://discord.gg/milrato
+ * @INFO
+ * Work for Milrato Development | https://milrato.eu
+ * @INFO
+ * Please mention him / Milrato Development, when using this Code!
+ * @INFO
+ *********************************************************/
