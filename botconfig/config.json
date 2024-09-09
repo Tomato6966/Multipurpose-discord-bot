@@ -1,6 +1,7 @@
 {
     "token": "GET from: https://discord.com/developers/applications",
     "prefix": "//",
+    "debug": false,
     "ownerIDS": [
         "442355791412854784"
     ],
@@ -8,9 +9,10 @@
     "fortnitetracker": "GET from: https://fortnitetracker.com",
     "memer_api": "GET from: https://discord.gg/Mc2FudJkgP",
     "status": {
+        "mode": "online",
         "text": "{prefix}help | on {guildcount} Servers, with {membercount} Members | Played: {songsplayed} Songs",
         "text2": "By: discord.gg/dcdev",
-        "type": "PLAYING",
+        "type": "custom",
         "url": "https://twitch.tv/milratodiscordbot"
     },
     "clientsettings": {
