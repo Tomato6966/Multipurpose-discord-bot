@@ -59,19 +59,12 @@ interface Advertisement {
     textad: string;
 }
 
-interface Command {
-    name: string;
-    aliases: string[];
-}
-
 interface Stat {
     timestamp: number;
     type: string;
 }
 
 type StatKey = string;
-
-interface CommandCollection extends Collection<string, Command> { }
 
 interface AliasCollection extends Collection<string, string> { }
 
@@ -80,7 +73,7 @@ interface StatsCollection extends Collection<StatKey, Stat[]> { }
 export interface ExtendedClient extends Client {
     la: { [lang: string]: Language };
     ad: Advertisement;
-    commands: CommandCollection;
+    commands: Collection<any, any>;
     aliases: AliasCollection;
     notes: Enmap;
     economy: Enmap;
@@ -96,6 +89,8 @@ export interface ExtendedClient extends Client {
     modActions: Enmap;
     userProfiles: Enmap;
     jtcsettings: Enmap;
+    jtcsettings2: Enmap;
+    jtcsettings3: Enmap;
     roster: Enmap;
     autosupport: Enmap;
     menuticket: Enmap;

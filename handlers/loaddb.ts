@@ -195,7 +195,7 @@ export default (client: ExtendedClient) => {
     for (let i = -1; i <= 100; i++) ensureObject[`applytickets${i != -1 ? i : ""}`] = [];
     for (let i = -1; i <= 100; i++) ensureObject[`menutickets${i != -1 ? i : ""}`] = [];
     client.setups.ensure("TICKETS", ensureObject);
-    console.log(chalk.magenta(`[x] :: `) + chalk.greenBright(`LOADED THE DATABASES after: `) + chalk.green(`${Date.now() - dateNow}ms`))
+    console.log(chalk.magenta(`[x] :: `) + chalk.greenBright(`Loaded the Databases after: `) + chalk.green(`${Date.now() - dateNow}ms`))
 };
 
 /**********************************************************

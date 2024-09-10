@@ -233,3 +233,422 @@ export function handlemsg(txt, options) {
     }
     return text;
 };
+
+export function escapeRegex(str: string) {
+    try {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
+    } catch (e) {
+        console.log(chalk.grey.bgRed(e.stack));
+    }
+};
+
+export function databasing(client: ExtendedClient, guildid: string, userid: string) {
+    if (!client || client == undefined || !client.user || client.user == undefined) return;
+    try {
+        if (guildid) {
+            dbEnsure(client.customcommands, guildid, {
+                commands: []
+            });
+            dbEnsure(client.keyword, guildid, {
+                commands: []
+            })
+            /**
+            * @INFO
+            * Bot Coded by Tomato#6966 | https://discord.gg/milrato
+            * @INFO
+            * Work for Milrato Development | https://milrato.eu
+            * @INFO
+            * Please mention him / Milrato Development, when using this Code!
+            * @INFO
+            */
+
+            dbEnsure(client.social_log, guildid, {
+                tiktok: {
+                    channels: [],
+                    dc_channel: ""
+                },
+                youtube: {
+                    channels: [],
+                    dc_channel: ""
+                },
+                twitter: {
+                    TWITTER_USER_ID: "",
+                    TWITTER_USER_NAME_ONLY_THOSE: "",
+                    DISCORD_CHANNEL_ID: "",
+                    latesttweet: "",
+                    REETWET: false,
+                    infomsg: "**{Twittername}** posted a new Tweet:\n\n{url}"
+                },
+                secondtwitter: {
+                    TWITTER_USER_ID: "",
+                    TWITTER_USER_NAME_ONLY_THOSE: "",
+                    DISCORD_CHANNEL_ID: "",
+                    latesttweet: "",
+                    REETWET: false,
+                    infomsg: "**{Twittername}** posted a new Tweet:\n\n{url}"
+                },
+                twitch: {
+                    DiscordServerId: guildid,
+                    channelId: "",
+                    roleID_PING: "",
+                    roleID_GIVE: "",
+                    channels: [],
+                }
+            })
+
+            for (let i = 0; i <= 25; i++) {
+                let index = i + 1;
+                dbEnsure(client[`roster${index != 1 ? index : ""}`], guildid, {
+                    rosterchannel: "notvalid",
+                    rosteremoji: "➤",
+                    rostermessage: "",
+                    rostertitle: "Roster",
+                    rosterstyle: "1",
+                    rosterroles: [],
+                    inline: false,
+                })
+            };
+
+            dbEnsure(client.stats, guildid, {
+                commands: 0,
+                songs: 0
+            });
+            dbEnsure(client.premium, guildid, {
+                enabled: false,
+            });
+
+            const ensureData = {
+                textchannel: "0",
+                voicechannel: "0",
+                category: "0",
+                message_cmd_info: "0",
+                message_queue_info: "0",
+                message_track_info: "0",
+                blacklist: {
+                    whitelistedroles: [],
+                    words: [],
+                    enabled: true
+                }
+            };
+
+            for (let i = 0; i <= 100; i++) {
+                ensureData[`ticketsystem${i}`] = {
+                    enabled: false,
+                    guildid: guildid,
+                    defaultname: "🎫・{count}・{member}",
+                    messageid: "",
+                    channelid: "",
+                    parentid: "",
+                    claim: {
+                        enabled: false,
+                        messageOpen: "Dear {user}!\n> *Please wait until a Staff Member, claimed your Ticket!*",
+                        messageClaim: "{claimer} **has claimed the Ticket!**\n> He will now give {user} support!"
+                    },
+                    message: "Hey {user}, thanks for opening an ticket! Someone will help you soon!",
+                    adminroles: []
+                }
+            };
+
+            dbEnsure(client.setups, guildid, ensureData);
+            dbEnsure(client.blacklist, guildid, {
+                words: [],
+                mute_amount: 5,
+                whitelistedchannels: [],
+            });
+
+            dbEnsure(client.settings, guildid, {
+                prefix: config.prefix,
+                pruning: true,
+                requestonly: true,
+                autobackup: false,
+                defaultvolume: 30,
+                channel: "773836425678422046",
+                adminlog: "no",
+                dailyfact: "no",
+                reportlog: "no",
+                autoembeds: [],
+                volume: "69",
+                adminroles: [],
+                language: "en",
+
+                mute: {
+                    style: "timeout",
+                    roleId: "",
+                    defaultTime: 60000,
+                },
+
+                warnsettings: {
+                    ban: false,
+                    kick: false,
+                    roles: [
+                        /*
+                        { warncount: 0, roleid: "1212031723081723"}
+                        */
+                    ]
+                },
+
+                /**
+                 * @INFO
+                 * Bot Coded by Tomato#6966 | https://discord.gg/milrato
+                 * @INFO
+                 * Work for Milrato Development | https://milrato.eu
+                 * @INFO
+                 * Please mention him / Milrato Development, when using this Code!
+                 * @INFO
+                 */
+
+                showdisabled: true,
+
+                MUSIC: true,
+                FUN: true,
+                ANIME: true,
+                MINIGAMES: true,
+                ECONOMY: true,
+                SCHOOL: true,
+                NSFW: false,
+                VOICE: true,
+                RANKING: true,
+                PROGRAMMING: true,
+                CUSTOMQUEUE: true,
+                FILTER: true,
+                SOUNDBOARD: true,
+                antispam: {
+                    enabled: true,
+                    whitelistedchannels: [],
+                    limit: 7,
+                    mute_amount: 2,
+                },
+                antimention: {
+                    enabled: true,
+                    whitelistedchannels: [],
+                    limit: 5,
+                    mute_amount: 2,
+                },
+                antiemoji: {
+                    enabled: true,
+                    whitelistedchannels: [],
+                    limit: 10,
+                    mute_amount: 2,
+                },
+                anticaps: {
+                    enabled: true,
+                    whitelistedchannels: [],
+                    percent: 75,
+                    mute_amount: 2,
+                },
+                cmdadminroles: {
+                    removetimeout: [],
+                    timeout: [],
+                    idban: [],
+                    snipe: [],
+                    listbackups: [],
+                    loadbackup: [],
+                    createbackup: [],
+                    embed: [],
+                    editembed: [],
+                    editimgembed: [],
+                    imgembed: [],
+                    useridban: [],
+                    addrole: [],
+                    addroletoeveryone: [],
+                    ban: [],
+                    channellock: [],
+                    channelunlock: [],
+                    clear: [],
+                    clearbotmessages: [],
+                    close: [],
+                    copymessage: [],
+                    deleterole: [],
+                    detailwarn: [],
+                    dm: [],
+                    editembeds: [],
+                    editimgembeds: [],
+                    embeds: [],
+                    embedbuilder: [],
+                    esay: [],
+                    giveaway: [],
+                    image: [],
+                    imgembeds: [],
+                    kick: [],
+                    mute: [],
+                    nickname: [],
+                    unlockthread: [],
+                    unarchivethread: [],
+                    lockthread: [],
+                    archivethread: [],
+                    leavethread: [],
+                    lockchannel: [],
+                    unlockchannel: [],
+                    jointhread: [],
+                    jointhreads: [],
+                    setautoarchiveduration: [],
+                    tempmute: [],
+                    permamute: [],
+                    poll: [],
+                    react: [],
+                    removeallwarns: [],
+                    removerole: [],
+                    report: [],
+                    say: [],
+                    slowmode: [],
+                    suggest: [],
+                    ticket: [],
+                    unmute: [],
+                    unwarn: [],
+                    updatemessage: [],
+                    warn: [],
+                    warnings: [],
+                },
+                antilink: {
+                    enabled: false,
+                    whitelistedchannels: [],
+                    mute_amount: 2,
+                },
+                antidiscord: {
+                    enabled: false,
+                    whitelistedchannels: [],
+                    mute_amount: 2,
+                },
+                embed: {
+                    "color": ee.color,
+                    "thumb": true,
+                    "wrongcolor": ee.wrongcolor,
+                    "footertext": client.guilds.cache.get(guildid) ? client.guilds.cache.get(guildid)?.name : ee.footertext,
+                    "footericon": client.guilds.cache.get(guildid) ? client.guilds.cache.get(guildid)?.iconURL() : ee.footericon,
+                },
+                logger: {
+                    "channel": "no",
+                    "webhook_id": "",
+                    "webhook_token": ""
+                },
+                welcome: {
+                    captcha: false,
+                    roles: [],
+                    channel: "nochannel",
+
+                    secondchannel: "nochannel",
+                    secondmsg: ":wave: {user} **Welcome to our Server!** :v:",
+
+
+                    image: true,
+                    custom: "no",
+                    background: "transparent",
+                    frame: true,
+                    framecolor: "white",
+                    pb: true,
+                    invite: true,
+                    discriminator: true,
+                    membercount: true,
+                    servername: true,
+                    msg: "{user} Welcome to this Server",
+
+
+                    dm: false,
+                    imagedm: false,
+                    customdm: "no",
+                    backgrounddm: "transparent",
+                    framedm: true,
+                    framecolordm: "white",
+                    pbdm: true,
+                    invitedm: true,
+                    discriminatordm: true,
+                    membercountdm: true,
+                    servernamedm: true,
+                    dm_msg: "{user} Welcome to this Server"
+                },
+                leave: {
+                    channel: "nochannel",
+
+                    image: true,
+                    custom: "no",
+                    background: "transparent",
+                    frame: true,
+                    framecolor: "white",
+                    pb: true,
+                    invite: true,
+                    discriminator: true,
+                    membercount: true,
+                    servername: true,
+                    msg: "{user} left this Server",
+
+
+                    dm: true,
+
+                    imagedm: true,
+                    customdm: "no",
+                    backgrounddm: "transparent",
+                    framedm: true,
+                    framecolordm: "white",
+                    pbdm: true,
+                    invitedm: true,
+                    discriminatordm: true,
+                    membercountdm: true,
+                    servernamedm: true,
+                    dm_msg: "{user} left this Server"
+                },
+                song: "https://streams.ilovemusic.de/iloveradio14.mp3",
+                djroles: [],
+                djonlycmds: ["autoplay", "clearqueue", "forward", "loop", "jump", "loopqueue", "loopsong", "move", "pause", "resume", "removetrack", "removedupe", "restart", "rewind", "seek", "shuffle", "skip", "stop", "volume"],
+                botchannel: [],
+            });
+
+            dbEnsure(client.jtcsettings, guildid, {
+                prefix: ".",
+                channel: "",
+                channelname: "{user}' Room",
+                guild: guildid,
+            });
+            dbEnsure(client.jtcsettings2, guildid, {
+                channel: "",
+                channelname: "{user}' Channel",
+                guild: guildid,
+            });
+            dbEnsure(client.jtcsettings3, guildid, {
+                channel: "",
+                channelname: "{user}' Lounge",
+                guild: guildid,
+            });
+        };
+
+        if (userid) {
+            dbEnsure(client.premium, userid, {
+                enabled: false,
+            })
+            dbEnsure(client.queuesaves, userid, {
+                "TEMPLATEQUEUEINFORMATION": ["queue", "sadasd"]
+            });
+            dbEnsure(client.settings, userid, {
+                dm: true,
+            })
+            dbEnsure(client.stats, guildid + userid, {
+                ban: [],
+                kick: [],
+                mute: [],
+                ticket: [],
+                says: [],
+                warn: [],
+            })
+        };
+
+        if (userid && guildid) {
+            dbEnsure(client.stats, guildid + userid, {
+                ban: [],
+                kick: [],
+                mute: [],
+                ticket: [],
+                says: [],
+                warn: [],
+            });
+            dbEnsure(client.userProfiles, userid, {
+                id: userid,
+                guild: guildid,
+                totalActions: 0,
+                warnings: [],
+                kicks: []
+            });
+        };
+        return;
+    } catch (e) {
+        console.log(chalk.grey.bgRed(String(e.stack)));
+    }
+}
