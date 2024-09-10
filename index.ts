@@ -34,6 +34,7 @@ import { fileURLToPath } from 'node:url';
 import type { Collection, EmbedFooterOptions, PresenceStatusData } from "discord.js";
 import Enmap from "enmap";
 import { Manager } from "erela.js";
+import { GiveawaysManager } from "discord-giveaways";
 
 let StatusTypes = {
     competing: ActivityType.Competing,
@@ -108,6 +109,9 @@ export interface ExtendedClient extends Client {
     mutes: Enmap;
     afkDB: Enmap;
     setups: Enmap;
+    backupDB: Enmap;
+    giveawayDB: Enmap;
+    giveawaysManager: GiveawaysManager;
     slashCommands: Collection<string, any>;
     invites: {};
     categories: string[];
