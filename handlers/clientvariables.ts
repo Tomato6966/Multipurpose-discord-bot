@@ -10,7 +10,6 @@ export default (client: ExtendedClient) => {
    * This will be all of our CLIENT VARIABLES for the commands as well as a cooldown system for each cmd!
    */
     let dateNow = Date.now();
-    console.log(chalk.greenBright(`${String(chalk.magenta("[x] :: "))}Now loading the Client Variables...`));
 
     client.invites = {};
     client.commands = new Collection();
@@ -731,7 +730,10 @@ export default (client: ExtendedClient) => {
         earrape: client.bassboost.earrape
     };
 
-    console.log(chalk.magenta(`[x] :: `) + chalk.greenBright(`Loaded the Client Variables after: `) + chalk.green(`${Date.now() - dateNow}ms`))
+    const time = `${Date.now() - dateNow}ms`;
+    const box = `${String(chalk.magenta("[x] :: "))}`
+    const stringlength2 = 69;
+    console.log(chalk.bold.greenBright(`     ┃ `) + chalk.bold.greenBright(`${box}Loaded the Client Variables after: ${chalk.green(`${Date.now() - dateNow}ms`)}`) + " ".repeat(-1 + stringlength2 - ` ┃ `.length - `[x] :: Loaded the Client Variables after: ${time}`.length) + chalk.bold.greenBright("┃"));
     return;
 };
 

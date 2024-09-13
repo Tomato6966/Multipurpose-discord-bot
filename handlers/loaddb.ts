@@ -4,7 +4,6 @@ import { ExtendedClient } from "..";
 
 export default (client: ExtendedClient) => {
     let dateNow = Date.now();
-    console.log(chalk.greenBright(`${String(chalk.magenta("[x] :: "))}Now loading the Database...`));
     client.notes = new Enmap({
         name: "notes",
         dataDir: "./databases/economy"
@@ -195,7 +194,11 @@ export default (client: ExtendedClient) => {
     for (let i = -1; i <= 100; i++) ensureObject[`applytickets${i != -1 ? i : ""}`] = [];
     for (let i = -1; i <= 100; i++) ensureObject[`menutickets${i != -1 ? i : ""}`] = [];
     client.setups.ensure("TICKETS", ensureObject);
-    console.log(chalk.magenta(`[x] :: `) + chalk.greenBright(`Loaded the Databases after: `) + chalk.green(`${Date.now() - dateNow}ms`))
+
+    const time = `${Date.now() - dateNow}ms`;
+    const box = `${String(chalk.magenta("[x] :: "))}`
+    const stringlength2 = 69;
+    console.log(chalk.bold.greenBright(`     ┃ `) + chalk.bold.greenBright(`${box}Loaded the Databases after: ${chalk.green(`${Date.now() - dateNow}ms`)}`) + " ".repeat(-1 + stringlength2 - ` ┃ `.length - `[x] :: Loaded the Databases after: ${time}`.length) + chalk.bold.greenBright("┃"));
 };
 
 /**********************************************************

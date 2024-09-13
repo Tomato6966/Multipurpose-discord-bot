@@ -76,6 +76,7 @@ export interface ExtendedClient extends Client {
     ad: Advertisement;
     commands: Collection<any, any>;
     aliases: AliasCollection;
+    Anti_Nuke_System: Enmap;
     notes: Enmap;
     economy: Enmap;
     invitesdb: Enmap;
@@ -193,6 +194,57 @@ client.ad = {
 }
 
 /**********************************************************
+ * EXTRA: Advertismenent
+ *********************************************************/
+console.log(chalk.black(`
+=========================================================
+`));
+console.log(chalk.black(`
+████████╗██████╗ ██╗   ██╗                               
+╚══██╔══╝██╔══██╗╚██╗ ██╔╝                               
+   ██║   ██████╔╝ ╚████╔╝                                
+   ██║   ██╔══██╗  ╚██╔╝                                 
+   ██║   ██║  ██║   ██║                                  
+   ╚═╝   ╚═╝  ╚═╝   ╚═╝                                  `))
+
+const blurple = chalk.hex("#5865F2");
+console.log(blurple(`
+███╗   ███╗██╗██╗   ██╗ █████╗ ████████╗ ██████╗ ██████╗ 
+████╗ ████║██║██║   ██║██╔══██╗╚══██╔══╝██╔═══██╗██╔══██╗
+██╔████╔██║██║██║   ██║███████║   ██║   ██║   ██║██████╔╝
+██║╚██╔╝██║██║╚██╗ ██╔╝██╔══██║   ██║   ██║   ██║██╔══██╗
+██║ ╚═╝ ██║██║ ╚████╔╝ ██║  ██║   ██║   ╚██████╔╝██║  ██║
+╚═╝     ╚═╝╚═╝  ╚═══╝  ╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝`))
+
+console.log(chalk.black(`
+███╗   ██╗ ██████╗ ██╗    ██╗██╗                         
+████╗  ██║██╔═══██╗██║    ██║██║                         
+██╔██╗ ██║██║   ██║██║ █╗ ██║██║                         
+██║╚██╗██║██║   ██║██║███╗██║╚═╝                         
+██║ ╚████║╚██████╔╝╚███╔███╔╝██╗                         
+╚═╝  ╚═══╝ ╚═════╝  ╚══╝╚══╝ ╚═╝                         `))
+
+
+console.log(blurple(`
+Join Here: https://discord.gg/EETWaC3edf`))
+
+console.log(chalk.black(`
+=========================================================
+`));
+
+console.log(chalk.red(`
+    
+██╗   ██╗ ██╗██████╗     ██████╗     ██████╗ 
+██║   ██║███║╚════██╗   ██╔═████╗   ██╔═████╗
+██║   ██║╚██║ █████╔╝   ██║██╔██║   ██║██╔██║
+╚██╗ ██╔╝ ██║██╔═══╝    ████╔╝██║   ████╔╝██║
+ ╚████╔╝  ██║███████╗██╗╚██████╔╝██╗╚██████╔╝
+  ╚═══╝   ╚═╝╚══════╝╚═╝ ╚═════╝ ╚═╝ ╚═════╝ 
+                                             
+`));
+console.log("\n\n");
+
+/**********************************************************
  * @param {6} LOAD_the_BOT_Functions 
  *********************************************************/
 function requireHandlers() {
@@ -249,7 +301,11 @@ function requireHandlers() {
  *********************************************************/
 const allevents: string[] = [];
 let dateNow = Date.now();
-console.log(chalk.greenBright(`${String(chalk.magenta("[x] :: "))}Now loading the Events ...`))
+const stringlength2 = 69;
+console.log(chalk.bold.greenBright(`     ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓`))
+console.log(chalk.bold.greenBright(`     ┃ `) + " ".repeat(-1 + stringlength2 - ` ┃ `.length) + chalk.bold.greenBright("┃"))
+console.log(chalk.bold.greenBright(`     ┃ `) + chalk.bold.greenBright(`Now Loading the Events...`) + " ".repeat(-1 + stringlength2 - ` ┃ `.length - `Now Loading the Events...`.length) + chalk.bold.greenBright("┃"))
+console.log(chalk.bold.greenBright(`     ┃ `) + " ".repeat(-1 + stringlength2 - ` ┃ `.length) + chalk.bold.greenBright("┃"))
 const eventFoldersPath = path.join(__dirname, 'events');
 const eventFolders = fs.readdirSync(eventFoldersPath);
 for (const folder of eventFolders) {
@@ -268,7 +324,13 @@ for (const folder of eventFolders) {
         allevents.push(`${event.name}`);
     };
 }
-console.log(chalk.magenta(`[x] :: `) + chalk.green(chalk.greenBright(`Loaded the ${allevents.length} Events after: `) + `${Date.now() - dateNow}ms`))
+
+const time = `${Date.now() - dateNow}ms`;
+const allEvents = `${allevents.length}`;
+console.log(chalk.bold.greenBright(`     ┃ `) + " ".repeat(-1 + stringlength2 - ` ┃ `.length) + chalk.bold.greenBright("┃"))
+console.log(chalk.bold.greenBright(`     ┃ `) + chalk.bold.greenBright(`Loaded the ${allEvents} Events after: ${time}`) + " ".repeat(-1 + stringlength2 - ` ┃ `.length - `Loaded the ${allEvents} Events after: ${time}`.length) + chalk.bold.greenBright("┃"))
+console.log(chalk.bold.greenBright(`     ┃ `) + " ".repeat(-1 + stringlength2 - ` ┃ `.length) + chalk.bold.greenBright("┃"))
+console.log((chalk.bold.greenBright`     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`))
 try {
     const stringlength2 = 69;
     console.log("\n")

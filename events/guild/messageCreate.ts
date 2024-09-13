@@ -7,26 +7,33 @@ import chalk from "chalk";
 
 export default {
     name: Events.MessageCreate,
-    async execute(client: ExtendedClient, message: Message) {
+    async execute(message: Message, client: ExtendedClient) {
         try {
+            console.log("Message Received")
             if (!message.guild || message.guild.available === false || !message.channel || message.webhookId) return;
-
+            console.log("Debug 1");
             if (message.channel.partial) await message.channel.fetch().catch(() => { });
-
+            console.log("Debug 2");
             if (message.member?.partial) await message.member.fetch().catch(() => { });
 
+            console.log("Starting DB");
             simple_databasing(client, message.guild.id, message.author.id);
             var not_allowed = false;
             const guild_settings = client.settings.get(message.guild.id);
             let es = guild_settings.embed;
             let ls = guild_settings.language;
 
+            console.log("Getting Guild Settings")
             let { prefix, botchannel, unkowncmdmessage } = guild_settings;
+
+            console.log(guild_settings);
+            console.log(prefix);
 
             if (message.author.bot) return;
 
             if (prefix === null) prefix = config.prefix;
 
+            console.log("Checks Prefix")
             const prefixRegex = new RegExp(`^(<@!?${client.user?.id}>|${escapeRegex(prefix)})\\s*`);
 
             if (!prefixRegex.test(message.content)) return
@@ -45,6 +52,7 @@ export default {
                 return message.reply(`<:no:833101993668771842> **I am missing the Permission to ADD REACTIONS**`).catch(() => { })
             };
 
+            console.log("Start the run process");
             if (botchannel.toString() !== "") {
                 if (!botchannel.includes(message.channel.id) && !message.member?.permissions.has("Administrator")) {
                     for (const channelId of botchannel) {
@@ -98,6 +106,8 @@ export default {
             let command = client.commands.get(cmd);
 
             if (!command) command = client.commands.get(client.aliases.get(cmd) ?? "");
+
+            console.log(command);
             var customcmd = false;
             var cuc = client.customcommands.get(message.guild.id, "commands");
             for (const cmd of cuc) {

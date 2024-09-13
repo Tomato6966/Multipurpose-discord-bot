@@ -8,7 +8,6 @@ import { ColorResolvable, EmbedBuilder } from "discord.js";
 
 export default async (client: ExtendedClient) => {
     let dateNow = Date.now();
-    console.log(chalk.greenBright(`${String(chalk.magenta("[x] :: "))}Now loading the Commands ...`));
     try {
         readdirSync("./commands/").forEach(async (dir) => {
             const commands = readdirSync(`./commands/${dir}`).filter((file) => file.endsWith(".ts"));
@@ -31,7 +30,11 @@ export default async (client: ExtendedClient) => {
                 }
             };
 
-            console.log(chalk.magenta(`[x] :: `) + chalk.greenBright(`Loaded the ${client.commands.size} Commands after: `) + chalk.green(`${Date.now() - dateNow}ms`));
+            const time = `${Date.now() - dateNow}ms`;
+            const box = `${String(chalk.magenta("[x] :: "))}`
+            const commandsSize = `${client.commands.size}`;
+            const stringlength2 = 69;
+            console.log(chalk.bold.greenBright(`     ┃ `) + chalk.bold.greenBright(`${box}Loaded the ${commandsSize} Commands after: ${chalk.green(`${Date.now() - dateNow}ms`)}`) + " ".repeat(-1 + stringlength2 - ` ┃ `.length - `[x] :: Loaded the ${commandsSize} Commands after: ${time}`.length) + chalk.bold.greenBright("┃"))
         });
     } catch (e) {
         console.log(chalk.grey.bgRed(String(e.stack)));

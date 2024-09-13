@@ -24,7 +24,7 @@
     "discord-backup": "^3.3.2",
     "discord-canvas": "^1.5.2",
     "discord-giveaways": "^6.0.1",
-    "discord.js": "^14.16.1",
+    "discord.js": "^14.16.2",
     "dotenv": "^16.4.5",
     "enmap": "^6.0.2",
     "erela.js": "^2.4.0",

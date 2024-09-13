@@ -46,8 +46,8 @@ export function dbEnsure(db, key, data) {
     }
 };
 
-export function simple_databasing(client: ExtendedClient, guildid: string, userid: string) {
-    if (!client || client == undefined || !client.user || client.user == undefined) return;
+export function simple_databasing(client: ExtendedClient, guildid: string, userid?: string) {
+    if (!client || client == undefined) return;
     try {
         if (guildid && userid) {
             dbEnsure(client.stats, guildid + userid, {
@@ -235,6 +235,7 @@ export function handlemsg(txt, options) {
 };
 
 export function escapeRegex(str: string) {
+    console.log(str);
     try {
         return str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
     } catch (e) {

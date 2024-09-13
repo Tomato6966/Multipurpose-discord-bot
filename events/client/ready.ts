@@ -23,17 +23,43 @@ export default {
                 console.log(chalk.bold.greenBright(`     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`))
             } catch { /* */ }
 
-            console.table({
-                'Bot User:': `${client.user.tag}`,
-                'Guild(s):': `${client.guilds.cache.size} Servers`,
-                'Watching:': `${client.guilds.cache.reduce((a, b) => a + b?.memberCount, 0)} Members`,
-                'Prefix:': `${config.prefix}`,
-                'Commands:': `${client.commands?.size ? client.commands.size : 0}`,
-                'Discord.js:': `v${Discord.version}`,
-                'Node.js:': `${process.version}`,
-                'Plattform:': `${process.platform} ${process.arch}`,
-                'Memory:': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB / ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)} MB`
-            });
+            const botUser = `Bot User: `;
+            const botUserData = `${client.user.tag}`;
+            const guilds = `Guild(s): `;
+            const guildsData = `${client.guilds.cache.size} Servers`;
+            const watching = `Watching: `;
+            const watchingData = `${client.guilds.cache.reduce((a, b) => a + b?.memberCount, 0)} Members`;
+            const prefix = `Prefix: `;
+            const prefixData = `${config.prefix}`;
+            const commands = `Commands: `;
+            const commandsData = `${client.commands?.size ? client.commands.size : 0}`;
+            const discordjs = `Discord.js: `;
+            const discordjsData = `v${Discord.version}`;
+            const nodejs = `Node.js: `;
+            const nodejsData = `${process.version}`;
+            const platform = `Platform: `;
+            const platformData = `${process.platform} ${process.arch}`;
+            const memory = `Memory: `;
+            const memoryData = `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB / ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)} MB`;
+
+            const stringlength = 69;
+            console.log("\n");
+            console.log(chalk.bold.grey(`     ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓`))
+            console.log(chalk.bold.grey(`     ┃ `) + " ".repeat(-1 + stringlength - ` ┃ `.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + chalk.bold.grey(`Bot Data:`) + " ".repeat(-1 + stringlength - ` ┃ `.length - `Bot Data:`.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + " ".repeat(-1 + stringlength - ` ┃ `.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + " ".repeat(-1 + stringlength - ` ┃ `.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + `${chalk.bold.grey(botUser)}${chalk.bold.greenBright(botUserData)}` + " ".repeat(-1 + stringlength - ` ┃ `.length - botUser.length - botUserData.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + `${chalk.bold.grey(guilds)}${chalk.bold.greenBright(guildsData)}` + " ".repeat(-1 + stringlength - ` ┃ `.length - guilds.length - guildsData.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + `${chalk.bold.grey(watching)}${chalk.bold.greenBright(watchingData)}` + " ".repeat(-1 + stringlength - ` ┃ `.length - watching.length - watchingData.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + `${chalk.bold.grey(prefix)}${chalk.bold.greenBright(prefixData)}` + " ".repeat(-1 + stringlength - ` ┃ `.length - prefix.length - prefixData.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + `${chalk.bold.grey(commands)}${chalk.bold.greenBright(commandsData)}` + " ".repeat(-1 + stringlength - ` ┃ `.length - commands.length - commandsData.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + `${chalk.bold.grey(discordjs)}${chalk.bold.greenBright(discordjsData)}` + " ".repeat(-1 + stringlength - ` ┃ `.length - discordjs.length - discordjsData.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + `${chalk.bold.grey(nodejs)}${chalk.bold.greenBright(nodejsData)}` + " ".repeat(-1 + stringlength - ` ┃ `.length - nodejs.length - nodejsData.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + `${chalk.bold.grey(platform)}${chalk.bold.greenBright(platformData)}` + " ".repeat(-1 + stringlength - ` ┃ `.length - platform.length - platformData.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + `${chalk.bold.grey(memory)}${chalk.bold.greenBright(memoryData)}` + " ".repeat(-1 + stringlength - ` ┃ `.length - memory.length - memoryData.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┃ `) + " ".repeat(-1 + stringlength - ` ┃ `.length) + chalk.bold.grey("┃"))
+            console.log(chalk.bold.grey(`     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`));
 
             change_status(client);
 
