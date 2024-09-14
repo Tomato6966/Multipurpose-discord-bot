@@ -5,14 +5,14 @@
 
 # Public Bot and Support Server!
 
-<a href="https://discord.gg/dcdev"><img src="https://discord.com/api/guilds/773668217163218944/widget.png?style=banner2"></a>
+<a href="https://discord.gg/mivator-world-773668217163218944"><img src="https://discord.com/api/guilds/773668217163218944/widget.png?style=banner2"></a>
  
-[**Invite the Public Version of this Bot**](https://milrato.milrato.dev) so you don't need to host it by yourself or [join my Discord server](https://discord.gg/dcdev) to get a custom Bot hosted for you!
+[**Invite the Public Version of this Bot**](https://discord.com/api/oauth2/authorize?client_id=1068868597398650971&permissions=8&scope=applications.commands%20bot) so you don't need to host it by yourself or [join my Discord server](https://discord.gg/EETWaC3edf) to get a custom Bot hosted for you!
 
 
 # Important notes and thank ❤️
 First of all, thanks for using this Source Code, it was and is a ton of work to create and maintain it!
-That's why I'm asking everyone to [**donate a little bit of money**](https://donate.milrato.dev) or if that's not possible, then join my [Discord Server](https://discord.gg/dcdev)!
+That's why I'm asking everyone to [**donate a little bit of money**](https://donate.milrato.dev) or if that's not possible, then join my [Discord Server](https://discord.gg/EETWaC3edf)!
 
   **NOTE:** It is suggested to use the [Sharded (&Clustered) version](https://github.com/Tomato6966/Multipurpose-discord-bot/tree/sharded_with_mongo), if you plan on using it for a VERIFIED BOT (on more then 2000 Servers!)
  
@@ -153,10 +153,15 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://don
 # Credits
 
 > If you consider using this Bot, make sure to credit me!
-> Example: `Bot Coded by [Tomato#6966](https://discord.gg/dcdev) but modified by [modifier/your Name](https://discord.gg/)`
+> Example: `Bot Coded by [Tomato#6966](https://discord.gg/EETWaC3edf) but modified by [modifier/your Name](https://discord.gg/)`
 
 # Contributing
 
 > If you want to help improve the Bot code, fix spelling or design Errors or if possible even code errors, you may create PULL REQUESTS.
 > Please consider, that [**Tomato6966**](https://github.com/Tomato6966) is the main Developer of this Bot, everyone else helped just once or sometimes more often.
 > Thanks to any1 who considers helping me!
+
+# Remake
+
+> The Source Code has been remade by [**d4rk.s0ul**](https://discord.com/users/682983233851228161)
+<a href="https://discord.com/users/682983233851228161"><img src="https://discord.c99.nl/widget/theme-3/682983233851228161.png"></a>
