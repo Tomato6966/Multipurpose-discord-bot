@@ -122,6 +122,7 @@ export interface ExtendedClient extends Client {
     eqs: any;
     manager: Manager;
     getFooter(es: any, stringurl?: string): EmbedFooterOptions;
+    getAuthor(authorname: string, authoricon: string, authorurl?: string): any;
     getInvite(id: string): Promise<String>;
 }
 
