@@ -1,12 +1,21 @@
-import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
+import { EmbedBuilder, Message, PartialMessage, PermissionsBitField } from "discord.js";
 import { ExtendedClient } from "..";
 import config from "../botconfig/config.json" assert { type: "json" };
 import chalk from "chalk";
 const countermap = new Map();
 
 export default (client: ExtendedClient) => {
-    async function checkAntiCaps(message: Message) {
+    client.on("messageUpdate", (oldMessage, newMessage) => {
+        checkAntiCaps(newMessage);
+    });
+
+    client.on("messageCreate", (message) => {
+        checkAntiCaps(message);
+    });
+    
+    async function checkAntiCaps(message: Message | PartialMessage) {
         try {
+            if (!message.author) return;
             if (!message.guild || message.guild.available === false || !message.channel || message.author.bot) return;
             if (!message.member) return;
 
