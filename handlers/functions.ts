@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { ExtendedClient } from "..";
-import { GuildMember } from 'discord.js';
+import { CategoryChannel, ChannelType, GuildChannelCreateOptions, GuildMember, OverwriteResolvable, PermissionOverwriteOptions, PermissionsBitField, ThreadMemberManager, VoiceState } from 'discord.js';
 import config from "../botconfig/config.json" assert { type: "json" };
 import * as ee from "../botconfig/embed.json" assert { type: "json"};
 
@@ -652,4 +652,170 @@ export function databasing(client: ExtendedClient, guildid: string, userid: stri
     } catch (e) {
         console.log(chalk.grey.bgRed(String(e.stack)));
     }
-}
+};
+
+export async function check_voice_channels(client: ExtendedClient) {
+    let guilds = client.guilds.cache.map(guild => guild.id);
+    for (let i = 0; i < guilds.length; i++) {
+        try {
+            let guild = await client.guilds.cache.get(guilds[i]);
+            if (!guild) return;
+            const obj = {}
+            for (let i = 1; i <= 100; i++) {
+                obj[`jtcsettings${i}`] = {
+                    channel: "",
+                    channelname: "{user}' Room",
+                    guild: guild.id,
+                }
+            }
+            dbEnsure(client.jtcsettings, guild.id, obj);
+            let jointocreate: any[] = []; //get the data from the database onto one variables
+            for (let i = 1; i <= 100; i++) {
+                jointocreate.push(client.jtcsettings.get(guild.id, `jtcsettings${i}.channel`));
+            }
+            await guild.channels.cache.filter(ch => ch.type == ChannelType.GuildVoice && jointocreate.includes(ch.id)).each(async (channel, j) => {
+                try {
+                    // @ts-ignore
+                    let members = channel.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
+                    if (members && members.length != 0) {
+                        for (let k = 0; k < members.length; k++) {
+                            let themember = await guild.members.fetch(members[k]).catch(() => { });
+                            if (!themember) return;
+                            create_join_to_create_Channel(client, themember.voice, j + 1);
+                        }
+                    } else {
+                        //console.log("NO MEMBERS")
+                    }
+                } catch (e) {
+                    console.error(e)
+                }
+
+            });
+        } catch (e) {
+            console.error(e)
+        }
+    }
+    return;
+};
+
+export function create_join_to_create_Channel(client: ExtendedClient, voiceState: VoiceState, type: string) {
+    if (!voiceState || !voiceState.member || !voiceState.channel || !voiceState.channel.guild) return;
+    let ls = client.settings.get(voiceState.member.guild.id, "language");
+    let chname = client.jtcsettings.get(voiceState.member.guild.id, `jtcsettings${type}.channelname`) || "{user}'s Room";
+
+    const memberMe = voiceState.guild.members.me;
+    if (!memberMe) return;
+    if (!memberMe.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
+        try {
+            voiceState.member.user.send(eval(client.la[ls]["handlers"]["functionsjs"]["functions"]["variable10"]));
+        } catch {
+            try {
+                let channel = voiceState.guild.channels.cache.find(
+                    channel => channel.type === ChannelType.GuildText &&
+                        channel.permissionsFor(memberMe).has(PermissionsBitField.Flags.SendMessages)
+                );
+
+                if (!channel || !channel.isSendable()) return;
+                channel.send(eval(client.la[ls]["handlers"]["functionsjs"]["functions"]["variable11"]));
+            } catch { };
+        }
+        return;
+    }
+
+    const createOptions: {
+        name: string;
+        type: ChannelType.GuildVoice;
+        permissionOverwrites: {
+            id: string;
+            allow: string[];
+        }[];
+        userLimit: number;
+        bitrate: number;
+        parent?: CategoryChannel;
+    } = {
+        name: String(chname.replace("{user}", voiceState.member.user.username)).substring(0, 32),
+        type: 2,
+        permissionOverwrites: [{
+            //the role "EVERYONE" is just able to VIEW_CHANNEL and CONNECT
+            id: voiceState.guild.id,
+            allow: ['ViewChannel', "Connect"],
+        }],
+        userLimit: voiceState.channel.userLimit,
+        bitrate: voiceState.channel.bitrate,
+    };
+
+    // If there is a parent with enough size
+    if (voiceState.channel.parent && voiceState.channel.parent.children.cache.size < 50) {
+        createOptions.parent = voiceState.channel.parent;
+        createOptions.permissionOverwrites = [
+            {
+                // the role "EVERYONE" is just able to VIEW_CHANNEL and CONNECT
+                id: voiceState.guild.id,
+                allow: ['ViewChannel', "Connect"],
+            },
+            // @ts-ignore
+            ...voiceState.channel.parent.permissionOverwrites.cache.values()
+        ];
+    };
+
+    // Add the user
+    createOptions.permissionOverwrites.push({
+        id: voiceState.id,
+        allow: ['ViewChannel', 'Connect', 'ManageChannels', 'ManageRoles']
+    });
+
+    // Remove permissionOverwrites, if needed
+    while (createOptions.permissionOverwrites.length > 100) {
+        createOptions.permissionOverwrites.shift();
+    };
+
+    const DateNow = Date.now();
+
+    // Create the channel
+    voiceState.guild.channels.create({
+        name: createOptions.name,
+        type: createOptions.type,
+        userLimit: createOptions.userLimit,
+        bitrate: createOptions.bitrate,
+        parent: createOptions.parent,
+        permissionOverwrites: createOptions.permissionOverwrites as readonly OverwriteResolvable[]
+    }).then(async vc => {
+        console.log(chalk.greenBright(`Created the Channel: ${String(chname.replace("{user}", voiceState.member?.user.username)).substring(0, 32)} in: ${voiceState.guild ? voiceState.guild.name : "undefined"} after: ${Date.now() - DateNow}ms`));
+
+        // Add to the DB
+        client.jointocreatemap.set(`owner_${vc.guild.id}_${vc.id}`, voiceState.id);
+        client.jointocreatemap.set(`tempvoicechannel_${vc.guild.id}_${vc.id}`, vc.id);
+
+        // Move User
+        if (!vc.guild.members.me || !voiceState.guild.members.me) return;
+        if (vc.permissionsFor(vc.guild.members.me).has(PermissionsBitField.Flags.MoveMembers) && voiceState.channel?.permissionsFor(voiceState.guild.members.me).has(PermissionsBitField.Flags.MoveMembers)) {
+            await voiceState.setChannel(vc);
+        };
+
+        // Add Permissions
+        if (vc.permissionsFor(vc.guild.members.me).has(PermissionsBitField.Flags.ManageChannels)) {
+            await vc.permissionOverwrites.edit(voiceState.id, {
+                ManageChannels: true,
+                ViewChannel: true,
+                ManageRoles: true,
+                Connect: true,
+            }).catch(() => { });
+        }
+    })
+};
+
+export function isValidURL(string: string) {
+    const args = string.split(" ");
+
+    let url;
+    for (const arg of args) {
+        try {
+            url = new URL(arg);
+            url = url.protocol === "http:" || url.protocol === "https:";
+            break;
+        } catch (_) {
+            url = false;
+        }
+    }
+    return url;
+};
