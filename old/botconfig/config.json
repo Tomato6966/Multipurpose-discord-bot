@@ -1,0 +1,49 @@
+{
+    "token": "",
+    "prefix": "//",
+    "ownerIDS": [
+        "442355791412854784",
+        "682983233851228161"
+    ],
+    "fnbr": "",
+    "fortnitetracker": "",
+    "memer_api": "",
+    "status": {
+        "text": "{prefix}help | on {guildcount} Servers, with {membercount} Members | Played: {songsplayed} Songs",
+        "text2": "By: discord.gg/dcdev",
+        "type": "PLAYING",
+        "url": "https://twitch.tv/milratodiscordbot"
+    },
+    "clientsettings": {
+        "nodes": [
+            {
+                "host": "109.71.253.178",
+                "port": 3569,
+                "password": "M!v4tor_N4rak4_Mus!c_N0d3_3569"
+            }
+        ]
+    },
+    "spotify": {
+        "clientSecret": "",
+        "clientID": ""
+    },
+    "settings": {
+        "COMMENT": "time_delay 0 === insta leave",
+        "leaveOnEmpty_Channel": {
+            "enabled": true,
+            "time_delay": 30000
+        },
+        "LeaveOnEmpty_Queue": {
+            "enabled": true,
+            "time_delay": 30000
+        },
+        "selfDeaf": true
+    },
+    "lyricssettings": {
+        "lyrics_finder": true,
+        "ksoft_api": {
+            "use_this_instead": true,
+            "api_key": "DISABLED"
+        }
+    }
+}
