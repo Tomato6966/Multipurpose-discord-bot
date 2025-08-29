@@ -536,7 +536,7 @@ module.exports = client => {
                                         })
                                         .catch(() => {
                                             return message.channel
-                                                .send(`:x: **I could not timeout ${member.user.tag}**`)
+                                                .send(`❌ **I could not timeout ${member.user.tag}**`)
                                                 .then(m => {
                                                     setTimeout(() => {
                                                         m.delete().catch(() => {});

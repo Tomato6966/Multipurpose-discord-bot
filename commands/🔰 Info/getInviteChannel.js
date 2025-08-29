@@ -17,7 +17,7 @@ module.exports = {
             let Channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0]) || message.channel;
             if (!Channel) return message.reply(handlemsg(client.la[ls].cmds.info.getinvitechannel.error));
             if (!Channel.permissionsFor(Channel.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE)) {
-                return `:x: **I am missing the CREATE_INSTANT_INVITE PERMISSION for \`${Channel.name}\`**`;
+                return `❌ **I am missing the CREATE_INSTANT_INVITE PERMISSION for \`${Channel.name}\`**`;
             }
             await Channel.createInvite()
                 .then(invite => {

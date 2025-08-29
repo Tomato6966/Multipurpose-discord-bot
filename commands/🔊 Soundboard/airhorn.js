@@ -45,7 +45,7 @@ module.exports = {
             return message.reply({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle(":x: I'm missing the Permission to join your Voice Channel")
+                        .setTitle("❌ I'm missing the Permission to join your Voice Channel")
                         .setColor(es.wrongcolor)
                         .setFooter(client.getFooter(es)),
                 ],
@@ -55,7 +55,7 @@ module.exports = {
             return message.reply({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle(":x: I'm missing the Permission to speak in your Voice Channel")
+                        .setTitle("❌ I'm missing the Permission to speak in your Voice Channel")
                         .setColor(es.wrongcolor)
                         .setFooter(client.getFooter(es)),
                 ],
@@ -65,7 +65,7 @@ module.exports = {
             return message.reply({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle(":x: Your Voice Channel is full!")
+                        .setTitle("❌ Your Voice Channel is full!")
                         .setColor(es.wrongcolor)
                         .setFooter(client.getFooter(es)),
                 ],
@@ -97,7 +97,7 @@ module.exports = {
             return message.reply({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle(":x: Could not find the AUDIO")
+                        .setTitle("❌ Could not find the AUDIO")
                         .setColor(es.wrongcolor)
                         .setFooter(client.getFooter(es)),
                 ],

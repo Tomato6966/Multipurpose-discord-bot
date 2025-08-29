@@ -5,6 +5,7 @@ var ee = require(`${process.cwd()}/botconfig/embed.json`);
 var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 var { databasing } = require(`${process.cwd()}/handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require("discord.js");
+const { allEmojis } = require("../../botconfig/emojiFunctions");
 module.exports = {
     name: "setup-commands",
     category: "💪 Setup",
@@ -131,7 +132,7 @@ module.exports = {
             collector.on("collect", async b => {
                 if (b?.user.id !== message.author.id)
                     return b?.reply({
-                        content: ":x: Only the one who typed the Command is allowed to select Things!",
+                        content: `${allEmojis.msg.ERROR} Only the one who typed the Command is allowed to select Things!`,
                         ephemeral: true,
                     });
 
@@ -147,9 +148,9 @@ module.exports = {
                     `${allEmojis.msg.SUCCESS} **\`Enabled ${enabled} Command-Categories\` and \`Disabled ${disabled} Command-Categories\` out of \`${b?.values.length} selected Command-Categories\`**`
                 );
             });
-            collector.on("end", collected => {
+            collector.on("end", () => {
                 msg.edit({
-                    content: ":x: Time ran out/Input finished! Cancelled",
+                    content: `${allEmojis.msg.ERROR} Time ran out/Input finished! Cancelled`,
                     embeds: [
                         msg.embeds[0].setDescription(
                             `${getMenuOptions()

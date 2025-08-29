@@ -370,7 +370,7 @@ ${allEmojis.msg.milratodev}  Made by [**Milrato Development**](https://discord.g
                     err = true;
                     console.log(e.stack ? String(e.stack).grey : String(e).grey);
                     return message
-                        .reply(`:x: I couldn't send help? Maybe I am missing the Permission to **EMBED LINKS**`)
+                        .reply(`❌ I couldn't send help? Maybe I am missing the Permission to **EMBED LINKS**`)
                         .catch(() => {});
                 });
             if (err) return;

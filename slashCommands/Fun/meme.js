@@ -38,7 +38,7 @@ module.exports = {
         const selected = data[Math.floor(Math.random() * data.length)];
         if (!selected || !selected.hash)
             return interaction?.reply({
-                content: `:x: **Could not find a new Meme...**\n> *Try again please!*`,
+                content: `❌ **Could not find a new Meme...**\n> *Try again please!*`,
                 ephemeral: true,
             });
         return interaction?.reply({

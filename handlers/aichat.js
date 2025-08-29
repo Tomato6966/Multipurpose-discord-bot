@@ -128,7 +128,7 @@ module.exports = client => {
                                         }, 1500);
                                     });
                                 } else {
-                                    message.reply(":x: **I am missing the MANAGE_MESSAGES Permission!**").then(m => {
+                                    message.reply("❌ **I am missing the MANAGE_MESSAGES Permission!**").then(m => {
                                         setTimeout(() => {
                                             m.delete().catch(() => {});
                                         }, 3500);

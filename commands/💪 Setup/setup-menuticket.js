@@ -657,7 +657,7 @@ module.exports = {
                           emoji = collected.first().emoji?.name;
                           emojiMsg = collected.first().emoji?.name;
                         } else {
-                          message.reply(":x: **No valid emoji added, using default EMOJI**");
+                          message.reply(`${allEmojis.msg.ERROR} **No valid emoji added, using default EMOJI**`);
                           emoji = null;
                           emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                         }
@@ -670,14 +670,14 @@ module.exports = {
                           }
                         } catch (e) {
                           console.log(e)
-                          message.reply(":x: **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!");
+                          message.reply(`${allEmojis.msg.ERROR} **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!`);
                           emoji = null;
                           emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                         }
                         finished();
 
                       }).catch(() => {
-                        message.reply(":x: **No valid emoji added, using default EMOJI**");
+                        message.reply(`${allEmojis.msg.ERROR} **No valid emoji added, using default EMOJI**`);
                         emoji = null;
                         emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                         finished();
@@ -981,7 +981,7 @@ module.exports = {
                             emoji = collected.first().emoji?.name;
                             emojiMsg = collected.first().emoji?.name;
                           } else {
-                            message.reply(":x: **No valid emoji added, using default EMOJI**");
+                            message.reply("❌ **No valid emoji added, using default EMOJI**");
                             data[index].emoji = null;
                             data[index].emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                           }
@@ -997,14 +997,14 @@ module.exports = {
                             }
                           } catch (e) {
                             console.log(e)
-                            message.reply(":x: **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!");
+                            message.reply("❌ **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!");
                             data[index].emoji = null;
                             data[index].emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                           }
                           finished();
                         }).catch((e) => {
                           console.log(e)
-                          message.reply(":x: **No valid emoji added, using default EMOJI**");
+                          message.reply("❌ **No valid emoji added, using default EMOJI**");
                           data[index].emoji = null;
                           data[index].emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                           finished();
@@ -1252,7 +1252,7 @@ module.exports = {
               }
               message.reply(`👍 Successfully added \`${toadd.length} Users/Roles\` and removed \`${toremove.length} Users/Roles\`\n> They are now always able to see, write and manage stuff in the TICKETS ment for them!`)
             } else {
-              message.reply(":x: **You did not ping valid user(s)**")
+              message.reply("❌ **You did not ping valid user(s)**")
             }
           } break;
         }

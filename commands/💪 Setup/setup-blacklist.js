@@ -590,9 +590,9 @@ module.exports = {
                                     var message = collected.first();
                                     if (message.content) {
                                         let number = message.content;
-                                        if (isNaN(number)) return message.reply(":x: **Not a valid Number**");
+                                        if (isNaN(number)) return message.reply(`${allEmojis.msg.ERROR} **Not a valid Number**`);
                                         if (Number(number) < 0 || Number(number) > 15)
-                                            return message.reply(":x: **The Number must be between `0` and `15`**");
+                                            return message.reply(`${allEmojis.msg.ERROR} **The Number must be between \`0\` and \`15\`**`);
 
                                         try {
                                             client.blacklist.set(message.guild.id, Number(number), "mute_amount");

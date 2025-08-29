@@ -286,7 +286,7 @@ module.exports = {
                 }
                 embeds;
             } catch {}
-            if (embeds.length == 0) return message.reply(":x: No leaderboard yet!**");
+            if (embeds.length == 0) return message.reply("❌ No leaderboard yet!**");
             if (embeds.length === 1)
                 return message.reply({ embeds: [embeds[0]] }).catch(e => console.log("THIS IS TO PREVENT A CRASH"));
             const queueEmbed = await message

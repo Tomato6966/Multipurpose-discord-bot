@@ -1173,7 +1173,7 @@ module.exports = {
                                                                     });
                                                                 }
                                                                 button?.reply(
-                                                                    ":x: **Only the Command Executor is allowed to react!**"
+                                                                    `${allEmojis.msg.ERROR} **Only the Command Executor is allowed to react!**`
                                                                 );
                                                             });
                                                         }
@@ -2274,7 +2274,7 @@ module.exports = {
                                                                     });
                                                                 }
                                                                 button?.reply(
-                                                                    ":x: **Only the Command Executor is allowed to react!**"
+                                                                    `${allEmojis.msg.ERROR} **Only the Command Executor is allowed to react!**`
                                                                 );
                                                             });
                                                         }

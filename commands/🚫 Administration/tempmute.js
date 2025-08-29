@@ -138,7 +138,7 @@ module.exports = {
             if (time.toLowerCase().includes("pe")) {
                 try {
                     return message.reply(
-                        `:x: **Perma is __not__ allowed with tempmute!**\nUse: \`${prefix}mute ${member.id} perma ...\` for it!`
+                        `❌ **Perma is __not__ allowed with tempmute!**\nUse: \`${prefix}mute ${member.id} perma ...\` for it!`
                     );
                 } catch (e) {
                     return message.reply({

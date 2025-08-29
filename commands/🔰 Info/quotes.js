@@ -41,7 +41,7 @@ module.exports = {
                     !data[Number(args[0])] ||
                     !data[Number(args[0])].text
                 ) {
-                    return message.reply(`:x: **Invalid Quote ID!**\n> Use one between \`0\` and \`${data.length - 1}\``);
+                    return message.reply(`❌ **Invalid Quote ID!**\n> Use one between \`0\` and \`${data.length - 1}\``);
                 }
                 let embed = new MessageEmbed()
                     .setColor(es.color)
@@ -56,7 +56,7 @@ module.exports = {
                 return message.reply({ embeds: [embed] });
             }
             if (!data || data.length == 0)
-                return message.reply({ content: ":x: **This User has no Quotes in this Server yet!**" });
+                return message.reply({ content: "❌ **This User has no Quotes in this Server yet!**" });
             var datas = data.map(
                 (data, index) =>
                     `\` ${index}. \` By: <@${data.by}> | At: \`${moment(data.at).format("DD/MM/YYYY HH:mm")}\` \n> ${String(data.text).length > 80 ? String(data.text).substring(0, 75) + " ..." : String(data.text)}\n`

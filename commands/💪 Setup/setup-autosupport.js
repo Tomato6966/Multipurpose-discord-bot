@@ -546,7 +546,7 @@ module.exports = {
                                                             emojiMsg = collected.first().emoji?.name;
                                                         } else {
                                                             message.reply(
-                                                                ":x: **No valid emoji added, using default EMOJI**"
+                                                                `${allEmojis.msg.ERROR} **No valid emoji added, using default EMOJI**`
                                                             );
                                                             emoji = null;
                                                             emojiMsg = NumberEmojis[data.length] || defaultEmoji;
@@ -561,7 +561,7 @@ module.exports = {
                                                         } catch (e) {
                                                             console.log(e);
                                                             message.reply(
-                                                                ":x: **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!"
+                                                                `${allEmojis.msg.ERROR} **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!`
                                                             );
                                                             emoji = null;
                                                             emojiMsg = NumberEmojis[data.length] || defaultEmoji;
@@ -569,7 +569,7 @@ module.exports = {
                                                         finished();
                                                     })
                                                     .catch(() => {
-                                                        message.reply(":x: **No valid emoji added, using default EMOJI**");
+                                                        message.reply(`${allEmojis.msg.ERROR} **No valid emoji added, using default EMOJI**`);
                                                         emoji = null;
                                                         emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                                                         finished();
@@ -831,7 +831,7 @@ module.exports = {
                                                                     emojiMsg = collected.first().emoji?.name;
                                                                 } else {
                                                                     message.reply(
-                                                                        ":x: **No valid emoji added, using default EMOJI**"
+                                                                        `${allEmojis.msg.ERROR} **No valid emoji added, using default EMOJI**`
                                                                     );
                                                                     emoji = null;
                                                                     emojiMsg = NumberEmojis[data.length] || defaultEmoji;
@@ -848,7 +848,7 @@ module.exports = {
                                                                 } catch (e) {
                                                                     console.log(e);
                                                                     message.reply(
-                                                                        ":x: **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!"
+                                                                        `${allEmojis.msg.ERROR} **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!`
                                                                     );
                                                                     emoji = null;
                                                                     emojiMsg = NumberEmojis[data.length] || defaultEmoji;
@@ -857,7 +857,7 @@ module.exports = {
                                                             })
                                                             .catch(() => {
                                                                 message.reply(
-                                                                    ":x: **No valid emoji added, using default EMOJI**"
+                                                                    `${allEmojis.msg.ERROR} **No valid emoji added, using default EMOJI**`
                                                                 );
                                                                 emoji = null;
                                                                 emojiMsg = NumberEmojis[data.length] || defaultEmoji;

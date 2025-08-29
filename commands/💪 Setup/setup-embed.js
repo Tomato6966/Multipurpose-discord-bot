@@ -5,6 +5,7 @@ var ee = require(`${process.cwd()}/botconfig/embed.json`);
 var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 var { databasing } = require(`${process.cwd()}/handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require("discord.js");
+const { allEmojis } = require("../../botconfig/emojiFunctions");
 module.exports = {
     name: "setup-embed",
     category: "💪 Setup",
@@ -150,7 +151,7 @@ module.exports = {
                                             embeds: [
                                                 new MessageEmbed()
                                                     .setColor("RED")
-                                                    .setTitle(":x: INVALID COLOR ADDED")
+                                                    .setTitle(`${allEmojis.msg.ERROR} INVALID COLOR ADDED`)
                                                     .setDescription(
                                                         `\`\`\`${String(e.message ? e.message : e).substring(0, 2000)}\`\`\``
                                                     ),

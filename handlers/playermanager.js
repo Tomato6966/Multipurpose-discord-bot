@@ -72,7 +72,7 @@ module.exports = async (client, message, args, type, slashCommand = false, extra
                 .reply({
                     embeds: [
                         new MessageEmbed()
-                            .setTitle(":x: Your Voice Channel is full!")
+                            .setTitle("❌ Your Voice Channel is full!")
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es)),
                     ],
@@ -82,7 +82,7 @@ module.exports = async (client, message, args, type, slashCommand = false, extra
             .reply({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle(":x: Your Voice Channel is full!")
+                        .setTitle("❌ Your Voice Channel is full!")
                         .setColor(es.wrongcolor)
                         .setFooter(client.getFooter(es)),
                 ],

@@ -21,7 +21,7 @@ module.exports = function (client, options) {
                 if (message.channel.permissionsFor(message.channel.guild.me).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
                     message.delete().catch(() => {});
                 } else {
-                    message.reply(":x: **I am missing the MANAGE_MESSAGES Permission!**").then(m => {
+                    message.reply("❌ **I am missing the MANAGE_MESSAGES Permission!**").then(m => {
                         setTimeout(() => {
                             m.delete().catch(() => {});
                         }, 3500);
@@ -38,7 +38,7 @@ module.exports = function (client, options) {
                 if (message.channel.permissionsFor(message.channel.guild.me).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
                     message.delete().catch(() => {});
                 } else {
-                    message.reply(":x: **I am missing the MANAGE_MESSAGES Permission!**").then(m => {
+                    message.reply("❌ **I am missing the MANAGE_MESSAGES Permission!**").then(m => {
                         setTimeout(() => {
                             m.delete().catch(() => {});
                         }, 3500);
@@ -55,7 +55,7 @@ module.exports = function (client, options) {
                 if (message.channel.permissionsFor(message.channel.guild.me).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
                     message.delete().catch(() => {});
                 } else {
-                    message.reply(":x: **I am missing the MANAGE_MESSAGES Permission!**").then(m => {
+                    message.reply("❌ **I am missing the MANAGE_MESSAGES Permission!**").then(m => {
                         setTimeout(() => {
                             m.delete().catch(() => {});
                         }, 3500);

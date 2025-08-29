@@ -123,7 +123,7 @@ module.exports = {
                 ]),
             ];
             let channel = message.mentions.channels.first();
-            if (!channel) return message.reply(":x: **You forgot to ping a Text-Channel!**");
+            if (!channel) return message.reply("❌ **You forgot to ping a Text-Channel!**");
             //send the data in the channel
             channel.send({ embeds, components }).then(msg => {
                 client.musicsettings.set(message.guild.id, channel.id, "channel");

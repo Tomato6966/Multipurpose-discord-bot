@@ -113,7 +113,7 @@ module.exports = async client => {
                             })
                             .catch(() => {})) || false;
                     if (!Platform) {
-                        return user.send(":x: Cancelled, due to no reaction in under 2 Minutes!");
+                        return user.send("❌ Cancelled, due to no reaction in under 2 Minutes!");
                     }
                     user.send(
                         `:question: **What is your EPIC GAMES Username?**\n> Make sure to send just the Username and send it 1:1 as it is \`Epicgames.com\``
@@ -124,12 +124,12 @@ module.exports = async client => {
                             .then(c => c.first()?.content)
                             .catch(() => {})) || false;
                     if (!Username) {
-                        return user.send(":x: Cancelled, due to not sending the Username in under 2 Minutes!");
+                        return user.send("❌ Cancelled, due to not sending the Username in under 2 Minutes!");
                     }
                     let others = client.epicgamesDB.find(d => d.guild && d.guild == guildId && d.epic && d.epic == Username);
                     if (others && others.length > 0)
                         return user.send(
-                            `:x: **Someone with the User-ID: \`${others.user}\` Linked their Account with this Epic Games Name!**`
+                            `❌ **Someone with the User-ID: \`${others.user}\` Linked their Account with this Epic Games Name!**`
                         );
                     let fortniteClient = new fortnite("e032828b-886d-4ed6-9aa1-0e2e725592a8");
                     let tdata =
@@ -137,7 +137,7 @@ module.exports = async client => {
                         false;
                     if (!tdata || tdata.code === 404) {
                         return user.send(
-                            ":x: Could not find your Epic Games Account, please try again and make sure you send the right name!"
+                            "❌ Could not find your Epic Games Account, please try again and make sure you send the right name!"
                         );
                     }
                     client.epicgamesDB.set(user.id, Username, "epic");

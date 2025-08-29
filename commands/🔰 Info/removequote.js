@@ -26,7 +26,7 @@ module.exports = {
             var { user } = member;
             if (user.id != message.author.id) {
                 if (!message.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) {
-                    return message.reply(":x: **Only Admins can add Quotes to other Users!**");
+                    return message.reply("❌ **Only Admins can add Quotes to other Users!**");
                 }
             }
             client.afkDB.ensure(user.id, {
@@ -45,14 +45,14 @@ module.exports = {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle(":x: Wrong command Usage!")
+                            .setTitle("❌ Wrong command Usage!")
                             .setDescription(`\`${prefix}removequote ${user.id} <QuoteId (E.G: 0 ... First Quote)>\``),
                     ],
                 });
 
             if (Number(id) < 0 || Number(id) > data.length - 1 || !data[Number(id)] || !data[Number(id)].text) {
                 return message.reply(
-                    `:x: **Invalid Quote ID!**\n> Use one between \`0\` and \`${data.length - 1}\`\nTo see all Quotes type: \`${prefix}quotes ${user.id}\``
+                    `❌ **Invalid Quote ID!**\n> Use one between \`0\` and \`${data.length - 1}\`\nTo see all Quotes type: \`${prefix}quotes ${user.id}\``
                 );
             }
             let embed = new MessageEmbed()

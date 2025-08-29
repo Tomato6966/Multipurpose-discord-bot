@@ -65,7 +65,7 @@ module.exports = {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle(":x: Please add a USERID")
+                            .setTitle("❌ Please add a USERID")
                             .setDescription(`Usage: \`${prefix}useridban <ID> [REASON]\``),
                     ],
                 });

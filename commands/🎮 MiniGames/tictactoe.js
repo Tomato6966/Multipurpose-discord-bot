@@ -1,4 +1,5 @@
 const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
+const { allEmojis } = require("../../botconfig/emojiFunctions");
 class TicTacToe {
     /**
      * @name TicTacToe
@@ -678,7 +679,7 @@ class TicTacToe {
                         }
                     } else {
                         return btn.reply({
-                            content: ":x: **Wait for opponent.**",
+                            content: `${allEmojis.msg.ERROR} **Wait for opponent.**`,
                             ephemeral: true,
                         });
                     }
@@ -759,14 +760,14 @@ module.exports = {
             });
         }
         const opponent = message.mentions.users.first();
-        if (!opponent) return message.reply(`:x: **Please mention who you want to challenge at tictactoe.**`);
+        if (!opponent) return message.reply(`${allEmojis.msg.ERROR} **Please mention who you want to challenge at tictactoe.**`);
         new TicTacToe({
             message: message, //required
             opponent: opponent, //required
             xColor: "DANGER", //Optional Discord BUTTONS Colour
             oColor: "SUCCESS", //Optional Discord BUTTONS Colour
-            xEmoji: "862306785007632385", //Optional EMOJI / CustomEMOJI-ID
-            oEmoji: "862306766338523166", //Optional EMOJI / CustomEMOJI-ID
+            xEmoji: "❌", //Optional EMOJI / CustomEMOJI-ID
+            oEmoji: "⭕", //Optional EMOJI / CustomEMOJI-ID
         }).start();
         return;
     },

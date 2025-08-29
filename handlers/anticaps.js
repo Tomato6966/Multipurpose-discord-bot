@@ -319,7 +319,7 @@ module.exports = client => {
                             console.log(e);
                         });
                     } else {
-                        message.channel.send(":x: **I am missing the MANAGE_MESSAGES Permission!**").then(m => {
+                        message.channel.send("❌ **I am missing the MANAGE_MESSAGES Permission!**").then(m => {
                             setTimeout(() => {
                                 m.delete().catch(() => {});
                             }, 3500);
@@ -366,7 +366,7 @@ module.exports = client => {
                                     .catch(() => {});
                             })
                             .catch(() => {
-                                return message.channel.send(`:x: **I could not timeout ${member.user.tag}**`).then(m => {
+                                return message.channel.send(`❌ **I could not timeout ${member.user.tag}**`).then(m => {
                                     setTimeout(() => {
                                         m.delete().catch(() => {});
                                     }, 5000);

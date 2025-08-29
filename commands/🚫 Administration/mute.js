@@ -89,7 +89,7 @@ module.exports = {
           mute: {
             style: "timeout",
             roleId: "",
-            defaultTime: 60000,  
+            defaultTime: 60000,
           }
       */
             let time = args[0];
@@ -107,7 +107,7 @@ module.exports = {
                                 new MessageEmbed()
                                     .setColor(es.wrongcolor)
                                     .setFooter(client.getFooter(es))
-                                    .setTitle(":x: **I am not able to manage this User**"),
+                                    .setTitle("❌ **I am not able to manage this User**"),
                             ],
                         })
                         .catch(() => {});
@@ -182,7 +182,7 @@ module.exports = {
                     })
                     .catch(e => {
                         console.log(e);
-                        return message.reply(`:x: **I could not timeout ${member.user.tag}**`).then(m => {
+                        return message.reply(`❌ **I could not timeout ${member.user.tag}**`).then(m => {
                             setTimeout(() => {
                                 m.delete().catch(() => {});
                             }, 5000);

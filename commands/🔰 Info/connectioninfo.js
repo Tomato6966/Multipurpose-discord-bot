@@ -38,9 +38,9 @@ module.exports = {
                 (await message.guild.members.fetch(user.id).catch(() => {})) ||
                 false;
 
-            if (!member) return message.reply(":x: **This User is not a Member of this Guild!**");
+            if (!member) return message.reply("❌ **This User is not a Member of this Guild!**");
             if (!member.voice || !member.voice.channel)
-                return message.reply(":x: **This User is not Connected to a Voicechannel!**");
+                return message.reply("❌ **This User is not Connected to a Voicechannel!**");
 
             const embed = new Discord.MessageEmbed()
                 .setTitle(`Connection Info of: \`${user.tag}\``)

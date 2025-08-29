@@ -67,7 +67,7 @@ module.exports = {
                         ],
                     })
                     .catch(() => {});
-            if (!kickmember.communicationDisabledUntilTimestamp) return message.reply(":x: **This User is not timeouted!**");
+            if (!kickmember.communicationDisabledUntilTimestamp) return message.reply("❌ **This User is not timeouted!**");
 
             let time = 0;
 
@@ -93,7 +93,7 @@ module.exports = {
                             new MessageEmbed()
                                 .setColor(es.wrongcolor)
                                 .setFooter(client.getFooter(es))
-                                .setTitle(":x: **I am not able to manage this User**"),
+                                .setTitle("❌ **I am not able to manage this User**"),
                         ],
                     })
                     .catch(() => {});

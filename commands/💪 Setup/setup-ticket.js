@@ -1132,7 +1132,7 @@ module.exports = {
                                                 "",
                                                 `ticketsystem${SetupNumber}.ticketlogid`
                                             );
-                                            message.reply(":x: Disabled the Log, because you did not send a valid channel");
+                                            message.reply("❌ Disabled the Log, because you did not send a valid channel");
                                         }
                                     })
                                     .catch(error => {

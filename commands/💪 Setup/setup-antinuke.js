@@ -1913,7 +1913,7 @@ module.exports = {
                                             let thenumber = message.content;
                                             if (isNaN(thenumber)) {
                                                 return message.reply(
-                                                    `:x: **Your Input is not a real Number**\n> \`${String(thenumber).substring(0, 50)}\``
+                                                    `${allEmojis.msg.ERROR} **Your Input is not a real Number**\n> \`${String(thenumber).substring(0, 50)}\``
                                                 );
                                             }
                                             thenumber = Number(thenumber);

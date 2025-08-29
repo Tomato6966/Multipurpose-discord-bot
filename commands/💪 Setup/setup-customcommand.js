@@ -5,7 +5,7 @@ var ee = require(`${process.cwd()}/botconfig/embed.json`);
 var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 var { databasing, edit_msg, send_roster } = require(`${process.cwd()}/handlers/functions`);
 const { MessageButton, MessageActionRow, MessageSelectMenu } = require("discord.js");
-const { getNumberEmojis } = require("../../botconfig/emojiFunctions");
+const { getNumberEmojis, allEmojis } = require("../../botconfig/emojiFunctions");
 module.exports = {
     name: "setup-customcommand",
     category: "💪 Setup",
@@ -336,7 +336,7 @@ module.exports = {
                     case "Delete Custom Command":
                         {
                             let cuc = client.customcommands.get(message.guild.id, "commands");
-                            if (!cuc || cuc.length < 1) return message.reply(":x: There are no Custom Commands");
+                            if (!cuc || cuc.length < 1) return message.reply(`${allEmojis.msg.ERROR} There are no Custom Commands`);
                             let menuoptions = [];
                             cuc.forEach((cc, index) => {
                                 const emoji = NumberEmojis[index + 1];

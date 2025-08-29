@@ -253,7 +253,7 @@ module.exports = {
                     case "New Channel":
                         {
                             if (client.social_log.get(message.guild.id, "twitch.channels").length > 10)
-                                return message.reply(":x: **You can't have more then 10 Twitch Channels**");
+                                return message.reply("❌ **You can't have more then 10 Twitch Channels**");
                             var tempmsg = await message.reply({
                                 embeds: [
                                     new Discord.MessageEmbed()

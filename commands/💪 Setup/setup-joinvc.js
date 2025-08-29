@@ -268,7 +268,7 @@ module.exports = {
                                                         Textchannel.type != "GUILD_TEXT"
                                                     )
                                                         return message.reply(
-                                                            ":x: **Check the example in the Embed, wrong input type!**"
+                                                            `${allEmojis.msg.ERROR} **Check the example in the Embed, wrong input type!**`
                                                         );
                                                     try {
                                                         let a = client.joinvc.get(message.guild.id, "vcmessages");
@@ -416,7 +416,7 @@ module.exports = {
                                                         );
                                                     if (!Voicechannel || Voicechannel.type != "GUILD_VOICE")
                                                         return message.reply(
-                                                            ":x: **Check the example in the Embed, wrong input type!**"
+                                                                `${allEmojis.msg.ERROR} **Check the example in the Embed, wrong input type!**`
                                                         );
                                                     try {
                                                         let a = client.joinvc.get(message.guild.id, "vcmessages");
@@ -685,7 +685,7 @@ module.exports = {
                                                         message.guild.roles.cache.get(message.content.trim().split(" ")[1]);
                                                     if (!Voicechannel || !Role)
                                                         return message.reply(
-                                                            ":x: **Check the example in the Embed, wrong input type!**"
+                                                                `${allEmojis.msg.ERROR} **Check the example in the Embed, wrong input type!**`
                                                         );
 
                                                     if (message.guild.me.roles.highest.rawPosition <= Role.rawPosition)
@@ -839,7 +839,7 @@ module.exports = {
                                                         );
                                                     if (!Voicechannel || Voicechannel.type != "GUILD_VOICE")
                                                         return message.reply(
-                                                            ":x: **Check the example in the Embed, wrong input type!**"
+                                                            `${allEmojis.msg.ERROR} **Check the example in the Embed, wrong input type!**`
                                                         );
                                                     try {
                                                         let a = client.joinvc.get(message.guild.id, "vcroles");

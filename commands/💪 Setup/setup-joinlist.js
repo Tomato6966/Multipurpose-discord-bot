@@ -1,5 +1,6 @@
 const { MessageEmbed, UserFlags } = require("discord.js");
 const { isValidSnowflakeId } = require("../../handlers/functions");
+const { allEmojis } = require("../../botconfig/emojiFunctions");
 const config = require(`${process.cwd()}/botconfig/config.json`);
 const ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
@@ -126,24 +127,24 @@ module.exports = {
             }
             if (!type)
                 return message.reply(
-                    `:x: **Please provide the joinlist type!**\n> **Get Help:** \`${prefix}joinlist help\`\n> Usage: \`${prefix}joinlist <type> <action> <data>\`\nValid Types: ${validtypes.map(d => `\`${d}\``).join(", ")}\nValid Actions: ${validactions.map(d => `\`${d}\``).join(", ")}`
+                    `${allEmojis.msg.ERROR} **Please provide the joinlist type!**\n> **Get Help:** \`${prefix}joinlist help\`\n> Usage: \`${prefix}joinlist <type> <action> <data>\`\nValid Types: ${validtypes.map(d => `\`${d}\``).join(", ")}\nValid Actions: ${validactions.map(d => `\`${d}\``).join(", ")}`
                 );
             if (!action)
                 return message.reply(
-                    `:x: **Please provide the joinlist action!**\n> **Get Help:** \`${prefix}joinlist help\`\n> Usage: \`${prefix}joinlist <type> <action> <data>\`\nValid Types: ${validtypes.map(d => `\`${d}\``).join(", ")}\nValid Actions: ${validactions.map(d => `\`${d}\``).join(", ")}`
+                    `${allEmojis.msg.ERROR} **Please provide the joinlist action!**\n> **Get Help:** \`${prefix}joinlist help\`\n> Usage: \`${prefix}joinlist <type> <action> <data>\`\nValid Types: ${validtypes.map(d => `\`${d}\``).join(", ")}\nValid Actions: ${validactions.map(d => `\`${d}\``).join(", ")}`
                 );
             if (!data)
                 return message.reply(
-                    `:x: **Please provide the joinlist data!**\n> **Get Help:** \`${prefix}joinlist help\`\n> Usage: \`${prefix}joinlist <type> <action> <data>\`\nValid Types: ${validtypes.map(d => `\`${d}\``).join(", ")}\nValid Actions: ${validactions.map(d => `\`${d}\``).join(", ")}`
+                    `${allEmojis.msg.ERROR} **Please provide the joinlist data!**\n> **Get Help:** \`${prefix}joinlist help\`\n> Usage: \`${prefix}joinlist <type> <action> <data>\`\nValid Types: ${validtypes.map(d => `\`${d}\``).join(", ")}\nValid Actions: ${validactions.map(d => `\`${d}\``).join(", ")}`
                 );
 
             if (!validtypes.includes(type))
                 return message.reply(
-                    `:x: **Please a VALID joinlist type!**\n> **Get Help:** \`${prefix}joinlist help\`\n> Usage: \`${prefix}joinlist <type> <action> <data>\`\nValid Types: ${validtypes.map(d => `\`${d}\``).join(", ")}\nValid Actions: ${validactions.map(d => `\`${d}\``).join(", ")}`
+                    `${allEmojis.msg.ERROR} **Please a VALID joinlist type!**\n> **Get Help:** \`${prefix}joinlist help\`\n> Usage: \`${prefix}joinlist <type> <action> <data>\`\nValid Types: ${validtypes.map(d => `\`${d}\``).join(", ")}\nValid Actions: ${validactions.map(d => `\`${d}\``).join(", ")}`
                 );
             if (!validactions.includes(action))
                 return message.reply(
-                    `:x: **Please a VALID joinlist action!**\n> **Get Help:** \`${prefix}joinlist help\`\n> Usage: \`${prefix}joinlist <type> <action> <data>\`\nValid Types: ${validtypes.map(d => `\`${d}\``).join(", ")}\nValid Actions: ${validactions.map(d => `\`${d}\``).join(", ")}`
+                    `${allEmojis.msg.ERROR} **Please a VALID joinlist action!**\n> **Get Help:** \`${prefix}joinlist help\`\n> Usage: \`${prefix}joinlist <type> <action> <data>\`\nValid Types: ${validtypes.map(d => `\`${d}\``).join(", ")}\nValid Actions: ${validactions.map(d => `\`${d}\``).join(", ")}`
                 );
 
             client.settings.ensure(message.guild.id, {

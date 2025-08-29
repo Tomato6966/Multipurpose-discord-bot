@@ -78,7 +78,7 @@ module.exports = {
                     new MessageEmbed()
                         .setColor(es.wrongcolor)
                         .setFooter(client.getFooter(es))
-                        .setTitle(":x: You forgot to ping at least one Member!")
+                        .setTitle("❌ You forgot to ping at least one Member!")
                         .setDescription(`Usage: \`${prefix}bed <@User1> [@User2]\``),
                 ],
             });

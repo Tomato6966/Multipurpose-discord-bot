@@ -275,7 +275,7 @@ module.exports = {
                 if (bonusentriesdata.mentions.roles.size > 0) {
                     let args = bonusentriesdata.content.split(",").map(i => i?.trim());
                     if (bonusentriesdata.mentions.roles.size > 1) {
-                        if (!args[0]) return message.reply(":x: Invalid Input of Multiple Bonus Roles, check the EXAMPLE!");
+                        if (!args[0]) return message.reply("❌ Invalid Input of Multiple Bonus Roles, check the EXAMPLE!");
                         options.messages.giveaway += "\n\n**BONUS ENTRY ROLES:**\n";
                         options.messages.giveawayEnded += "\n\n**BONUS ENTRY ROLES:**\n";
                         [...bonusentriesdata.mentions.roles.values()].forEach((role, index) => {
@@ -571,13 +571,13 @@ module.exports = {
             args.shift();
             if (!args[0]) {
                 return message.reply({
-                    content: `:x: The right usage of this Command is: \`${prefix}giveaway winner <GiveawayId>\` ... note that GiveawayId is the MessageId of the (Embed) Giveaway-Message`,
+                    content: `❌ The right usage of this Command is: \`${prefix}giveaway winner <GiveawayId>\` ... note that GiveawayId is the MessageId of the (Embed) Giveaway-Message`,
                 });
             }
             let giveaway = client.giveawayDB.find(g => g.messageId === args[0]);
 
             if (!giveaway) {
-                return message.reply({ content: ":x: Could not find Data of this Giveaway" });
+                return message.reply({ content: "❌ Could not find Data of this Giveaway" });
             }
             if (giveaway.messages && giveaway.messages.winMessage && giveaway.messages.winMessage.includes("{winners}")) {
                 return message.reply({

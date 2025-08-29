@@ -146,7 +146,7 @@
                 "variable1": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``"
             },
             "getinvitechannel": {
-                "error": ":x: You didn't provided a Channel"
+                "error": "❌ You didn't provided a Channel"
             },
             "github": {
                 "buttons": {
@@ -181,7 +181,7 @@
                     "title": ":gear: **__Command Category Overview__**",
                     "desc": "> <a:yes:833101995723194437> ... **Overview**\n\n> 🔰 ... **Information**\n> 🎶 ... **Music Related**\n> ⚙ ... **Settings & 👑 Owner & ⌨️Programming**\n> 🎤 ... **Voice & 📈 Ranking**\n> 🎮 ... **Mini Games & 🕹️ Fun**\n> 🚫 ... **Administration & 💪 Setup**\n> 🔞 ... **NSFW**\n> 🦾 ... **Custom Commands**\n\n> *Click on the Button Emojis to jump to the Command Category*\n> *Use the Arrows to swap the Pages forward/backward/jump-back-home*"
                 },
-                "buttonerror": ":x: **Only the one who typed {prefix}help is allowed to react!**",
+                "buttonerror": "❌ **Only the one who typed {prefix}help is allowed to react!**",
                 "timeended": "Time has ended type {prefix}help again!",
                 "variable1": "`🦾 **Custom Commands [${cuc[0].includes(\"NO\") ? 0 : items.length}]**`",
                 "variable2": "`HELP-MENU 🔰 **${category.toUpperCase()} [${items.length}]**`",
@@ -435,7 +435,7 @@
             "youtubeinfo": {
                 "loading": "Getting the Channel-Information-Data",
                 "error1": "<:no:833101993668771842> Please use a Valid Youtube Link",
-                "error2": ":x: **Only the one who typed {prefix}youtubeinfo is allowed to react!**",
+                "error2": "❌ **Only the one who typed {prefix}youtubeinfo is allowed to react!**",
                 "example": "Example Usage: `{prefix}youtubeinfo https://youtube.com/c/Tomato6966`",
                 "field1": "**Subscribercount:**",
                 "field2": "**Tags:**",
@@ -1522,7 +1522,7 @@
                 "variable1": "`${emoji.msg.ERROR} You are not allowed to run this command! Only the Owner is allowed to run this Cmd`",
                 "variable2": "`${emoji.msg.ERROR} You have to add which Guild I should leave`",
                 "variable3": "`Usage: \\`${prefix}leaveserver <SERVERID>\\``",
-                "variable4": "\":x: Could not find the Guild to Leave\"",
+                "variable4": "\"❌ Could not find the Guild to Leave\"",
                 "variable5": "`${emoji.msg.SUCCESS} Leaft ${g.name} | ${g.id}`",
                 "variable6": "`\\`\\`\\`${e.message}\\`\\`\\``"
             },
@@ -1571,7 +1571,7 @@
                 "variable2": "`You need to be one of those guys: ${config.ownerIDS.map(id => `<@${id}>`)}`",
                 "variable3": "-",
                 "variable4": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable5": "\":x: Cancelled the Setup!\"",
+                "variable5": "\"❌ Cancelled the Setup!\"",
                 "variable6": "`${emoji.msg.ERROR} ERROR Writing the File`",
                 "variable7": "`\\`\\`\\` ${e.message ? e.message : e.stack ? String(e.stack).substr(0, 2000) : String(e).substr(0, 2000)}\\`\\`\\``",
                 "variable8": "`${emoji.msg.SUCCESS} The Bero-Host Advertisement System is now ${d2p(client.ad.enabled)}`",
@@ -1690,7 +1690,7 @@
             },
             "setup-anticaps": {
                 "variable1": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable2": "\":x: Cancelled the Setup!\"",
+                "variable2": "\"❌ Cancelled the Setup!\"",
                 "variable3": "\"To activate the Anticaps System, enter the percent amount of how much caps in a message is allowed\"",
                 "variable4": "`Send the amount now! (recommendet: \\`75%\\`)`",
                 "variable5": "\"<:no:833101993668771842> ERROR | Percent out of Range!\"",
@@ -1705,7 +1705,7 @@
             },
             "setup-antidiscord": {
                 "variable1": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable2": "\":x: Cancelled the Setup!\"",
+                "variable2": "\"❌ Cancelled the Setup!\"",
                 "variable3": "`<a:yes:833101995723194437> The Anti Discord Setup is now ${d2p(client.settings.get(message.guild.id, `antidiscord`))}!`",
                 "variable4": "`📑 Settings of the Anti Discord Ad-Link System`",
                 "variable5": "\"Which Channel do you wanna add to the Whitelist?\"",
@@ -1726,7 +1726,7 @@
             },
             "setup-antilink": {
                 "variable1": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable2": "\":x: Cancelled the Setup!\"",
+                "variable2": "\"❌ Cancelled the Setup!\"",
                 "variable3": "`<a:yes:833101995723194437> The Anti Links Setup is now ${d2p(client.settings.get(message.guild.id, `antilink`))}!`",
                 "variable4": "`📑 Settings of the Anti Links System`",
                 "variable5": "\"Which Channel do you wanna add to the Whitelist?\"",
@@ -1749,7 +1749,7 @@
                 "variable1": "\"<:no:833101993668771842> **Only the Server Owner is allowed to execute this Command!**\\n> *This was a wish from the Community..*\"",
                 "variable2": "-",
                 "variable3": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable4": "\":x: Cancelled the Setup!\"",
+                "variable4": "\"❌ Cancelled the Setup!\"",
                 "variable5": "`${client.Anti_Nuke_System.get(message.guild.id, \"all.enabled\") ? \"<a:yes:833101995723194437> __**The Anti Nuke is enabled!**__\": \"<:no:833101993668771842> __**The Anti Nuke is disabled!**__\"}`",
                 "variablex_6": "`__**Anti Add Bot | ${client.Anti_Nuke_System.get(message.guild.id, \"antibot.enabled\") ? \"<a:yes:833101995723194437> Enabled \": \"<:no:833101993668771842> Disabled\"}**__`", "variable6": "`>>> [Remove Roles] **Actions / Day: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antibot.punishment.member.removeroles.neededdaycount\")}\\`**\\n[Remove Roles] **Actions / Week: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antibot.punishment.member.removeroles.neededweekcount\")}\\`\\n**[Remove Roles] **Actions / Month: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antibot.punishment.member.removeroles.neededmonthcount\")}\\`**\\n\\n[Kick] **Actions / Day: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antibot.punishment.member.kick.neededdaycount\")}\\`**\\n[Kick] **Actions / Week: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antibot.punishment.member.kick.neededweekcount\")}\\`\\n**[Kick] **Actions / Month: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antibot.punishment.member.kick.neededmonthcount\")}\\`**\\n\\n[Ban] **Actions / Day: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antibot.punishment.member.ban.neededdaycount\")}\\`**\\n[Ban] **Actions / Week: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antibot.punishment.member.ban.neededweekcount\")}\\`\\n**[Ban] **Actions / Month: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antibot.punishment.member.ban.neededmonthcount\")}\\`**`",
                 "variablex_7": "`__**Anti Kick/Ban | ${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.enabled\") ? \"<a:yes:833101995723194437> Enabled \": \"<:no:833101993668771842> Disabled\"}**__`", "variable7": "`>>> [Remove Roles] **Kicks / Day: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.punishment.member.removeroles.neededdaycount\")}\\`**\\n[Remove Roles] **Kicks / Week: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.punishment.member.removeroles.neededweekcount\")}\\`\\n**[Remove Roles] **Actions / Month: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.punishment.member.removeroles.neededmonthcount\")}\\`**\\n\\n[Kick] **Actions / Day: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.punishment.member.kick.neededdaycount\")}\\`**\\n[Kick] **Actions / Week: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.punishment.member.kick.neededweekcount\")}\\`\\n**[Kick] **Actions / Month: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.punishment.member.kick.neededmonthcount\")}\\`**\\n\\n[Ban] **Actions / Day: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.punishment.member.ban.neededdaycount\")}\\`**\\n[Ban] **Actions / Week: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.punishment.member.ban.neededweekcount\")}\\`\\n**[Ban] **Actions / Month: \\`${client.Anti_Nuke_System.get(message.guild.id, \"antideleteuser.punishment.member.ban.neededmonthcount\")}\\`**`",
@@ -1762,7 +1762,7 @@
                 "variable14": "`> ***This Setup is used to secure your Server***\\n\\n**Things it will protect:**\\n> \\`Watch Kicks & Bans\\`\\n> \\`Watch Channel Creations & Deletions\\`\\n> \\`Watch Role Creations & Deletions\\`\\n> \\`Watch Add Bots\\`\\n\\n> *If something Happens, and the settings are right, i will punish him by removing his role or kicking or banning him.*`",
                 "variable15": "-",
                 "variable16": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable17": "\":x: Cancelled the Setup!\"",
+                "variable17": "\"❌ Cancelled the Setup!\"",
                 "variable18": "\"Which Role/User do you wanna add/remove?\"",
                 "variable19": "`*Just ping each User / Role you wanna whitelist!*\\n\\n> *If the Role/User is already in the Whitelisted, it will automatically get \"unwhitelisted\"*`",
                 "variable20": "`**Added [${addedroles.length}] Roles and [${addedusers.length}] Users to the __general__ Whitelist!**`",
@@ -1808,7 +1808,7 @@
                 "variable60": "\"<:no:833101993668771842> **This is not finished yet, no worries the System itself works!**\"",
                 "variable61": "-",
                 "variable62": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable63": "\":x: Cancelled the Setup!\"",
+                "variable63": "\"❌ Cancelled the Setup!\"",
                 "variable64": "`**Successfully __${client.Anti_Nuke_System.get(message.guild.id, \"all.enabled\") ? \"Enabled\" : \"Disabled\"}__ the Anti-Nuke System**`",
                 "variable65": "`**I will now${client.Anti_Nuke_System.get(message.guild.id, \"all.enabled\") ? \"\" : \" not\"} the Anti-Nuke System!**\\n> But please mind the Settings of each Module!`",
                 "variable66": "\"\\u200b\", \"**DONT FORGET TO ADD WHITELISTED USERS/BOTS/ROLES**\\n**For Example:** *If you have a join-to-create Bot add him, at least for channel creations!*\"",
@@ -1854,7 +1854,7 @@
                 "variable7": "\"<:no:833101993668771842> ERROR | TIME RAN OUT / INVALID INPUT | cancelled\"",
                 "variable8": "-",
                 "variable9": "\"What should be the embed color?\"",
-                
+
                 "variable9_1":"\"It MUST be an HEX CODE 7 letters long, **with** the `#` (e.g: #ffee55)\"",
                 "variable10": "\"WRONG COLOR! USING `GREEN`\"",
                 "variable11": "\"WRONG COLOR! USING `GREEN`\"",
@@ -2342,7 +2342,7 @@
             },
             "setup-language": {
                 "variable1": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable2": "\":x: Cancelled the Setup!\"",
+                "variable2": "\"❌ Cancelled the Setup!\"",
                 "variable3": "\"Select your new Language\"",
                 "variable4": "`Current language is: **${languages[ls]}**\\n\\n***Note that this System is not finished yet!***\\n**Only partly working Languages are:**\\n> \\`English\\`, \\`India (Hindi)\\``",
                 "variable5": "`<a:yes:833101995723194437> The new Language is **${languages[lang]}** (\\`${lang})\\``",
@@ -2793,9 +2793,9 @@
             "setup-ticket": {
                 "variable1": "{ name: 'Ticket Setup', iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/incoming-envelope_1f4e8.png', url: 'https://discord.gg/milrato'}",
                 "variable2": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable3": "\":x: Cancelled the Setup!\"",
+                "variable3": "\"❌ Cancelled the Setup!\"",
                 "variable4": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable5": "\":x: Cancelled the Setup!\"",
+                "variable5": "\"❌ Cancelled the Setup!\"",
                 "variable6": "`**Hey ${message.author.username}!**, In where should the Ticket be?`",
                 "variable7": "`PING THE CHANNEL BY TYPING #CHANNEL`",
                 "variable8": "\"<:no:833101993668771842> ERROR | You did not ping a valid Channel in this GUild\"",
@@ -2959,7 +2959,7 @@
             },
             "setup-validcode": {
                 "variable1": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable2": "\":x: Cancelled the Setup!\"",
+                "variable2": "\"❌ Cancelled the Setup!\"",
                 "variable3": "`<a:yes:833101995723194437> The Valid Code Setup is now ${d2p(client.settings.get(message.guild.id, `validcode`))}!`",
                 "variable4": "`📑 Settings of the Valid Code Setup`",
                 "variable5": "`${d2p(client.settings.get(message.guild.id, `validcode`))}`.substr(0, 2048)",
@@ -2968,7 +2968,7 @@
             "setup-warn": {
                 "variable1": "-",
                 "variable2": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable3": "\":x: Cancelled the Setup!\"",
+                "variable3": "\"❌ Cancelled the Setup!\"",
                 "variable4": "`**Hey ${message.author.username}!**`",
                 "variable5": "`Please input the Amount of Warns someone should have when he should get kicked!\\nEnter \\`no\\` to disable it!\\n\\n*This will only work for the NEW WARNS*`",
                 "variable6": "\"<:no:833101993668771842> You did not enter a Number/`no`\"",
@@ -3202,7 +3202,7 @@
                 "variable6": "\"<:no:833101993668771842> ERROR | Your Time ran out\"",
                 "variable7": "\"<:no:833101993668771842> ERROR | Your Time ran out\"",
                 "variable8": "\"***Select what you need in the `Selection` down Below!***\"",
-                "variable9": "\":x: Cancelled the Setup!\"",
+                "variable9": "\"❌ Cancelled the Setup!\"",
                 "variable10": "`\\`\\`\\`${String(JSON.stringify(e, null, 2)).substr(0, 2000)}\\`\\`\\``"
             }
         },
@@ -4453,7 +4453,7 @@
                 "variable1": "\"MANAGE INVITES OF \" + user.tag, client.user.displayAvatarURL(), \"https://discord.gg/milrato\"",
                 "variable2": "`***Select what you want to do in the Selection down Below!***`",
                 "variablex_3": "`💡 **That means he has:**`","variable3":"`> <:joines:866356465299488809> ${invites} Joins (When the Member Joins the Server)\\n> <:leaves:866356598356049930> ${leaves} Leaves (When the invited Member left the Server)\\n> <:no:833101993668771842> ${fake} Fakes (Alt Accounts / Rejoins)`",
-                "variable4": "\":x: Cancelled the Setup!\"",
+                "variable4": "\"❌ Cancelled the Setup!\"",
                 "variable5": "\"NOT A NUMBER\"",
                 "variablex_6": "`💡 **That means he has:**`","variable6":"`> <:joines:866356465299488809> ${invites} Joins (When the Member Joins the Server)\\n> <:leaves:866356598356049930> ${leaves} Leaves (When the invited Member left the Server)\\n> <:no:833101993668771842> ${fake} Fakes (Alt Accounts / Rejoins)`",
                 "variable7": "`\\`\\`\\`${String(message.content).substr(0, 2000)}\\`\\`\\``",

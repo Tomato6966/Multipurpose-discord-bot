@@ -1204,7 +1204,7 @@ module.exports = {
                                                                     });
                                                                 }
                                                                 button?.reply(
-                                                                    ":x: **Only the Command Executor is allowed to react!**"
+                                                                    "❌ **Only the Command Executor is allowed to react!**"
                                                                 );
                                                             });
                                                         }
@@ -2576,7 +2576,7 @@ module.exports = {
                                                                     });
                                                                 }
                                                                 button?.reply(
-                                                                    ":x: **Only the Command Executor is allowed to react!**"
+                                                                    "❌ **Only the Command Executor is allowed to react!**"
                                                                 );
                                                             });
                                                         }

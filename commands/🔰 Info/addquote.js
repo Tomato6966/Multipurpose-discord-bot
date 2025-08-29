@@ -27,7 +27,7 @@ module.exports = {
 
             if (user.id != message.author.id) {
                 if (!message.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) {
-                    return message.reply(":x: **Only Admins can add Quotes to other Users!**");
+                    return message.reply("❌ **Only Admins can add Quotes to other Users!**");
                 }
             }
             client.afkDB.ensure(user.id, {
@@ -70,7 +70,7 @@ module.exports = {
             message.reply("Added the Quote to his Quotes!");
             let data = client.afkDB.get(user.id, "quotes");
             if (!data || data.length == 0)
-                return message.reply({ content: ":x: **This User has no Quotes in this Server yet!**" });
+                return message.reply({ content: "❌ **This User has no Quotes in this Server yet!**" });
             var datas = data
                 .sort((a, b) => b?.at - a.at)
                 .map(

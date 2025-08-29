@@ -70,11 +70,11 @@ module.exports = {
             if (!message.member || message.member.roles || !message.member.roles.highest)
                 await message.member.fetch().catch(() => {});
             if (kickmember.communicationDisabledUntilTimestamp)
-                return message.reply(":x: **This User is already timeouted!**");
+                return message.reply("❌ **This User is already timeouted!**");
             let time = 0;
             if (!args[1])
                 return message.reply(
-                    `:x: **No time added!**\nTry something like this:\n> \`${prefix}timeout ${kickmember.id} 1h+15min Stop spamming!\``
+                    `❌ **No time added!**\nTry something like this:\n> \`${prefix}timeout ${kickmember.id} 1h+15min Stop spamming!\``
                 );
             let timeargs = [args[1]];
             if (timeargs[0].includes("+")) {
@@ -85,7 +85,7 @@ module.exports = {
             }
             if (!time || isNaN(time))
                 return message.reply(
-                    `:x: **You added a invalid time!**\nTry something like this:\n> \`${prefix}timeout ${kickmember.id} 1h+15min Stop spamming!\``
+                    `❌ **You added a invalid time!**\nTry something like this:\n> \`${prefix}timeout ${kickmember.id} 1h+15min Stop spamming!\``
                 );
 
             let reason = args.slice(2).join(` `);
@@ -115,7 +115,7 @@ module.exports = {
                             new MessageEmbed()
                                 .setColor(es.wrongcolor)
                                 .setFooter(client.getFooter(es))
-                                .setTitle(":x: **I am not able to manage this User**"),
+                                .setTitle("❌ **I am not able to manage this User**"),
                         ],
                     })
                     .catch(() => {});

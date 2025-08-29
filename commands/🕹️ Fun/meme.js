@@ -43,7 +43,7 @@ module.exports = {
             if (!selected) selected = data[Math.floor(Math.random() * data.length)];
             if (!selected) selected = data[Math.floor(Math.random() * data.length)];
             if (!selected) selected = data[Math.floor(Math.random() * data.length)];
-            if (!selected) return message.reply(":x: **No Meme found, please retry!**");
+            if (!selected) return message.reply("❌ **No Meme found, please retry!**");
             return message.reply({ content: eval(client.la[ls]["cmds"]["fun"]["meme"]["variable1"]) });
         } catch (e) {
             console.log(String(e.stack).grey.bgRed);

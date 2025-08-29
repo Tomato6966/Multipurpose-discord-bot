@@ -70,11 +70,11 @@ module.exports = client => {
             if (!interaction.replied)
                 return interaction?.reply({
                     ephemeral: true,
-                    content: `:x: Could not find the Database for your Application!`,
+                    content: `❌ Could not find the Database for your Application!`,
                 });
             return interaction?.editReply({
                 ephemeral: true,
-                content: `:x: Could not find the Database for your Application!`,
+                content: `❌ Could not find the Database for your Application!`,
             });
         }
         let applyname = `apply${index}`;

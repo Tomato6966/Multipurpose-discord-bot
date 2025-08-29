@@ -35,7 +35,7 @@ module.exports = client => {
         if (!member) return;
         //if the member is not connected to a vc, return
         if (!member.voice.channel)
-            return interaction?.reply({ ephemeral: true, content: ":x: **Please Connect to a Voice Channel first!**" });
+            return interaction?.reply({ ephemeral: true, content: "❌ **Please Connect to a Voice Channel first!**" });
         //now its time to start the music system
         if (!member.voice.channel)
             return interaction?.reply({

@@ -295,7 +295,7 @@ module.exports = {
                                     let arggs = message.content.trim().split(" ");
                                     if (!arggs[0] || isNaN(arggs[0]))
                                         return message.reply(
-                                            "**:x: YOU DID WRONG! Please read what the introduction tells you!**\nCancelled!"
+                                            "**❌ YOU DID WRONG! Please read what the introduction tells you!**\nCancelled!"
                                         );
                                     var Role =
                                         message.mentions.roles.filter(ch => ch.guild.id == message.guild.id).first() ||

@@ -37,7 +37,7 @@ module.exports = client => {
 
         if (!client.setups.has(channel.id)) {
             if (interaction.customId != "ticket_verify") {
-                interaction?.reply({ content: ":x: This channel is not a Ticket", ephemeral: true });
+                interaction?.reply({ content: "❌ This channel is not a Ticket", ephemeral: true });
             }
             return;
         }
@@ -810,7 +810,7 @@ module.exports = client => {
                                                     .has(Permissions.FLAGS.MANAGE_CHANNELS)
                                             ) {
                                                 return channel.send(
-                                                    `:x: **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`
+                                                    `❌ **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`
                                                 );
                                             }
                                             channel.permissionOverwrites
@@ -940,7 +940,7 @@ module.exports = client => {
                                                     .has(Permissions.FLAGS.MANAGE_CHANNELS)
                                             ) {
                                                 return channel.send(
-                                                    `:x: **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`
+                                                    `❌ **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`
                                                 );
                                             }
                                             channel.permissionOverwrites
@@ -1003,7 +1003,7 @@ module.exports = client => {
                             } else {
                                 if (!channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)) {
                                     return channel.send(
-                                        `:x: **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`
+                                        `❌ **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`
                                     );
                                 }
                                 channel.permissionOverwrites
@@ -1239,7 +1239,7 @@ module.exports = client => {
                                                     .has(Permissions.FLAGS.MANAGE_CHANNELS)
                                             ) {
                                                 return channel.send(
-                                                    `:x: **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`
+                                                    `❌ **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`
                                                 );
                                             }
                                             channel.permissionOverwrites
@@ -1368,7 +1368,7 @@ module.exports = client => {
                                                     .has(Permissions.FLAGS.MANAGE_CHANNELS)
                                             ) {
                                                 return channel.send(
-                                                    `:x: **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`
+                                                    `❌ **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`
                                                 );
                                             }
                                             channel.permissionOverwrites
@@ -1430,7 +1430,7 @@ module.exports = client => {
                             } else {
                                 if (!channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)) {
                                     return channel.send(
-                                        `:x: **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`
+                                        `❌ **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`
                                     );
                                 }
                                 channel.permissionOverwrites
@@ -1595,7 +1595,7 @@ module.exports = client => {
             let data = client.setups.get(channel.id, "ticketdata");
             if (!channel.permissionsFor(member).has(Discord.Permissions.FLAGS.SEND_MESSAGES)) {
                 if (!channel.permissionsFor(channel.guild.me).has(Permissions.FLAGS.MANAGE_CHANNELS)) {
-                    return channel.send(`:x: **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`);
+                    return channel.send(`❌ **I am missing the Permissions MANAGE_CHANNELS for: \`${channel.name}\`**`);
                 }
                 channel.permissionOverwrites
                     .edit(member.user, {
@@ -1604,7 +1604,7 @@ module.exports = client => {
                     .catch(e => {
                         return interaction?.reply({
                             ephemeral: true,
-                            content: ":x: **Can't change the Permissions of you!**",
+                            content: "❌ **Can't change the Permissions of you!**",
                         });
                     });
             }
@@ -1665,7 +1665,7 @@ module.exports = client => {
                     if (!interaction.placeholder.includes("Menu-Apply System!")) return;
                 }
                 if (interaction.replied)
-                    return interaction?.editReply(":x: Could not find the Database for your Application!");
+                    return interaction?.editReply("❌ Could not find the Database for your Application!");
                 return;
             }
             let pre = `menuticket${DBindex}`;
@@ -1704,7 +1704,7 @@ module.exports = client => {
                 if (index < 0) {
                     return interaction?.reply({
                         ephemeral: true,
-                        content: ":x: **Could not find the Ticket-Settings for this Option**",
+                        content: "❌ **Could not find the Ticket-Settings for this Option**",
                     });
                 }
                 let data = settings.data[index];
@@ -2067,7 +2067,7 @@ module.exports = client => {
                     if (!interaction.placeholder.includes("Menu-Apply System!")) return;
                 }
                 if (interaction.replied)
-                    return interaction?.editReply(":x: Could not find the Database for your Application!");
+                    return interaction?.editReply("❌ Could not find the Database for your Application!");
                 return;
             }
             let theDB = client.autosupport;
@@ -2102,7 +2102,7 @@ module.exports = client => {
                 if (index < 0) {
                     return interaction?.reply({
                         ephemeral: true,
-                        content: ":x: **Could not find the Auto-Support-Data-Settings for this Option**",
+                        content: "❌ **Could not find the Auto-Support-Data-Settings for this Option**",
                     });
                 }
                 let data = settings.data[index];
@@ -2168,7 +2168,7 @@ module.exports = client => {
                     if (!interaction.placeholder.includes("Menu-Apply System!")) return;
                 }
                 if (interaction.replied)
-                    return interaction?.editReply(":x: Could not find the Database for your Application!");
+                    return interaction?.editReply("❌ Could not find the Database for your Application!");
                 return;
             }
             let pre = `menuapply${DBindex}`;
@@ -2199,12 +2199,12 @@ module.exports = client => {
             if (index < 0) {
                 return interaction?.reply({
                     ephemeral: true,
-                    content: ":x: **Could not find the Ticket-Settings for this Option**",
+                    content: "❌ **Could not find the Ticket-Settings for this Option**",
                 });
             }
             const data = settings.data[index];
             if (!data)
-                return interaction?.reply({ ephemeral: true, content: ":x: **Could not find the Data for this System**" });
+                return interaction?.reply({ ephemeral: true, content: "❌ **Could not find the Data for this System**" });
             require(`./apply.js`).ApplySystem({
                 guild: guild,
                 channel: message.channel,

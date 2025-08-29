@@ -24,7 +24,7 @@ module.exports = (client, preindex) => {
             }
         }
         if (!index) {
-            return interaction?.editReply(":x: Could not find the Database for your Ticket!");
+            return interaction?.editReply("❌ Could not find the Database for your Ticket!");
         }
 
         let filename = `ticket${index}`;
@@ -363,7 +363,7 @@ module.exports = (client, preindex) => {
                 });
             })
             .catch(e => {
-                interaction?.editReply({ content: ":x: **Something went wrong!**", ephemeral: true });
+                interaction?.editReply({ content: "❌ **Something went wrong!**", ephemeral: true });
                 console.error(e);
             });
     });

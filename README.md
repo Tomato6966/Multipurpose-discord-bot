@@ -1,14 +1,39 @@
+# INFO 2025
+
+This is an old project, from 2021-2023 it was activly developed and extended throughout yt-streams.
+That's why the repository is kinda a mess
+Now I'm attempting of running some sort of clean up.
+
+To install use:
+```
+npm install --force
+```
+
+It's important to install with npm via nodejs due to node-gyp.
+You can still use bun/deno/etc. for executing scripts or running the bot.
+
+
+Changes:
+
+in `botconfig/emojis.json` you can find a json with all emojis, you can use both custom and normal emojis
+
+The errors related to ids are wrong, tho they were right are fixed, cause now there is a utility function for that.
+
+Report errors with a new ISSUE TICKET by writing 2025 into it!
+
+---
+
 # Public Bot and Support Server!
 
 <a href="https://discord.gg/AsgD3gtPnb"><img src="https://discord.com/api/guilds/1070626568260562954/widget.png?style=banner2"></a>
- 
+
 # Important notes and thank ❤️
 - PROJECT IS NOT MAINTAINED ANYMORE (PR FOR UPDATES ARE WELCOME) - I have stopped making public source codes such as this one in that size
 First of all, thanks for using this Source Code, it was and is a ton of work to create and maintain it!
 That's why I'm asking everyone to [**donate a little bit of money**](https://paypal.me/MilratoDevelopment) or if that's not possible, then join my ["new" Discord Server](https://discord.gg/AsgD3gtPnb)!
 
   **NOTE:** It is suggested to use the [Sharded (&Clustered) version](https://github.com/Tomato6966/Multipurpose-discord-bot/tree/sharded_with_mongo), if you plan on using it for a VERIFIED BOT (on more then 2000 Servers!)
- 
+
 
 # Installation Guide 🔥
 
@@ -30,11 +55,11 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://pay
 <details>
   <summary>Click to expand</summary>
   **NOTE:** It is suggested to use the [Sharded (&Clustered) version](https://github.com/Tomato6966/Multipurpose-discord-bot/tree/sharded_with_mongo), if you plan on using it for a VERIFIED BOT (on more then 2000 Servers!)
- 
+
   1. Download the [Source Code](https://github.com/Tomato6966/Multipurpose-discord-bot/releases/latest)
      * Either by: `git clone https://github.com/Tomato6966/Multipurpose-discord-bot`
      * Or by downloading it as a zip from the releases tab or a branch.
-  
+
 </details>
 
 ## 🎶 Music Requirements
@@ -45,7 +70,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://pay
   *To allow your Bot to play music, you need to connect it to a LavaLink station!*
   *There are many public ones out there for example lava.link*
   An example for a public configuration will be listed down below.
-   
+
   1. Make sure `Java 11` is installed on your system!
      * [Click here for a Download for **Linux**](https://github.com/Tomato6966/Debian-Cheat-Sheet-Setup/wiki/3.5.2-java-11)
      * [Click here for a Download for **Windows**](https://downloads.milrato.eu/windows/java/jdk-11.0.11.exe) ​
@@ -59,7 +84,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://pay
      * Make sure to keep your terminal Open!
      * If you want to use something like `npm i -g pm2` to host it without keeping your terminal open type: `pm2 start java -- -jar Lavalink.jar`
   5. The settings like **password** in application.yml and **port** must be provided in the `botconfig/config.json` of the Bot
-     * If you used the default settings, than no adjustments are needed and it should look like this: 
+     * If you used the default settings, than no adjustments are needed and it should look like this:
      ```json
      {
         "clientsettings": {
@@ -75,7 +100,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://pay
      ```
   6. You don't want to host your own LavaLink?
      * [Here is a list of many free-to-use LavaLink Servers!](https://lavalink.darrennathanael.com/#how2host)
-     * Or just use something like this: 
+     * Or just use something like this:
      ```json
      {
         "clientsettings": {
@@ -98,14 +123,14 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://pay
   <summary>Click to expand</summary>
 
   **NOTE:** *You can do the exact same configuration inside of the `example.env` file, just make sure to rename it to `.env` or use environment variables!*
- 
+
    1. Check `🎶 Music Requirements` that you started lavalink / use a valid public lavalink station.
    2. Fill in all required data in `./botconfig/config.json` **NOTE:** *If you're on replit.com, it is exposed to everyone!(use .env instead)*
    3. Fill in all required data in the `.json` files in `./social_log/` (`./social_log/streamconfig.json` & `./social_log/twitter.json`), if you want the SOCIAL LOGS to work! (the key `authToken` in streamconfig does not need to be filled in!)
    4. You can adjust some settings in the other `./botconfig/*.json` Files, **BUT PLEASE __KEEP__ MY CREDITS & ADS!** This is the only way on how my hard work is "revenued".
    5. Now start the bot by opening a cmd line in that folder and typing: `node index.js` or `npm start`
      * If you don't want to keep the terminal open or if you're on linux, check out [pm2 (and my tutorial)](https://github.com/Tomato6966/Debian-Cheat-Sheet-Setup/wiki/4-pm2-tutorial) and type: `pm2 start --name Bot_Name index.js`
-  
+
 </details>
 
 ## ❓ Where to get which Api-Key(s)
@@ -114,7 +139,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://pay
   <summary>Click to expand</summary>
 
   **NOTE:** *You can do the exact same configuration inside of the `example.env` file, just make sure to rename it to `.env` or use environment variables!*
- 
+
   1. `./botconfig/config.json`
      * `token` you can get from: [discord-Developers](https://discord.com/developers/applications)
      * `memer_api` you can get from: [Meme-Development DC](https://discord.gg/Mc2FudJkgP)
@@ -131,7 +156,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://pay
      * `consumer_secret` you can get from: [twitter Developers](https://developer.twitter.com)
      * `access_token` you can get from: [twitter Developers](https://developer.twitter.com)
      * `access_token_secret` you can get from: [twitter Developers](https://developer.twitter.com)
-  
+
 </details>
 
 

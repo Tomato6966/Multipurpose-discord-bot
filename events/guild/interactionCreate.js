@@ -24,7 +24,7 @@ module.exports = async (client, interaction) => {
     const { guild } = member;
     if (!guild) {
         return interaction
-            ?.reply({ content: ":x: Interactions only Works inside of GUILDS!", ephemeral: true })
+            ?.reply({ content: "❌ Interactions only Works inside of GUILDS!", ephemeral: true })
             .catch(() => {});
     }
     const CategoryName = interaction?.commandName;

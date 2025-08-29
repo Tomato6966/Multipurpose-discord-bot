@@ -36,7 +36,7 @@ module.exports = async (client, message) => {
         const [, matchedPrefix] = message.content.match(prefixRegex);
         //CHECK PERMISSIONS
         if (!message.guild.me.permissions.has(Discord.Permissions.FLAGS.USE_EXTERNAL_EMOJIS))
-            return message.reply(`:x: **I am missing the Permission to USE EXTERNAL EMOJIS**`).catch(() => {});
+            return message.reply(`❌ **I am missing the Permission to USE EXTERNAL EMOJIS**`).catch(() => {});
         if (!message.guild.me.permissions.has(Discord.Permissions.FLAGS.EMBED_LINKS))
             return message
                 .reply(`<:no:833101993668771842> **I am missing the Permission to EMBED LINKS (Sending Embeds)**`)
@@ -342,7 +342,7 @@ module.exports = async (client, message) => {
                                         embeds: [
                                             new MessageEmbed()
                                                 .setColor(es.wrongcolor)
-                                                .setTitle(":x: There is no current Queue / Song Playing!"),
+                                                .setTitle("❌ There is no current Queue / Song Playing!"),
                                         ],
                                     })
                                     .catch(() => {});
@@ -459,7 +459,7 @@ module.exports = async (client, message) => {
                 embeds: [
                     new MessageEmbed()
                         .setColor("RED")
-                        .setTitle(":x: An error occurred")
+                        .setTitle("❌ An error occurred")
                         .setDescription(`\`\`\`${e.message ? e.message : String(e).grey.substring(0, 2000)}\`\`\``),
                 ],
             })
