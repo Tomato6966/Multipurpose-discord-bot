@@ -12,7 +12,9 @@ const {
   MessageButton,
   MessageActionRow,
   MessageSelectMenu
-} = require('discord.js')
+} = require('discord.js');
+const { isValidSnowflakeId } = require('../../handlers/functions');
+const { getNumberEmojis, allEmojis } = require('../../botconfig/emojiFunctions');
 module.exports = {
   name: "setup-menuticket",
   category: "💪 Setup",
@@ -30,17 +32,18 @@ module.exports = {
       var theDB = client.menuticket;
       var pre;
 
-      let NumberEmojiIds = getNumberEmojis().map(emoji => emoji?.replace(">", "").split(":")[2])
-      let NumberEmojis = getNumberEmojis();
+      const NumberEmojis = getNumberEmojis();
+      const defaultEmoji = allEmojis.msg.ERROR;
       first_layer()
       async function first_layer() {
 
         let menuoptions = []
         for (let i = 1; i <= 100; i++) {
+            const emoji = NumberEmojis[i];
           menuoptions.push({
             value: `${i}. Menu Ticket`,
             description: `Manage/Edit the ${i}. Menu Ticket Setup`,
-            emoji: NumberEmojiIds[i]
+            ...(emoji ? { emoji } : {})
           })
         }
 
@@ -122,7 +125,8 @@ module.exports = {
         //send the menu msg
         let menumsg = await message.reply({
           embeds: [MenuEmbed],
-          components: [row1, row2, row3, row4, new MessageActionRow().addComponents(new MessageButton().setStyle("LINK").setURL("https://youtu.be/QGESDc31d4U").setLabel("Tutorial Video").setEmoji("840260133686870036"))]
+          components: [row1, row2, row3, row4, new MessageActionRow().addComponents(new MessageButton().setStyle("LINK").setURL("https://youtu.be/QGESDc31d4U").setLabel("Tutorial Video")
+            .setEmoji(allEmojis.msg.youtube))]
         })
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({
@@ -150,7 +154,7 @@ module.exports = {
           menumsg.edit({
             embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
             components: [],
-            content: `<a:yes:833101995723194437> **Selected: \`${collected && collected.first() && collected.first().values ? collected.first().values[0] : "Nothing"}\`**`
+            content: `${allEmojis.msg.SUCCESS} **Selected: \`${collected && collected.first() && collected.first().values ? collected.first().values[0] : "Nothing"}\`**`
           }).catch(() => { });
         });
       }
@@ -238,7 +242,8 @@ module.exports = {
         //send the menu msg
         let menumsg = await message.reply({
           embeds: [MenuEmbed],
-          components: [new MessageActionRow().addComponents(Selection), new MessageActionRow().addComponents(new MessageButton().setStyle("LINK").setURL("https://youtu.be/QGESDc31d4U").setLabel("Tutorial Video").setEmoji("840260133686870036"))]
+          components: [new MessageActionRow().addComponents(Selection), new MessageActionRow().addComponents(new MessageButton().setStyle("LINK").setURL("https://youtu.be/QGESDc31d4U").setLabel("Tutorial Video")
+            .setEmoji(allEmojis.msg.youtube))]
         })
         //Create the collector
         const collector = menumsg.createMessageComponentCollector({
@@ -263,7 +268,7 @@ module.exports = {
           menumsg.edit({
             embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
             components: [],
-            content: `<a:yes:833101995723194437> **Selected: \`${collected && collected.first() && collected.first().values ? collected.first().values[0] : "Nothing"}\`**`
+            content: `${allEmojis.msg.SUCCESS} **Selected: \`${collected && collected.first() && collected.first().values ? collected.first().values[0] : "Nothing"}\`**`
           })
         });
       }
@@ -283,7 +288,7 @@ module.exports = {
               let menuoptions = [{
                 value: `${claimData.enabled ? "Disable Claim System" : "Enable Claim System"}`,
                 description: `${claimData.enabled ? "No need to claim the Tickets anymore" : "Make it so that Staff needs to claim the Ticket"}`,
-                emoji: `${claimData.enabled ? "❌" : "✅"}`
+                emoji: `${claimData.enabled ? allEmojis.msg.ERROR : allEmojis.msg.SUCCESS}`
               },
               {
                 value: "Edit Open Message",
@@ -298,7 +303,7 @@ module.exports = {
               {
                 value: "Cancel",
                 description: `Cancel and stop the Ticket-Setup!`,
-                emoji: "862306766338523166"
+                emoji: allEmojis.msg.cancel
               }
               ]
               //define the selection
@@ -357,7 +362,7 @@ module.exports = {
                 menumsg.edit({
                   embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
                   components: [],
-                  content: `${collected && collected.first() && collected.first().values ? `<a:yes:833101995723194437> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**"}`
+                  content: `${collected && collected.first() && collected.first().values ? `${allEmojis.msg.SUCCESS} **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**"}`
                 })
               });
             }
@@ -495,8 +500,9 @@ module.exports = {
                         label: option.value.substring(0, 50),
                         value: option.value.substring(0, 50),
                         description: option.description.substring(0, 50),
-                        emoji: isEmoji(option.emoji) ? option.emoji : NumberEmojiIds[index + 1]
+                        emoji: isEmoji(client, message, option.emoji) ? option.emoji : NumberEmojis[index + 1]
                       }
+                      if(!Obj.emoji) delete Obj.emoji;
                       return Obj;
                     }))
                 channel.send({
@@ -515,8 +521,9 @@ module.exports = {
                           label: option.value.substring(0, 50),
                           value: option.value.substring(0, 50),
                           description: option.description.substring(0, 50),
-                          emoji: NumberEmojiIds[index + 1]
+                        emoji: NumberEmojis[index + 1]
                         }
+                        if(!Obj.emoji) delete Obj.emoji;
                         return Obj;
                       }))
                   channel.send({
@@ -633,9 +640,9 @@ module.exports = {
                       .setTitle("What should be the EMOJI to be displayed?")
                       .setDescription(`React to __THIS MESSAGE__ with the Emoji you want!\n> Either click on the default Emoji or add a CUSTOM ONE/Standard`)
 
-                    var emoji, emojiMsg;
+                    var emoji = NumberEmojis[data.length + 1] || defaultEmoji, emojiMsg;
                     message.reply({ embeds: [rermbed] }).then(async msg => {
-                      await msg.react(NumberEmojiIds[data.length + 1]).catch(console.warn);
+                      await msg.react(emoji).catch(console.warn);
                       msg.awaitReactions({
                         filter: (reaction, user) => user.id == cmduser.id,
                         max: 1,
@@ -652,27 +659,27 @@ module.exports = {
                         } else {
                           message.reply(":x: **No valid emoji added, using default EMOJI**");
                           emoji = null;
-                          emojiMsg = NumberEmojis[data.length];
+                          emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                         }
 
                         try {
                           await msg.react(emoji);
-                          if (NumberEmojiIds.includes(collected.first().emoji?.id)) {
+                          if (NumberEmojis.includes(collected.first().emoji?.id)) {
                             emoji = null;
-                            emojiMsg = NumberEmojis[data.length];
+                            emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                           }
                         } catch (e) {
                           console.log(e)
                           message.reply(":x: **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!");
                           emoji = null;
-                          emojiMsg = NumberEmojis[data.length];
+                          emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                         }
                         finished();
 
                       }).catch(() => {
                         message.reply(":x: **No valid emoji added, using default EMOJI**");
                         emoji = null;
-                        emojiMsg = NumberEmojis[data.length];
+                        emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                         finished();
                       });
                     })
@@ -742,8 +749,9 @@ module.exports = {
                     label: option.value.substring(0, 50),
                     value: option.value.substring(0, 50),
                     description: option.description.substring(0, 50),
-                    emoji: isEmoji(option.emoji) ? option.emoji : NumberEmojiIds[index + 1]
+                    emoji: isEmoji(client, message, option.emoji) ? option.emoji : NumberEmojis[index + 1]
                   }
+                  if(!Obj.emoji) delete Obj.emoji;
                   return Obj;
                 }))
             let menumsg;
@@ -765,8 +773,9 @@ module.exports = {
                       label: option.value.substring(0, 50),
                       value: option.value.substring(0, 50),
                       description: option.description.substring(0, 50),
-                      emoji: NumberEmojiIds[index + 1]
+                      emoji: isEmoji(client, message, option.emoji) ? option.emoji : NumberEmojis[index + 1]
                     }
+                    if(!Obj.emoji) delete Obj.emoji;
                     return Obj;
                   }))
               menumsg = await message.reply({
@@ -841,7 +850,8 @@ module.exports = {
                 //send the menu msg
                 let menumsg = await message.reply({
                   embeds: [MenuEmbed],
-                  components: [new MessageActionRow().addComponents(Selection), new MessageActionRow().addComponents(new MessageButton().setStyle("LINK").setURL("https://youtu.be/QGESDc31d4U").setLabel("Tutorial Video").setEmoji("840260133686870036"))]
+                  components: [new MessageActionRow().addComponents(Selection), new MessageActionRow().addComponents(new MessageButton().setStyle("LINK").setURL("https://youtu.be/QGESDc31d4U").setLabel("Tutorial Video")
+                    .setEmoji(allEmojis.msg.youtube))]
                 })
                 //Create the collector
                 const collector = menumsg.createMessageComponentCollector({
@@ -866,7 +876,7 @@ module.exports = {
                   menumsg.edit({
                     embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
                     components: [],
-                    content: `<a:yes:833101995723194437> **Selected: \`${collected && collected.first() && collected.first().values ? collected.first().values[0] : "Nothing"}\`**`
+                    content: `${allEmojis.msg.SUCCESS} **Selected: \`${collected && collected.first() && collected.first().values ? collected.first().values[0] : "Nothing"}\`**`
                   })
                 });
 
@@ -954,9 +964,9 @@ module.exports = {
                         .setTitle("What should be the EMOJI to be displayed?")
                         .setDescription(`React to __THIS MESSAGE__ with the Emoji you want!\n> Either click on the default Emoji or add a CUSTOM ONE/Standard`)
 
-                      var emoji, emojiMsg;
+                      var emoji = NumberEmojis[data.length] || defaultEmoji, emojiMsg;
                       message.reply({ embeds: [rermbed] }).then(async msg => {
-                        await msg.react(NumberEmojiIds[data.length]).catch(console.warn);
+                        await msg.react(emoji).catch(console.warn);
                         msg.awaitReactions({
                           filter: (reaction, user) => user.id == cmduser.id,
                           max: 1,
@@ -973,14 +983,14 @@ module.exports = {
                           } else {
                             message.reply(":x: **No valid emoji added, using default EMOJI**");
                             data[index].emoji = null;
-                            data[index].emojiMsg = NumberEmojis[data.length];
+                            data[index].emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                           }
 
                           try {
                             await msg.react(emoji);
-                            if (NumberEmojiIds.includes(collected.first().emoji?.id)) {
+                            if (NumberEmojis.includes(collected.first().emoji?.id)) {
                               data[index].emoji = null;
-                              data[index].emojiMsg = NumberEmojis[data.length];
+                              data[index].emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                             } else {
                               data[index].emoji = emoji;
                               data[index].emojiMsg = emojiMsg;
@@ -989,14 +999,14 @@ module.exports = {
                             console.log(e)
                             message.reply(":x: **Could not use the CUSTOM EMOJI you added, as I can't access it / use it as a reaction/emoji for the menu**\nUsing default emoji!");
                             data[index].emoji = null;
-                            data[index].emojiMsg = NumberEmojis[data.length];
+                            data[index].emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                           }
                           finished();
                         }).catch((e) => {
                           console.log(e)
                           message.reply(":x: **No valid emoji added, using default EMOJI**");
                           data[index].emoji = null;
-                          data[index].emojiMsg = NumberEmojis[data.length];
+                          data[index].emojiMsg = NumberEmojis[data.length] || defaultEmoji;
                           finished();
                         });
                       })
@@ -1064,7 +1074,7 @@ module.exports = {
               menumsg.edit({
                 embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
                 components: [],
-                content: `<a:yes:833101995723194437> **Selected: \`${collected.size > 0 ? collected.first().values[0] : "NOTHING"}\`**`
+                content: `${allEmojis.msg.SUCCESS} **Selected: \`${collected.size > 0 ? collected.first().values[0] : "NOTHING"}\`**`
               })
             });
           }
@@ -1088,11 +1098,12 @@ module.exports = {
               .setPlaceholder('Click me to setup the Menu-Ticket System!')
               .addOptions(
                 data.map((option, index) => {
+                    const emoji = NumberEmojis[index + 1];
                   let Obj = {
                     label: option.value.substring(0, 50),
                     value: option.value.substring(0, 50),
                     description: option.description.substring(0, 50),
-                    emoji: NumberEmojiIds[index + 1]
+                    ...(emoji ? { emoji } : {})
                   }
                   return Obj;
                 }))
@@ -1110,11 +1121,12 @@ module.exports = {
                 .setPlaceholder('Click me to Access the Menu-Ticket System!')
                 .addOptions(
                   data.map((option, index) => {
+                    const emoji = NumberEmojis[index + 1];
                     let Obj = {
                       label: option.value.substring(0, 50),
                       value: option.value.substring(0, 50),
                       description: option.description.substring(0, 50),
-                      emoji: NumberEmojiIds[index + 1]
+                      ...(emoji ? { emoji } : {})
                     }
                     return Obj;
                   }))
@@ -1150,7 +1162,7 @@ module.exports = {
               menumsg.edit({
                 embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
                 components: [],
-                content: `<a:yes:833101995723194437> **Selected: \`${collected.first().values[0]}\`**`
+                content: `${allEmojis.msg.SUCCESS} **Selected: \`${collected.first().values[0]}\`**`
               })
             });
           }
@@ -1173,8 +1185,8 @@ module.exports = {
                 errors: ['time']
               }).then(collected => {
                 let content = collected.first().content;
-                if (!content || content.length > 19 || content.length < 17) {
-                  return message.reply("An Id is between 17 and 19 characters big")
+                if (!isValidSnowflakeId(content)) {
+                  return message.reply("An Id is between 17 and 20 characters big")
                 }
                 parent = message.guild.channels.cache.get(content);
                 if (!parent) {
@@ -1254,48 +1266,6 @@ module.exports = {
           .setDescription(eval(client.la[ls]["cmds"]["setup"]["setup-ticket"]["variable39"]))
         ]
       });
-    }
-    function getNumberEmojis() {
-      return [
-        "<:Number_0:843943149915078696>",
-        "<:Number_1:843943149902626846>",
-        "<:Number_2:843943149868023808>",
-        "<:Number_3:843943149914554388>",
-        "<:Number_4:843943149919535154>",
-        "<:Number_5:843943149759889439>",
-        "<:Number_6:843943150468857876>",
-        "<:Number_7:843943150179713024>",
-        "<:Number_8:843943150360068137>",
-        "<:Number_9:843943150443036672>",
-        "<:Number_10:843943150594031626>",
-        "<:Number_11:893173642022748230>",
-        "<:Number_12:893173642165383218>",
-        "<:Number_13:893173642274410496>",
-        "<:Number_14:893173642198921296>",
-        "<:Number_15:893173642182139914>",
-        "<:Number_16:893173642530271342>",
-        "<:Number_17:893173642538647612>",
-        "<:Number_18:893173642307977258>",
-        "<:Number_19:893173642588991488>",
-        "<:Number_20:893173642307977266>",
-        "<:Number_21:893173642274430977>",
-        "<:Number_22:893173642702250045>",
-        "<:Number_23:893173642454773782>",
-        "<:Number_24:893173642744201226>",
-        "<:Number_25:893173642727424020>"
-      ]
-    }
-    function isEmoji(emoji) {
-      if (!emoji) return false;
-      const regexExp = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi;
-      let unicode = regexExp.test(String(emoji));
-      if (unicode) {
-        return true
-      } else {
-        let dcemoji = client.emojis.cache.has(emoji) || message.guild.emojis.cache.has(emoji);
-        if (dcemoji) return true;
-        else return false;
-      }
     }
   },
 };

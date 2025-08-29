@@ -1,12 +1,9 @@
-const {
-    MessageEmbed,
-    MessageAttachment
-  } = require("discord.js");
-  const config = require(`${process.cwd()}/botconfig/config.json`);
-  var ee = require(`${process.cwd()}/botconfig/embed.json`);
-  const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-  const fetch = require("node-fetch");
-  module.exports = {
+const { MessageEmbed, MessageAttachment } = require("discord.js");
+const config = require(`${process.cwd()}/botconfig/config.json`);
+var ee = require(`${process.cwd()}/botconfig/embed.json`);
+const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
+const fetch = require("node-fetch");
+module.exports = {
     name: "fishington-io",
     aliases: ["fishingtonio", "fishington"],
     category: "🎮 MiniGames",
@@ -22,30 +19,37 @@ const {
 814288819477020702 Fishington.io
     */
     run: async (client, message, args, cmduser, text, prefix) => {
-    
-        let es = client.settings.get(message.guild.id, "embed");let ls = client.settings.get(message.guild.id, "language")
-        if(!client.settings.get(message.guild.id, "MINIGAMES")){
-          return message.reply(new MessageEmbed()
-            .setColor(es.wrongcolor)
-            .setFooter(client.getFooter(es))
-            .setTitle(client.la[ls].common.disabled.title)
-            .setDescription(require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {prefix: prefix}))
-          );
+        let es = client.settings.get(message.guild.id, "embed");
+        let ls = client.settings.get(message.guild.id, "language");
+        if (!client.settings.get(message.guild.id, "MINIGAMES")) {
+            return message.reply(
+                new MessageEmbed()
+                    .setColor(es.wrongcolor)
+                    .setFooter(client.getFooter(es))
+                    .setTitle(client.la[ls].common.disabled.title)
+                    .setDescription(
+                        require(`${process.cwd()}/handlers/functions`).handlemsg(client.la[ls].common.disabled.description, {
+                            prefix: prefix,
+                        })
+                    )
+            );
         }
-      try {
-        const { channel } = message.member.voice;
-        if (!channel) return message.reply(new MessageEmbed()
-            .setColor(es.wrongcolor)
-            .setFooter(client.getFooter(es))
-            .setTitle(eval(client.la[ls]["cmds"]["minigames"]["fishington-io"]["variable1"]))
-        );
-        if (!channel.permissionsFor(channel.guild.me).has("CREATE_INSTANT_INVITE")) {
-          const nochannel = new MessageEmbed()
-          .setDescription(eval(client.la[ls]["cmds"]["minigames"]["fishington-io"]["variable2"]))
-          .setColor(es.wrongcolor)
-          .setFooter(client.getFooter(es))
-          return message.reply(nochannel);
-        }
+        try {
+            const { channel } = message.member.voice;
+            if (!channel)
+                return message.reply(
+                    new MessageEmbed()
+                        .setColor(es.wrongcolor)
+                        .setFooter(client.getFooter(es))
+                        .setTitle(eval(client.la[ls]["cmds"]["minigames"]["fishington-io"]["variable1"]))
+                );
+            if (!channel.permissionsFor(channel.guild.me).has("CREATE_INSTANT_INVITE")) {
+                const nochannel = new MessageEmbed()
+                    .setDescription(eval(client.la[ls]["cmds"]["minigames"]["fishington-io"]["variable2"]))
+                    .setColor(es.wrongcolor)
+                    .setFooter(client.getFooter(es));
+                return message.reply(nochannel);
+            }
             fetch(`https://discord.com/api/v8/channels/${channel.id}/invites`, {
                 method: "POST",
                 body: JSON.stringify({
@@ -54,32 +58,35 @@ const {
                     target_application_id: "814288819477020702", // fishington-io
                     target_type: 2,
                     temporary: false,
-                    validate: null
+                    validate: null,
                 }),
                 headers: {
-                    "Authorization": `Bot ${config.token}`,
-                    "Content-Type": "application/json"
-                }
+                    Authorization: `Bot ${config.token}`,
+                    "Content-Type": "application/json",
+                },
             })
-            .then(res => res.json())
-            .then(invite => {
-                if (!invite.code) {
-                  return message.reply(new MessageEmbed()
-                  .setDescription(eval(client.la[ls]["cmds"]["minigames"]["fishington-io"]["variable3"]))
-                  .setColor(es.wrongcolor)
-                  .setFooter(client.getFooter(es)));
-                }
+                .then(res => res.json())
+                .then(invite => {
+                    if (!invite.code) {
+                        return message.reply(
+                            new MessageEmbed()
+                                .setDescription(eval(client.la[ls]["cmds"]["minigames"]["fishington-io"]["variable3"]))
+                                .setColor(es.wrongcolor)
+                                .setFooter(client.getFooter(es))
+                        );
+                    }
 
-                message.reply(eval(client.la[ls]["cmds"]["minigames"]["fishington-io"]["variable4"]));
-            })
+                    message.reply(eval(client.la[ls]["cmds"]["minigames"]["fishington-io"]["variable4"]));
+                });
         } catch (e) {
-            console.log(String(e.stack).grey.bgRed)
-            return message.reply(new Discord.MessageEmbed()
-                .setColor(es.wrongcolor)
-                .setFooter(client.getFooter(es))
-                .setTitle(client.la[ls].common.erroroccur)
-                .setDescription(eval(client.la[ls]["cmds"]["minigames"]["fishington-io"]["variable5"]))
+            console.log(String(e.stack).grey.bgRed);
+            return message.reply(
+                new Discord.MessageEmbed()
+                    .setColor(es.wrongcolor)
+                    .setFooter(client.getFooter(es))
+                    .setTitle(client.la[ls].common.erroroccur)
+                    .setDescription(eval(client.la[ls]["cmds"]["minigames"]["fishington-io"]["variable5"]))
             );
         }
-    }
-  }
+    },
+};

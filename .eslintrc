@@ -1,0 +1,39 @@
+
+{
+    "rules": {
+        // ESLint-Core (direkt in Oxlint enthalten)
+        "eqeqeq": "error",
+        "no-else-return": "error",
+        "no-constructor-return": "error",
+        "array-callback-return": ["error", { "allowImplicit": true, "checkForEach": true, "allowVoid": true }],
+        // OXLINT-Alternatives to previous eslint-plugins
+        "no-unused-vars": ["warn", { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }],
+        "no-array-constructor": "error",
+        "no-self-assign": "error",
+        "no-constant-condition": "error",
+        "no-unsafe-finally": "error",
+        "prefer-promise-reject-errors": "error",
+        "prefer-regex-literals": "error",
+        "check-tag-names": "off"
+    },
+    "ignorePatterns": [
+        "dist/",
+        "node_modules/",
+        "web/",
+        "eslint.config.js",
+        "package*.json",
+        ".env",
+        ".md",
+        "tsconfig.json",
+        "translate/",
+        "testProjects/",
+        "src/data/audios/",
+        "src/data/BrowserCache/",
+        "src/data/Datasets/",
+        "src/data/Fonts/",
+        "src/data/Images/",
+        "src/data/Locales*/",
+        "src/data/prisma/",
+        "src/data/Tracks/MivatorFlow/"
+    ]
+}
