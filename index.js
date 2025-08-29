@@ -19,7 +19,6 @@
  *********************************************************/
 const Discord = require("discord.js");
 const colors = require("colors");
-const enmap = require("enmap");
 const fs = require("fs");
 const OS = require("os");
 const Events = require("events");

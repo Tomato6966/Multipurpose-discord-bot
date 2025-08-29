@@ -1,5 +1,5 @@
-const Enmap = require("enmap");
-module.exports = client => {
+module.exports = async client => {
+    const { default: Enmap } = await import("enmap");
     let dateNow = Date.now();
     console.log(`${String("[x] :: ".magenta)}Now loading the Database...`.brightGreen);
     //Each Database gets a own file and folder which is pretty handy!

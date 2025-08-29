@@ -1,10 +1,10 @@
 const { readdirSync } = require("fs");
 const { MessageEmbed } = require("discord.js");
-const Enmap = require("enmap");
 const serialize = require("serialize-javascript");
 const ee = require(`${process.cwd()}/botconfig/embed.json`);
 console.log("Welcome to SERVICE HANDLER /--/ By https://milrato.eu /--/ Discord: Tomato#6966".yellow);
-module.exports = client => {
+module.exports = async client => {
+    const { default: Enmap } = await import("enmap");
     let dateNow = Date.now();
     console.log(`${String("[x] :: ".magenta)}Now loading the Commands ...`.brightGreen);
     try {

@@ -21,6 +21,10 @@ The errors related to ids are wrong, tho they were right are fixed, cause now th
 
 Report errors with a new ISSUE TICKET by writing 2025 into it!
 
+ATTENTION:
+
+There are apis like memer-api which aren't online anymore.. Sadly
+
 ---
 
 # Public Bot and Support Server!

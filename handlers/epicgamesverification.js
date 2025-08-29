@@ -5,8 +5,8 @@ const Platforms = {
     xbl: "Xbox",
 };
 const fortnite = require("fortnite");
-const Enmap = require("enmap");
 module.exports = async client => {
+    const { default: Enmap } = await import("enmap");
     client.epicgamesDB = new Enmap({
         name: "epicgamesDB",
         dataDir: "./databases/settings",

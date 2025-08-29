@@ -1,9 +1,9 @@
 //import the config.json file
 const Discord = require("discord.js");
 var { MessageEmbed, MessageAttachment, Permissions } = require(`discord.js`);
-const Enmap = require("enmap");
 const { simple_databasing } = require(`./functions`);
-module.exports = client => {
+module.exports = async client => {
+    const { default: Enmap } = await import("enmap");
     client.Anti_Nuke_System = new Enmap({
         name: "antinuke",
         dataDir: "./databases/antinuke",
