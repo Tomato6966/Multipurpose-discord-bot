@@ -1,12 +1,8 @@
-const {
-  MessageEmbed
-} = require(`discord.js`);
+const { MessageEmbed } = require(`discord.js`);
 const config = require(`${process.cwd()}/botconfig/config.json`);
 var ee = require(`${process.cwd()}/botconfig/embed.json`);
 const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const {
-  autoplay
-} = require(`${process.cwd()}/handlers/functions`);
+const { autoplay } = require(`${process.cwd()}/handlers/functions`);
 const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
 /*module.exports = {
   name: `voteskip`,
@@ -112,7 +108,7 @@ const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
     }
   }
 };
-*//**
+*/ /**
  * @INFO
  * Bot Coded by Tomato#6966 | https://discord.gg/milrato
  * @INFO

@@ -1,10 +1,10 @@
-const twitconfig = require("./twitter.json")
-const Twit = require('twit')
-const { databasing, delay } = require('../handlers/functions');
+const twitconfig = require("./twitter.json");
+const Twit = require("twit");
+const { databasing, delay } = require("../handlers/functions");
 
-module.exports = client => {
-}
-async function create_twit(client){/*
+module.exports = client => {};
+async function create_twit(client) {
+    /*
       //ensure the db for each guild
       for (const guild of [...client.guilds.cache.values()]) databasing(client, guild.id)
       //get all userids from the db
@@ -96,6 +96,6 @@ async function create_twit(client){/*
         })
 
       }*/
-      return undefined;
+    return undefined;
 }
 module.exports.creat_twit = create_twit;
