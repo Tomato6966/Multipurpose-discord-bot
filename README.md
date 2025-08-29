@@ -1,3 +1,10 @@
+# INFO 2025
+
+Check the [new_2025](https://github.com/Tomato6966/Multipurpose-discord-bot/tree/new_2025) branch for a 2025 working version!
+
+---
+
+
 # Public Bot and Support Server!
 
 <a href="https://discord.gg/AsgD3gtPnb"><img src="https://discord.com/api/guilds/1070626568260562954/widget.png?style=banner2"></a>
