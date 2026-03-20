@@ -88,10 +88,11 @@ Object.freeze(client.la);
 //function "handlemsg(txt, options? = {})" is in /handlers/functions
 
 /**********************************************************
- * @param {6} Raise_the_Max_Listeners to 0 (default 10)
+ * @param {6} Raise_the_Max_Listeners (default 10)
+ * Using 25 instead of 0 to keep memory leak detection active
  *********************************************************/
-client.setMaxListeners(0);
-Events.defaultMaxListeners = 0;
+client.setMaxListeners(25);
+Events.defaultMaxListeners = 25;
 process.env.UV_THREADPOOL_SIZE = OS.cpus().length;
 
 /**********************************************************
