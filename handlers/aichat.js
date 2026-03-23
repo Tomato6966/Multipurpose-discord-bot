@@ -24,7 +24,7 @@ module.exports = client => {
                 }
                 try {
                     fetch(
-                        `http://api.brainshop.ai/get?bid=153861&key=0ZjvbPWKAxJvcJ96&uid=1&msg=${encodeURIComponent(message)}`
+                        `http://api.brainshop.ai/get?bid=${process.env.BRAINSHOP_BID}&key=${process.env.BRAINSHOP_KEY}&uid=1&msg=${encodeURIComponent(message)}`
                     )
                         .then(res => res.json())
                         .then(data => {
