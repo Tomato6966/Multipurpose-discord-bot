@@ -1,0 +1,103 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Check environment variable usage",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"-e",
+				"const fs=require('node:fs'),path=require('node:path');const terms=['process.env.','dotenv.config'];function walk(d){for(const e of fs.readdirSync(d,{withFileTypes:true})){if(['node_modules','.git'].includes(e.name))continue;const f=path.join(d,e.name);if(e.isDirectory())walk(f);else if(e.name.endsWith('.js')){const s=fs.readFileSync(f,'utf8');for(const line of s.split(/\\r?\\n/))if(terms.some(t=>line.includes(t)))console.log(f+': '+line.trim());}}}walk('.');"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "List environment variable references",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-RhoE",
+				"process\\.env\\.[A-Za-z0-9_]+",
+				"--include=*.js",
+				"--exclude-dir=node_modules",
+				"."
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify API variable consumers",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-RnE",
+				"process\\.env\\.(BRAINSHOP_BID|BRAINSHOP_KEY|clientID|clientSecret|twitch_clientID|twitch_secret|consumer_key|consumer_secret|access_token|access_token_secret)",
+				"--include=*.js",
+				"--exclude-dir=node_modules",
+				"."
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify secret file is ignored",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"check-ignore",
+				"-v",
+				".env"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Parse environment template",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"-p",
+				"JSON.stringify(Object.keys(require('dotenv').parse(require('node:fs').readFileSync('example.env'))))"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Review environment template status",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short",
+				"--",
+				"example.env"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate example environment syntax",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--env-file=example.env",
+				"-p",
+				"process.env.token"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check environment template diff whitespace",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"diff",
+				"--check"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
