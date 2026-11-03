@@ -331,7 +331,7 @@ module.exports = {
                                                     `There is no parent i can access in this Guild which has the ID ${content}`
                                                 );
                                             }
-                                            if (parent.type !== "GUILD_CATEGORY") {
+                                            if (parent.type !== 4) {
                                                 return message.reply(`<#${parent.id}> is not a CATEGORY/PARENT`);
                                             }
                                             client.setups.set(

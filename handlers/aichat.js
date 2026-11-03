@@ -111,7 +111,7 @@ module.exports = client => {
                 ],
             });
             let channels = client.setups.get(message.guild.id, "autodelete");
-            if (channels && channels.some(ch => ch.id == message.channel.id) && message.channel.type == "GUILD_TEXT") {
+            if (channels && channels.some(ch => ch.id == message.channel.id) && message.channel.type == 0) {
                 setTimeout(
                     () => {
                         try {

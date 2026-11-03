@@ -99,7 +99,7 @@ const possible_words = [
     "insect",
     "lake",
     "gate",
-    "GUILD_CATEGORY",
+    4,
     "theory",
     "movie",
     "inflation",

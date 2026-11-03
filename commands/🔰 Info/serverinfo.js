@@ -97,12 +97,12 @@ module.exports = {
             );
             embed.addField(
                 client.la[ls].cmds.info.serverinfo.field5,
-                "💬 `" + message.guild.channels.cache.filter(channel => channel.type == "GUILD_TEXT").size + "`",
+                "💬 `" + message.guild.channels.cache.filter(channel => channel.type == 0).size + "`",
                 true
             );
             embed.addField(
                 client.la[ls].cmds.info.serverinfo.field6,
-                "🔈 `" + message.guild.channels.cache.filter(channel => channel.type == "GUILD_VOICE").size + "`",
+                "🔈 `" + message.guild.channels.cache.filter(channel => channel.type == 2).size + "`",
                 true
             );
 

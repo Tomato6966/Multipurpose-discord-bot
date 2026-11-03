@@ -301,8 +301,8 @@ module.exports = c => {
     c.on("messageUpdate", async function (oldMessage, newMessage) {
         if (oldMessage.author && oldMessage.author.bot) return;
         if (newMessage.author && newMessage.author.bot) return;
-        if (oldMessage.channel.type !== "GUILD_TEXT") return;
-        if (newMessage.channel.type !== "GUILD_TEXT") return;
+        if (oldMessage.channel.type !== 0) return;
+        if (newMessage.channel.type !== 0) return;
         if (oldMessage.content === newMessage.content) return;
         send_log(
             c,

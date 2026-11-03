@@ -510,12 +510,12 @@ module.exports = {
                                 });
                                 message.guild.channels
                                     .create("📋 | Applications", {
-                                        type: "GUILD_CATEGORY",
+                                        type: 4,
                                     })
                                     .then(ch => {
                                         ch.guild.channels
                                             .create("✔️|finished-applies", {
-                                                type: "GUILD_TEXT",
+                                                type: 0,
                                                 topic: "React to the Embed, to start the application process",
                                                 parent: ch.id,
                                                 permissionOverwrites: [
@@ -531,7 +531,7 @@ module.exports = {
                                             });
                                         ch.guild.channels
                                             .create("✅|apply-here", {
-                                                type: "GUILD_TEXT",
+                                                type: 0,
                                                 topic: "React to the Embed, to start the application process",
                                                 parent: ch.id,
                                                 permissionOverwrites: [

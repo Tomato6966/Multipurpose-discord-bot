@@ -15,7 +15,7 @@ module.exports = client => {
     //Log if a Channel gets deleted, and the Bot was in, then delete the player if the player exists!
     client.on("channelDelete", async channel => {
         try {
-            if (channel.type === "GUILD_VOICE") {
+            if (channel.type === 2) {
                 if (channel.members.has(client.user.id)) {
                     var player = client.manager.players.get(channel.guild.id);
                     if (!player) return;
@@ -41,7 +41,7 @@ module.exports = client => {
         }
     });
     client.on("voiceStateUpdate", async (oS, nS) => {
-        if (nS.channelId && nS.channel.type == "GUILD_STAGE_VOICE" && nS.guild.me.voice.suppress) {
+        if (nS.channelId && nS.channel.type == 13 && nS.guild.me.voice.suppress) {
             try {
                 await nS.guild.me.voice.setSuppressed(false);
             } catch (e) {

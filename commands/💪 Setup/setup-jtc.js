@@ -268,7 +268,7 @@ module.exports = {
                             if (boosts >= 30) maxbitrate = 384000;
                             message.guild.channels
                                 .create("Join to Create", {
-                                    type: "GUILD_VOICE",
+                                    type: 2,
                                     bitrate: maxbitrate,
                                     userLimit: 4,
                                     permissionOverwrites: [

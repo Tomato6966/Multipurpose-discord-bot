@@ -100,7 +100,7 @@ const fastwords = [
     "insect",
     "lake",
     "gate",
-    "GUILD_CATEGORY",
+    4,
     "theory",
     "movie",
     "inflation",

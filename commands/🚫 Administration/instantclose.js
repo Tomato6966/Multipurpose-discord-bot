@@ -153,7 +153,7 @@ module.exports = {
 
                             if (closedParent) {
                                 let ticketCh = msg.guild.channels.cache.get(closedParent);
-                                if (ticketCh && ticketCh.type == "GUILD_CATEGORY") {
+                                if (ticketCh && ticketCh.type == 4) {
                                     if (ticketCh.children.size < 50) {
                                         await msg.channel
                                             .setParent(ticketCh.id, { lockPermissions: false })

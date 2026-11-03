@@ -2669,7 +2669,7 @@ async function check_voice_channels(client) {
                 jointocreate.push(client.jtcsettings.get(guild.id, `jtcsettings${i}.channel`));
             }
             await guild.channels.cache
-                .filter(ch => ch.type == "GUILD_VOICE" && jointocreate.includes(ch.id))
+                .filter(ch => ch.type == 2 && jointocreate.includes(ch.id))
                 .each(async (channel, j) => {
                     try {
                         let members = channel.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
@@ -2699,7 +2699,7 @@ async function check_created_voice_channels(client) {
             let guild = client.guilds.cache.get(guilds[i]);
             if (guild) {
                 guild.channels.cache
-                    .filter(ch => ch.type == "GUILD_VOICE")
+                    .filter(ch => ch.type == 2)
                     .each(async vc => {
                         try {
                             if (client.jointocreatemap.get(`tempvoicechannel_${vc.guild.id}_${vc.id}`) == vc.id) {
@@ -2745,7 +2745,7 @@ function create_join_to_create_Channel(client, voiceState, type) {
         } catch {
             try {
                 let channel = guild.channels.cache.find(
-                    channel => channel.type === "GUILD_TEXT" && channel.permissionsFor(guild.me).has("SEND_MESSAGES")
+                    channel => channel.type === 0 && channel.permissionsFor(guild.me).has("SEND_MESSAGES")
                 );
                 channel
                     .send(eval(client.la[ls]["handlers"]["functionsjs"]["functions"]["variable11"]))
@@ -2755,7 +2755,7 @@ function create_join_to_create_Channel(client, voiceState, type) {
         return;
     }
     const createOptions = {
-        type: "GUILD_VOICE",
+        type: 2,
         permissionOverwrites: [
             {
                 //the role "EVERYONE" is just able to VIEW_CHANNEL and CONNECT
@@ -3290,7 +3290,7 @@ const channelInfo = (url, options = {}) =>
             res = (yield axios_1.default.get(
                 url,
                 Object.assign(Object.assign({}, options.requestOptions), {
-                    responseType: "GUILD_TEXT",
+                    responseType: 0,
                 })
             )).data;
         } catch (err) {

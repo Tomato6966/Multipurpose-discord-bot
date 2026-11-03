@@ -150,7 +150,7 @@ module.exports = client => {
 
                             if (closedParent) {
                                 let ticketCh = msg.guild.channels.cache.get(closedParent);
-                                if (ticketCh && ticketCh.type == "GUILD_CATEGORY") {
+                                if (ticketCh && ticketCh.type == 4) {
                                     if (ticketCh.children.size < 50) {
                                         await msg.channel
                                             .setParent(ticketCh.id, { lockPermissions: false })
@@ -1765,7 +1765,7 @@ module.exports = client => {
                     .substring(0, 31);
                 let optionsData = {
                     topic: `📨 Ticket for: ${user.tag} (${user.id}) | ${values[0]} | ✅ Created at: ${moment().format("LLLL")}`,
-                    type: "GUILD_TEXT",
+                    type: 0,
                     reason: `Menu Ticket System for: ${user.tag}`,
                 };
                 guild.channels.create(channelname.substring(0, 31), optionsData).then(async ch => {
@@ -1776,7 +1776,7 @@ module.exports = client => {
                     try {
                         var cat = guild.channels.cache.get(settings.data[index].category);
                         if (cat) {
-                            if (cat.type == "GUILD_CATEGORY") {
+                            if (cat.type == 4) {
                                 if (cat.children.size < 50) {
                                     await ch.setParent(String(cat.id)).catch(() => {});
                                 }

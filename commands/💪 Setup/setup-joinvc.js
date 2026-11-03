@@ -264,8 +264,8 @@ module.exports = {
                                                     if (
                                                         !Voicechannel ||
                                                         !Textchannel ||
-                                                        Voicechannel.type != "GUILD_VOICE" ||
-                                                        Textchannel.type != "GUILD_TEXT"
+                                                        Voicechannel.type != 2 ||
+                                                        Textchannel.type != 0
                                                     )
                                                         return message.reply(
                                                             `${allEmojis.msg.ERROR} **Check the example in the Embed, wrong input type!**`
@@ -408,13 +408,13 @@ module.exports = {
                                                             .filter(
                                                                 ch =>
                                                                     ch.guild.id == message.guild.id &&
-                                                                    ch.type == "GUILD_VOICE"
+                                                                    ch.type == 2
                                                             )
                                                             .first() ||
                                                         message.guild.channels.cache.get(
                                                             message.content.trim().split(" ")[0]
                                                         );
-                                                    if (!Voicechannel || Voicechannel.type != "GUILD_VOICE")
+                                                    if (!Voicechannel || Voicechannel.type != 2)
                                                         return message.reply(
                                                                 `${allEmojis.msg.ERROR} **Check the example in the Embed, wrong input type!**`
                                                         );
@@ -672,7 +672,7 @@ module.exports = {
                                                             .filter(
                                                                 ch =>
                                                                     ch.guild.id == message.guild.id &&
-                                                                    ch.type == "GUILD_VOICE"
+                                                                    ch.type == 2
                                                             )
                                                             .first() ||
                                                         message.guild.channels.cache.get(
@@ -831,13 +831,13 @@ module.exports = {
                                                             .filter(
                                                                 ch =>
                                                                     ch.guild.id == message.guild.id &&
-                                                                    ch.type == "GUILD_VOICE"
+                                                                    ch.type == 2
                                                             )
                                                             .first() ||
                                                         message.guild.channels.cache.get(
                                                             message.content.trim().split(" ")[0]
                                                         );
-                                                    if (!Voicechannel || Voicechannel.type != "GUILD_VOICE")
+                                                    if (!Voicechannel || Voicechannel.type != 2)
                                                         return message.reply(
                                                             `${allEmojis.msg.ERROR} **Check the example in the Embed, wrong input type!**`
                                                         );

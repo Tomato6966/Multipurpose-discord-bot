@@ -44,7 +44,7 @@ module.exports = {
             //let RoleOption = options.getRole("OPTIONNAME"); //RETURNS ROLE OBJECT
             const channel =
                 ChannelOption &&
-                ["GUILD_PRIVATE_THREAD ", "GUILD_PUBLIC_THREAD ", "GUILD_NEWS_THREAD ", "GUILD_NEWS", "GUILD_TEXT"].includes(
+                ["GUILD_PRIVATE_THREAD ", "GUILD_PUBLIC_THREAD ", "GUILD_NEWS_THREAD ", 5, 0].includes(
                     ChannelOption.type
                 )
                     ? ChannelOption

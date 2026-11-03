@@ -17,10 +17,9 @@
 /**********************************************************
  * @param {1} Import_Modules for this FIle
  *********************************************************/
-const Discord = require("discord.js");
+const Discord = require("./handlers/discord-compat");
 const colors = require("colors");
 const fs = require("fs");
-const OS = require("os");
 const Events = require("events");
 const emojis = require("./botconfig/emojis.json");
 const config = require("./botconfig/config.json");
@@ -32,31 +31,33 @@ require("dotenv").config();
  * @param {2} CREATE_THE_DISCORD_BOT_CLIENT with some default settings
  *********************************************************/
 const client = new Discord.Client({
-    fetchAllMembers: false,
-    restTimeOffset: 0,
-    failIfNotExists: false,
     shards: "auto",
     allowedMentions: {
-        parse: ["roles", "users"],
+        parse: [],
         repliedUser: false,
     },
-    partials: ["MESSAGE", "CHANNEL", "REACTION", "GUILD_MEMBER", "USER"],
+    partials: [
+        Discord.Partials.Message,
+        Discord.Partials.Channel,
+        Discord.Partials.Reaction,
+        Discord.Partials.GuildMember,
+        Discord.Partials.User,
+    ],
     intents: [
-        Discord.Intents.FLAGS.GUILDS,
-        Discord.Intents.FLAGS.GUILD_MEMBERS,
-        Discord.Intents.FLAGS.GUILD_BANS,
-        Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-        Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
-        Discord.Intents.FLAGS.GUILD_WEBHOOKS,
-        Discord.Intents.FLAGS.GUILD_INVITES,
-        Discord.Intents.FLAGS.GUILD_VOICE_STATES,
-        Discord.Intents.FLAGS.GUILD_PRESENCES,
-        Discord.Intents.FLAGS.GUILD_MESSAGES,
-        Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-        //Discord.Intents.FLAGS.GUILD_MESSAGE_TYPING,
-        Discord.Intents.FLAGS.DIRECT_MESSAGES,
-        Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-        //Discord.Intents.FLAGS.DIRECT_MESSAGE_TYPING
+        Discord.GatewayIntentBits.Guilds,
+        Discord.GatewayIntentBits.GuildMembers,
+        Discord.GatewayIntentBits.GuildBans,
+        Discord.GatewayIntentBits.GuildExpressions,
+        Discord.GatewayIntentBits.GuildIntegrations,
+        Discord.GatewayIntentBits.GuildWebhooks,
+        Discord.GatewayIntentBits.GuildInvites,
+        Discord.GatewayIntentBits.GuildVoiceStates,
+        Discord.GatewayIntentBits.GuildPresences,
+        Discord.GatewayIntentBits.GuildMessages,
+        Discord.GatewayIntentBits.GuildMessageReactions,
+        Discord.GatewayIntentBits.MessageContent,
+        Discord.GatewayIntentBits.DirectMessages,
+        Discord.GatewayIntentBits.DirectMessageReactions,
     ],
     presence: {
         activities: [
@@ -93,7 +94,6 @@ Object.freeze(client.la);
  *********************************************************/
 client.setMaxListeners(25);
 Events.defaultMaxListeners = 25;
-process.env.UV_THREADPOOL_SIZE = OS.cpus().length;
 
 /**********************************************************
  * @param {7} Define_the_Client_Advertisments from the Config File
@@ -177,7 +177,17 @@ requirehandlers();
 /**********************************************************
  * @param {9} Login_to_the_Bot
  *********************************************************/
-client.login(process.env.token || config.token);
+const token = process.env.token || config.token;
+if (!token) {
+    console.error("Missing Discord bot token. Set the token environment variable or configure botconfig/config.json.");
+    process.exitCode = 1;
+} else {
+    client.login(token).catch(error => {
+        console.error("Failed to log in to Discord:", error);
+        client.destroy();
+        process.exitCode = 1;
+    });
+}
 
 /**********************************************************
  * @INFO

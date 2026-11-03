@@ -337,15 +337,15 @@ module.exports = {
 
                                                 .replace(
                                                     /{text}/i,
-                                                    guild.channels.cache.filter(ch => ch.type == "GUILD_TEXT").size
+                                                    guild.channels.cache.filter(ch => ch.type == 0).size
                                                 )
                                                 .replace(
                                                     /{voice}/i,
-                                                    guild.channels.cache.filter(ch => ch.type == "GUILD_VOICE").size
+                                                    guild.channels.cache.filter(ch => ch.type == 2).size
                                                 )
                                                 .replace(
                                                     /{stage}/i,
-                                                    guild.channels.cache.filter(ch => ch.type == "GUILD_STAGE_VOICE").size
+                                                    guild.channels.cache.filter(ch => ch.type == 13).size
                                                 )
                                                 .replace(
                                                     /{thread}/i,
@@ -353,11 +353,11 @@ module.exports = {
                                                 )
                                                 .replace(
                                                     /{news}/i,
-                                                    guild.channels.cache.filter(ch => ch.type == "GUILD_NEWS").size
+                                                    guild.channels.cache.filter(ch => ch.type == 5).size
                                                 )
                                                 .replace(
                                                     /{category}/i,
-                                                    guild.channels.cache.filter(ch => ch.type == "GUILD_CATEGORY").size
+                                                    guild.channels.cache.filter(ch => ch.type == 4).size
                                                 )
                                                 .replace(
                                                     /{openthread}/i,
@@ -374,15 +374,15 @@ module.exports = {
 
                                                 .replace(
                                                     /{texts}/i,
-                                                    guild.channels.cache.filter(ch => ch.type == "GUILD_TEXT").size
+                                                    guild.channels.cache.filter(ch => ch.type == 0).size
                                                 )
                                                 .replace(
                                                     /{voices}/i,
-                                                    guild.channels.cache.filter(ch => ch.type == "GUILD_VOICE").size
+                                                    guild.channels.cache.filter(ch => ch.type == 2).size
                                                 )
                                                 .replace(
                                                     /{stages}/i,
-                                                    guild.channels.cache.filter(ch => ch.type == "GUILD_STAGE_VOICE").size
+                                                    guild.channels.cache.filter(ch => ch.type == 13).size
                                                 )
                                                 .replace(
                                                     /{threads}/i,
@@ -390,7 +390,7 @@ module.exports = {
                                                 )
                                                 .replace(
                                                     /{parent}/i,
-                                                    guild.channels.cache.filter(ch => ch.type == "GUILD_CATEGORY").size
+                                                    guild.channels.cache.filter(ch => ch.type == 4).size
                                                 )
                                                 .replace(
                                                     /{openthreads}/i,
@@ -526,18 +526,18 @@ module.exports = {
 
                                                             .replace(
                                                                 /{text}/i,
-                                                                guild.channels.cache.filter(ch => ch.type == "GUILD_TEXT")
+                                                                guild.channels.cache.filter(ch => ch.type == 0)
                                                                     .size
                                                             )
                                                             .replace(
                                                                 /{voice}/i,
-                                                                guild.channels.cache.filter(ch => ch.type == "GUILD_VOICE")
+                                                                guild.channels.cache.filter(ch => ch.type == 2)
                                                                     .size
                                                             )
                                                             .replace(
                                                                 /{stage}/i,
                                                                 guild.channels.cache.filter(
-                                                                    ch => ch.type == "GUILD_STAGE_VOICE"
+                                                                    ch => ch.type == 13
                                                                 ).size
                                                             )
                                                             .replace(
@@ -546,13 +546,13 @@ module.exports = {
                                                             )
                                                             .replace(
                                                                 /{news}/i,
-                                                                guild.channels.cache.filter(ch => ch.type == "GUILD_NEWS")
+                                                                guild.channels.cache.filter(ch => ch.type == 5)
                                                                     .size
                                                             )
                                                             .replace(
                                                                 /{category}/i,
                                                                 guild.channels.cache.filter(
-                                                                    ch => ch.type == "GUILD_CATEGORY"
+                                                                    ch => ch.type == 4
                                                                 ).size
                                                             )
                                                             .replace(
@@ -570,18 +570,18 @@ module.exports = {
 
                                                             .replace(
                                                                 /{texts}/i,
-                                                                guild.channels.cache.filter(ch => ch.type == "GUILD_TEXT")
+                                                                guild.channels.cache.filter(ch => ch.type == 0)
                                                                     .size
                                                             )
                                                             .replace(
                                                                 /{voices}/i,
-                                                                guild.channels.cache.filter(ch => ch.type == "GUILD_VOICE")
+                                                                guild.channels.cache.filter(ch => ch.type == 2)
                                                                     .size
                                                             )
                                                             .replace(
                                                                 /{stages}/i,
                                                                 guild.channels.cache.filter(
-                                                                    ch => ch.type == "GUILD_STAGE_VOICE"
+                                                                    ch => ch.type == 13
                                                                 ).size
                                                             )
                                                             .replace(
@@ -591,7 +591,7 @@ module.exports = {
                                                             .replace(
                                                                 /{parent}/i,
                                                                 guild.channels.cache.filter(
-                                                                    ch => ch.type == "GUILD_CATEGORY"
+                                                                    ch => ch.type == 4
                                                                 ).size
                                                             )
                                                             .replace(

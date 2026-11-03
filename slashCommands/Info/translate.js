@@ -1,81 +1,42 @@
-const { MessageEmbed } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const translate = require("translatte");
+const { EmbedBuilder } = require("discord.js");
 const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+const translate = require(`${process.cwd()}/handlers/translate`);
+
 module.exports = {
     name: "translate",
-    description: "Gives you an Invite link for this Bot",
-    run: async (client, interaction, cmduser, es, ls, prefix, player, message) => {
-        //things u can directly access in an interaction!
-        const {
-            member,
-            channelId,
-            guildId,
-            applicationId,
-            commandName,
-            deferred,
-            replied,
-            ephemeral,
-            options,
-            id,
-            createdTimestamp,
-        } = interaction;
-        const { guild } = member;
+    description: "Translate text between languages",
+    options: [
+        { String: { name: "from", description: "Source language code, for example en", required: true } },
+        { String: { name: "to", description: "Target language code, for example es", required: true } },
+        { String: { name: "text", description: "Text to translate", required: true } },
+    ],
+    run: async (client, interaction, cmduser, settings, language, prefix) => {
+        const from = interaction.options.getString("from");
+        const to = interaction.options.getString("to");
+        const text = interaction.options.getString("text");
 
         try {
-            if (!args[0])
-                return interaction?.reply({
-                    ephemeral: true,
-                    content: handlemsg(client.la[ls].cmds.info.translate.error, { prefix: prefix }),
-                });
-            if (!args[1])
-                return interaction?.reply({
-                    ephemeral: true,
-                    content: handlemsg(client.la[ls].cmds.info.translate.error, { prefix: prefix }),
-                });
-            if (!args[2])
-                return interaction?.reply({
-                    ephemeral: true,
-                    content: handlemsg(client.la[ls].cmds.info.translate.error, { prefix: prefix }),
-                });
-
-            translate(args.slice(2).join(" "), { from: args[0], to: args[1] })
-                .then(res => {
-                    let embed = new MessageEmbed()
-                        .setColor(es.color)
-                        .setAuthor(
-                            handlemsg(client.la[ls].cmds.info.translate.to, { to: args[1] }),
-                            "https://imgur.com/0DQuCgg.png",
-                            "https://discord.gg/milrato"
-                        )
-                        .setFooter(
-                            handlemsg(client.la[ls].cmds.info.translate.from, { from: args[0] }),
-                            member.user.displayAvatarURL({ dynamic: true })
-                        )
-                        .setDescription(eval(client.la[ls]["cmds"]["info"]["translate"]["variable1"]));
-                    interaction?.reply({ ephemeral: true, embeds: [embed] });
+            const result = await translate(text, { from, to });
+            const embed = new EmbedBuilder()
+                .setColor(settings.color)
+                .setAuthor({
+                    name: handlemsg(client.la[language].cmds.info.translate.to, { to }),
+                    iconURL: "https://imgur.com/0DQuCgg.png",
+                    url: "https://discord.gg/milrato",
                 })
-                .catch(err => {
-                    let embed = new MessageEmbed()
-                        .setColor(RED)
-                        .setTitle(client.la[ls].common.erroroccur)
-                        .setDescription(String("```" + err.stack + "```").substring(0, 2000));
-                    interaction?.reply({ ephemeral: true, embeds: [embed] });
-                    console.log(err);
-                });
-        } catch (e) {
-            console.log(String(e.stack).grey.bgRed);
+                .setFooter({
+                    text: handlemsg(client.la[language].cmds.info.translate.from, { from }),
+                    iconURL: interaction.user.displayAvatarURL(),
+                })
+                .setDescription(result.text.slice(0, 4_000));
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+        } catch (error) {
+            console.error("Translation failed:", error);
+            const embed = new EmbedBuilder()
+                .setColor(settings.wrongcolor)
+                .setTitle(client.la[language].common.erroroccur)
+                .setDescription("Translation failed. Check the language codes and try again later.");
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
         }
     },
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */

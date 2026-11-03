@@ -532,7 +532,7 @@ module.exports = client => {
                     .catch(e => {
                         member.guild.channels
                             .create(`verify-${member.user.username}`.substring(0, 32), {
-                                type: "GUILD_TEXT",
+                                type: 0,
                                 topic: "PLEASE SEND THE CAPTCHA CODE IN THE CHAT!",
                                 permissionOverwrites: [
                                     {

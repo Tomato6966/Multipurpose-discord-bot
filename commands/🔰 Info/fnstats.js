@@ -1,98 +1,118 @@
 const Discord = require("discord.js");
-const Canvas = require("discord-canvas");
-const { MessageEmbed } = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { GetUser, GetGlobalUser, handlemsg } = require(`${process.cwd()}/handlers/functions`);
+
+function statValue(stats, key) {
+    const stat = Array.isArray(stats) ? stats.find(value => value?.key?.toLowerCase() === key.toLowerCase()) : null;
+    const value = Number(stat?.value);
+    return Number.isFinite(value) ? value.toLocaleString("en-US") : "0";
+}
+
+function modeSummary(stats) {
+    return [
+        `Wins: ${stats?.top1?.valueInt ?? 0}`,
+        `Kills: ${stats?.kills?.valueInt ?? 0}`,
+        `Matches: ${stats?.matches?.valueInt ?? 0}`,
+        `K/D: ${stats?.kd?.valueDec ?? 0}`,
+    ].join("\n");
+}
+
 module.exports = {
     name: "fnstats",
     aliases: ["fortnitestats", "fstats"],
     category: "🔰 Info",
     description: "Shows the Fortnite Stats of a User",
-    usage: "fnstatns @USER | fnstats <platform> <Epic> | usermentions will only work if the user verification is setup",
+    usage: "fnstats <platform> <Epic> | fnstats @USER",
     type: "games",
-    run: async (client, message, args, cmduser, text, prefix) => {
-        let es = client.settings.get(message.guild.id, "embed");
-        let ls = client.settings.get(message.guild.id, "language");
-        try {
-            let usermention = message.mentions.users.first();
-            let Epic, platform;
-            if (!usermention) {
-                if (!args[0] || !args[1]) {
-                    client.epicgamesDB.ensure(message.author.id, {
-                        epic: "",
-                        user: message.author.id,
-                        guild: message.guild.id,
-                        Platform: "",
-                        InputMethod: "",
-                    });
-                    let data = client.epicgamesDB.get(message.author.id);
-                    if (!data.epic || data.epic.length < 5)
-                        return message.reply(
-                            `❌ **Your Account is not linked!**\nPlease enter a Epic Games name for individual Search!\n>Usage: \`fnstats <platform> <Epic>\``
-                        );
-                    Epic = data.epic;
-                    platform = data.Platform;
-                } else {
-                    Epic = args.slice(1).join(" ");
-                    if (!Epic) return message.reply("Please enter a Epic Games name!\n>Usage: `fnstats <platform> <Epic>`");
-                    platform = String(args[0]).toLowerCase() || "PC".toLowerCase();
-                    if (platform !== "pc" && platform !== "xbl" && platform !== "psn")
-                        return message.channel.send(
-                            "Please enter a valid platform\n> Valid Platforms: `xbl, psn, pc`\n> Usage: `fnstats <platform> <Epic>`"
-                        );
-                }
-            } else {
-                client.epicgamesDB.ensure(message.author.id, {
-                    epic: "",
-                    user: message.author.id,
-                    guild: message.guild.id,
-                    Platform: "",
-                    InputMethod: "",
-                });
-                let data = client.epicgamesDB.get(message.author.id);
-                if (!data.epic || data.epic.length < 5)
-                    return message.reply(`❌ **${message.author.tag}** did not verify/connect their Epic Games Account`);
-                Epic = data.epic;
-                platform = data.Platform;
-            }
-            try {
-                if (platform !== "pc" && platform !== "xbl" && platform !== "psn") platform = "pc";
-                let themsg = await message.reply(`<a:Loading:833101350623117342> Getting the Fortnite Stats of ${Epic}`);
-                const stats = new Canvas.FortniteStats();
-                const image = await stats
-                    .setToken(process.env.fortnitetracker || config.fortnitetracker)
-                    .setUser(Epic)
-                    .setPlatform(platform.toLowerCase())
-                    .toAttachment();
-                if (!image) return message.channel.send("User not found / Epic INvalid");
-                let attachment = new Discord.MessageAttachment(image.toBuffer(), "FortniteStats.png");
-                themsg.edit({ content: `Stats of: \`${Epic}\` on \`${platform}\``, files: [attachment] });
-            } catch (e) {
-                console.log(e.stack ? String(e.stack).grey : String(e).grey);
-                message.channel.send("EPIC INVALID");
-            }
-        } catch (e) {
-            console.log(String(e.stack).grey.bgRed);
-            return message.reply({
-                embeds: [
-                    new MessageEmbed()
-                        .setColor(es.wrongcolor)
-                        .setFooter(client.getFooter(es))
-                        .setTitle(client.la[ls].common.erroroccur)
-                        .setDescription(eval(client.la[ls]["cmds"]["info"]["avatar"]["variable1"])),
-                ],
+    run: async (client, message, args) => {
+        const settings = client.settings.get(message.guild.id, "embed");
+        const mentionedUser = message.mentions.users.first();
+        const accountId = mentionedUser?.id || message.author.id;
+        let epic;
+        let platform;
+
+        if (mentionedUser || !args[0] || !args[1]) {
+            client.epicgamesDB.ensure(accountId, {
+                epic: "",
+                user: accountId,
+                guild: message.guild.id,
+                Platform: "",
+                InputMethod: "",
             });
+            const linkedAccount = client.epicgamesDB.get(accountId);
+            if (!linkedAccount?.epic || linkedAccount.epic.length < 5) {
+                return message.reply(
+                    mentionedUser
+                        ? `❌ **${mentionedUser.tag}** has not linked an Epic Games account.`
+                        : "❌ Your account is not linked. Use `fnstats <platform> <Epic>` instead."
+                );
+            }
+            epic = linkedAccount.epic;
+            platform = linkedAccount.Platform;
+        } else {
+            platform = String(args[0]).toLowerCase();
+            epic = args.slice(1).join(" ").trim();
+        }
+
+        if (!["pc", "xbl", "psn"].includes(String(platform).toLowerCase())) {
+            return message.reply("Please enter a valid platform: `pc`, `xbl`, or `psn`.");
+        }
+        if (!epic) return message.reply("Please enter an Epic Games name.");
+
+        const loading = await message.reply(`<a:Loading:833101350623117342> Getting the Fortnite Stats of ${epic}`);
+        try {
+            const apiKey = process.env.fortnitetracker || config.fortnitetracker;
+            if (!apiKey) throw new Error("Missing Fortnite Tracker API key configuration.");
+
+            const endpoint = `https://api.fortnitetracker.com/v1/profile/${encodeURIComponent(
+                String(platform).toLowerCase()
+            )}/${encodeURIComponent(epic)}`;
+            const response = await fetch(endpoint, {
+                headers: { "TRN-Api-Key": apiKey },
+                signal: AbortSignal.timeout(10_000),
+            });
+            if (response.status === 404) {
+                await loading.edit({ content: "User not found. Check the Epic name and platform.", embeds: [] });
+                return;
+            }
+            if (!response.ok) throw new Error(`Fortnite Tracker returned HTTP ${response.status}.`);
+
+            const profile = await response.json();
+            if (profile?.error || !Array.isArray(profile?.lifeTimeStats)) {
+                await loading.edit({ content: "User not found or Fortnite Tracker returned no stats.", embeds: [] });
+                return;
+            }
+
+            const modes = profile.stats || {};
+            const embed = new Discord.EmbedBuilder()
+                .setColor(settings.color)
+                .setTitle(`Fortnite Stats: ${String(profile.epicUserHandle || epic).slice(0, 200)}`)
+                .setURL(`https://fortnitetracker.com/profile/${platform}/${encodeURIComponent(epic)}`)
+                .addFields(
+                    {
+                        name: "Lifetime",
+                        value: [
+                            `Wins: ${statValue(profile.lifeTimeStats, "Wins")}`,
+                            `Kills: ${statValue(profile.lifeTimeStats, "Kills")}`,
+                            `Matches: ${statValue(profile.lifeTimeStats, "Matches Played")}`,
+                            `K/D: ${statValue(profile.lifeTimeStats, "K/d")}`,
+                        ].join("\n"),
+                        inline: true,
+                    },
+                    { name: "Solo", value: modeSummary(modes.p2), inline: true },
+                    { name: "Duo", value: modeSummary(modes.p10), inline: true },
+                    { name: "Squad", value: modeSummary(modes.p9), inline: true }
+                )
+                .setFooter(client.getFooter(settings));
+
+            await loading.edit({ content: "", embeds: [embed] });
+        } catch (error) {
+            console.error("Failed to fetch Fortnite stats:", error);
+            const embed = new Discord.EmbedBuilder()
+                .setColor(settings.wrongcolor)
+                .setTitle("Fortnite stats unavailable")
+                .setDescription("Stats could not be retrieved right now. Please try again later.")
+                .setFooter(client.getFooter(settings));
+            await loading.edit({ content: "", embeds: [embed] });
         }
     },
 };
-/*
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */

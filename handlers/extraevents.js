@@ -93,7 +93,7 @@ module.exports = client => {
     client.on("messageCreate", message => {
         if (!message.guild || message.guild.available === false) return;
         if (message.guild && message.author.id == client.user.id && message.embeds.length > 0) {
-            if (message.channel.type == "GUILD_NEWS") {
+            if (message.channel.type == 5) {
                 setTimeout(() => {
                     if (message.crosspostable) {
                         message

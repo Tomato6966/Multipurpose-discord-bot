@@ -21,7 +21,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://pay
 <details>
   <summary>Click to expand</summary>
 
-  * [nodejs](https://nodejs.org) version 16.6 or higher, I recommend the latest STABLE version
+  * [nodejs](https://nodejs.org) version 22 or higher (Discord.js 14)
   * [python](https://python.org) version 3.8 or higher, to install the database `enmap` (better-sqlite3)
   * A VPS would be advised, so you don't need to keep your PC/laptop/RasPi 24/7 online! [Click here for a debian setup](https://github.com/Tomato6966/Debian-Cheat-Sheet-Setup/wiki/).
   * Check out my recommended Host: [BERO-HOST](https://bero.host) and use code `milrato` for cheap OP VPS (kvm)
@@ -38,6 +38,8 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://pay
   1. Download the [Source Code](https://github.com/Tomato6966/Multipurpose-discord-bot/releases/latest)
      * Either by: `git clone https://github.com/Tomato6966/Multipurpose-discord-bot`
      * Or by downloading it as a zip from the releases tab or a branch.
+  2. In the Discord Developer Portal, enable the privileged **Server Members**, **Presence**, and **Message Content** intents for the application. Prefix commands require Message Content access.
+  3. Keep real API keys and bot tokens out of source control. Configure Fortnite API keys with `fnbr` and `fortnitetracker` environment variables or in a private `botconfig/config.json`; the Fortnite shop and stats commands return embeds and use bounded requests.
 
 </details>
 
