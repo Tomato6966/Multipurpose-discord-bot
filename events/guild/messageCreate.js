@@ -416,7 +416,7 @@ module.exports = async (client, message) => {
                                 .setFooter(client.getFooter(es))
                                 .setTitle(client.la[ls].common.somethingwentwrong)
                                 .setDescription(
-                                    `\`\`\`${e.message ? e.message : e.stack ? String(e.stack).grey.substring(0, 2000) : String(e).grey.substring(0, 2000)}\`\`\``
+                                    `\`\`\`${e.message ? e.message.substring(0, 1000) : "An error occurred while executing this command."}\`\`\``
                                 ),
                         ],
                     })
@@ -460,7 +460,7 @@ module.exports = async (client, message) => {
                     new MessageEmbed()
                         .setColor("RED")
                         .setTitle("❌ An error occurred")
-                        .setDescription(`\`\`\`${e.message ? e.message : String(e).grey.substring(0, 2000)}\`\`\``),
+                        .setDescription(`\`\`\`${e.message ? e.message.substring(0, 1000) : "An error occurred while executing this command."}\`\`\``),
                 ],
             })
             .catch(() => {});

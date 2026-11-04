@@ -19,10 +19,10 @@ module.exports = async client => {
             var guilds = client.social_log
                 .filterArray(
                     v =>
+                        v &&
                         v.twitch &&
                         v.twitch.channels &&
                         v.twitch.channels.length > 0 &&
-                        v.twitch &&
                         v.twitch.channelId &&
                         v.twitch.channelId.length > 1
                 )
@@ -299,14 +299,18 @@ module.exports = async client => {
     }
 
     async function UpdateAuthConfig() {
-        let tempData = JSON.parse(fs.readFileSync("./social_log/streamconfig.json"));
-        const authKey = await getKey(
-            process.env.twitch_clientID || tempData.twitch_clientID,
-            process.env.twitch_secret || tempData.twitch_secret
-        );
-        if (!authKey) return console.log(`NO AUTH`);
-        var tempConfig = JSON.parse(fs.readFileSync("./social_log/streamconfig.json"));
-        tempConfig.authToken = authKey;
-        fs.writeFileSync("./social_log/streamconfig.json", JSON.stringify(tempConfig, null, 3));
+        try {
+            if (!fs.existsSync("./social_log/streamconfig.json")) return;
+            let tempData = JSON.parse(fs.readFileSync("./social_log/streamconfig.json", "utf8"));
+            const clientId = (process.env.twitch_clientID || tempData?.twitch_clientID || "").trim();
+            const clientSecret = (process.env.twitch_secret || tempData?.twitch_secret || "").trim();
+            if (!clientId || !clientSecret || clientId.length < 5 || clientSecret.length < 5) return;
+            const authKey = await getKey(clientId, clientSecret).catch(() => null);
+            if (!authKey) return;
+            tempData.authToken = authKey;
+            fs.writeFileSync("./social_log/streamconfig.json", JSON.stringify(tempData, null, 3));
+        } catch (e) {
+            console.error("Twitch auth config update error:", e.message);
+        }
     }
 };

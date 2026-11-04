@@ -120,12 +120,21 @@ addLegacyConstructor("MessageActionRow", Discord.ActionRowBuilder);
 addLegacyConstructor("MessageButton", Discord.ButtonBuilder);
 addLegacyConstructor("MessageSelectMenu", Discord.StringSelectMenuBuilder);
 
-Discord.Intents = {
-    FLAGS: mapFlags(intentAliases, Discord.GatewayIntentBits),
-};
-Discord.Permissions = {
-    FLAGS: mapFlags(permissionAliases, Discord.PermissionFlagsBits),
-};
+Discord.Intents = Discord.IntentsBitField;
+Discord.Intents.FLAGS = mapFlags(intentAliases, Discord.GatewayIntentBits);
+Discord.Permissions = Discord.PermissionsBitField;
+Discord.Permissions.FLAGS = mapFlags(permissionAliases, Discord.PermissionFlagsBits);
+
+if (!Discord.Collection.prototype.keyArray) {
+    Discord.Collection.prototype.keyArray = function () {
+        return Array.from(this.keys());
+    };
+}
+if (!Discord.Collection.prototype.array) {
+    Discord.Collection.prototype.array = function () {
+        return Array.from(this.values());
+    };
+}
 
 Discord.EmbedBuilder.prototype.addField = function (name, value, inline) {
     return this.addFields({ name, value, inline });

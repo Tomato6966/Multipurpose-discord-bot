@@ -6,18 +6,14 @@ module.exports = function (client, options) {
         "0 0 * * * *",
         async function () {
             //get all guilds which are setupped
-            var guilds = client.setups
-                .filter(v => {
-                    if (v.membercount) {
-                        let returnvalue = false;
-                        for (let i = 1; i <= 25; i++) {
-                            if (v.membercount[`channel${i}`] && v.membercount[`channel${i}`].length > 5) returnvalue = true;
-                        }
-                        return returnvalue;
+            var guilds = client.setups.keyArray(v => {
+                if (v && v.membercount) {
+                    for (let i = 1; i <= 25; i++) {
+                        if (v.membercount[`channel${i}`] && v.membercount[`channel${i}`].length > 5) return true;
                     }
-                    return false;
-                })
-                .keyArray();
+                }
+                return false;
+            });
             var logguilds = guilds;
             console.log(JSON.stringify(logguilds.map(guild => `${guild}`)).italic.yellow + " MEMBERCOUNTER ALL GUILDS");
             //Loop through all guilds and send a random auto-generated-nsfw setup
@@ -33,18 +29,14 @@ module.exports = function (client, options) {
 
     client.on("ready", async () => {
         //get all guilds which are setupped
-        var guilds = client.setups
-            .filter(v => {
-                if (v.membercount) {
-                    let returnvalue = false;
-                    for (let i = 1; i <= 25; i++) {
-                        if (v.membercount[`channel${i}`] && v.membercount[`channel${i}`].length > 5) returnvalue = true;
-                    }
-                    return returnvalue;
+        var guilds = client.setups.keyArray(v => {
+            if (v && v.membercount) {
+                for (let i = 1; i <= 25; i++) {
+                    if (v.membercount[`channel${i}`] && v.membercount[`channel${i}`].length > 5) return true;
                 }
-                return false;
-            })
-            .keyArray();
+            }
+            return false;
+        });
         var logguilds = guilds;
         console.log(JSON.stringify(logguilds.map(guild => `${guild}`)).italic.yellow + " MEMBERCOUNTER ALL GUILDS");
         //Loop through all guilds and send a random auto-generated-nsfw setup

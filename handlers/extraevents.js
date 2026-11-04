@@ -83,13 +83,6 @@ module.exports = client => {
     process.on("uncaughtExceptionMonitor", (err, origin) => {
         console.log("=== uncaught Exception Monitor ===".toUpperCase().yellow.dim);
     });
-    process.on("multipleResolves", (type, promise, reason) => {
-        /* console.log('\n\n\n\n\n=== multiple Resolves ==='.toUpperCase().yellow.dim);
-    console.log(type, promise, reason);
-    console.log('=== multiple Resolves ===\n\n\n\n\n'.toUpperCase().yellow.dim);
-  */
-    });
-
     client.on("messageCreate", message => {
         if (!message.guild || message.guild.available === false) return;
         if (message.guild && message.author.id == client.user.id && message.embeds.length > 0) {
@@ -166,14 +159,8 @@ module.exports = client => {
             .addField("Servers Bot is in", `>>> \`\`\`${client.guilds.cache.size}\`\`\``)
             .addField("Leave Server:", `>>> \`\`\`${config.prefix}leaveserver ${guild.id}\`\`\``)
             .setThumbnail(guild.iconURL({ dynamic: true }));
-        for (const owner of config.ownerIDS) {
-            //If the Owner is Tomato, and the Bot is in not a Milrato Development, Public Bot, then dont send information!
-            if (owner == "442355791412854784") {
-                let milratoGuild = client.guilds.cache.get("773668217163218944");
-                if (milratoGuild && !milratoGuild.me.roles.cache.has("779021235790807050")) {
-                    continue;
-                }
-            }
+        for (const owner of config.ownerIDS || []) {
+            if (!owner || owner === "442355791412854784") continue;
             client.users
                 .fetch(owner)
                 .then(user => {
@@ -243,14 +230,8 @@ module.exports = client => {
             .addField("Member Count", `>>> \`\`\`${guild.memberCount}\`\`\``)
             .addField("Servers Bot is in", `>>> \`\`\`${client.guilds.cache.size}\`\`\``)
             .setThumbnail(guild.iconURL({ dynamic: true }));
-        for (const owner of config.ownerIDS) {
-            //If the Owner is Tomato, and the Bot is in not a Milrato Development, Public Bot, then dont send information!
-            if (owner == "442355791412854784") {
-                let milratoGuild = client.guilds.cache.get("773668217163218944");
-                if (milratoGuild && !milratoGuild.me.roles.cache.has("779021235790807050")) {
-                    continue;
-                }
-            }
+        for (const owner of config.ownerIDS || []) {
+            if (!owner || owner === "442355791412854784") continue;
             client.users
                 .fetch(owner)
                 .then(user => {

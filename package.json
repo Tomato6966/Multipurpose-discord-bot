@@ -49,9 +49,10 @@
     "yargs": "^18.2.0"
   },
   "scripts": {
-    "test": "node scripts/check-syntax.js && node scripts/test-discord-compat.js && node scripts/test-coliru-command.js && node scripts/test-fortnite-commands.js && node scripts/test-translate-helper.js",
+    "test": "node scripts/check-syntax.js && node scripts/test-discord-compat.js && node scripts/test-coliru-command.js && node scripts/test-fortnite-commands.js && node scripts/test-translate-helper.js && node scripts/test-slash-command-builder.js && node scripts/test-security-features.js",
     "test:load": "node scripts/check-module-load.js",
     "test:compat": "node scripts/test-discord-compat.js",
+    "deploy": "node scripts/deploy-commands.js",
     "fmt": "prettier --config ./.prettierrc --write './**/*.js'",
     "lint": "bun oxlint -c ../.eslintrc --jsdoc-plugin --promise-plugin --node-plugin --import-plugin --regex-plugin --fix --fix-suggestions",
     "start": "node index.js"

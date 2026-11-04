@@ -12,7 +12,7 @@ module.exports = client => {
         "30 0 0 * * *",
         function () {
             //get all guilds which are setupped
-            var guilds = client.settings.filter(v => v.dailyfact && v.dailyfact != "no").keyArray();
+            var guilds = client.settings.keyArray(v => v.dailyfact && v.dailyfact != "no");
             //Loop through all guilds and send a random auto-generated-nsfw setup
             for (const guildid of guilds) {
                 dailyfact(guildid);

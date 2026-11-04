@@ -1,3 +1,22 @@
 node_modules/
 package-lock.json
 .env
+.env.*
+!.env.example
+
+# Enmap SQLite database files
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+databases/**/*.sqlite
+databases/**/*.sqlite-wal
+databases/**/*.sqlite-shm
+social_log/youtubelog/*.sqlite*
+
+# Logs and system files
+*.log
+.DS_Store
+.cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

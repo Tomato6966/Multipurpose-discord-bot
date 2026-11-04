@@ -1,9 +1,7 @@
 {
     "token": "GET from: https://discord.com/developers/applications",
     "prefix": "//",
-    "ownerIDS": [
-        "442355791412854784"
-    ],
+    "ownerIDS": [],
     "fnbr": "GET from: https://fnbr.co",
     "fortnitetracker": "GET from: https://fortnitetracker.com",
     "memer_api": "GET from: https://discord.gg/Mc2FudJkgP",

@@ -98,6 +98,432 @@
 			],
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "Check environment file syntax",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--env-file=.env",
+				"-p",
+				"'environment file parsed'"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Re-run bot regression test suite",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"test"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate dotenv file without showing values",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--env-file=.env",
+				"-p",
+				"1"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run startup diagnostics without Discord login",
+			"type": "shell",
+			"command": "timeout",
+			"args": [
+				"20s",
+				"env",
+				"token=",
+				"npm",
+				"start"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build native SQLite binding",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"rebuild",
+				"better-sqlite3",
+				"--foreground-scripts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify startup handlers and slash commands",
+			"type": "shell",
+			"command": "timeout",
+			"args": [
+				"25s",
+				"env",
+				"token=",
+				"npm",
+				"start"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Regression tests after startup fixes",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"test"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate installed runtime packages",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"ls",
+				"better-sqlite3",
+				"@discordjs/builders",
+				"discord.js"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Find old Discord intent constructor use",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-Rn",
+				"new Discord.Intents",
+				"--include=*.js",
+				"--exclude-dir=node_modules",
+				"."
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Recheck startup after intent fix",
+			"type": "shell",
+			"command": "timeout",
+			"args": [
+				"25s",
+				"env",
+				"token=",
+				"npm",
+				"start"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Find Enmap fetch API support",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-n",
+				"fetchEverything",
+				"node_modules/enmap/dist/index.js"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "List Enmap table names",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-n",
+				"name:",
+				"handlers/loaddb.js"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Find supported Enmap collection methods",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-nE",
+				"fetch|values\\(|entries\\(|array\\(",
+				"node_modules/enmap/dist/index.js"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Recheck startup after database fixes",
+			"type": "shell",
+			"command": "timeout",
+			"args": [
+				"25s",
+				"env",
+				"token=",
+				"npm",
+				"start"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Find global rejection logger",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-Rn",
+				"UNHANDLED REJECTION",
+				"--include=*.js",
+				"--exclude-dir=node_modules",
+				"."
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Find Axios API call sites",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-Rn",
+				"axios.get",
+				"--include=*.js",
+				"--exclude-dir=node_modules",
+				"."
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Locate Axios call sites",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-Rn",
+				"axios",
+				"--include=*.js",
+				"--exclude-dir=node_modules",
+				"handlers",
+				"social_log",
+				"commands"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Find YouTube scraping startup call",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-Rn",
+				"GetChannelVideos",
+				"--include=*.js",
+				"--exclude-dir=node_modules",
+				"handlers",
+				"social_log",
+				"commands"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Find YouTube helper call sites",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-Rn",
+				"getLatestVideos",
+				"--include=*.js",
+				"--exclude-dir=node_modules",
+				"handlers",
+				"social_log",
+				"commands"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Find YouTube helper startup references",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-Rn",
+				"channelInfo(",
+				"--include=*.js",
+				"--exclude-dir=node_modules",
+				"handlers",
+				"social_log",
+				"commands"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run startup regression suite",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"test"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check migrated source modules load",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test:load"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify startup stops for missing token",
+			"type": "shell",
+			"command": "env",
+			"args": [
+				"token=",
+				"npm",
+				"start"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check token value length only",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--env-file=.env",
+				"-p",
+				"process.env.token.length"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Identify packages issuing Axios requests",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"ls",
+				"axios",
+				"--all"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Inspect Spotify adapter API requests",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-Rn",
+				"axios",
+				"node_modules/erela.js-spotify",
+				"node_modules/erela.js-deezer",
+				"node_modules/erela.js-facebook"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Ensure invalid token config exits cleanly",
+			"type": "shell",
+			"command": "env",
+			"args": [
+				"token=",
+				"npm",
+				"start"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run regression tests final",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"test"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Load every source module final",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test:load"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check for template token placeholder",
+			"type": "shell",
+			"command": "grep",
+			"args": [
+				"-q",
+				"^token=GET",
+				".env"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final whitespace verification",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"diff",
+				"--check"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final production dependency audit check",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"audit",
+				"--omit=dev"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify whitespace after env fix",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"diff",
+				"--check"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Re-run regression tests after env fix",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"test"
+			],
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }
