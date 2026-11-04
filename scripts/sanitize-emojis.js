@@ -109,3 +109,4 @@ for (const dir of targetDirs) {
 }
 
 console.log(`\nFinished: Modified ${filesModified} files with ${totalReplaced} emoji replacements.`);
+
