@@ -114,7 +114,7 @@ module.exports = {
                         handle_the_picks(menu?.values[0], menuoptiondata);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -207,7 +207,7 @@ module.exports = {
                                         handle_the_picks2(menu?.values[0], menuoptiondata);
                                     } else
                                         menu?.reply({
-                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                             ephemeral: true,
                                         });
                                 });
@@ -295,7 +295,7 @@ module.exports = {
                                                                 embeds: [
                                                                     new Discord.MessageEmbed()
                                                                         .setTitle(
-                                                                            `<:no:833101993668771842> This Channel is already Setupped!`
+                                                                            `❌ This Channel is already Setupped!`
                                                                         )
                                                                         .setDescription(
                                                                             `Remove it first with \`${prefix}setup-joinvc\` --> Then Pick VC Messages --> Then Pick Remove!`
@@ -443,7 +443,7 @@ module.exports = {
                                                                 embeds: [
                                                                     new Discord.MessageEmbed()
                                                                         .setTitle(
-                                                                            `<:no:833101993668771842> This Channel has not been Setup yet!`
+                                                                            `❌ This Channel has not been Setup yet!`
                                                                         )
                                                                         .setColor(es.color)
                                                                         .setFooter(client.getFooter(es)),
@@ -630,7 +630,7 @@ module.exports = {
                                         handle_the_picks2(menu?.values[0], menuoptiondata);
                                     } else
                                         menu?.reply({
-                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                             ephemeral: true,
                                         });
                                 });
@@ -724,7 +724,7 @@ module.exports = {
                                                                 embeds: [
                                                                     new Discord.MessageEmbed()
                                                                         .setTitle(
-                                                                            `<:no:833101993668771842> This Channel is already Setupped!`
+                                                                            `❌ This Channel is already Setupped!`
                                                                         )
                                                                         .setDescription(
                                                                             `Remove it first with \`${prefix}setup-joinvc\` --> Then Pick VC ROLES --> Then Pick Remove!`
@@ -866,7 +866,7 @@ module.exports = {
                                                                 embeds: [
                                                                     new Discord.MessageEmbed()
                                                                         .setTitle(
-                                                                            `<:no:833101993668771842> This Channel has not been Setup yet!`
+                                                                            `❌ This Channel has not been Setup yet!`
                                                                         )
                                                                         .setColor(es.color)
                                                                         .setFooter(client.getFooter(es)),

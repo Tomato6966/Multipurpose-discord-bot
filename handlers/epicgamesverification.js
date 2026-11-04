@@ -72,19 +72,19 @@ module.exports = async client => {
                                     label: "PC | Computer",
                                     value: "pc",
                                     description: "If you play on Computer / Laptop",
-                                    emoji: "840608514648047666",
+                                    emoji: "💻",
                                 },
                                 {
                                     label: "Playstation",
                                     value: "psn",
                                     description: "If you play on a Playstation",
-                                    emoji: "840608342040117249",
+                                    emoji: "🎮",
                                 },
                                 {
                                     label: "Xbox",
                                     value: "xbl",
                                     description: "If you play on a XBOX",
-                                    emoji: "840608097701330996",
+                                    emoji: "🕹️",
                                 },
                                 {
                                     label: "Others",

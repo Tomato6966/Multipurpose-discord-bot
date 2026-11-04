@@ -35,7 +35,7 @@ module.exports = {
             return message.reply({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle("<:no:833101993668771842> You need to join a voice channel")
+                        .setTitle("❌ You need to join a voice channel")
                         .setColor(es.wrongcolor)
                         .setFooter(client.getFooter(es)),
                 ],
@@ -75,7 +75,7 @@ module.exports = {
             return message.reply({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle(`<:no:833101993668771842> I am already connected in: \`${botchannel.name}\``)
+                        .setTitle(`❌ I am already connected in: \`${botchannel.name}\``)
                         .setFooter(client.getFooter(es)),
                 ],
             });

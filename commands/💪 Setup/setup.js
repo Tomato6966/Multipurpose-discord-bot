@@ -334,7 +334,7 @@ module.exports = {
                             menuselection(menu);
                         } else
                             menu?.reply({
-                                content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                 ephemeral: true,
                             });
                     }
@@ -344,7 +344,7 @@ module.exports = {
                             menuselection(menu);
                         } else
                             menu?.reply({
-                                content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                 ephemeral: true,
                             });
                     }
@@ -354,7 +354,7 @@ module.exports = {
                             menuselection(menu);
                         } else
                             menu?.reply({
-                                content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                 ephemeral: true,
                             });
                     }

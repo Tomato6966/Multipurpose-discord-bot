@@ -38,14 +38,14 @@ module.exports = {
                                     : client.user.displayAvatarURL()
                                 : null
                         )
-                        .addField("<:arrow:832598861813776394> PNG", `[\`LINK\`](${guild.iconURL({ format: "png" })})`, true)
+                        .addField("▶️ PNG", `[\`LINK\`](${guild.iconURL({ format: "png" })})`, true)
                         .addField(
-                            "<:arrow:832598861813776394> JPEG",
+                            "▶️ JPEG",
                             `[\`LINK\`](${guild.iconURL({ format: "jpg" })})`,
                             true
                         )
                         .addField(
-                            "<:arrow:832598861813776394> WEBP",
+                            "▶️ WEBP",
                             `[\`LINK\`](${guild.iconURL({ format: "webp" })})`,
                             true
                         )

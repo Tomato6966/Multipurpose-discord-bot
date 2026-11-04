@@ -31,7 +31,7 @@ module.exports = client => {
                             message.channel.send({ content: data.cnt }).catch(() => {});
                         });
                 } catch (e) {
-                    message.channel.send({ content: "<:no:833101993668771842> AI CHAT API IS DOWN" }).catch(() => {});
+                    message.channel.send({ content: "❌ AI CHAT API IS DOWN" }).catch(() => {});
                 }
             }
         } catch (e) {
@@ -46,7 +46,7 @@ module.exports = client => {
                 if (client.afkDB.has(message.guild.id + user.id)) {
                     await message
                         .reply({
-                            content: `<:Crying:867724032316407828> **${user.tag}** went AFK <t:${Math.floor(client.afkDB.get(message.guild.id + user.id, "stamp") / 1000)}:R>!${
+                            content: `😢 **${user.tag}** went AFK <t:${Math.floor(client.afkDB.get(message.guild.id + user.id, "stamp") / 1000)}:R>!${
                                 client.afkDB.get(message.guild.id + user.id, "message") &&
                                 client.afkDB.get(message.guild.id + user.id, "message").length > 1
                                     ? `\n\n__His Message__\n>>> ${String(

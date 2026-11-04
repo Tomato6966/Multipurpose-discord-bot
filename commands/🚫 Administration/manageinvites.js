@@ -36,37 +36,37 @@ module.exports = {
                     value: "Add Joins",
                     description: "Add a specific Number of Joins to: " + user.username,
                     replymsg: "Please Send the Number of Invites (Joins) you want to add to him/her!",
-                    emoji: "866356465299488809", //optional
+                    emoji: "📥", //optional
                 },
                 {
                     value: "Remove Joins",
                     description: "Remove a specific Number of Joins to: " + user.username,
                     replymsg: "Please Send the Number of Invites (Joins) you want to remove to him/her!",
-                    emoji: "866356465299488809", //optional
+                    emoji: "📥", //optional
                 },
                 {
                     value: "Add Fakes",
                     description: "Add a specific Number of Fakes to: " + user.username,
                     replymsg: "Please Send the Number of Fake-Invites you want to add to him/her!",
-                    emoji: "833101993668771842", //optional
+                    emoji: "⚠️", //optional
                 },
                 {
                     value: "Remove Fakes",
                     description: "Remove a specific Number of Fakes to: " + user.username,
                     replymsg: "Please Send the Number of Fake-Invites you want to remove to him/her!",
-                    emoji: "833101993668771842", //optional
+                    emoji: "⚠️", //optional
                 },
                 {
                     value: "Add Leaves",
                     description: "Add a specific Number of Leaves to: " + user.username,
                     replymsg: "Please Send the Number of Leaves you want to add to him/her!",
-                    emoji: "866356598356049930", //optional
+                    emoji: "📤", //optional
                 },
                 {
                     value: "Remove Leaves",
                     description: "Remove a specific Number of Leaves to: " + user.username,
                     replymsg: "Please Send the Number of Leaves you want to remove to him/her!",
-                    emoji: "866356598356049930", //optional
+                    emoji: "📤", //optional
                 },
                 {
                     value: "Cancel",
@@ -124,7 +124,7 @@ module.exports = {
                 .setDescription(eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variable2"]))
                 .addField(
                     "**CURRENT INVITES:**",
-                    `<:Like:857334024087011378> ${user} _**has invited __${realinvites} Member${realinvites != 1 ? "s" : ""}__**_!`
+                    `👍 ${user} _**has invited __${realinvites} Member${realinvites != 1 ? "s" : ""}__**_!`
                 )
                 .addField(
                     eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variablex_3"]),
@@ -225,7 +225,7 @@ module.exports = {
                                     )
                                     .addField(
                                         "\u200b",
-                                        `<:Like:857334024087011378> ${user} _**has invited __${realinvites} Member${realinvites != 1 ? "s" : ""}__**_!`
+                                        `👍 ${user} _**has invited __${realinvites} Member${realinvites != 1 ? "s" : ""}__**_!`
                                     )
                                     .addField(
                                         eval(client.la[ls]["cmds"]["administration"]["manageinvites"]["variablex_6"]),

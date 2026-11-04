@@ -49,11 +49,11 @@ module.exports = {
                 });
             const embed = new Discord.MessageEmbed()
                 .setTitle(eval(client.la[ls]["cmds"]["info"]["color"]["variable1"]))
-                .addField("<:arrow:832598861813776394> **Name**", json.name, true)
-                .addField("<:arrow:832598861813776394> **Hex**", json.hex, true)
-                .addField("<:arrow:832598861813776394> **RGB**", json.rgb, true)
+                .addField("▶️ **Name**", json.name, true)
+                .addField("▶️ **Hex**", json.hex, true)
+                .addField("▶️ **RGB**", json.rgb, true)
                 .addField(
-                    `<:arrow:832598861813776394> **${client.la[ls].cmds.info.color.brightershade}**`,
+                    `▶️ **${client.la[ls].cmds.info.color.brightershade}**`,
                     json.brightened,
                     true
                 )

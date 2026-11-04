@@ -108,13 +108,13 @@ module.exports = {
                         if (menu?.user.id === cmduser.id) {
                             if (used1)
                                 return menu?.reply({
-                                    content: `<:no:833101993668771842> You already selected something, this Selection is now disabled!`,
+                                    content: `❌ You already selected something, this Selection is now disabled!`,
                                     ephemeral: true,
                                 });
                             menuselection(menu);
                         } else
                             menu?.reply({
-                                content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                 ephemeral: true,
                             });
                     }
@@ -272,7 +272,7 @@ module.exports = {
                         collector.on("collect", async b => {
                             if (b?.user.id !== message.author.id)
                                 return b?.reply(
-                                    `<:no:833101993668771842> **Only the one who typed ${prefix}setup-language is allowed to react!**`,
+                                    `❌ **Only the one who typed ${prefix}setup-language is allowed to react!**`,
                                     true
                                 );
                             if (

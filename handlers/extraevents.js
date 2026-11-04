@@ -149,7 +149,7 @@ module.exports = client => {
         let ls = client.settings.get(guild.id, "language");
         let embed = new MessageEmbed()
             .setColor("GREEN")
-            .setTitle(`<a:Join_vc:863876115584385074> Joined a New Server`)
+            .setTitle(`🔊 Joined a New Server`)
             .addField("Guild Info", `>>> \`\`\`${guild.name} (${guild.id})\`\`\``)
             .addField(
                 "Owner Info",
@@ -221,7 +221,7 @@ module.exports = client => {
             .catch(() => {});
         let embed = new MessageEmbed()
             .setColor("RED")
-            .setTitle(`<:leaves:866356598356049930> Left a Server`)
+            .setTitle(`➖ Left a Server`)
             .addField("Guild Info", `>>> \`\`\`${guild.name} (${guild.id})\`\`\``)
             .addField(
                 "Owner Info",

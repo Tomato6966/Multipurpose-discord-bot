@@ -30,12 +30,12 @@ module.exports = {
             var button_forward = new MessageButton()
                 .setStyle("PRIMARY")
                 .setCustomId("notes_forwards")
-                .setEmoji("832598861813776394")
+                .setEmoji("▶️")
                 .setLabel("Forwards");
             var button_back = new MessageButton()
                 .setStyle("PRIMARY")
                 .setCustomId("notes_backwards")
-                .setEmoji("833802907509719130")
+                .setEmoji("◀️")
                 .setLabel("Backwards");
             var button_jump = new MessageButton()
                 .setStyle("PRIMARY")
@@ -72,7 +72,7 @@ module.exports = {
                 .setStyle("SECONDARY")
                 .setCustomId("notes_disable")
                 .setLabel("Stop the Buttons")
-                .setEmoji("833101993668771842");
+                .setEmoji("❌");
 
             var embeds = [];
             var currentPage = 0;
@@ -81,7 +81,7 @@ module.exports = {
                     new MessageEmbed()
                         .setColor(es.color)
                         .setFooter(message.author.tag + ` Page | 0/0`, message.author.displayAvatarURL({ dynamic: true }))
-                        .setTitle(`<:no:833101993668771842> No Notes created yet`)
+                        .setTitle(`❌ No Notes created yet`)
                         .setDescription(`To create your first Note click on the green Button "\`📋 Create New Note\`"`)
                 );
                 button_forward.setDisabled(true);
@@ -232,7 +232,7 @@ module.exports = {
                                                         message.author.tag + ` Page | 0/0`,
                                                         message.author.displayAvatarURL({ dynamic: true })
                                                     )
-                                                    .setTitle(`<:no:833101993668771842> No Notes created yet`)
+                                                    .setTitle(`❌ No Notes created yet`)
                                                     .setDescription(
                                                         `To create your first Note click on the green Button "\`📋 Create New Note\`"`
                                                     )
@@ -543,7 +543,7 @@ module.exports = {
                             button_disable,
                         ]);
                         allbuttons = [buttonRow1, buttonRow2];
-                        await b?.reply("<:no:833101993668771842> **Disabled the Buttons**", true);
+                        await b?.reply("❌ **Disabled the Buttons**", true);
                         await notemsg
                             .edit({
                                 content: `***NOTE BUTTONS DISABLED***`,
@@ -579,7 +579,7 @@ module.exports = {
                                 }
                                 if (Page < 0 || Page > embeds.length - 1) {
                                     return message
-                                        .reply("<:no:833101993668771842> **Value out of Range!**")
+                                        .reply("❌ **Value out of Range!**")
                                         .then(msg => {
                                             setTimeout(() => {
                                                 try {
@@ -683,7 +683,7 @@ module.exports = {
                                         message.author.tag + ` Page | 0/0`,
                                         message.author.displayAvatarURL({ dynamic: true })
                                     )
-                                    .setTitle(`<:no:833101993668771842> No Notes created yet`)
+                                    .setTitle(`❌ No Notes created yet`)
                                     .setDescription(
                                         `To create your first Note click on the green Button "\`📋 Create New Note\`"`
                                     )

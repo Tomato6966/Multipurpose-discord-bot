@@ -101,7 +101,7 @@ module.exports = client => {
                 .setStyle("SUCCESS")
                 .setCustomId("ticket_verify")
                 .setLabel("Verify this Step")
-                .setEmoji("833101995723194437");
+                .setEmoji("✅");
             channel
                 .send({
                     content: `<@${buttonuser.id}>`,
@@ -119,7 +119,7 @@ module.exports = client => {
                     collector.on("collect", async b => {
                         if (b?.user.id !== user.id)
                             return b?.reply(
-                                `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`,
+                                `❌ **Only the one who typed ${prefix}help is allowed to react!**`,
                                 true
                             );
 
@@ -293,7 +293,7 @@ module.exports = client => {
                                         button_ticket_verify
                                             .setDisabled(true)
                                             .setLabel("FAILED TO VERIFY")
-                                            .setEmoji("833101993668771842")
+                                            .setEmoji("❌")
                                             .setStyle("DANGER")
                                     ),
                                 ],
@@ -332,7 +332,7 @@ module.exports = client => {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle("<:no:833101993668771842> You are not allowed to delete this Ticket")
+                            .setTitle("❌ You are not allowed to delete this Ticket")
                             .setDescription(
                                 `${adminroles.length > 0 ? "You need one of those Roles: " + adminroles.map(role => `<@&${role}>`).join(" | ") + cmdrole.join(" | ") + theadminroles.join(" | ") : `No Admin Roles Setupped yet! Do it with: \`${prefix}setup-admin\` You can also add Ticket only Roles with \`${prefix}setup-ticket\``}`
                             )
@@ -344,7 +344,7 @@ module.exports = client => {
                 .setStyle("SUCCESS")
                 .setCustomId("ticket_verify")
                 .setLabel("Verify this Step")
-                .setEmoji("833101995723194437");
+                .setEmoji("✅");
             let msg = await channel.send({
                 content: `<@${buttonuser.id}>`,
                 embeds: [
@@ -360,7 +360,7 @@ module.exports = client => {
             collector.on("collect", async b => {
                 if (b?.user.id !== user.id)
                     return b?.reply(
-                        `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`,
+                        `❌ **Only the one who typed ${prefix}help is allowed to react!**`,
                         true
                     );
 
@@ -580,7 +580,7 @@ module.exports = client => {
                                 button_ticket_verify
                                     .setDisabled(true)
                                     .setLabel("FAILED TO VERIFY")
-                                    .setEmoji("833101993668771842")
+                                    .setEmoji("❌")
                                     .setStyle("DANGER")
                             ),
                         ],
@@ -737,7 +737,7 @@ module.exports = client => {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle("<:no:833101993668771842> You are not allowed to add/remove Users to/from this Ticket")
+                            .setTitle("❌ You are not allowed to add/remove Users to/from this Ticket")
                             .setDescription(
                                 `${adminroles.length > 0 ? "You need one of those Roles: " + adminroles.map(role => `<@&${role}>`).join(" | ") + cmdrole.join(" | ") + theadminroles.join(" | ") : `No Admin Roles Setupped yet! Do it with: \`${prefix}setup-admin\` You can also add Ticket only Roles with \`${prefix}setup-ticket\``}`
                             ),
@@ -1166,7 +1166,7 @@ module.exports = client => {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle("<:no:833101993668771842> You are not allowed to add/remove Roles to/from this Ticket")
+                            .setTitle("❌ You are not allowed to add/remove Roles to/from this Ticket")
                             .setDescription(
                                 `${adminroles.length > 0 ? "You need one of those Roles: " + adminroles.map(role => `<@&${role}>`).join(" | ") + cmdrole.join(" | ") + theadminroles.join(" | ") : `No Admin Roles Setupped yet! Do it with: \`${prefix}setup-admin\` You can also add Ticket only Roles with \`${prefix}setup-ticket\``}`
                             ),
@@ -1585,7 +1585,7 @@ module.exports = client => {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle("<:no:833101993668771842> You are not allowed to claim this Ticket")
+                            .setTitle("❌ You are not allowed to claim this Ticket")
                             .setDescription(
                                 `${adminroles.length > 0 ? "You need one of those Roles: " + adminroles.map(role => `<@&${role}>`).join(" | ") + cmdrole.join(" | ") + theadminroles.join(" | ") : `No Admin Roles Setupped yet! Do it with: \`${prefix}setup-admin\` You can also add Ticket only Roles with \`${prefix}setup-ticket\``}`
                             ),
@@ -1740,7 +1740,7 @@ module.exports = client => {
                             let data = client.setups.get(ticketchannel.id, "ticketdata");
                             if (data.state != "closed" && data.menutickettype == 3) {
                                 return interaction?.reply({
-                                    content: `<:no:833101993668771842> **You already have an Ticket!** <#${ticketchannel.id}>`,
+                                    content: `❌ **You already have an Ticket!** <#${ticketchannel.id}>`,
                                     ephemeral: true,
                                 });
                             }
@@ -1770,7 +1770,7 @@ module.exports = client => {
                 };
                 guild.channels.create(channelname.substring(0, 31), optionsData).then(async ch => {
                     await interaction?.reply({
-                        content: `<a:Loading:833101350623117342> **Creating your ticket?...** (Usually takes 0-2 Seconds)`,
+                        content: `⏳ **Creating your ticket?...** (Usually takes 0-2 Seconds)`,
                         ephemeral: true,
                     });
                     try {

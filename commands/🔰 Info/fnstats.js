@@ -58,7 +58,7 @@ module.exports = {
         }
         if (!epic) return message.reply("Please enter an Epic Games name.");
 
-        const loading = await message.reply(`<a:Loading:833101350623117342> Getting the Fortnite Stats of ${epic}`);
+        const loading = await message.reply(`⏳ Getting the Fortnite Stats of ${epic}`);
         try {
             const apiKey = process.env.fortnitetracker || config.fortnitetracker;
             if (!apiKey) throw new Error("Missing Fortnite Tracker API key configuration.");

@@ -19,7 +19,7 @@ module.exports = {
                 if (!user.bot)
                     return interaction?.reply({
                         ephemeral: true,
-                        content: "<:no:833101993668771842> You can't Invite a Normal user! **IT MUST BE A BOT**",
+                        content: "❌ You can't Invite a Normal user! **IT MUST BE A BOT**",
                     });
                 let button_public_invite = new MessageButton()
                     .setStyle("LINK")

@@ -55,7 +55,7 @@ module.exports = {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle(`<:no:833101993668771842> **This Channel is a Thread u can't Lock it!**`),
+                            .setTitle(`❌ **This Channel is a Thread u can't Lock it!**`),
                     ],
                 });
             if (channel.permissionOverwrites.cache.size < 1) {
@@ -76,7 +76,7 @@ module.exports = {
                             new MessageEmbed()
                                 .setColor(es.wrongcolor)
                                 .setFooter(client.getFooter(es))
-                                .setTitle(`<:no:833101993668771842> **This Channel is locked!**`)
+                                .setTitle(`❌ **This Channel is locked!**`)
                                 .setDescription(
                                     `This usually means, that the Channel **PERMISSIONS** are so defined, that __none__ of them are NOT ALLOWING to send a Message!`
                                 ),

@@ -18,7 +18,7 @@ module.exports = {
         try {
             if (message.guild.banner) {
                 let embed = new Discord.MessageEmbed()
-                    .setTitle(`**<:arrow:832598861813776394> SERVER BANNER:**`)
+                    .setTitle(`**▶️ SERVER BANNER:**`)
                     .setColor(es.color)
                     .setFooter(client.getFooter(es))
                     .setDescription(
@@ -28,7 +28,7 @@ module.exports = {
                 message.reply({ embeds: [embed] });
             } else {
                 let embed = new Discord.MessageEmbed()
-                    .setTitle(`<:no:833101993668771842> **This Server has no Banner!**`)
+                    .setTitle(`❌ **This Server has no Banner!**`)
                     .setColor(es.color)
                     .setFooter(client.getFooter(es))
                     .setThumbnail(

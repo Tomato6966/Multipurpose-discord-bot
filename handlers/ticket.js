@@ -79,7 +79,7 @@ module.exports = (client, preindex) => {
                     let data = client.setups.get(ticketchannel.id, "ticketdata");
                     if (data.state != "closed") {
                         return interaction?.reply({
-                            content: `<:no:833101993668771842> **You already have an Ticket!** <#${ticketchannel.id}>`,
+                            content: `❌ **You already have an Ticket!** <#${ticketchannel.id}>`,
                             ephemeral: true,
                         });
                     }
@@ -200,7 +200,7 @@ module.exports = (client, preindex) => {
          * CREATE THE CHANNEL
          */
         await interaction?.reply({
-            content: `<a:Loading:833101350623117342> **Creating your Ticket...** (Usually takes 0-2 Seconds)`,
+            content: `⏳ **Creating your Ticket...** (Usually takes 0-2 Seconds)`,
             ephemeral: true,
         });
         guild.channels

@@ -69,7 +69,7 @@ module.exports = {
                             new MessageEmbed()
                                 .setFooter(client.getFooter(es))
                                 .setColor(es.wrongcolor)
-                                .setTitle(`<:no:833101993668771842> Something went wrong`)
+                                .setTitle(`❌ Something went wrong`)
                                 .setDescription(`\`\`\`${String(e.message ? e.message : e).substring(0, 2000)}\`\`\``),
                         ],
                     });

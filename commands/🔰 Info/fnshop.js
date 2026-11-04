@@ -26,7 +26,7 @@ module.exports = {
     type: "games",
     run: async (client, message) => {
         const settings = client.settings.get(message.guild.id, "embed");
-        const loading = await message.reply("<a:Loading:833101350623117342> Getting the Shop-Data");
+        const loading = await message.reply("⏳ Getting the Shop-Data");
 
         try {
             const apiKey = process.env.fnbr || config.fnbr;

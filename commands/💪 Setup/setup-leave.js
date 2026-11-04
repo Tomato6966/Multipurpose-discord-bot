@@ -93,7 +93,7 @@ module.exports = {
                         handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -132,12 +132,12 @@ module.exports = {
                                     {
                                         value: "Edit the Message",
                                         description: `Edit the Leave Message ...`,
-                                        emoji: "877653386747605032",
+                                        emoji: "👋",
                                     },
                                     {
                                         value: `${client.settings.get(message.guild.id, "leave.invite") ? "Disable InviteInformation" : "Enable Invite Information"}`,
                                         description: `${client.settings.get(message.guild.id, "leave.invite") ? "No longer show Information who invited him/her" : "Show Information about who invited him/her"}`,
-                                        emoji: "877653386747605032",
+                                        emoji: "👋",
                                     },
                                     {
                                         value: "Cancel",
@@ -198,7 +198,7 @@ module.exports = {
                                         handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata);
                                     } else
                                         menu?.reply({
-                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                             ephemeral: true,
                                         });
                                 });
@@ -325,7 +325,7 @@ module.exports = {
                                                     {
                                                         value: "Enable auto Image",
                                                         description: `I will generate an Image with the Userdata`,
-                                                        emoji: "865962151649869834",
+                                                        emoji: "📝",
                                                     },
                                                     {
                                                         value: "Set Image Background",
@@ -442,7 +442,7 @@ module.exports = {
                                                         handle_the_picks_3(menu?.values[0], SetupNumber, menuoptiondata);
                                                     } else
                                                         menu?.reply({
-                                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                                             ephemeral: true,
                                                         });
                                                 });
@@ -1297,12 +1297,12 @@ module.exports = {
                                     {
                                         value: "Edit the Message",
                                         description: `Edit the Leave Message ...`,
-                                        emoji: "877653386747605032",
+                                        emoji: "👋",
                                     },
                                     {
                                         value: `${client.settings.get(message.guild.id, "leave.invitedm") ? "Disable InviteInformation" : "Enable Invite Information"}`,
                                         description: `${client.settings.get(message.guild.id, "leave.invitedm") ? "No longer show Information who invited him/her" : "Show Information about who invited him/her"}`,
-                                        emoji: "877653386747605032",
+                                        emoji: "👋",
                                     },
                                     {
                                         value: "Cancel",
@@ -1363,7 +1363,7 @@ module.exports = {
                                         handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata);
                                     } else
                                         menu?.reply({
-                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                             ephemeral: true,
                                         });
                                 });
@@ -1423,7 +1423,7 @@ module.exports = {
                                                     {
                                                         value: "Enable auto Image",
                                                         description: `I will generate an Image with the Userdata`,
-                                                        emoji: "865962151649869834",
+                                                        emoji: "📝",
                                                     },
                                                     {
                                                         value: "Set Image Background",
@@ -1540,7 +1540,7 @@ module.exports = {
                                                         handle_the_picks_3(menu?.values[0], SetupNumber, menuoptiondata);
                                                     } else
                                                         menu?.reply({
-                                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                                             ephemeral: true,
                                                         });
                                                 });

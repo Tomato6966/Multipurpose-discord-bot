@@ -44,7 +44,7 @@ module.exports = {
             if (!args[0]) args = [interaction?.options.getString("song")];
             //Send information
             interaction?.reply({
-                content: `Searching and attempting to play: **${args[0]}** from <:Youtube:840260133686870036> \`Youtube\`!`,
+                content: `Searching and attempting to play: **${args[0]}** from 📺 \`Youtube\`!`,
             });
             //Play the song from youtube
             return playermanager(client, message, args, `playtop:youtube`, interaction);

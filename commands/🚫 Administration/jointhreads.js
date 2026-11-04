@@ -56,7 +56,7 @@ module.exports = {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle(`<:no:833101993668771842> **There are no open Threads in this Server**`),
+                            .setTitle(`❌ **There are no open Threads in this Server**`),
                     ],
                 });
             for (const channel of channels) await channel.join();

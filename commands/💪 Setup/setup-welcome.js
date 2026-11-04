@@ -115,7 +115,7 @@ module.exports = {
                         handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -154,12 +154,12 @@ module.exports = {
                                     {
                                         value: "Edit the Message",
                                         description: `Edit the Welcome Message ...`,
-                                        emoji: "877653386747605032",
+                                        emoji: "👋",
                                     },
                                     {
                                         value: `${client.settings.get(message.guild.id, "welcome.invite") ? "Disable InviteInformation" : "Enable Invite Information"}`,
                                         description: `${client.settings.get(message.guild.id, "welcome.invite") ? "No longer show Information who invited him/her" : "Show Information about who invited him/her"}`,
-                                        emoji: "877653386747605032",
+                                        emoji: "👋",
                                     },
                                     {
                                         value: "Cancel",
@@ -220,7 +220,7 @@ module.exports = {
                                         handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata);
                                     } else
                                         menu?.reply({
-                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                             ephemeral: true,
                                         });
                                 });
@@ -470,7 +470,7 @@ module.exports = {
                                                         handle_the_picks_3(menu?.values[0], SetupNumber, menuoptiondata);
                                                     } else
                                                         menu?.reply({
-                                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                                             ephemeral: true,
                                                         });
                                                 });
@@ -1332,7 +1332,7 @@ module.exports = {
                                     {
                                         value: "Edit the Message",
                                         description: `Edit the second Welcome Message ...`,
-                                        emoji: "877653386747605032",
+                                        emoji: "👋",
                                     },
                                     {
                                         value: "Cancel",
@@ -1393,7 +1393,7 @@ module.exports = {
                                         handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata);
                                     } else
                                         menu?.reply({
-                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                             ephemeral: true,
                                         });
                                 });
@@ -1615,12 +1615,12 @@ module.exports = {
                                     {
                                         value: "Edit the Message",
                                         description: `Edit the Welcome Message ...`,
-                                        emoji: "877653386747605032",
+                                        emoji: "👋",
                                     },
                                     {
                                         value: `${client.settings.get(message.guild.id, "welcome.invite") ? "Disable InviteInformation" : "Enable Invite Information"}`,
                                         description: `${client.settings.get(message.guild.id, "welcome.invite") ? "No longer show Information who invited him/her" : "Show Information about who invited him/her"}`,
-                                        emoji: "877653386747605032",
+                                        emoji: "👋",
                                     },
                                     {
                                         value: "Cancel",
@@ -1681,7 +1681,7 @@ module.exports = {
                                         handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata);
                                     } else
                                         menu?.reply({
-                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                             ephemeral: true,
                                         });
                                 });
@@ -1863,7 +1863,7 @@ module.exports = {
                                                         handle_the_picks_3(menu?.values[0], SetupNumber, menuoptiondata);
                                                     } else
                                                         menu?.reply({
-                                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                                             ephemeral: true,
                                                         });
                                                 });
@@ -2767,7 +2767,7 @@ module.exports = {
                                         handle_the_picks_2(menu?.values[0], SetupNumber, menuoptiondata);
                                     } else
                                         menu?.reply({
-                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                             ephemeral: true,
                                         });
                                 });
@@ -3039,7 +3039,7 @@ module.exports = {
                         {
                             var { member } = message;
                             let welcome = client.settings.get(member.guild.id, "welcome");
-                            let invitemessage = `Invited by ${member.user.tag ? `**${member.user.tag}**` : `<@${member.user.id}>`}\n<:Like:857334024087011378> **X Invites**\n[<:joines:866356465299488809> X Joins | <:leaves:866356598356049930> X Leaves | <:no:833101993668771842> X Fakes]`;
+                            let invitemessage = `Invited by ${member.user.tag ? `**${member.user.tag}**` : `<@${member.user.id}>`}\n👍 **X Invites**\n[➕ X Joins | ➖ X Leaves | ❌ X Fakes]`;
                             if (welcome) {
                                 let themessage = String(welcome.secondmsg);
                                 if (!themessage || themessage.length == 0)

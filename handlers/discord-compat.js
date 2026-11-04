@@ -170,12 +170,31 @@ const legacyEmojiMap = {
 function sanitizeEmoji(emoji) {
     if (!emoji) return emoji;
     if (typeof emoji === "string") {
-        if (legacyEmojiMap[emoji]) return legacyEmojiMap[emoji];
-        if (/^\d{17,20}$/.test(emoji.trim())) return "🔘";
+        const trimmed = emoji.trim();
+        if (legacyEmojiMap[trimmed]) return legacyEmojiMap[trimmed];
+        const match = trimmed.match(/^<(a)?:([a-zA-Z0-9_]+):([0-9]+)>$/);
+        if (match) {
+            const [, , name, id] = match;
+            if (legacyEmojiMap[id]) return legacyEmojiMap[id];
+            const lower = name.toLowerCase();
+            if (lower.includes("no") || lower.includes("error") || lower.includes("cross") || lower.includes("cancel")) return "❌";
+            if (lower.includes("yes") || lower.includes("check") || lower.includes("success") || lower.includes("valid")) return "✅";
+            if (lower.includes("arrow") || lower.includes("play")) return "▶️";
+            return "🔘";
+        }
+        if (/^\d{17,20}$/.test(trimmed)) return "🔘";
         return emoji;
     }
-    if (typeof emoji === "object" && emoji.id && legacyEmojiMap[emoji.id]) {
-        return legacyEmojiMap[emoji.id];
+    if (typeof emoji === "object") {
+        if (emoji.id && legacyEmojiMap[emoji.id]) {
+            return legacyEmojiMap[emoji.id];
+        }
+        if (emoji.id && /^\d{17,20}$/.test(emoji.id)) {
+            const lower = (emoji.name || "").toLowerCase();
+            if (lower.includes("no") || lower.includes("error") || lower.includes("cross") || lower.includes("cancel")) return "❌";
+            if (lower.includes("yes") || lower.includes("check") || lower.includes("success") || lower.includes("valid")) return "✅";
+            return "🔘";
+        }
     }
     return emoji;
 }
@@ -208,6 +227,22 @@ if (Discord.StringSelectMenuBuilder) {
             return origSetOptions.apply(this, flattened);
         };
     }
+}
+
+const Message = Discord.Message;
+if (Message?.prototype && Message.prototype.react) {
+    const origReact = Message.prototype.react;
+    Message.prototype.react = async function (emoji) {
+        const safeEmoji = sanitizeEmoji(emoji);
+        try {
+            return await origReact.call(this, safeEmoji);
+        } catch (err) {
+            if (err?.code === 10014 || err?.status === 400 || err?.message?.includes("Unknown Emoji")) {
+                return null;
+            }
+            throw err;
+        }
+    };
 }
 
 const legacyPartials = {
