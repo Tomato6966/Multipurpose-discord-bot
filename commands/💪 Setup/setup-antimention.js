@@ -115,7 +115,7 @@ module.exports = {
                         handle_the_picks(menuoptiondataIndex, SetupNumber, menuoptiondata);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -249,7 +249,7 @@ module.exports = {
                                         .setTitle("The Settings of the Anti Mention System")
                                         .setColor(es.color)
                                         .setDescription(
-                                            `**Enabled:** ${thesettings.enabled ? "${allEmojis.msg.SUCCESS}" : "<:no:833101993668771842>"}\n\n**Allowed Mentions / Message:** \`${thesettings.limit} Pings\``.substring(
+                                            `**Enabled:** ${thesettings.enabled ? "${allEmojis.msg.SUCCESS}" : "❌"}\n\n**Allowed Mentions / Message:** \`${thesettings.limit} Pings\``.substring(
                                                 0,
                                                 2048
                                             )

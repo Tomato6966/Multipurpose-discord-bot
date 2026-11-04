@@ -54,14 +54,14 @@ module.exports = {
                                 : client.user.displayAvatarURL()
                             : null
                     )
-                    .addField("<:arrow:832598861813776394> PNG", `[\`LINK\`](${customavatar})`, true)
+                    .addField("▶️ PNG", `[\`LINK\`](${customavatar})`, true)
                     .addField(
-                        "<:arrow:832598861813776394> JPEG",
+                        "▶️ JPEG",
                         `[\`LINK\`](${customavatar.replace("png", "jpg").replace("gif", "jpg")})`,
                         true
                     )
                     .addField(
-                        "<:arrow:832598861813776394> WEBP",
+                        "▶️ WEBP",
                         `[\`LINK\`](${customavatar.replace("png", "webp").replace("gif", "webp")})`,
                         true
                     )
@@ -91,17 +91,17 @@ module.exports = {
                             : null
                     )
                     .addField(
-                        "<:arrow:832598861813776394> PNG",
+                        "▶️ PNG",
                         `[\`LINK\`](${user.displayAvatarURL({ format: "png" })})`,
                         true
                     )
                     .addField(
-                        "<:arrow:832598861813776394> JPEG",
+                        "▶️ JPEG",
                         `[\`LINK\`](${user.displayAvatarURL({ format: "jpg" })})`,
                         true
                     )
                     .addField(
-                        "<:arrow:832598861813776394> WEBP",
+                        "▶️ WEBP",
                         `[\`LINK\`](${user.displayAvatarURL({ format: "webp" })})`,
                         true
                     )

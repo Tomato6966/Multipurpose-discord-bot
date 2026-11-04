@@ -199,7 +199,7 @@ module.exports = {
                 let options = {
                     time: giveawayDuration,
                     duration: giveawayDuration,
-                    prize: `<a:Gift:853993605868683285> ${giveawayPrize} <a:Gift:853993605868683285>`,
+                    prize: `🎁 ${giveawayPrize} 🎁`,
                     winnerCount: giveawayNumberWinners,
                     hostedBy: message.author,
                     thumbnail: es.thumb
@@ -229,16 +229,16 @@ module.exports = {
                     },
                     bonusEntries: [],
                     messages: {
-                        inviteToParticipate: "***React with <a:Tada_Yellow:867721863151747092> to participate!***\n",
+                        inviteToParticipate: "***React with 🎉 to participate!***\n",
                         drawing: "> Ends: {timestamp}\n",
                         hostedBy: "**Hosted by:** {this.hostedBy}",
-                        dropMessage: "Be the first to react with <a:Tada_Yellow:867721863151747092>",
+                        dropMessage: "Be the first to react with 🎉",
                         noWinner: "\n**Giveaway cancelled!**\n> No valid participations. :cry:",
                         endedAt: "Ends at",
                         giveaway:
-                            "<a:Tada_Yellow:867721863151747092> **GIVEAWAY STARTED** <a:Tada_Yellow:867721863151747092>",
+                            "🎉 **GIVEAWAY STARTED** 🎉",
                         giveawayEnded:
-                            "<a:Tada_Green:867721862858539048> **GIVEAWAY ENDED** <a:Tada_Green:867721862858539048>",
+                            "🎉 **GIVEAWAY ENDED** 🎉",
                         winMessage:
                             "**Congrats** {winners}!\n> You won **{this.prize}**!\n> **Jump:** {this.messageURL}\nHosted by: {this.hostedBy}",
                         embedFooter: '{this.winnerCount} Winner{this.winnerCount > 1 ? "s" : ""}',
@@ -421,7 +421,7 @@ module.exports = {
                         console.error(e);
                         message.reply({
                             content:
-                                "<:no:833101993668771842> **An error occured...**```" +
+                                "❌ **An error occured...**```" +
                                 String(e.message).substring(0, 1900) +
                                 "```",
                         });
@@ -448,7 +448,7 @@ module.exports = {
                         console.error(e);
                         message.reply({
                             content:
-                                "<:no:833101993668771842> **An error occured...**```" +
+                                "❌ **An error occured...**```" +
                                 String(e.message).substring(0, 1900) +
                                 "```",
                         });
@@ -477,7 +477,7 @@ module.exports = {
                         console.error(e);
                         message.reply({
                             content:
-                                "<:no:833101993668771842> **An error occured...**```" +
+                                "❌ **An error occured...**```" +
                                 String(e.message).substring(0, 1900) +
                                 "```",
                         });

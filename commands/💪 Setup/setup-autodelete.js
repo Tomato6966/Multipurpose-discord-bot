@@ -89,7 +89,7 @@ module.exports = {
                         handle_the_picks(menu?.values[0], menuoptiondata);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -149,7 +149,7 @@ module.exports = {
                                                     embeds: [
                                                         new Discord.MessageEmbed()
                                                             .setTitle(
-                                                                `<:no:833101993668771842> This Channel is already Setupped!`
+                                                                `❌ This Channel is already Setupped!`
                                                             )
                                                             .setDescription(
                                                                 `Remove it first with \`${prefix}setup-autodelete\` --> Then Pick Remove!`
@@ -164,7 +164,7 @@ module.exports = {
                                                 return message.reply({
                                                     embeds: [
                                                         new Discord.MessageEmbed()
-                                                            .setTitle(`<:no:833101993668771842> Invalid Input | Time wrong`)
+                                                            .setTitle(`❌ Invalid Input | Time wrong`)
                                                             .setDescription(
                                                                 `You probably forgot / didn't add a Time!\nTry this: \`${channel.id} 30\``
                                                             )
@@ -176,7 +176,7 @@ module.exports = {
                                                 return message.reply({
                                                     embeds: [
                                                         new Discord.MessageEmbed()
-                                                            .setTitle(`<:no:833101993668771842> Time out of Range!`)
+                                                            .setTitle(`❌ Time out of Range!`)
                                                             .setDescription(
                                                                 `The longest Amount is 1 hour aka 3600 Seconds and the Time must be at least 3 Seconds long!`
                                                             )
@@ -282,7 +282,7 @@ module.exports = {
                                                     embeds: [
                                                         new Discord.MessageEmbed()
                                                             .setTitle(
-                                                                `<:no:833101993668771842> This Channel has not been Setup yet!`
+                                                                `❌ This Channel has not been Setup yet!`
                                                             )
                                                             .setColor(es.color)
                                                             .setFooter(client.getFooter(es)),

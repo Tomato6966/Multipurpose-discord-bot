@@ -5,10 +5,51 @@ var { Manager } = require("erela.js"),
     config = require(`${process.cwd()}/botconfig/config.json`),
     clientID = process.env.clientID || config.spotify.clientID,
     clientSecret = process.env.clientSecret || config.spotify.clientSecret;
+
+const hasCredential = value =>
+    typeof value === "string" && value.trim().length >= 5 && !/^(?:get from:|your[_ -]|replace[_ -]|<)/i.test(value.trim());
+
+class SafeSpotify extends Spotify {
+    renew() {
+        this.renewToken()
+            .then(expiresIn => {
+                setTimeout(() => this.renew(), expiresIn);
+            })
+            .catch(error => {
+                const status = error.response?.status;
+                console.error(
+                    "Spotify integration could not authenticate:",
+                    status ? `HTTP ${status}` : error.message
+                );
+            });
+    }
+}
+
+function resolveNodes() {
+    if (process.env.LAVALINK_ENABLED === "false") {
+        console.log("[Lavalink] Lavalink is disabled via LAVALINK_ENABLED=false. Music commands will be inactive.".yellow);
+        return [];
+    }
+    if (process.env.LAVALINK_HOST) {
+        return collect([
+            {
+                host: process.env.LAVALINK_HOST,
+                port: Number(process.env.LAVALINK_PORT || 2333),
+                password: process.env.LAVALINK_PASSWORD || "youshallnotpass",
+                secure: process.env.LAVALINK_SECURE === "true",
+                retryAmount: 3,
+                retryDelay: 8000,
+            },
+        ]);
+    }
+    return collect(config.clientsettings.nodes || []);
+}
+
 module.exports = client => {
-    if (!clientID || !clientSecret || clientID.length < 5 || clientSecret.length < 5) {
+    const nodes = resolveNodes();
+    if (!hasCredential(clientID) || !hasCredential(clientSecret)) {
         client.manager = new Manager({
-            nodes: collect(config.clientsettings.nodes),
+            nodes,
             plugins: [new Deezer(), new Facebook()],
             send(id, payload) {
                 var guild = client.guilds.cache.get(id);
@@ -17,9 +58,9 @@ module.exports = client => {
         });
     } else {
         client.manager = new Manager({
-            nodes: collect(config.clientsettings.nodes),
+            nodes,
             plugins: [
-                new Spotify({
+                new SafeSpotify({
                     clientID, //get a clientid from there: https://developer.spotify.com/dashboard
                     clientSecret,
                 }),

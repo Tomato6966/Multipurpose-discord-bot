@@ -168,7 +168,7 @@ module.exports = {
                         second_layer(SetupNumber, menuoptiondata);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -177,7 +177,7 @@ module.exports = {
                     menumsg.edit({
                         embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
                         components: [],
-                        content: `${collected && collected.first() && collected.first().values ? `<a:yes:929001012830806016> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**"}`,
+                        content: `${collected && collected.first() && collected.first().values ? `✅ **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**"}`,
                     });
                 });
             } catch (e) {
@@ -410,7 +410,7 @@ module.exports = {
                         handle_the_picks(menu?.values[0], SetupNumber);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -419,7 +419,7 @@ module.exports = {
                     menumsg.edit({
                         embeds: [menumsg.embeds[0].setDescription(`~~${menumsg.embeds[0].description}~~`)],
                         components: [],
-                        content: `${collected && collected.first() && collected.first().values ? `<a:yes:929001012830806016> **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**"}`,
+                        content: `${collected && collected.first() && collected.first().values ? `✅ **Selected: \`${collected ? collected.first().values[0] : "Nothing"}\`**` : "❌ **NOTHING SELECTED - CANCELLED**"}`,
                     });
                 });
             } catch (e) {
@@ -510,12 +510,12 @@ module.exports = {
                                 });
                                 message.guild.channels
                                     .create("📋 | Applications", {
-                                        type: "GUILD_CATEGORY",
+                                        type: 4,
                                     })
                                     .then(ch => {
                                         ch.guild.channels
                                             .create("✔️|finished-applies", {
-                                                type: "GUILD_TEXT",
+                                                type: 0,
                                                 topic: "React to the Embed, to start the application process",
                                                 parent: ch.id,
                                                 permissionOverwrites: [
@@ -531,7 +531,7 @@ module.exports = {
                                             });
                                         ch.guild.channels
                                             .create("✅|apply-here", {
-                                                type: "GUILD_TEXT",
+                                                type: 0,
                                                 topic: "React to the Embed, to start the application process",
                                                 parent: ch.id,
                                                 permissionOverwrites: [
@@ -1256,7 +1256,7 @@ module.exports = {
                                                                                                                             )
                                                                                                                         )
                                                                                                                         .setAuthor(
-                                                                                                                            "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                                                                            "❌ ERROR | Could not Access the Role",
                                                                                                                             message.author.displayAvatarURL(
                                                                                                                                 {
                                                                                                                                     dynamic: true,
@@ -1517,7 +1517,7 @@ module.exports = {
                                                         timeout: 7500,
                                                     })
                                                 );
-                                            throw "<:no:833101993668771842> ERROR";
+                                            throw "❌ ERROR";
                                         }
                                     })
                                     .catch(e => {
@@ -1596,7 +1596,7 @@ module.exports = {
                                                         timeout: 7500,
                                                     })
                                                 );
-                                            throw "<:no:833101993668771842> ERROR";
+                                            throw "❌ ERROR";
                                         }
                                     })
                                     .catch(e => {
@@ -2155,7 +2155,7 @@ module.exports = {
                                                                                         )
                                                                                     )
                                                                                     .setAuthor(
-                                                                                        "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                                        "❌ ERROR | Could not Access the Role",
                                                                                         message.author.displayAvatarURL({
                                                                                             dynamic: true,
                                                                                         })
@@ -2388,7 +2388,7 @@ module.exports = {
                                                                 )
                                                             )
                                                             .setAuthor(
-                                                                "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                "❌ ERROR | Could not Access the Role",
                                                                 message.author.displayAvatarURL({
                                                                     dynamic: true,
                                                                 })
@@ -2423,7 +2423,7 @@ module.exports = {
                                                             eval(client.la[ls]["cmds"]["setup"]["setup-apply"]["variable71"])
                                                         )
                                                         .setAuthor(
-                                                            "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                            "❌ ERROR | Could not Access the Role",
                                                             message.author.displayAvatarURL({
                                                                 dynamic: true,
                                                             })
@@ -2742,7 +2742,7 @@ module.exports = {
                                                                             )
                                                                         )
                                                                         .setAuthor(
-                                                                            "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                            "❌ ERROR | Could not Access the Role",
                                                                             message.author.displayAvatarURL({
                                                                                 dynamic: true,
                                                                             })
@@ -2781,7 +2781,7 @@ module.exports = {
                                                                         )
                                                                     )
                                                                     .setAuthor(
-                                                                        "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                        "❌ ERROR | Could not Access the Role",
                                                                         message.author.displayAvatarURL({
                                                                             dynamic: true,
                                                                         })
@@ -3190,7 +3190,7 @@ module.exports = {
                                                                             )
                                                                         )
                                                                         .setAuthor(
-                                                                            "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                            "❌ ERROR | Could not Access the Role",
                                                                             message.author.displayAvatarURL({
                                                                                 dynamic: true,
                                                                             })
@@ -3229,7 +3229,7 @@ module.exports = {
                                                                         )
                                                                     )
                                                                     .setAuthor(
-                                                                        "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                        "❌ ERROR | Could not Access the Role",
                                                                         message.author.displayAvatarURL({
                                                                             dynamic: true,
                                                                         })
@@ -3667,7 +3667,7 @@ module.exports = {
                                                                             )
                                                                         )
                                                                         .setAuthor(
-                                                                            "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                            "❌ ERROR | Could not Access the Role",
                                                                             message.author.displayAvatarURL({
                                                                                 dynamic: true,
                                                                             })
@@ -3710,7 +3710,7 @@ module.exports = {
                                                                         )
                                                                     )
                                                                     .setAuthor(
-                                                                        "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                        "❌ ERROR | Could not Access the Role",
                                                                         message.author.displayAvatarURL({
                                                                             dynamic: true,
                                                                         })
@@ -4138,7 +4138,7 @@ module.exports = {
                                                                             )
                                                                         )
                                                                         .setAuthor(
-                                                                            "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                            "❌ ERROR | Could not Access the Role",
                                                                             message.author.displayAvatarURL({
                                                                                 dynamic: true,
                                                                             })
@@ -4181,7 +4181,7 @@ module.exports = {
                                                                         )
                                                                     )
                                                                     .setAuthor(
-                                                                        "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                        "❌ ERROR | Could not Access the Role",
                                                                         message.author.displayAvatarURL({
                                                                             dynamic: true,
                                                                         })
@@ -4610,7 +4610,7 @@ module.exports = {
                                                                             )
                                                                         )
                                                                         .setAuthor(
-                                                                            "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                            "❌ ERROR | Could not Access the Role",
                                                                             message.author.displayAvatarURL({
                                                                                 dynamic: true,
                                                                             })
@@ -4653,7 +4653,7 @@ module.exports = {
                                                                         )
                                                                     )
                                                                     .setAuthor(
-                                                                        "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                                        "❌ ERROR | Could not Access the Role",
                                                                         message.author.displayAvatarURL({
                                                                             dynamic: true,
                                                                         })
@@ -5223,7 +5223,7 @@ module.exports = {
                                                             )
                                                         )
                                                         .setAuthor(
-                                                            "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                            "❌ ERROR | Could not Access the Role",
                                                             message.author.displayAvatarURL({
                                                                 dynamic: true,
                                                             })
@@ -5258,7 +5258,7 @@ module.exports = {
                                                         eval(client.la[ls]["cmds"]["setup"]["setup-apply"]["variable184"])
                                                     )
                                                     .setAuthor(
-                                                        "<:no:833101993668771842> ERROR | Could not Access the Role",
+                                                        "❌ ERROR | Could not Access the Role",
                                                         message.author.displayAvatarURL({
                                                             dynamic: true,
                                                         })
@@ -5677,7 +5677,7 @@ module.exports = {
                                                     timeout: 7500,
                                                 })
                                             );
-                                        throw "<:no:833101993668771842> ERROR";
+                                        throw "❌ ERROR";
                                     }
                                 })
                                 .catch(e => {
@@ -5917,7 +5917,7 @@ module.exports = {
                                                     timeout: 7500,
                                                 })
                                             );
-                                        throw "<:no:833101993668771842> ERROR";
+                                        throw "❌ ERROR";
                                     }
                                 })
                                 .catch(e => {

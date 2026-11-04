@@ -28,14 +28,20 @@ async function create_twit(client) {
         .map(value => `${value.twitter.TWITTER_USER_NAME_ONLY_THOSE}`);
     //if no userids return
     if (!userids || userids.length == 0) return console.log(` [TWITER] :: NO USERIDS: ${userids}`.cyan);
+    const consumer_key = (process.env.consumer_key || twitconfig.consumer_key || "").trim();
+    const consumer_secret = (process.env.consumer_secret || twitconfig.consumer_secret || "").trim();
+    const access_token = (process.env.access_token || twitconfig.access_token || "").trim();
+    const access_token_secret = (process.env.access_token_secret || twitconfig.access_token_secret || "").trim();
+    if (!consumer_key || !consumer_secret || !access_token || !access_token_secret) return;
+
     //create a new TWIT
     var T = new Twit({
-        consumer_key: process.env.consumer_key || twitconfig.consumer_key,
-        consumer_secret: process.env.consumer_secret || twitconfig.consumer_secret,
-        access_token: process.env.access_token || twitconfig.access_token,
-        access_token_secret: process.env.access_token_secret || twitconfig.access_token_secret,
-        timeout_ms: twitconfig.timeout_ms,
-        strictSSL: twitconfig.strictSSL,
+        consumer_key,
+        consumer_secret,
+        access_token,
+        access_token_secret,
+        timeout_ms: twitconfig.timeout_ms || 30000,
+        strictSSL: twitconfig.strictSSL !== false,
     });
     console.log(String(" [TWITER] :: " + userids.filter(i => i?.toLowerCase() != "impressgm").join(", ")).cyan);
     for (const user of userids) {

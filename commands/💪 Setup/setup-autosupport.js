@@ -156,7 +156,7 @@ module.exports = {
                         second_layer();
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -260,7 +260,7 @@ module.exports = {
                         handle_the_picks(menu?.values[0], menuoptiondata);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -281,7 +281,7 @@ module.exports = {
                             let settings = theDB.get(message.guild.id, pre);
                             if (!data || data.length < 1) {
                                 return message.reply(
-                                    "<:no:833101993668771842> **You need to add at least 1 Auto-Support-Option**"
+                                    "❌ **You need to add at least 1 Auto-Support-Option**"
                                 );
                             }
                             let tempmsg = await message.reply({
@@ -399,11 +399,11 @@ module.exports = {
                                             );
                                         });
                                 } else {
-                                    return message.reply("<:no:833101993668771842> **You did not ping a valid Channel!**");
+                                    return message.reply("❌ **You did not ping a valid Channel!**");
                                 }
                             } else {
                                 return message.reply(
-                                    "<:no:833101993668771842> **You did not enter a Valid Message in Time! CANCELLED!**"
+                                    "❌ **You did not enter a Valid Message in Time! CANCELLED!**"
                                 );
                             }
                         }
@@ -413,7 +413,7 @@ module.exports = {
                             let data = theDB.get(message.guild.id, pre + ".data");
                             if (data.length >= 25) {
                                 return message.reply(
-                                    "<:no:833101993668771842> **You reached the limit of 25 different Options!** Remove another Option first!"
+                                    "❌ **You reached the limit of 25 different Options!** Remove another Option first!"
                                 );
                             }
                             //ask for value and description
@@ -436,13 +436,13 @@ module.exports = {
                             if (collected && collected.first().content) {
                                 if (!collected.first().content.includes("++"))
                                     return message.reply(
-                                        "<:no:833101993668771842> **Invalid Usage! Please mind the Usage and check the Example**"
+                                        "❌ **Invalid Usage! Please mind the Usage and check the Example**"
                                     );
                                 let value = collected.first().content.split("++")[0].trim().substring(0, 25);
                                 let index2 = data.findIndex(v => v.value == value);
                                 if (index2 >= 0 && index != index2) {
                                     return message.reply(
-                                        "<:no:833101993668771842> **Options can't have the SAME VALUE!** There is already an Option with that Value!"
+                                        "❌ **Options can't have the SAME VALUE!** There is already an Option with that Value!"
                                     );
                                 }
                                 let description = collected.first().content.split("++")[1].trim().substring(0, 50);
@@ -600,7 +600,7 @@ module.exports = {
                                             }
                                         } else {
                                             return message.reply(
-                                                "<:no:833101993668771842> **You did not enter a Valid Message in Time! CANCELLED!**"
+                                                "❌ **You did not enter a Valid Message in Time! CANCELLED!**"
                                             );
                                         }
                                     }
@@ -615,7 +615,7 @@ module.exports = {
                                 });
                             } else {
                                 return message.reply(
-                                    "<:no:833101993668771842> **You did not enter a Valid Message in Time! CANCELLED!**"
+                                    "❌ **You did not enter a Valid Message in Time! CANCELLED!**"
                                 );
                             }
                         }
@@ -625,7 +625,7 @@ module.exports = {
                             let data = theDB.get(message.guild.id, pre + ".data");
                             if (!data || data.length < 1) {
                                 return message.reply(
-                                    "<:no:833101993668771842> **There are no Open-Ticket-Options to edit**"
+                                    "❌ **There are no Open-Ticket-Options to edit**"
                                 );
                             }
                             let embed = new MessageEmbed()
@@ -721,13 +721,13 @@ module.exports = {
                                     if (collected && collected.first().content) {
                                         if (!collected.first().content.includes("++"))
                                             return message.reply(
-                                                "<:no:833101993668771842> **Invalid Usage! Please mind the Usage and check the Example**"
+                                                "❌ **Invalid Usage! Please mind the Usage and check the Example**"
                                             );
                                         let value = collected.first().content.split("++")[0].trim().substring(0, 25);
                                         let index2 = data.findIndex(v => v.value == value);
                                         if (index2 >= 0 && index != index2) {
                                             return message.reply(
-                                                "<:no:833101993668771842> **Options can't have the SAME VALUE!** There is already an Option with that Value!"
+                                                "❌ **Options can't have the SAME VALUE!** There is already an Option with that Value!"
                                             );
                                         }
                                         let description = collected.first().content.split("++")[1].trim().substring(0, 50);
@@ -879,7 +879,7 @@ module.exports = {
                                                     }
                                                 } else {
                                                     return message.reply(
-                                                        "<:no:833101993668771842> **You did not enter a Valid Message in Time! CANCELLED!**"
+                                                        "❌ **You did not enter a Valid Message in Time! CANCELLED!**"
                                                     );
                                                 }
                                             }
@@ -896,12 +896,12 @@ module.exports = {
                                         });
                                     } else {
                                         return message.reply(
-                                            "<:no:833101993668771842> **You did not enter a Valid Message in Time! CANCELLED!**"
+                                            "❌ **You did not enter a Valid Message in Time! CANCELLED!**"
                                         );
                                     }
                                 } else
                                     menu?.reply({
-                                        content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                        content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                         ephemeral: true,
                                     });
                             });
@@ -920,7 +920,7 @@ module.exports = {
                             let data = theDB.get(message.guild.id, pre + ".data");
                             if (!data || data.length < 1) {
                                 return message.reply(
-                                    "<:no:833101993668771842> **There are no Auto-Responding-Support-Options to remove**"
+                                    "❌ **There are no Auto-Responding-Support-Options to remove**"
                                 );
                             }
                             let embed = new MessageEmbed()
@@ -1004,7 +1004,7 @@ module.exports = {
                                     );
                                 } else
                                     menu?.reply({
-                                        content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                        content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                         ephemeral: true,
                                     });
                             });

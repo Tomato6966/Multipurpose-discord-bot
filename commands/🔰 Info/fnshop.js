@@ -1,10 +1,22 @@
 const Discord = require("discord.js");
-const Canvas = require("discord-canvas");
-const { MessageEmbed } = require("discord.js");
 const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const { GetUser, GetGlobalUser, handlemsg } = require(`${process.cwd()}/handlers/functions`);
+
+function itemList(items) {
+    let result = "";
+    for (const item of items.slice(0, 25)) {
+        const name = String(item?.name || "Unknown item")
+            .replace(/[\r\n]/g, " ")
+            .replace(/@/g, "@\u200b")
+            .slice(0, 80);
+        const rarity = item?.rarity ? ` (${String(item.rarity).replace(/[\r\n]/g, " ").slice(0, 30)})` : "";
+        const price = item?.price ? ` — ${String(item.price).replace(/[\r\n]/g, " ").slice(0, 20)} V-Bucks` : "";
+        const line = `• ${name}${rarity}${price}\n`;
+        if (result.length + line.length > 1_000) break;
+        result += line;
+    }
+    return result || "No items available.";
+}
+
 module.exports = {
     name: "fnshop",
     aliases: ["fortniteshop", "fshop"],
@@ -12,38 +24,47 @@ module.exports = {
     description: "Shows the current Fortnite Shop",
     usage: "fnshop",
     type: "games",
-    run: async (client, message, args, cmduser, text, prefix) => {
-        let es = client.settings.get(message.guild.id, "embed");
-        let ls = client.settings.get(message.guild.id, "language");
+    run: async (client, message) => {
+        const settings = client.settings.get(message.guild.id, "embed");
+        const loading = await message.reply("⏳ Getting the Shop-Data");
+
         try {
-            let themsg = await message.reply("<a:Loading:833101350623117342> Getting the Shop-Data");
-            const shop = new Canvas.FortniteShop();
-            const image = await shop
-                .setToken(process.env.fnbr || config.fnbr)
-                .setBackground("#23272A")
-                .toAttachment();
-            let attachment = new Discord.MessageAttachment(image, "FortniteShop.png");
-            themsg.edit({ content: "Todays Fortnite Shop:", files: [attachment] }).catch(() => {});
-        } catch (e) {
-            console.log(String(e.stack).grey.bgRed);
-            return message.reply({
-                embeds: [
-                    new MessageEmbed()
-                        .setColor(es.wrongcolor)
-                        .setFooter(client.getFooter(es))
-                        .setTitle(client.la[ls].common.erroroccur)
-                        .setDescription(eval(client.la[ls]["cmds"]["info"]["avatar"]["variable1"])),
-                ],
+            const apiKey = process.env.fnbr || config.fnbr;
+            if (!apiKey) throw new Error("Missing fnbr API key configuration.");
+
+            const response = await fetch("https://fnbr.co/api/shop", {
+                headers: { "x-api-key": apiKey },
+                signal: AbortSignal.timeout(10_000),
             });
+            if (!response.ok) throw new Error(`fnbr.co returned HTTP ${response.status}.`);
+
+            const payload = await response.json();
+            const shop = payload?.data;
+            if (!shop || !Array.isArray(shop.daily) || !Array.isArray(shop.featured)) {
+                throw new Error("fnbr.co returned an invalid shop response.");
+            }
+
+            const date = shop.date && Number.isFinite(Date.parse(shop.date))
+                ? new Date(shop.date).toLocaleDateString()
+                : "Today";
+            const embed = new Discord.EmbedBuilder()
+                .setColor(settings.color)
+                .setTitle(`Fortnite Item Shop — ${date}`)
+                .addFields(
+                    { name: "Featured", value: itemList(shop.featured) },
+                    { name: "Daily", value: itemList(shop.daily) }
+                )
+                .setFooter(client.getFooter(settings));
+
+            await loading.edit({ content: "", embeds: [embed] });
+        } catch (error) {
+            console.error("Failed to fetch Fortnite shop:", error);
+            const embed = new Discord.EmbedBuilder()
+                .setColor(settings.wrongcolor)
+                .setTitle("Fortnite shop unavailable")
+                .setDescription("The shop could not be retrieved right now. Please try again later.")
+                .setFooter(client.getFooter(settings));
+            await loading.edit({ content: "", embeds: [embed] });
         }
     },
 };
-/*
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */

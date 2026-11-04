@@ -92,7 +92,7 @@ module.exports = {
                         handle_the_picks(menu?.values[0], menuoptiondata);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -413,7 +413,7 @@ module.exports = {
                                     });
                                 }
                                 menu?.reply({
-                                    content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                    content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                     ephemeral: true,
                                 });
                             });
@@ -458,12 +458,12 @@ module.exports = {
                                     if (i > 13) {
                                         sendembed2 = true;
                                         embed2.addField(
-                                            `<:arrow:832598861813776394> \`${cuc[i].name}\` | ${cuc[i].embed ? "✅ Embed" : "❌ Embed"}`,
+                                            `▶️ \`${cuc[i].name}\` | ${cuc[i].embed ? "✅ Embed" : "❌ Embed"}`,
                                             ">>> " + string
                                         );
                                     } else
                                         embed.addField(
-                                            `<:arrow:832598861813776394> \`${cuc[i].name}\` | ${cuc[i].embed ? "✅ Embed" : "❌ Embed"}`,
+                                            `▶️ \`${cuc[i].name}\` | ${cuc[i].embed ? "✅ Embed" : "❌ Embed"}`,
                                             ">>> " + string
                                         );
                                 } catch (e) {

@@ -148,7 +148,7 @@ function isValidURL(string) {
     return url;
 }
 function GetUser(message, arg) {
-    var errormessage = "<:no:833101993668771842> I failed finding that User...";
+    var errormessage = "❌ I failed finding that User...";
     return new Promise(async (resolve, reject) => {
         var args = arg,
             client = message.client;
@@ -193,7 +193,7 @@ function GetUser(message, arg) {
     });
 }
 function GetRole(message, arg) {
-    var errormessage = "<:no:833101993668771842> I failed finding that Role...";
+    var errormessage = "❌ I failed finding that Role...";
     return new Promise(async (resolve, reject) => {
         var args = arg,
             client = message.client;
@@ -217,7 +217,7 @@ function GetRole(message, arg) {
     });
 }
 function GetGlobalUser(message, arg) {
-    var errormessage = "<:no:833101993668771842> I failed finding that User...";
+    var errormessage = "❌ I failed finding that User...";
     return new Promise(async (resolve, reject) => {
         var args = arg,
             client = message.client;
@@ -1868,13 +1868,13 @@ async function swap_pages(client, message, description, TITLE) {
     let button_back = new MessageButton()
         .setStyle("SUCCESS")
         .setCustomId("1")
-        .setEmoji("833802907509719130")
+        .setEmoji("◀️")
         .setLabel("Back");
     let button_home = new MessageButton().setStyle("DANGER").setCustomId("2").setEmoji("🏠").setLabel("Home");
     let button_forward = new MessageButton()
         .setStyle("SUCCESS")
         .setCustomId("3")
-        .setEmoji("832598861813776394")
+        .setEmoji("▶️")
         .setLabel("Forward");
     let button_blank = new MessageButton()
         .setStyle("SECONDARY")
@@ -1900,7 +1900,7 @@ async function swap_pages(client, message, description, TITLE) {
     collector.on("collect", async b => {
         if (b?.user.id !== message.author.id)
             return b?.reply({
-                content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`,
+                content: `❌ **Only the one who typed ${prefix}help is allowed to react!**`,
                 ephemeral: true,
             });
         //page forward
@@ -1974,13 +1974,13 @@ async function swap_pages2(client, message, embeds) {
     let button_back = new MessageButton()
         .setStyle("SUCCESS")
         .setCustomId("1")
-        .setEmoji("833802907509719130")
+        .setEmoji("◀️")
         .setLabel("Back");
     let button_home = new MessageButton().setStyle("DANGER").setCustomId("2").setEmoji("🏠").setLabel("Home");
     let button_forward = new MessageButton()
         .setStyle("SUCCESS")
         .setCustomId("3")
-        .setEmoji("832598861813776394")
+        .setEmoji("▶️")
         .setLabel("Forward");
     let button_blank = new MessageButton()
         .setStyle("SECONDARY")
@@ -2007,7 +2007,7 @@ async function swap_pages2(client, message, embeds) {
     collector.on("collect", async b => {
         if (b?.user.id !== message.author.id)
             return b?.reply({
-                content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`,
+                content: `❌ **Only the one who typed ${prefix}help is allowed to react!**`,
                 ephemeral: true,
             });
         //page forward
@@ -2089,13 +2089,13 @@ async function swap_pages2_interaction(client, interaction, embeds) {
     let button_back = new MessageButton()
         .setStyle("SUCCESS")
         .setCustomId("1")
-        .setEmoji("833802907509719130")
+        .setEmoji("◀️")
         .setLabel("Back");
     let button_home = new MessageButton().setStyle("DANGER").setCustomId("2").setEmoji("🏠").setLabel("Home");
     let button_forward = new MessageButton()
         .setStyle("SUCCESS")
         .setCustomId("3")
-        .setEmoji("832598861813776394")
+        .setEmoji("▶️")
         .setLabel("Forward");
     let button_blank = new MessageButton()
         .setStyle("SECONDARY")
@@ -2123,7 +2123,7 @@ async function swap_pages2_interaction(client, interaction, embeds) {
     collector.on("collect", async b => {
         if (b?.user.id !== cmduser.id)
             return b?.reply({
-                content: `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`,
+                content: `❌ **Only the one who typed ${prefix}help is allowed to react!**`,
                 ephemeral: true,
             });
         //page forward
@@ -2669,7 +2669,7 @@ async function check_voice_channels(client) {
                 jointocreate.push(client.jtcsettings.get(guild.id, `jtcsettings${i}.channel`));
             }
             await guild.channels.cache
-                .filter(ch => ch.type == "GUILD_VOICE" && jointocreate.includes(ch.id))
+                .filter(ch => ch.type == 2 && jointocreate.includes(ch.id))
                 .each(async (channel, j) => {
                     try {
                         let members = channel.members.map(this_Code_is_by_Tomato_6966 => this_Code_is_by_Tomato_6966);
@@ -2699,7 +2699,7 @@ async function check_created_voice_channels(client) {
             let guild = client.guilds.cache.get(guilds[i]);
             if (guild) {
                 guild.channels.cache
-                    .filter(ch => ch.type == "GUILD_VOICE")
+                    .filter(ch => ch.type == 2)
                     .each(async vc => {
                         try {
                             if (client.jointocreatemap.get(`tempvoicechannel_${vc.guild.id}_${vc.id}`) == vc.id) {
@@ -2745,7 +2745,7 @@ function create_join_to_create_Channel(client, voiceState, type) {
         } catch {
             try {
                 let channel = guild.channels.cache.find(
-                    channel => channel.type === "GUILD_TEXT" && channel.permissionsFor(guild.me).has("SEND_MESSAGES")
+                    channel => channel.type === 0 && channel.permissionsFor(guild.me).has("SEND_MESSAGES")
                 );
                 channel
                     .send(eval(client.la[ls]["handlers"]["functionsjs"]["functions"]["variable11"]))
@@ -2755,7 +2755,7 @@ function create_join_to_create_Channel(client, voiceState, type) {
         return;
     }
     const createOptions = {
-        type: "GUILD_VOICE",
+        type: 2,
         permissionOverwrites: [
             {
                 //the role "EVERYONE" is just able to VIEW_CHANNEL and CONNECT
@@ -3290,7 +3290,7 @@ const channelInfo = (url, options = {}) =>
             res = (yield axios_1.default.get(
                 url,
                 Object.assign(Object.assign({}, options.requestOptions), {
-                    responseType: "GUILD_TEXT",
+                    responseType: 0,
                 })
             )).data;
         } catch (err) {

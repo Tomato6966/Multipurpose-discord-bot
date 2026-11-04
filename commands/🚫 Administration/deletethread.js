@@ -23,7 +23,7 @@ module.exports = {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle(`<:no:833101993668771842> **This Channel is not a Thread**`),
+                            .setTitle(`❌ **This Channel is not a Thread**`),
                     ],
                 });
             await channel.delete();

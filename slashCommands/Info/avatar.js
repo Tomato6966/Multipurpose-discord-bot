@@ -68,14 +68,14 @@ module.exports = {
                             : client.user.displayAvatarURL()
                         : null
                 )
-                .addField("<:arrow:832598861813776394> PNG", `[\`LINK\`](${user.displayAvatarURL({ format: "png" })})`, true)
+                .addField("▶️ PNG", `[\`LINK\`](${user.displayAvatarURL({ format: "png" })})`, true)
                 .addField(
-                    "<:arrow:832598861813776394> JPEG",
+                    "▶️ JPEG",
                     `[\`LINK\`](${user.displayAvatarURL({ format: "jpg" })})`,
                     true
                 )
                 .addField(
-                    "<:arrow:832598861813776394> WEBP",
+                    "▶️ WEBP",
                     `[\`LINK\`](${user.displayAvatarURL({ format: "webp" })})`,
                     true
                 )

@@ -1,12 +1,5 @@
-const Discord = require("discord.js");
-const { MessageEmbed, MessageAttachment } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-const canvacord = require("canvacord");
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const request = require("request");
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const got = require("got");
-const path = require("path");
+const { MessageEmbed } = require("discord.js");
+const path = require("node:path");
 module.exports = {
     name: path.parse(__filename).name,
     category: "🕹️ Fun",
@@ -33,30 +26,37 @@ module.exports = {
             });
         }
         try {
-            got("https://www.reddit.com/r/jokes/random/.json")
-                .then(response => {
-                    let content = JSON.parse(response.body);
-                    var title = content[0].data.children[0].data.title;
-                    var joke = content[0].data.children[0].data.selftext;
-                    let jokeembed = new MessageEmbed()
-                        .setDescription(joke)
-                        .setColor(es.color)
-                        .setFooter(client.getFooter(es))
-                        .setTitle(title)
-                        .setAuthor("Joke")
-                        .setTimestamp();
-                    return message.reply({ embeds: [jokeembed] });
-                })
-                .catch(() => {});
+            const response = await fetch("https://www.reddit.com/r/jokes/random/.json?raw_json=1", {
+                headers: { "User-Agent": "Multipurpose-discord-bot/11.0.0 (Discord bot)" },
+                signal: AbortSignal.timeout(10_000),
+            });
+            if (!response.ok) {
+                throw new Error(`Reddit returned HTTP ${response.status}`);
+            }
+
+            const content = await response.json();
+            const post = content?.[0]?.data?.children?.[0]?.data;
+            if (typeof post?.title !== "string" || typeof post?.selftext !== "string") {
+                throw new Error("Reddit returned an invalid joke response");
+            }
+
+            const jokeembed = new MessageEmbed()
+                .setDescription(post.selftext)
+                .setColor(es.color)
+                .setFooter(client.getFooter(es))
+                .setTitle(post.title)
+                .setAuthor("Joke")
+                .setTimestamp();
+            return message.reply({ embeds: [jokeembed] });
         } catch (e) {
-            console.log(String(e.stack).grey.bgRed);
+            console.error("Failed to fetch a joke from Reddit:", e);
             return message.reply({
                 embeds: [
                     new MessageEmbed()
                         .setColor(es.wrongcolor)
                         .setFooter(client.getFooter(es))
                         .setTitle(client.la[ls].common.erroroccur)
-                        .setDescription(eval(client.la[ls]["cmds"]["fun"]["joke"]["variable2"])),
+                        .setDescription(`\`\`\` ${String(e?.message || e).slice(0, 2000)}\`\`\``),
                 ],
             });
         }

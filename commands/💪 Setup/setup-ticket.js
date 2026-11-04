@@ -152,7 +152,7 @@ module.exports = {
                         menuselection(menu);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -281,7 +281,7 @@ module.exports = {
                         menuselection(menu);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -331,7 +331,7 @@ module.exports = {
                                                     `There is no parent i can access in this Guild which has the ID ${content}`
                                                 );
                                             }
-                                            if (parent.type !== "GUILD_CATEGORY") {
+                                            if (parent.type !== 4) {
                                                 return message.reply(`<#${parent.id}> is not a CATEGORY/PARENT`);
                                             }
                                             client.setups.set(
@@ -930,7 +930,7 @@ module.exports = {
                                         menuselection(menu);
                                     } else
                                         menu?.reply({
-                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                             ephemeral: true,
                                         });
                                 });

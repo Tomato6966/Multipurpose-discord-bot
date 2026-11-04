@@ -1,17 +1,63 @@
-# INFO 2025
+# Multipurpose Discord Bot (2026 Modernized & Hardened Edition)
 
-Check the [new_2025](https://github.com/Tomato6966/Multipurpose-discord-bot/tree/new_2025) branch for a 2025 working version!
+A full-featured multi-purpose Discord bot running on **Discord.js v14** and **Node.js 22 LTS**, modernized with 2026 security patches, server audits, anti-phishing protection, and unified slash command tooling.
 
-# Public Bot and Support Server!
+---
 
-<a href="https://discord.gg/AsgD3gtPnb"><img src="https://discord.com/api/guilds/1070626568260562954/widget.png?style=banner2"></a>
+## 🚀 2026 Updates & Security Hardening
 
-# Important notes and thank ❤️
-- PROJECT IS NOT MAINTAINED ANYMORE (PR FOR UPDATES ARE WELCOME) - I have stopped making public source codes such as this one in that size
-First of all, thanks for using this Source Code, it was and is a ton of work to create and maintain it!
-That's why I'm asking everyone to [**donate a little bit of money**](https://paypal.me/MilratoDevelopment) or if that's not possible, then join my ["new" Discord Server](https://discord.gg/AsgD3gtPnb)!
+- **Discord.js v14 & Node.js 22 LTS Runtime**: Fully migrated and compatible with modern Discord Gateway v10, IntentsBitField, Partials, EmbedBuilder, and ButtonBuilder.
+- **Enmap v6 Stability & Compatibility**: Polyfilled legacy database query interfaces (`keyArray`, `filterArray`) with safe iteration across 25+ database modules.
+- **Server Security Audit (`/security` & `//security`)**: New real-time guild health audit checking 2FA moderation requirements, verification levels, explicit content filters, anti-nuke safeguards, and bot permissions with an A+ through D grading system.
+- **Phishing & Scam Link Heuristics**: Anti-link filter upgraded with real-time detection for typosquatted scam domains (`dlscord`, `nitro-gift`, fake Steam trade links, crypto drainers).
+- **Hardened Error Handling**: Discord message error outputs no longer leak stack traces, internal filesystem paths, or sensitive credentials.
+- **Environment Isolation & Git Protection**: Database SQLite files (`*.sqlite*`), sensitive tokens, and credentials are fully untracked and protected by `.gitignore`.
+- **Slash Command Deployment Tool**: Easy one-step slash command registration via `npm run deploy` (supports global deployment and instant guild testing).
+- **Safe Owner Privileges**: Configurable `ownerIDS` via `.env` without modifying repository source files or inheriting hardcoded owner IDs.
 
-  **NOTE:** It is suggested to use the [Sharded (&Clustered) version](https://github.com/Tomato6966/Multipurpose-discord-bot/tree/sharded_with_mongo), if you plan on using it for a VERIFIED BOT (on more then 2000 Servers!)
+---
+
+## 🛠️ Quick Start
+
+### 1. Requirements
+- **Node.js**: v22.0.0 or higher
+- **Discord Bot Token** with `Server Members`, `Presence`, and `Message Content` intents enabled in the [Discord Developer Portal](https://discord.com/developers/applications).
+
+### 2. Setup Environment
+Copy `example.env` to `.env`:
+```bash
+cp example.env .env
+```
+Fill in your secret bot token and optional configuration in `.env`:
+```env
+token=YOUR_BOT_TOKEN_HERE
+ownerIDS=YOUR_DISCORD_USER_ID
+AD_ENABLED=false
+```
+
+### 3. Deploy Slash Commands
+Deploy slash commands globally or to a test guild:
+```bash
+# Global deployment:
+npm run deploy
+
+# Instant guild deployment (for testing):
+GUILD_ID=YOUR_SERVER_ID npm run deploy
+```
+
+### 4. Start the Bot
+```bash
+npm start
+# or for background process management:
+pm2 start index.js --name "DiscordBot"
+```
+
+### 5. Run Tests
+```bash
+npm test
+```
+
+---
 
 
 # Installation Guide 🔥
@@ -21,7 +67,7 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://pay
 <details>
   <summary>Click to expand</summary>
 
-  * [nodejs](https://nodejs.org) version 16.6 or higher, I recommend the latest STABLE version
+  * [nodejs](https://nodejs.org) version 22 or higher (Discord.js 14)
   * [python](https://python.org) version 3.8 or higher, to install the database `enmap` (better-sqlite3)
   * A VPS would be advised, so you don't need to keep your PC/laptop/RasPi 24/7 online! [Click here for a debian setup](https://github.com/Tomato6966/Debian-Cheat-Sheet-Setup/wiki/).
   * Check out my recommended Host: [BERO-HOST](https://bero.host) and use code `milrato` for cheap OP VPS (kvm)
@@ -38,6 +84,8 @@ That's why I'm asking everyone to [**donate a little bit of money**](https://pay
   1. Download the [Source Code](https://github.com/Tomato6966/Multipurpose-discord-bot/releases/latest)
      * Either by: `git clone https://github.com/Tomato6966/Multipurpose-discord-bot`
      * Or by downloading it as a zip from the releases tab or a branch.
+  2. In the Discord Developer Portal, enable the privileged **Server Members**, **Presence**, and **Message Content** intents for the application. Prefix commands require Message Content access.
+  3. Keep real API keys and bot tokens out of source control. Configure Fortnite API keys with `fnbr` and `fortnitetracker` environment variables or in a private `botconfig/config.json`; the Fortnite shop and stats commands return embeds and use bounded requests.
 
 </details>
 

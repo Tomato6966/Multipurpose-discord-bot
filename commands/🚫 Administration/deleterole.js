@@ -66,7 +66,7 @@ module.exports = {
                 .setStyle("SUCCESS")
                 .setCustomId("deleterole_verify")
                 .setLabel("Verify this Step")
-                .setEmoji("833101995723194437");
+                .setEmoji("✅");
             let msg = await message.channel.send({
                 content: `<@${message.author.id}>`,
                 embeds: [
@@ -83,7 +83,7 @@ module.exports = {
             collector.on("collect", async b => {
                 if (b?.user.id !== message.author.id)
                     return b?.reply(
-                        `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`,
+                        `❌ **Only the one who typed ${prefix}help is allowed to react!**`,
                         true
                     );
 
@@ -194,7 +194,7 @@ module.exports = {
                                 button_verify
                                     .setDisabled(true)
                                     .setLabel("FAILED TO VERIFY")
-                                    .setEmoji("833101993668771842")
+                                    .setEmoji("❌")
                                     .setStyle("DANGER")
                             ),
                         ],

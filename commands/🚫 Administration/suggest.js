@@ -311,11 +311,11 @@ module.exports = {
                 );
 
             if (embed.fields[2]) {
-                embed.fields[2].name == `<:arrow:832598861813776394> __Reason by **${message.author.tag}**:__`;
+                embed.fields[2].name == `▶️ __Reason by **${message.author.tag}**:__`;
                 embed.fields[2].value == `>>> ${String(reason).substring(0, 1000)}`;
             } else {
                 embed.addField(
-                    `<:arrow:832598861813776394> __Reason by **${message.author.tag}**__`,
+                    `▶️ __Reason by **${message.author.tag}**__`,
                     `>>> ${String(reason).substring(0, 1000)}`
                 );
             }

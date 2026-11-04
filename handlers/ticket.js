@@ -79,7 +79,7 @@ module.exports = (client, preindex) => {
                     let data = client.setups.get(ticketchannel.id, "ticketdata");
                     if (data.state != "closed") {
                         return interaction?.reply({
-                            content: `<:no:833101993668771842> **You already have an Ticket!** <#${ticketchannel.id}>`,
+                            content: `❌ **You already have an Ticket!** <#${ticketchannel.id}>`,
                             ephemeral: true,
                         });
                     }
@@ -103,7 +103,7 @@ module.exports = (client, preindex) => {
 
         let optionsData = {
             topic: `📨 #${String(filename).replace("ticket", "").length > 0 ? String(filename).replace("ticket", "") : "1"} Ticket for: ${user.tag} (${user.id}) | ✅ Created at: ${moment().format("LLLL")}`,
-            type: "GUILD_TEXT",
+            type: 0,
             reason: `Ticket System #${String(filename).replace("ticket", "").length > 0 ? String(filename).replace("ticket", "") : "1"} for: ${user.tag}`,
             permissionOverwrites: [],
         };
@@ -114,7 +114,7 @@ module.exports = (client, preindex) => {
         try {
             var cat = guild.channels.cache.get(ticket.parentid);
             if (cat) {
-                if (cat.type == "GUILD_CATEGORY") {
+                if (cat.type == 4) {
                     if (cat.children.size < 50) {
                         optionsData.parent = String(cat.id);
                     }
@@ -200,7 +200,7 @@ module.exports = (client, preindex) => {
          * CREATE THE CHANNEL
          */
         await interaction?.reply({
-            content: `<a:Loading:833101350623117342> **Creating your Ticket...** (Usually takes 0-2 Seconds)`,
+            content: `⏳ **Creating your Ticket...** (Usually takes 0-2 Seconds)`,
             ephemeral: true,
         });
         guild.channels

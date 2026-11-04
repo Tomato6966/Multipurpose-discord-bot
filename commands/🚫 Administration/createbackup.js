@@ -14,13 +14,13 @@ module.exports = {
     type: "server",
     run: async (client, message, args, cmduser, text, prefix) => {
         if (!message.guild.me.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) {
-            return message.reply("<:no:833101993668771842> **I am missing the ADMINISTRATOR Permission!**");
+            return message.reply("❌ **I am missing the ADMINISTRATOR Permission!**");
         }
         let owner = await message.guild.fetchOwner().catch(e => {
             return message.reply("Could not get owner of target guild");
         });
         if (owner.id != cmduser.id) {
-            return message.reply(`<:no:833101993668771842> **You need to be the Owner of this Server!**`);
+            return message.reply(`❌ **You need to be the Owner of this Server!**`);
         }
         let es = client.settings.get(message.guild.id, "embed");
         let ls = client.settings.get(message.guild.id, "language");
@@ -80,7 +80,7 @@ module.exports = {
                         collector.stop();
                         button
                             ?.reply({
-                                content: `<a:Loading:833101350623117342> **Now saving the Backup!**\nThis could take up to 2 Minutes (belongs to your data amount)`,
+                                content: `⏳ **Now saving the Backup!**\nThis could take up to 2 Minutes (belongs to your data amount)`,
                             })
                             .catch(() => {});
                         // Create the backup

@@ -24,13 +24,13 @@ module.exports = {
             ///////////////////////////////////////
 
             if (!message.guild.me.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) {
-                return message.reply("<:no:833101993668771842> **I am missing the ADMINISTRATOR Permission!**");
+                return message.reply("❌ **I am missing the ADMINISTRATOR Permission!**");
             }
             let owner = await message.guild.fetchOwner().catch(e => {
                 return message.reply("Could not get owner of target guild");
             });
             if (owner.id != cmduser.id) {
-                return message.reply(`<:no:833101993668771842> **You need to be the Owner of this Server!**`);
+                return message.reply(`❌ **You need to be the Owner of this Server!**`);
             }
             //function to handle true/false
             const d2p = bool => (bool ? "`✔️ Enabled`" : "`❌ Disabled`");
@@ -123,7 +123,7 @@ module.exports = {
                         });
                     }
                     menu?.reply({
-                        content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                        content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                         ephemeral: true,
                     });
                 });

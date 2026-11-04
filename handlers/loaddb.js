@@ -1,5 +1,6 @@
 module.exports = async client => {
-    const { default: Enmap } = await import("enmap");
+    const { getEnmap } = require("./enmap-compat");
+    const Enmap = await getEnmap();
     let dateNow = Date.now();
     console.log(`${String("[x] :: ".magenta)}Now loading the Database...`.brightGreen);
     //Each Database gets a own file and folder which is pretty handy!
@@ -156,9 +157,20 @@ module.exports = async client => {
         dataDir: "./databases/blacklist",
     });
     client.customcommands = new Enmap({
-        name: "custom commands",
+        name: "customcommands",
         dataDir: "./databases/customcommands",
     });
+    const legacyCustomCommands = client.customcommands.db
+        .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
+        .get("custom commands");
+    if (legacyCustomCommands) {
+        const migration = client.customcommands.db
+            .prepare('INSERT OR IGNORE INTO customcommands (key, value) SELECT key, value FROM "custom commands"')
+            .run();
+        if (migration.changes > 0) {
+            console.log(`Migrated ${migration.changes} entries from the legacy custom commands table.`);
+        }
+    }
     client.keyword = new Enmap({
         name: "keyword",
         dataDir: "./databases/keyword",

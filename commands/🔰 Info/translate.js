@@ -1,69 +1,44 @@
-const { MessageEmbed } = require("discord.js");
-const config = require(`${process.cwd()}/botconfig/config.json`);
-var ee = require(`${process.cwd()}/botconfig/embed.json`);
-const emoji = require(`${process.cwd()}/botconfig/emojis.json`);
-const translate = require("translatte");
+const { EmbedBuilder } = require("discord.js");
 const { handlemsg } = require(`${process.cwd()}/handlers/functions`);
+const translate = require(`${process.cwd()}/handlers/translate`);
+
 module.exports = {
     name: "translate",
     category: "🔰 Info",
     aliases: ["trans", "tran", "tr"],
     cooldown: 5,
     usage: "translate <from> <to> <TEXT>",
-    description: "Translates Text from a Language to another one!",
+    description: "Translates text from one language to another",
     type: "util",
     run: async (client, message, args, cmduser, text, prefix) => {
-        let es = client.settings.get(message.guild.id, "embed");
-        let ls = client.settings.get(message.guild.id, "language");
-        try {
-            if (!args[0]) return message.reply(handlemsg(client.la[ls].cmds.info.translate.error, { prefix: prefix }));
-            if (!args[1]) return message.reply(handlemsg(client.la[ls].cmds.info.translate.error, { prefix: prefix }));
-            if (!args[2]) return message.reply(handlemsg(client.la[ls].cmds.info.translate.error, { prefix: prefix }));
+        const settings = client.settings.get(message.guild.id, "embed");
+        const language = client.settings.get(message.guild.id, "language");
+        if (!args[0] || !args[1] || !args[2]) {
+            return message.reply(handlemsg(client.la[language].cmds.info.translate.error, { prefix }));
+        }
 
-            translate(args.slice(2).join(" "), { from: args[0], to: args[1] })
-                .then(res => {
-                    let embed = new MessageEmbed()
-                        .setColor(es.color)
-                        .setAuthor(
-                            handlemsg(client.la[ls].cmds.info.translate.to, { to: args[1] }),
-                            "https://imgur.com/0DQuCgg.png",
-                            "https://discord.gg/milrato"
-                        )
-                        .setFooter(
-                            handlemsg(client.la[ls].cmds.info.translate.from, { from: args[0] }),
-                            message.author.displayAvatarURL({ dynamic: true })
-                        )
-                        .setDescription(eval(client.la[ls]["cmds"]["info"]["translate"]["variable1"]));
-                    message.reply({ embeds: [embed] });
+        try {
+            const result = await translate(args.slice(2).join(" "), { from: args[0], to: args[1] });
+            const embed = new EmbedBuilder()
+                .setColor(settings.color)
+                .setAuthor({
+                    name: handlemsg(client.la[language].cmds.info.translate.to, { to: args[1] }),
+                    iconURL: "https://imgur.com/0DQuCgg.png",
+                    url: "https://discord.gg/milrato",
                 })
-                .catch(err => {
-                    let embed = new MessageEmbed()
-                        .setColor(es.wrongcolor)
-                        .setTitle(client.la[ls].common.erroroccur)
-                        .setDescription(String("```" + err.stack + "```").substring(0, 2000));
-                    message.reply({ embeds: [embed] });
-                    console.log(err);
-                });
-        } catch (e) {
-            console.log(String(e.stack).grey.bgRed);
-            return message.reply({
-                embeds: [
-                    new MessageEmbed()
-                        .setColor(es.wrongcolor)
-                        .setFooter(client.getFooter(es))
-                        .setTitle(client.la[ls].common.erroroccur)
-                        .setDescription(eval(client.la[ls]["cmds"]["info"]["color"]["variable2"])),
-                ],
-            });
+                .setFooter({
+                    text: handlemsg(client.la[language].cmds.info.translate.from, { from: args[0] }),
+                    iconURL: message.author.displayAvatarURL(),
+                })
+                .setDescription(result.text.slice(0, 4_000));
+            await message.reply({ embeds: [embed] });
+        } catch (error) {
+            console.error("Translation failed:", error);
+            const embed = new EmbedBuilder()
+                .setColor(settings.wrongcolor)
+                .setTitle(client.la[language].common.erroroccur)
+                .setDescription("Translation failed. Check the language codes and try again later.");
+            await message.reply({ embeds: [embed] });
         }
     },
 };
-/**
- * @INFO
- * Bot Coded by Tomato#6966 | https://discord.gg/milrato
- * @INFO
- * Work for Milrato Development | https://milrato.eu
- * @INFO
- * Please mention him / Milrato Development, when using this Code!
- * @INFO
- */

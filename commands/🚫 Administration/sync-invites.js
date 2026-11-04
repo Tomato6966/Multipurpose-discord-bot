@@ -40,12 +40,12 @@ module.exports = {
             let approve = new MessageButton()
                 .setStyle("SUCCESS")
                 .setCustomId("1")
-                .setEmoji("833101995723194437")
+                .setEmoji("✅")
                 .setLabel("YES DO IT!");
             let deny = new MessageButton()
                 .setStyle("PRIMARY")
                 .setCustomId("2")
-                .setEmoji("833101993668771842")
+                .setEmoji("❌")
                 .setLabel("Cancel");
             let awaitedmsg = await message.reply({
                 embeds: [

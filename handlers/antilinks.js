@@ -4,6 +4,7 @@ var ee = require(`${process.cwd()}/botconfig/embed.json`);
 var emoji = require(`${process.cwd()}/botconfig/emojis.json`);
 const ms = require("ms");
 var { MessageEmbed, Permissions } = require(`discord.js`);
+const { isKnownScamUrl } = require("./security-helper");
 let countermap = new Map();
 module.exports = client => {
     const { isValidURL, delay } = require(`./functions`);
@@ -579,6 +580,7 @@ module.exports = client => {
     }
 };
 function isAllowedUrl(arg, s) {
+    if (isKnownScamUrl(arg)) return true; // Malicious phishing/scam domains are strictly blocked
     if (
         !arg.includes("discord.com") &&
         !s.whitelistedlinks.some(

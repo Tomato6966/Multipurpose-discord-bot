@@ -26,11 +26,11 @@ module.exports = {
                     message: "",
                     log: false,
                     stopBoost:
-                        "<a:Server_Boosts:867777823468027924> {member} **stopped Boosting us..** <:Cat_Sad:867722685949804565>",
+                        "🚀 {member} **stopped Boosting us..** 😿",
                     startBoost:
-                        "<a:Server_Boosts:867777823468027924> {member} **has boosted us!** <a:Light_Saber_Dancce:867721861462229013>",
+                        "🚀 {member} **has boosted us!** 💃",
                     againBoost:
-                        "<a:Server_Boosts:867777823468027924> {member} **has boosted us again!** <:Tada_WON:867724032207224833>",
+                        "🚀 {member} **has boosted us again!** 🎉",
                 },
             });
 
@@ -50,17 +50,17 @@ module.exports = {
                     {
                         value: "Start Boost Message",
                         description: `Define the Started Boosting Message`,
-                        emoji: "867777823468027924",
+                        emoji: "🚀",
                     },
                     {
                         value: "Stop Boost Message",
                         description: `Define the Stopped Boosting Message`,
-                        emoji: "867777823468027924",
+                        emoji: "🚀",
                     },
                     {
                         value: "Again Boost Message",
                         description: `Define the Again Boosting Message`,
-                        emoji: "867777823468027924",
+                        emoji: "🚀",
                     },
                     {
                         value: "Cancel",
@@ -118,7 +118,7 @@ module.exports = {
                         handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });

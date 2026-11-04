@@ -1,4 +1,4 @@
-﻿/**********************************************************
+/**********************************************************
  * @INFO  [TABLE OF CONTENTS]
  * 1  Import_Modules
  * 1.1 Validating script for advertisement
@@ -17,46 +17,53 @@
 /**********************************************************
  * @param {1} Import_Modules for this FIle
  *********************************************************/
-const Discord = require("discord.js");
+const Discord = require("./handlers/discord-compat");
 const colors = require("colors");
 const fs = require("fs");
-const OS = require("os");
 const Events = require("events");
 const emojis = require("./botconfig/emojis.json");
 const config = require("./botconfig/config.json");
 const advertisement = require("./botconfig/advertisement.json");
 const { delay } = require("./handlers/functions");
 require("dotenv").config();
+if (process.env.ownerIDS) {
+    config.ownerIDS = process.env.ownerIDS
+        .split(",")
+        .map(id => id.trim())
+        .filter(Boolean);
+}
 
 /**********************************************************
  * @param {2} CREATE_THE_DISCORD_BOT_CLIENT with some default settings
  *********************************************************/
 const client = new Discord.Client({
-    fetchAllMembers: false,
-    restTimeOffset: 0,
-    failIfNotExists: false,
     shards: "auto",
     allowedMentions: {
-        parse: ["roles", "users"],
+        parse: [],
         repliedUser: false,
     },
-    partials: ["MESSAGE", "CHANNEL", "REACTION", "GUILD_MEMBER", "USER"],
+    partials: [
+        Discord.Partials.Message,
+        Discord.Partials.Channel,
+        Discord.Partials.Reaction,
+        Discord.Partials.GuildMember,
+        Discord.Partials.User,
+    ],
     intents: [
-        Discord.Intents.FLAGS.GUILDS,
-        Discord.Intents.FLAGS.GUILD_MEMBERS,
-        Discord.Intents.FLAGS.GUILD_BANS,
-        Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-        Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
-        Discord.Intents.FLAGS.GUILD_WEBHOOKS,
-        Discord.Intents.FLAGS.GUILD_INVITES,
-        Discord.Intents.FLAGS.GUILD_VOICE_STATES,
-        Discord.Intents.FLAGS.GUILD_PRESENCES,
-        Discord.Intents.FLAGS.GUILD_MESSAGES,
-        Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-        //Discord.Intents.FLAGS.GUILD_MESSAGE_TYPING,
-        Discord.Intents.FLAGS.DIRECT_MESSAGES,
-        Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-        //Discord.Intents.FLAGS.DIRECT_MESSAGE_TYPING
+        Discord.GatewayIntentBits.Guilds,
+        Discord.GatewayIntentBits.GuildMembers,
+        Discord.GatewayIntentBits.GuildBans,
+        Discord.GatewayIntentBits.GuildExpressions,
+        Discord.GatewayIntentBits.GuildIntegrations,
+        Discord.GatewayIntentBits.GuildWebhooks,
+        Discord.GatewayIntentBits.GuildInvites,
+        Discord.GatewayIntentBits.GuildVoiceStates,
+        Discord.GatewayIntentBits.GuildPresences,
+        Discord.GatewayIntentBits.GuildMessages,
+        Discord.GatewayIntentBits.GuildMessageReactions,
+        Discord.GatewayIntentBits.MessageContent,
+        Discord.GatewayIntentBits.DirectMessages,
+        Discord.GatewayIntentBits.DirectMessageReactions,
     ],
     presence: {
         activities: [
@@ -93,13 +100,13 @@ Object.freeze(client.la);
  *********************************************************/
 client.setMaxListeners(25);
 Events.defaultMaxListeners = 25;
-process.env.UV_THREADPOOL_SIZE = OS.cpus().length;
+process.setMaxListeners(50);
 
 /**********************************************************
  * @param {7} Define_the_Client_Advertisments from the Config File
  *********************************************************/
 client.ad = {
-    enabled: advertisement.adenabled,
+    enabled: process.env.AD_ENABLED === "true" ? true : false,
     statusad: advertisement.statusad,
     spacedot: advertisement.spacedot,
     textad: advertisement.textad,
@@ -108,23 +115,25 @@ client.ad = {
 /**********************************************************
  * @param {8} LOAD_the_BOT_Functions
  *********************************************************/
-//those are must haves, they load the dbs, events and commands and important other stuff
-function requirehandlers() {
-    ["extraevents", "clientvariables", "command", "loaddb", "events", "erelahandler", "slashCommands"].forEach(handler => {
+async function loadHandlers(folder, handlers, criticalHandlers = []) {
+    for (const handler of handlers) {
         try {
-            require(`./handlers/${handler}`)(client);
-        } catch (e) {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey);
+            await require(`./${folder}/${handler}`)(client);
+        } catch (error) {
+            console.error(`Failed to initialize ${folder}/${handler}:`, error);
+            if (criticalHandlers.includes(handler)) throw error;
         }
-    });
-    ["twitterfeed", /*"twitterfeed2",*/ "livelog", "youtube", "tiktok"].forEach(handler => {
-        try {
-            require(`./social_log/${handler}`)(client);
-        } catch (e) {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey);
-        }
-    });
-    [
+    }
+}
+
+async function requirehandlers() {
+    await loadHandlers(
+        "handlers",
+        ["extraevents", "clientvariables", "command", "loaddb", "events", "erelahandler", "slashCommands"],
+        ["command", "loaddb"]
+    );
+    await loadHandlers("social_log", ["twitterfeed", /*"twitterfeed2",*/ "livelog", "youtube", "tiktok"]);
+    await loadHandlers("handlers", [
         "logger",
         "anti_nuke",
         "antidiscord",
@@ -164,20 +173,39 @@ function requirehandlers() {
         "mute",
         "automeme",
         "counter",
-    ].forEach(handler => {
-        try {
-            require(`./handlers/${handler}`)(client);
-        } catch (e) {
-            console.log(e.stack ? String(e.stack).grey : String(e).grey);
-        }
-    });
+    ]);
 }
-requirehandlers();
 
 /**********************************************************
  * @param {9} Login_to_the_Bot
  *********************************************************/
-client.login(process.env.token || config.token);
+function configuredToken() {
+    const token = (process.env.token || config.token || "").trim();
+    if (!token || /^(?:get from:|your[_ -]|replace[_ -]|<)/i.test(token)) return null;
+    return token;
+}
+
+const token = configuredToken();
+if (!token) {
+    console.error("Missing Discord bot token. Set token in .env or botconfig/config.json before starting the bot.");
+    process.exitCode = 1;
+} else {
+    requirehandlers()
+        .then(async () => {
+            try {
+                await client.login(token);
+            } catch (error) {
+                console.error("Failed to log in to Discord:", error);
+                await client.destroy();
+                process.exitCode = 1;
+            }
+        })
+        .catch(async error => {
+            console.error("Bot startup failed while initializing required handlers:", error);
+            await client.destroy();
+            process.exitCode = 1;
+        });
+}
 
 /**********************************************************
  * @INFO

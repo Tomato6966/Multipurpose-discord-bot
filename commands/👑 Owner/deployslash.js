@@ -54,7 +54,7 @@ module.exports = {
             }
             if (loadSlashsGlobal) {
                 let themsg = await message.reply(
-                    `<a:Loading:833101350623117342> **Attempting to set the Global Slash Commands in \`${client.guilds.cache.size} Guilds\`...**`
+                    `⏳ **Attempting to set the Global Slash Commands in \`${client.guilds.cache.size} Guilds\`...**`
                 );
                 client.application.commands
                     .set(client.allCommands)
@@ -67,7 +67,7 @@ module.exports = {
             } else {
                 let guild = client.guilds.cache.get(guildId);
                 let themsg = await message.reply(
-                    `<a:Loading:833101350623117342> **Attempting to set the GUILD Slash Commands in \`${guild.name}\`...**`
+                    `⏳ **Attempting to set the GUILD Slash Commands in \`${guild.name}\`...**`
                 );
                 await guild.commands
                     .set(client.allCommands)

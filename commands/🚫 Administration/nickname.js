@@ -23,7 +23,7 @@ module.exports = {
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
                             .setTitle(
-                                `<:no:833101993668771842> **I am missing the Permission to Manage Nicknames of others**`
+                                `❌ **I am missing the Permission to Manage Nicknames of others**`
                             ),
                     ],
                 });
@@ -69,7 +69,7 @@ module.exports = {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle(`<:no:833101993668771842> **You forgot to ping a Member**`)
+                            .setTitle(`❌ **You forgot to ping a Member**`)
                             .setDescription(`Usage: \`${prefix}nickname @User newnickname\``),
                     ],
                 });
@@ -79,7 +79,7 @@ module.exports = {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle(`<:no:833101993668771842> **You forgot to add a Nickname**`)
+                            .setTitle(`❌ **You forgot to add a Nickname**`)
                             .setDescription(`Usage: \`${prefix}nickname @User newnickname\``),
                     ],
                 });
@@ -90,7 +90,7 @@ module.exports = {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle(`<:no:833101993668771842> **The Nickname must have smaller then 32 Characters**`)
+                            .setTitle(`❌ **The Nickname must have smaller then 32 Characters**`)
                             .setDescription(`Usage: \`${prefix}nickname @User newnickname\``),
                     ],
                 });

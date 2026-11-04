@@ -17,7 +17,10 @@ module.exports = client => {
         "30 * * * * *",
         function () {
             //get all guilds which are setupped
-            var guilds = client.settings.filter(v => v.automeme && v.automeme != "no").keyArray();
+            const guilds = client.settings
+                .entries()
+                .filter(([, settings]) => settings?.automeme && settings.automeme !== "no")
+                .map(([guildId]) => guildId);
             //Loop through all guilds and send a random auto-generated-nsfw setup
             for (const guildid of guilds) {
                 automeme(guildid);

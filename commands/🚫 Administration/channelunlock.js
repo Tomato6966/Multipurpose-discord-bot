@@ -54,7 +54,7 @@ module.exports = {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle(`<:no:833101993668771842> **This Channel is a Thread u can't unlock it!**`),
+                            .setTitle(`❌ **This Channel is a Thread u can't unlock it!**`),
                     ],
                 });
             if (
@@ -66,7 +66,7 @@ module.exports = {
                         new MessageEmbed()
                             .setColor(es.wrongcolor)
                             .setFooter(client.getFooter(es))
-                            .setTitle(`<:no:833101993668771842> **This Channel is not locked!**`)
+                            .setTitle(`❌ **This Channel is not locked!**`)
                             .setDescription(
                                 `This usually means, that the Channel **PERMISSIONS** are so defined, that __all__ of them are ALLOWING to send a Message!`
                             ),

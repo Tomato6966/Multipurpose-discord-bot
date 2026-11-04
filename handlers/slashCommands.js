@@ -1,6 +1,24 @@
 const { readdirSync, lstatSync } = require("fs");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const config = require(`${process.cwd()}/botconfig/config.json`);
+
+function normalizeChoiceName(name) {
+    return String(name).replace(/\s+/g, "_").toLowerCase().slice(0, 100);
+}
+
+function stringChoices(choices) {
+    return choices.slice(0, 25).map(([name, value]) => ({
+        name: normalizeChoiceName(name),
+        value: String(value).slice(0, 100),
+    }));
+}
+
+function integerChoices(choices) {
+    return choices.slice(0, 25).map(([name, value]) => ({
+        name: normalizeChoiceName(name),
+        value: Number(value),
+    }));
+}
 const dirSetup = [
     {
         Folder: "Info",
@@ -103,12 +121,7 @@ module.exports = client => {
                                                     )
                                                     .setDescription(option.StringChoices.description)
                                                     .setRequired(option.StringChoices.required)
-                                                    .addChoices(
-                                                        option.StringChoices.choices.map(c => [
-                                                            String(c[0]).replace(/\s+/g, "_").toLowerCase(),
-                                                            String(c[1]),
-                                                        ])
-                                                    )
+                                                    .addChoices(...stringChoices(option.StringChoices.choices))
                                             );
                                         } else if (
                                             option.IntChoices &&
@@ -117,19 +130,14 @@ module.exports = client => {
                                             option.IntChoices.choices &&
                                             option.IntChoices.choices.length > 0
                                         ) {
-                                            subcommand.addStringOption(op =>
+                                            subcommand.addIntegerOption(op =>
                                                 op
                                                     .setName(
                                                         String(option.IntChoices.name).replace(/\s+/g, "_").toLowerCase()
                                                     )
                                                     .setDescription(option.IntChoices.description)
                                                     .setRequired(option.IntChoices.required)
-                                                    .addChoices(
-                                                        option.IntChoices.choices.map(c => [
-                                                            String(c[0]).replace(/\s+/g, "_").toLowerCase(),
-                                                            parseInt(c[1]),
-                                                        ])
-                                                    )
+                                                    .addChoices(...integerChoices(option.IntChoices.choices))
                                             );
                                         } else {
                                             console.log(
@@ -209,12 +217,7 @@ module.exports = client => {
                                         .setName(String(option.StringChoices.name).replace(/\s+/g, "_").toLowerCase())
                                         .setDescription(option.StringChoices.description)
                                         .setRequired(option.StringChoices.required)
-                                        .addChoices(
-                                            option.StringChoices.choices.map(c => [
-                                                String(c[0]).replace(/\s+/g, "_").toLowerCase(),
-                                                String(c[1]),
-                                            ])
-                                        )
+                                        .addChoices(...stringChoices(option.StringChoices.choices))
                                 );
                             } else if (
                                 option.IntChoices &&
@@ -223,17 +226,12 @@ module.exports = client => {
                                 option.IntChoices.choices &&
                                 option.IntChoices.choices.length > 0
                             ) {
-                                Command.addStringOption(op =>
+                                Command.addIntegerOption(op =>
                                     op
                                         .setName(String(option.IntChoices.name).replace(/\s+/g, "_").toLowerCase())
                                         .setDescription(option.IntChoices.description)
                                         .setRequired(option.IntChoices.required)
-                                        .addChoices(
-                                            option.IntChoices.choices.map(c => [
-                                                String(c[0]).replace(/\s+/g, "_").toLowerCase(),
-                                                parseInt(c[1]),
-                                            ])
-                                        )
+                                        .addChoices(...integerChoices(option.IntChoices.choices))
                                 );
                             } else {
                                 console.log(`A Option is missing the Name or/and the Description of ${pull.name}`);

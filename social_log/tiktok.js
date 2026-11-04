@@ -9,17 +9,15 @@ module.exports = client => {
         "0 */7 * * * *",
         async function () {
             await delay(2 * 60 * 1000);
-            var guilds = client.social_log
-                .keyArray(
-                    v =>
-                        v.tiktok &&
-                        v.tiktok.channels &&
-                        v.tiktok.channels.length > 0 &&
-                        v.tiktok &&
-                        v.tiktok.dc_channel &&
-                        v.tiktok.dc_channel.length > 1
-                )
-                .map(v => v.tiktok);
+            var guilds = client.social_log.keyArray(
+                v =>
+                    v &&
+                    v.tiktok &&
+                    v.tiktok.channels &&
+                    v.tiktok.channels.length > 0 &&
+                    v.tiktok.dc_channel &&
+                    v.tiktok.dc_channel.length > 1
+            );
             if (!guilds) return;
             for (const g of guilds) {
                 var guild = client.guilds.cache.get(g);

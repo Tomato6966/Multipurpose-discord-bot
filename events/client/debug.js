@@ -1,6 +1,11 @@
 //here the event starts
 module.exports = (client, info) => {
-    console.log(String(info).grey);
+    const message = String(info);
+    if (message.startsWith("Provided token:")) {
+        console.debug("Discord.js login token supplied; token details omitted.");
+        return;
+    }
+    console.log(message.grey);
 };
 /**
  * @INFO

@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const config = require(`${process.cwd()}/botconfig/config.json`);
 const Platforms = {
     pc: "PC",
     psn: "Playstation",
@@ -71,19 +72,19 @@ module.exports = async client => {
                                     label: "PC | Computer",
                                     value: "pc",
                                     description: "If you play on Computer / Laptop",
-                                    emoji: "840608514648047666",
+                                    emoji: "💻",
                                 },
                                 {
                                     label: "Playstation",
                                     value: "psn",
                                     description: "If you play on a Playstation",
-                                    emoji: "840608342040117249",
+                                    emoji: "🎮",
                                 },
                                 {
                                     label: "Xbox",
                                     value: "xbl",
                                     description: "If you play on a XBOX",
-                                    emoji: "840608097701330996",
+                                    emoji: "🕹️",
                                 },
                                 {
                                     label: "Others",
@@ -131,7 +132,11 @@ module.exports = async client => {
                         return user.send(
                             `❌ **Someone with the User-ID: \`${others.user}\` Linked their Account with this Epic Games Name!**`
                         );
-                    let fortniteClient = new fortnite("e032828b-886d-4ed6-9aa1-0e2e725592a8");
+                    const apiKey = process.env.fortnitetracker || config.fortnitetracker;
+                    if (!apiKey) {
+                        return user.send("❌ Epic Games verification is temporarily unavailable because its API is not configured.");
+                    }
+                    let fortniteClient = new fortnite(apiKey);
                     let tdata =
                         (await fortniteClient.user(Username, Platform == "others" ? "pc" : Platform).catch(() => {})) ||
                         false;

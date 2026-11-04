@@ -111,13 +111,13 @@ module.exports = {
                         )
                         .addField(
                             client.la[ls].cmds.info.serverinfo.field5,
-                            "💬 `" + message.guild.channels.cache.filter(channel => channel.type == "GUILD_TEXT").size + "`",
+                            "💬 `" + message.guild.channels.cache.filter(channel => channel.type == 0).size + "`",
                             true
                         )
                         .addField(
                             client.la[ls].cmds.info.serverinfo.field6,
                             "🔈 `" +
-                                message.guild.channels.cache.filter(channel => channel.type == "GUILD_VOICE").size +
+                                message.guild.channels.cache.filter(channel => channel.type == 2).size +
                                 "`",
                             true
                         )
@@ -155,12 +155,12 @@ module.exports = {
 
                         .addField(
                             client.la[ls].cmds.info.serverinfo.field12,
-                            "<a:nitro_logo:833402717950836806> `" + message.guild.premiumSubscriptionCount + "`",
+                            "💎 `" + message.guild.premiumSubscriptionCount + "`",
                             true
                         )
                         .addField(
                             client.la[ls].cmds.info.serverinfo.field13,
-                            "<a:nitro:833402717506502707> `" + boostlevel + "`",
+                            "💎 `" + boostlevel + "`",
                             true
                         )
                         .addField(client.la[ls].cmds.info.serverinfo.field14, "👾 `" + maxbitrate + " kbps`", true)

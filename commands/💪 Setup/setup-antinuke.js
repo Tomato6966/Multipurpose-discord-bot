@@ -625,7 +625,7 @@ module.exports = {
                                                     )
                                                     .setColor(es.color)
                                                     .setDescription(
-                                                        `<:leaves:866356598356049930> **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Bot add__ Whitelist (module)!**`.substring(
+                                                        `➖ **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Bot add__ Whitelist (module)!**`.substring(
                                                             0,
                                                             2048
                                                         )
@@ -750,7 +750,7 @@ module.exports = {
                                                     )
                                                     .setColor(es.color)
                                                     .setDescription(
-                                                        `<:leaves:866356598356049930> **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Kick/Ban__ Whitelist (module)!**`.substring(
+                                                        `➖ **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Kick/Ban__ Whitelist (module)!**`.substring(
                                                             0,
                                                             2048
                                                         )
@@ -875,7 +875,7 @@ module.exports = {
                                                     )
                                                     .setColor(es.color)
                                                     .setDescription(
-                                                        `<:leaves:866356598356049930> **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Create Role__ Whitelist (module)!**`.substring(
+                                                        `➖ **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Create Role__ Whitelist (module)!**`.substring(
                                                             0,
                                                             2048
                                                         )
@@ -1000,7 +1000,7 @@ module.exports = {
                                                     )
                                                     .setColor(es.color)
                                                     .setDescription(
-                                                        `<:leaves:866356598356049930> **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Delete Role__ Whitelist (module)!**`.substring(
+                                                        `➖ **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Delete Role__ Whitelist (module)!**`.substring(
                                                             0,
                                                             2048
                                                         )
@@ -1125,7 +1125,7 @@ module.exports = {
                                                     )
                                                     .setColor(es.color)
                                                     .setDescription(
-                                                        `<:leaves:866356598356049930> **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Channel Create__ Whitelist (module)!**`.substring(
+                                                        `➖ **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Channel Create__ Whitelist (module)!**`.substring(
                                                             0,
                                                             2048
                                                         )
@@ -1250,7 +1250,7 @@ module.exports = {
                                                     )
                                                     .setColor(es.color)
                                                     .setDescription(
-                                                        `<:leaves:866356598356049930> **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Channel Delete__ Whitelist (module)!**`.substring(
+                                                        `➖ **Removed \`[${removedroles.length}] Roles\` and \`[${removedusers.length}] Users\` from the __Anti Channel Delete__ Whitelist (module)!**`.substring(
                                                             0,
                                                             2048
                                                         )
@@ -1304,7 +1304,7 @@ module.exports = {
                                 menuselection2(menu);
                             } else
                                 menu?.reply({
-                                    content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                    content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                     ephemeral: true,
                                 });
                         });
@@ -1839,7 +1839,7 @@ module.exports = {
                                             if (menu?.user.id === cmduser.id) {
                                                 if (used33)
                                                     return menu?.reply({
-                                                        content: `<:no:833101993668771842> You already selected something, this Selection is now disabled!`,
+                                                        content: `❌ You already selected something, this Selection is now disabled!`,
                                                         ephemeral: true,
                                                     });
                                                 let menuoptiondata = menuoptions.find(v => v.value == menu?.values[0]);
@@ -1868,7 +1868,7 @@ module.exports = {
                                                 handle_the_picks_X(menuoptionindex - 1, menuoptiondata);
                                             } else
                                                 menu?.reply({
-                                                    content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                                    content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                                     ephemeral: true,
                                                 });
                                         }
@@ -1960,7 +1960,7 @@ module.exports = {
                                 menuselection3(menu);
                             } else
                                 menu?.reply({
-                                    content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                    content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                     ephemeral: true,
                                 });
                         });
@@ -2262,7 +2262,7 @@ module.exports = {
                         menuselection(menu);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });

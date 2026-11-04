@@ -104,7 +104,7 @@ module.exports = {
                 .setStyle("SUCCESS")
                 .setCustomId("ticket_verify")
                 .setLabel("Verify this Step")
-                .setEmoji("833101995723194437");
+                .setEmoji("✅");
             message
                 .reply({
                     content: `<@${buttonuser.id}>`,
@@ -122,7 +122,7 @@ module.exports = {
                     collector.on("collect", async b => {
                         if (b?.user.id !== buttonuser.id)
                             return b?.reply(
-                                `<:no:833101993668771842> **Only the one who typed ${prefix}help is allowed to react!**`,
+                                `❌ **Only the one who typed ${prefix}help is allowed to react!**`,
                                 true
                             );
 
@@ -153,7 +153,7 @@ module.exports = {
 
                             if (closedParent) {
                                 let ticketCh = msg.guild.channels.cache.get(closedParent);
-                                if (ticketCh && ticketCh.type == "GUILD_CATEGORY") {
+                                if (ticketCh && ticketCh.type == 4) {
                                     if (ticketCh.children.size < 50) {
                                         await msg.channel
                                             .setParent(ticketCh.id, { lockPermissions: false })
@@ -300,7 +300,7 @@ module.exports = {
                                         button_ticket_verify
                                             .setDisabled(true)
                                             .setLabel("FAILED TO VERIFY")
-                                            .setEmoji("833101993668771842")
+                                            .setEmoji("❌")
                                             .setStyle("DANGER")
                                     ),
                                 ],

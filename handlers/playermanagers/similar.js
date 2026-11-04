@@ -159,7 +159,7 @@ async function similar(client, message, args, type, slashCommand) {
 
                 player.connect();
                 try {
-                    message.react("863876115584385074").catch(() => {});
+                    message.react("🎶").catch(() => {});
                 } catch (e) {
                     console.log(String(e).grey);
                 }

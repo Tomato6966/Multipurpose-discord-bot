@@ -106,7 +106,7 @@ module.exports = {
                         embedEditing(interaction);
                     } else {
                         await interaction?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${message.author.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${message.author.id}>`,
                             ephemeral: true,
                         }); //ephemeral message
                     }
@@ -135,7 +135,7 @@ module.exports = {
                     );
 
                     button?.message.edit({
-                        content: `<a:Loading:833101350623117342> **Please send me Your Input now!**`,
+                        content: `⏳ **Please send me Your Input now!**`,
                         components: [
                             new MessageActionRow().addComponents([
                                 new MessageButton().setLabel("Cancel").setStyle("DANGER").setCustomId(`buildEmbed_cancel`),

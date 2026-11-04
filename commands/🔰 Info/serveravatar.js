@@ -33,17 +33,17 @@ module.exports = {
                                 : null
                         )
                         .addField(
-                            "<:arrow:832598861813776394> PNG",
+                            "▶️ PNG",
                             `[\`LINK\`](${message.guild.iconURL({ format: "png" })})`,
                             true
                         )
                         .addField(
-                            "<:arrow:832598861813776394> JPEG",
+                            "▶️ JPEG",
                             `[\`LINK\`](${message.guild.iconURL({ format: "jpg" })})`,
                             true
                         )
                         .addField(
-                            "<:arrow:832598861813776394> WEBP",
+                            "▶️ WEBP",
                             `[\`LINK\`](${message.guild.iconURL({ format: "webp" })})`,
                             true
                         )

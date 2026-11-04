@@ -7,11 +7,11 @@ module.exports = function (client, options) {
                 message: "",
                 log: false,
                 stopBoost:
-                    "<a:Server_Boosts:867777823468027924> {member} **stopped Boosting us..** <:Cat_Sad:867722685949804565>",
+                    "🚀 {member} **stopped Boosting us..** 😿",
                 startBoost:
-                    "<a:Server_Boosts:867777823468027924> {member} **has boosted us!** <a:Light_Saber_Dancce:867721861462229013>",
+                    "🚀 {member} **has boosted us!** 💃",
                 againBoost:
-                    "<a:Server_Boosts:867777823468027924> {member} **has boosted us again!** <:Tada_WON:867724032207224833>",
+                    "🚀 {member} **has boosted us again!** 🎉",
             },
         });
         if (!client.settings.has(nM.guild.id)) return;

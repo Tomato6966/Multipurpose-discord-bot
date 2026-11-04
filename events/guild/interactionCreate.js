@@ -272,7 +272,44 @@ module.exports = async (client, interaction) => {
             guild: interaction?.member.guild,
             guildId: interaction?.guildId,
         };
-        //Execute the Command
-        command.run(client, interaction, interaction?.member.user, es, ls, prefix, player, message);
+        //Execute the Command safely
+        try {
+            const execution = command.run(client, interaction, interaction?.member.user, es, ls, prefix, player, message);
+            if (execution && typeof execution.catch === "function") {
+                execution.catch(error => {
+                    console.error(`Error executing slash command ${command.name}:`, error);
+                    const errorReply = {
+                        ephemeral: true,
+                        embeds: [
+                            new Discord.MessageEmbed()
+                                .setColor(es.wrongcolor || "Red")
+                                .setTitle("❌ An error occurred")
+                                .setDescription(error.message ? `\`\`\`${error.message.substring(0, 1000)}\`\`\`` : "An error occurred while executing this command.")
+                        ]
+                    };
+                    if (interaction.replied || interaction.deferred) {
+                        interaction.followUp(errorReply).catch(() => {});
+                    } else {
+                        interaction.reply(errorReply).catch(() => {});
+                    }
+                });
+            }
+        } catch (error) {
+            console.error(`Synchronous error in slash command ${command.name}:`, error);
+            const errorReply = {
+                ephemeral: true,
+                embeds: [
+                    new Discord.MessageEmbed()
+                        .setColor(es.wrongcolor || "Red")
+                        .setTitle("❌ An error occurred")
+                        .setDescription(error.message ? `\`\`\`${error.message.substring(0, 1000)}\`\`\`` : "An error occurred while executing this command.")
+                ]
+            };
+            if (interaction.replied || interaction.deferred) {
+                interaction.followUp(errorReply).catch(() => {});
+            } else {
+                interaction.reply(errorReply).catch(() => {});
+            }
+        }
     }
 };

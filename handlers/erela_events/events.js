@@ -162,16 +162,16 @@ module.exports = client => {
                         const { channel } = member.voice;
                         const player = client.manager.players.get(i?.guild.id);
                         if (!player)
-                            return i?.reply({ content: "<:no:833101993668771842> Nothing Playing yet", ephemeral: true });
+                            return i?.reply({ content: "❌ Nothing Playing yet", ephemeral: true });
 
                         if (!channel)
                             return i?.reply({
-                                content: `<:no:833101993668771842> **Please join a Voice Channel first!**`,
+                                content: `❌ **Please join a Voice Channel first!**`,
                                 ephemeral: true,
                             });
                         if (channel.id !== player.voiceChannel)
                             return i?.reply({
-                                content: `<:no:833101993668771842> **Please join __my__ Voice Channel first! <#${player.voiceChannel}>**`,
+                                content: `❌ **Please join __my__ Voice Channel first! <#${player.voiceChannel}>**`,
                                 ephemeral: true,
                             });
 
@@ -182,7 +182,7 @@ module.exports = client => {
                                         .setColor(ee.wrongcolor)
                                         .setFooter({ text: `${ee.footertext}`, iconURL: `${ee.footericon}` })
                                         .setTitle(
-                                            `<:no:833101993668771842> **You are not a DJ and not the Song Requester!**`
+                                            `❌ **You are not a DJ and not the Song Requester!**`
                                         )
                                         .setDescription(
                                             `**DJ-ROLES:**\n${check_if_dj(client, i?.member, player.queue.current)}`
@@ -312,7 +312,7 @@ module.exports = client => {
                                         .setColor(ee.color)
                                         .setTimestamp()
                                         .setTitle(
-                                            `${player.get(`autoplay`) ? `${allEmojis.msg.SUCCESS} **Enabled Autoplay**` : `<:no:833101993668771842> **Disabled Autoplay**`}`
+                                            `${player.get(`autoplay`) ? `${allEmojis.msg.SUCCESS} **Enabled Autoplay**` : `❌ **Disabled Autoplay**`}`
                                         )
                                         .setFooter(
                                             client.getFooter(
@@ -364,7 +364,7 @@ module.exports = client => {
                                         .setColor(ee.color)
                                         .setTimestamp()
                                         .setTitle(
-                                            `${player.trackRepeat ? `${allEmojis.msg.SUCCESS} **Enabled Song Loop**` : `<:no:833101993668771842> **Disabled Song Loop**`}`
+                                            `${player.trackRepeat ? `${allEmojis.msg.SUCCESS} **Enabled Song Loop**` : `❌ **Disabled Song Loop**`}`
                                         )
                                         .setFooter(
                                             client.getFooter(
@@ -394,7 +394,7 @@ module.exports = client => {
                                         .setColor(ee.color)
                                         .setTimestamp()
                                         .setTitle(
-                                            `${player.queueRepeat ? `${allEmojis.msg.SUCCESS} **Enabled Queue Loop**` : `<:no:833101993668771842> **Disabled Queue Loop**`}`
+                                            `${player.queueRepeat ? `${allEmojis.msg.SUCCESS} **Enabled Queue Loop**` : `❌ **Disabled Queue Loop**`}`
                                         )
                                         .setFooter(
                                             client.getFooter(

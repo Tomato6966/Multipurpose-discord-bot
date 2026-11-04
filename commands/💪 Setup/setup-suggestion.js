@@ -135,7 +135,7 @@ module.exports = {
                         handle_the_picks(menu?.values[0], SetupNumber, menuoptiondata);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -153,11 +153,11 @@ module.exports = {
         suggest: {
           channel: "",
           approvemsg: `${allEmojis.msg.SUCCESS} Accepted Idea! Expect this soon.`,
-          denymsg: `<:no:833101993668771842> Thank you for the feedback, but we are not interested in this idea at this time.`,
+          denymsg: `❌ Thank you for the feedback, but we are not interested in this idea at this time.`,
           maybemsg: `💡 We are thinking about this idea!`,
           duplicatemsg: `💢 This is a duplicated Suggestion`,
           soonmsg: `👌 Expect this Feature Soon!`,
-          statustext: `<a:Loading:833101350623117342> Waiting for Community Feedback, please vote!`,
+          statustext: `⏳ Waiting for Community Feedback, please vote!`,
           footertext: `Want to suggest / Feedback something? Simply type in this channel!`,
           approveemoji: `833101995723194437`,
           denyemoji: `833101993668771842`,

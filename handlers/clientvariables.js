@@ -20,15 +20,18 @@ module.exports = client => {
     }); //load the categories asynchronusly
     client.cooldowns = new Discord.Collection(); //an collection for cooldown commands of each user
     client.getInvite = async id => {
-        if (!id || id.length != 18) return "INVALID CHANNELID";
-        let ch = await client.channels.fetch("802914917874663454").catch(() => {});
-        if (!ch) return `COULD NOT CREATE INVITE FOR: <#802914917874663454> in **${ch.guild.name}**`;
-        if (!ch.permissionsFor(ch.guild.me).has(Discord.Permissions.FLAGS.CREATE_INSTANT_INVITE)) {
+        if (!id || !/^\d{17,20}$/.test(String(id).trim())) return "INVALID CHANNELID";
+        const channelId = String(id).trim();
+        const ch = await client.channels.fetch(channelId).catch(() => null);
+        if (!ch) return `COULD NOT FETCH CHANNEL: <#${channelId}>`;
+        if (!ch.guild) return `❌ Channel <#${channelId}> is not in a server.`;
+        const botMember = ch.guild.members.me || ch.guild.members.cache.get(client.user?.id);
+        if (botMember && ch.permissionsFor && !ch.permissionsFor(botMember).has(Discord.Permissions.FLAGS.CREATE_INSTANT_INVITE)) {
             return `❌ **I am missing the CREATE_INSTANT_INVITE PERMISSION for \`${ch.name}\`**`;
         }
-        let inv = await ch.createInvite();
-        if (!inv) return `COULD NOT CREATE INVITE FOR: <#802914917874663454> in **${ch.guild.name}**`;
-        return `<#802914917874663454> | discord.gg/${inv.code}`;
+        const inv = await ch.createInvite({ maxAge: 0 }).catch(() => null);
+        if (!inv) return `COULD NOT CREATE INVITE FOR: <#${channelId}> in **${ch.guild.name}**`;
+        return `<#${channelId}> | https://discord.gg/${inv.code}`;
     };
     /**
      * @INFO

@@ -9,7 +9,7 @@ module.exports = client => {
         "0 0 */2 * *",
         function () {
             //get all guilds which are setupped
-            var guilds = client.settings.filter(v => v.autobackup).keyArray();
+            var guilds = client.settings.keyArray(v => v.autobackup);
             //Loop through all guilds and send a random auto-generated-nsfw setup
             for (const guildid of guilds) {
                 autobackup(guildid);

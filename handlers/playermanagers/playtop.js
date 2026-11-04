@@ -28,7 +28,7 @@ async function playtop(client, message, args, type, slashCommand) {
         player.set("playerauthor", message.author.id);
         player.connect();
         try {
-            message.react("863876115584385074").catch(() => {});
+            message.react("🎶").catch(() => {});
         } catch (e) {
             console.log(String(e).grey);
         }
@@ -90,7 +90,7 @@ async function playtop(client, message, args, type, slashCommand) {
             //connect
             player.connect();
             try {
-                message.react("863876115584385074").catch(() => {});
+                message.react("🎶").catch(() => {});
             } catch (e) {
                 console.log(String(e).grey);
             }

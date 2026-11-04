@@ -30,7 +30,7 @@ async function playlist(client, message, args, type, slashCommand = false) {
             player.set("playerauthor", message.author.id);
             player.connect();
             try {
-                message.react("863876115584385074").catch(() => {});
+                message.react("🎶").catch(() => {});
             } catch (e) {
                 console.log(String(e).grey);
             }
@@ -112,7 +112,7 @@ async function playlist(client, message, args, type, slashCommand = false) {
             player.set("playerauthor", message.author.id);
             player.connect();
             try {
-                message.react("863876115584385074").catch(() => {});
+                message.react("🎶").catch(() => {});
             } catch (e) {
                 console.log(String(e).grey);
             }

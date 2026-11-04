@@ -114,7 +114,7 @@ module.exports = {
                         handle_the_picks(menu?.values[0], menuoptiondata);
                     } else
                         menu?.reply({
-                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                             ephemeral: true,
                         });
                 });
@@ -207,7 +207,7 @@ module.exports = {
                                         handle_the_picks2(menu?.values[0], menuoptiondata);
                                     } else
                                         menu?.reply({
-                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                             ephemeral: true,
                                         });
                                 });
@@ -264,8 +264,8 @@ module.exports = {
                                                     if (
                                                         !Voicechannel ||
                                                         !Textchannel ||
-                                                        Voicechannel.type != "GUILD_VOICE" ||
-                                                        Textchannel.type != "GUILD_TEXT"
+                                                        Voicechannel.type != 2 ||
+                                                        Textchannel.type != 0
                                                     )
                                                         return message.reply(
                                                             `${allEmojis.msg.ERROR} **Check the example in the Embed, wrong input type!**`
@@ -295,7 +295,7 @@ module.exports = {
                                                                 embeds: [
                                                                     new Discord.MessageEmbed()
                                                                         .setTitle(
-                                                                            `<:no:833101993668771842> This Channel is already Setupped!`
+                                                                            `❌ This Channel is already Setupped!`
                                                                         )
                                                                         .setDescription(
                                                                             `Remove it first with \`${prefix}setup-joinvc\` --> Then Pick VC Messages --> Then Pick Remove!`
@@ -408,13 +408,13 @@ module.exports = {
                                                             .filter(
                                                                 ch =>
                                                                     ch.guild.id == message.guild.id &&
-                                                                    ch.type == "GUILD_VOICE"
+                                                                    ch.type == 2
                                                             )
                                                             .first() ||
                                                         message.guild.channels.cache.get(
                                                             message.content.trim().split(" ")[0]
                                                         );
-                                                    if (!Voicechannel || Voicechannel.type != "GUILD_VOICE")
+                                                    if (!Voicechannel || Voicechannel.type != 2)
                                                         return message.reply(
                                                                 `${allEmojis.msg.ERROR} **Check the example in the Embed, wrong input type!**`
                                                         );
@@ -443,7 +443,7 @@ module.exports = {
                                                                 embeds: [
                                                                     new Discord.MessageEmbed()
                                                                         .setTitle(
-                                                                            `<:no:833101993668771842> This Channel has not been Setup yet!`
+                                                                            `❌ This Channel has not been Setup yet!`
                                                                         )
                                                                         .setColor(es.color)
                                                                         .setFooter(client.getFooter(es)),
@@ -630,7 +630,7 @@ module.exports = {
                                         handle_the_picks2(menu?.values[0], menuoptiondata);
                                     } else
                                         menu?.reply({
-                                            content: `<:no:833101993668771842> You are not allowed to do that! Only: <@${cmduser.id}>`,
+                                            content: `❌ You are not allowed to do that! Only: <@${cmduser.id}>`,
                                             ephemeral: true,
                                         });
                                 });
@@ -672,7 +672,7 @@ module.exports = {
                                                             .filter(
                                                                 ch =>
                                                                     ch.guild.id == message.guild.id &&
-                                                                    ch.type == "GUILD_VOICE"
+                                                                    ch.type == 2
                                                             )
                                                             .first() ||
                                                         message.guild.channels.cache.get(
@@ -724,7 +724,7 @@ module.exports = {
                                                                 embeds: [
                                                                     new Discord.MessageEmbed()
                                                                         .setTitle(
-                                                                            `<:no:833101993668771842> This Channel is already Setupped!`
+                                                                            `❌ This Channel is already Setupped!`
                                                                         )
                                                                         .setDescription(
                                                                             `Remove it first with \`${prefix}setup-joinvc\` --> Then Pick VC ROLES --> Then Pick Remove!`
@@ -831,13 +831,13 @@ module.exports = {
                                                             .filter(
                                                                 ch =>
                                                                     ch.guild.id == message.guild.id &&
-                                                                    ch.type == "GUILD_VOICE"
+                                                                    ch.type == 2
                                                             )
                                                             .first() ||
                                                         message.guild.channels.cache.get(
                                                             message.content.trim().split(" ")[0]
                                                         );
-                                                    if (!Voicechannel || Voicechannel.type != "GUILD_VOICE")
+                                                    if (!Voicechannel || Voicechannel.type != 2)
                                                         return message.reply(
                                                             `${allEmojis.msg.ERROR} **Check the example in the Embed, wrong input type!**`
                                                         );
@@ -866,7 +866,7 @@ module.exports = {
                                                                 embeds: [
                                                                     new Discord.MessageEmbed()
                                                                         .setTitle(
-                                                                            `<:no:833101993668771842> This Channel has not been Setup yet!`
+                                                                            `❌ This Channel has not been Setup yet!`
                                                                         )
                                                                         .setColor(es.color)
                                                                         .setFooter(client.getFooter(es)),
