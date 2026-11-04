@@ -25,10 +25,31 @@ class SafeSpotify extends Spotify {
     }
 }
 
+function resolveNodes() {
+    if (process.env.LAVALINK_ENABLED === "false") {
+        console.log("[Lavalink] Lavalink is disabled via LAVALINK_ENABLED=false. Music commands will be inactive.".yellow);
+        return [];
+    }
+    if (process.env.LAVALINK_HOST) {
+        return collect([
+            {
+                host: process.env.LAVALINK_HOST,
+                port: Number(process.env.LAVALINK_PORT || 2333),
+                password: process.env.LAVALINK_PASSWORD || "youshallnotpass",
+                secure: process.env.LAVALINK_SECURE === "true",
+                retryAmount: 3,
+                retryDelay: 8000,
+            },
+        ]);
+    }
+    return collect(config.clientsettings.nodes || []);
+}
+
 module.exports = client => {
+    const nodes = resolveNodes();
     if (!hasCredential(clientID) || !hasCredential(clientSecret)) {
         client.manager = new Manager({
-            nodes: collect(config.clientsettings.nodes),
+            nodes,
             plugins: [new Deezer(), new Facebook()],
             send(id, payload) {
                 var guild = client.guilds.cache.get(id);
@@ -37,7 +58,7 @@ module.exports = client => {
         });
     } else {
         client.manager = new Manager({
-            nodes: collect(config.clientsettings.nodes),
+            nodes,
             plugins: [
                 new SafeSpotify({
                     clientID, //get a clientid from there: https://developer.spotify.com/dashboard

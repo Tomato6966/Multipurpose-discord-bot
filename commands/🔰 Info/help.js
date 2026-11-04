@@ -154,7 +154,7 @@ module.exports = {
             let button_back = new MessageButton()
                 .setStyle("SUCCESS")
                 .setCustomId("1")
-                .setEmoji("833802907509719130")
+                .setEmoji("◀️")
                 .setLabel(handlemsg(client.la[ls].cmds.info.help.buttons.back));
             let button_home = new MessageButton()
                 .setStyle("DANGER")
@@ -164,18 +164,18 @@ module.exports = {
             let button_forward = new MessageButton()
                 .setStyle("SUCCESS")
                 .setCustomId("3")
-                .setEmoji("832598861813776394")
+                .setEmoji("▶️")
                 .setLabel(handlemsg(client.la[ls].cmds.info.help.buttons.forward));
             let button_tutorial = new MessageButton()
                 .setStyle("LINK")
-                .setEmoji("840260133686870036")
+                .setEmoji("📺")
                 .setLabel("Tutorial")
                 .setURL("https://youtu.be/E0R7d8gS908");
             let menuOptions = [
                 {
                     label: "Overview",
                     value: "Overview",
-                    emoji: "833101995723194437",
+                    emoji: "📑",
                     description: "My Overview of me!",
                 },
                 {

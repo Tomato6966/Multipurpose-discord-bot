@@ -151,6 +151,65 @@ patchBuilderMethod(Discord.ButtonBuilder, "setStyle", ([style]) => [
         : style,
 ]);
 
+const legacyEmojiMap = {
+    "833802907509719130": "◀️",
+    "832598861813776394": "▶️",
+    "840260133686870036": "📺",
+    "833101995723194437": "✅",
+    "833101993668771842": "❌",
+    "867777823468027924": "🚀",
+    "877653386747605032": "👋",
+    "865962151649869834": "📝",
+    "866356465299488809": "➕",
+    "866356598356049930": "➖",
+    "840608514648047666": "🎮",
+    "840608342040117249": "🕹️",
+    "840608097701330996": "👾",
+};
+
+function sanitizeEmoji(emoji) {
+    if (!emoji) return emoji;
+    if (typeof emoji === "string") {
+        if (legacyEmojiMap[emoji]) return legacyEmojiMap[emoji];
+        if (/^\d{17,20}$/.test(emoji.trim())) return "🔘";
+        return emoji;
+    }
+    if (typeof emoji === "object" && emoji.id && legacyEmojiMap[emoji.id]) {
+        return legacyEmojiMap[emoji.id];
+    }
+    return emoji;
+}
+
+patchBuilderMethod(Discord.ButtonBuilder, "setEmoji", ([emoji]) => [sanitizeEmoji(emoji)]);
+
+if (Discord.StringSelectMenuBuilder) {
+    const origAddOptions = Discord.StringSelectMenuBuilder.prototype.addOptions;
+    Discord.StringSelectMenuBuilder.prototype.addOptions = function (...options) {
+        const flattened = options.flat(2).map(opt => {
+            if (!opt) return opt;
+            if (opt.emoji) {
+                return { ...opt, emoji: sanitizeEmoji(opt.emoji) };
+            }
+            return opt;
+        });
+        return origAddOptions.apply(this, flattened);
+    };
+
+    const origSetOptions = Discord.StringSelectMenuBuilder.prototype.setOptions;
+    if (origSetOptions) {
+        Discord.StringSelectMenuBuilder.prototype.setOptions = function (...options) {
+            const flattened = options.flat(2).map(opt => {
+                if (!opt) return opt;
+                if (opt.emoji) {
+                    return { ...opt, emoji: sanitizeEmoji(opt.emoji) };
+                }
+                return opt;
+            });
+            return origSetOptions.apply(this, flattened);
+        };
+    }
+}
+
 const legacyPartials = {
     MESSAGE: Discord.Partials.Message,
     CHANNEL: Discord.Partials.Channel,

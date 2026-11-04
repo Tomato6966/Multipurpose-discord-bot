@@ -19,6 +19,11 @@ assert.equal(
     "name"
 );
 assert.equal(new Discord.MessageButton().setStyle("PRIMARY").data.style, Discord.ButtonStyle.Primary);
+assert.equal(new Discord.MessageButton().setStyle("PRIMARY").setEmoji("833802907509719130").data.emoji.name, "◀️");
+const testMenu = new Discord.MessageSelectMenu().setCustomId("test").addOptions([
+    { label: "test", value: "test", emoji: "833101995723194437" }
+]);
+assert.equal(testMenu.toJSON().options[0].emoji.name, "✅");
 assert.equal(typeof Discord.BaseInteraction.prototype.isCommand, "function");
 assert.equal(typeof Discord.BaseInteraction.prototype.isSelectMenu, "function");
 assert.deepEqual(Discord.Util.splitMessage("first\nsecond", { maxLength: 6 }), ["first\n", "second"]);
